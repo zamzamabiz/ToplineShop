@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 
+import Link from "next/link";
 import { AppShell } from "@/components/layout/AppShell";
 import { MarketplaceGrid } from "@/components/marketplace/MarketplaceGrid";
 import { MarketplaceToolbar } from "@/components/marketplace/MarketplaceToolbar";
@@ -19,10 +20,19 @@ export default function ProductsPage() {
     <AppShell>
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+          <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6">
+            <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
+            <span>/</span>
+            <span className="text-foreground font-medium">Products</span>
+          </nav>
+
           <div className="mb-8">
-            <h1 className="text-2xl font-bold">Products</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Browse all products from verified vendors
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="text-2xl font-bold">Products</h1>
+              <Badge>{productListingItems.length} items</Badge>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Browse marketplace products from verified vendors across Nigeria
             </p>
           </div>
 
@@ -48,6 +58,11 @@ export default function ProductsPage() {
                   <SidebarCheckbox key={opt.label} label={opt.label} count={opt.count} />
                 ))}
               </SidebarSection>
+              <div className="pt-4 border-t border-border">
+                <p className="text-xs text-muted-foreground">
+                  Filters are frontend placeholders. Actual filtering not yet implemented.
+                </p>
+              </div>
             </MarketplaceSidebar>
 
             <div className="lg:col-span-3">
@@ -76,6 +91,9 @@ export default function ProductsPage() {
                   </button>
                 </div>
               </div>
+              <p className="text-center text-xs text-muted-foreground mt-3">
+                Pagination is a frontend placeholder. Not yet functional.
+              </p>
             </div>
           </div>
 

@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 
+import Link from "next/link";
 import { AppShell } from "@/components/layout/AppShell";
 import { MarketplaceSection } from "@/components/marketplace/MarketplaceSection";
 import { MarketplaceGrid } from "@/components/marketplace/MarketplaceGrid";
@@ -39,9 +40,18 @@ export default function CategoriesPage() {
     <AppShell>
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+          <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6">
+            <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
+            <span>/</span>
+            <span className="text-foreground font-medium">Categories</span>
+          </nav>
+
           <div className="mb-8">
-            <h1 className="text-2xl font-bold">Categories</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="text-2xl font-bold">Categories</h1>
+              <Badge>{marketplaceCategories.length} departments</Badge>
+            </div>
+            <p className="text-sm text-muted-foreground">
               Browse products by department and category
             </p>
           </div>
@@ -75,10 +85,15 @@ export default function CategoriesPage() {
                   />
                 ))}
               </SidebarSection>
+              <div className="pt-4 border-t border-border">
+                <p className="text-xs text-muted-foreground">
+                  Filters are frontend placeholders. Actual filtering not yet implemented.
+                </p>
+              </div>
             </MarketplaceSidebar>
 
             <div className="lg:col-span-3">
-              <MarketplaceSection title="Departments" subtitle="All product categories">
+              <MarketplaceSection title="Popular Departments" subtitle={`${marketplaceCategories.length} categories to explore`}>
                 <MarketplaceGrid cols={4}>
                   {marketplaceCategories.map((dept) => (
                     <CategoryTile
@@ -86,6 +101,7 @@ export default function CategoriesPage() {
                       name={dept.name}
                       count={dept.count}
                       icon={iconMap[dept.icon || "Tag"]}
+                      href={`/categories/${dept.slug}`}
                     />
                   ))}
                 </MarketplaceGrid>
