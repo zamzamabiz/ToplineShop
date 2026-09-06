@@ -15,24 +15,18 @@ import {
   BarChart3,
   FileText,
 } from "lucide-react";
+import { adminPreviewMetrics, adminNavItems } from "@/data/marketplaceMockData";
 
-const platformMetrics = [
-  { label: "Total Users", value: "0", icon: <Users /> },
-  { label: "Total Vendors", value: "0", icon: <Store /> },
-  { label: "Total Products", value: "0", icon: <Tag /> },
-  { label: "Active Disputes", value: "0", icon: <ShieldAlert /> },
-];
-
-const adminSections = [
-  { title: "User Management", description: "View, suspend, and manage platform users", icon: Users, status: "PLANNED" },
-  { title: "Vendor Management", description: "Approve, review, and manage vendors", icon: Store, status: "PLANNED" },
-  { title: "Category Management", description: "Create and organize product categories", icon: Tag, status: "PLANNED" },
-  { title: "Content Moderation", description: "Review flagged content and listings", icon: ShieldAlert, status: "PLANNED" },
-  { title: "Support Queue", description: "Manage customer and vendor support tickets", icon: Headphones, status: "PLANNED" },
-  { title: "Platform Settings", description: "Configure platform-wide settings", icon: Settings, status: "PLANNED" },
-  { title: "Analytics", description: "Platform-wide analytics and reporting", icon: BarChart3, status: "PLANNED" },
-  { title: "Audit Logs", description: "System activity and change history", icon: FileText, status: "PLANNED" },
-];
+const iconMap: Record<string, React.ReactNode> = {
+  Users: <Users />,
+  Store: <Store />,
+  Tag: <Tag />,
+  ShieldAlert: <ShieldAlert />,
+  Headphones: <Headphones />,
+  Settings: <Settings />,
+  BarChart3: <BarChart3 />,
+  FileText: <FileText />,
+};
 
 export default function AdminPage() {
   return (
@@ -51,21 +45,21 @@ export default function AdminPage() {
 
           <MarketplaceSection title="Platform Overview" subtitle="Key metrics at a glance" className="pt-0">
             <MarketplaceGrid cols={4}>
-              {platformMetrics.map((metric) => (
-                <MetricCard key={metric.label} {...metric} />
+              {adminPreviewMetrics.map((metric) => (
+                <MetricCard key={metric.label} label={metric.label} value={metric.value} icon={metric.icon ? iconMap[metric.icon] : undefined} />
               ))}
             </MarketplaceGrid>
           </MarketplaceSection>
 
           <MarketplaceSection title="Administration" subtitle="Platform management tools">
             <MarketplaceGrid cols={4}>
-              {adminSections.map((section) => (
+              {adminNavItems.map((section) => (
                 <div
                   key={section.title}
                   className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6 hover:border-primary/50 transition-colors cursor-pointer"
                 >
-                  <section.icon size={24} className="text-primary mb-3" />
-                  <h3 className="font-semibold text-sm">{section.title}</h3>
+                  {iconMap[section.icon]}
+                  <h3 className="font-semibold text-sm mt-3">{section.title}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
                     {section.description}
                   </p>

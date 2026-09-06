@@ -6,17 +6,13 @@ import { MarketplaceToolbar } from "@/components/marketplace/MarketplaceToolbar"
 import { MarketplaceSidebar, SidebarSection, SidebarCheckbox } from "@/components/marketplace/MarketplaceSidebar";
 import { ProductTile } from "@/components/marketplace/ProductTile";
 import { Badge } from "@/components/ui/Badge";
-
-const placeholderProducts = [
-  { name: "Wireless Bluetooth Headphones", price: "₦49,999", originalPrice: "₦79,999", rating: 4.5, reviewCount: 128, vendor: "TechStore", badge: "Sale" },
-  { name: "Organic Cotton T-Shirt", price: "₦24,999", rating: 4.2, reviewCount: 56, vendor: "FashionHub" },
-  { name: "Stainless Steel Water Bottle", price: "₦18,999", rating: 4.8, reviewCount: 203, vendor: "EcoLiving", badge: "Popular" },
-  { name: "Portable Bluetooth Speaker", price: "₦34,999", originalPrice: "₦49,999", rating: 4.3, reviewCount: 89, vendor: "TechStore" },
-  { name: "Smart Watch Fitness Tracker", price: "₦29,999", rating: 4.1, reviewCount: 67, vendor: "TechStore" },
-  { name: "Natural Face Moisturizer", price: "₦12,999", rating: 4.7, reviewCount: 145, vendor: "BeautyPlus" },
-  { name: "Yoga Mat Premium", price: "₦15,999", originalPrice: "₦22,999", rating: 4.4, reviewCount: 78, vendor: "FitLife" },
-  { name: "Ceramic Coffee Mug Set", price: "₦8,999", rating: 4.6, reviewCount: 112, vendor: "HomePlus" },
-];
+import {
+  productListingItems,
+  productFilterCategories,
+  productFilterPriceRanges,
+  productFilterRatings,
+  productFilterAvailability,
+} from "@/data/marketplaceMockData";
 
 export default function ProductsPage() {
   return (
@@ -33,34 +29,33 @@ export default function ProductsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <MarketplaceSidebar className="lg:col-span-1">
               <SidebarSection title="Category">
-                <SidebarCheckbox label="Electronics" count={120} />
-                <SidebarCheckbox label="Fashion" count={85} />
-                <SidebarCheckbox label="Home & Garden" count={64} />
-                <SidebarCheckbox label="Sports" count={42} />
-                <SidebarCheckbox label="Beauty" count={38} />
+                {productFilterCategories.map((opt) => (
+                  <SidebarCheckbox key={opt.label} label={opt.label} count={opt.count} />
+                ))}
               </SidebarSection>
               <SidebarSection title="Price Range">
-                <SidebarCheckbox label="Under ₦5,000" count={234} />
-                <SidebarCheckbox label="₦5,000 - ₦15,000" count={189} />
-                <SidebarCheckbox label="₦15,000 - ₦50,000" count={156} />
-                <SidebarCheckbox label="Over ₦50,000" count={101} />
+                {productFilterPriceRanges.map((opt) => (
+                  <SidebarCheckbox key={opt.label} label={opt.label} count={opt.count} />
+                ))}
               </SidebarSection>
               <SidebarSection title="Rating">
-                <SidebarCheckbox label="4★ & above" count={312} />
-                <SidebarCheckbox label="3★ & above" count={445} />
+                {productFilterRatings.map((opt) => (
+                  <SidebarCheckbox key={opt.label} label={opt.label} count={opt.count} />
+                ))}
               </SidebarSection>
               <SidebarSection title="Availability">
-                <SidebarCheckbox label="In Stock" count={467} />
-                <SidebarCheckbox label="Pre-Order" count={23} />
+                {productFilterAvailability.map((opt) => (
+                  <SidebarCheckbox key={opt.label} label={opt.label} count={opt.count} />
+                ))}
               </SidebarSection>
             </MarketplaceSidebar>
 
             <div className="lg:col-span-3">
-              <MarketplaceToolbar resultCount={placeholderProducts.length} />
+              <MarketplaceToolbar resultCount={productListingItems.length} />
 
               <MarketplaceGrid cols={3}>
-                {placeholderProducts.map((product) => (
-                  <ProductTile key={product.name} {...product} />
+                {productListingItems.map((product) => (
+                  <ProductTile key={product.id} name={product.name} price={product.price} originalPrice={product.originalPrice} rating={product.rating} reviewCount={product.reviewCount} vendor={product.vendor} badge={product.badge} />
                 ))}
               </MarketplaceGrid>
 

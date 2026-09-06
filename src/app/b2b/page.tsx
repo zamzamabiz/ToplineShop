@@ -15,48 +15,16 @@ import {
   ShieldCheck,
   ArrowRight,
 } from "lucide-react";
+import { b2bBenefits, b2bSupplierCategories } from "@/data/marketplaceMockData";
 
-const benefits = [
-  {
-    icon: Package,
-    title: "Bulk Pricing",
-    description: "Volume discounts on all wholesale orders. The more you buy, the more you save.",
-  },
-  {
-    icon: Truck,
-    title: "Nationwide Delivery",
-    description: "Reliable logistics network covering all 36 states and FCT.",
-  },
-  {
-    icon: FileText,
-    title: "Request for Quotation",
-    description: "Submit RFQs and receive competitive quotes from verified suppliers.",
-  },
-  {
-    icon: Users,
-    title: "Verified Suppliers",
-    description: "All B2B vendors are verified with business documentation.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Buyer Protection",
-    description: "Escrow-based payments protect both buyers and sellers.",
-  },
-  {
-    icon: Building2,
-    title: "Business Accounts",
-    description: "Dedicated account management for wholesale buyers.",
-  },
-];
-
-const supplierCategories = [
-  { name: "Electronics & Tech", count: 45 },
-  { name: "Fashion & Textiles", count: 38 },
-  { name: "Food & Beverages", count: 52 },
-  { name: "Building Materials", count: 29 },
-  { name: "Agriculture", count: 34 },
-  { name: "Industrial Equipment", count: 18 },
-];
+const iconMap: Record<string, React.ReactNode> = {
+  Package: <Package size={24} />,
+  Truck: <Truck size={24} />,
+  FileText: <FileText size={24} />,
+  Users: <Users size={24} />,
+  ShieldCheck: <ShieldCheck size={24} />,
+  Building2: <Building2 size={24} />,
+};
 
 export default function B2BPage() {
   return (
@@ -79,13 +47,13 @@ export default function B2BPage() {
           subtitle="The wholesale marketplace built for Nigerian businesses"
         >
           <MarketplaceGrid cols={3}>
-            {benefits.map((benefit) => (
+            {b2bBenefits.map((benefit) => (
               <div
-                key={benefit.title}
+                key={benefit.id}
                 className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6"
               >
-                <benefit.icon size={24} className="text-primary mb-3" />
-                <h3 className="font-semibold text-sm">{benefit.title}</h3>
+                {iconMap[benefit.icon]}
+                <h3 className="font-semibold text-sm mt-3">{benefit.title}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {benefit.description}
                 </p>
@@ -105,9 +73,9 @@ export default function B2BPage() {
             }
           >
           <MarketplaceGrid cols={3}>
-            {supplierCategories.map((cat) => (
+            {b2bSupplierCategories.map((cat) => (
               <div
-                key={cat.name}
+                key={cat.id}
                 className="flex items-center justify-between rounded-xl border border-border bg-white dark:bg-zinc-900 p-4 hover:border-primary/50 transition-colors cursor-pointer"
               >
                 <span className="font-medium text-sm">{cat.name}</span>

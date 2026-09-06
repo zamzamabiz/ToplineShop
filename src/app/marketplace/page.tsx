@@ -12,29 +12,11 @@ import { TrustBar } from "@/components/marketplace/TrustBar";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { ArrowRight } from "lucide-react";
-
-const placeholderCategories = [
-  { name: "Electronics", count: 120 },
-  { name: "Fashion", count: 85 },
-  { name: "Home & Garden", count: 64 },
-  { name: "Sports", count: 42 },
-  { name: "Beauty", count: 38 },
-  { name: "Toys", count: 29 },
-];
-
-const placeholderProducts = [
-  { name: "Wireless Bluetooth Headphones", price: "$49.99", originalPrice: "$79.99", rating: 4.5, reviewCount: 128, vendor: "TechStore", badge: "Sale" },
-  { name: "Organic Cotton T-Shirt", price: "$24.99", rating: 4.2, reviewCount: 56, vendor: "FashionHub" },
-  { name: "Stainless Steel Water Bottle", price: "$18.99", rating: 4.8, reviewCount: 203, vendor: "EcoLiving", badge: "Popular" },
-  { name: "Portable Bluetooth Speaker", price: "$34.99", originalPrice: "$49.99", rating: 4.3, reviewCount: 89, vendor: "TechStore" },
-];
-
-const placeholderVendors = [
-  { name: "TechStore", productCount: 156, rating: 4.7 },
-  { name: "FashionHub", productCount: 89, rating: 4.5 },
-  { name: "EcoLiving", productCount: 67, rating: 4.8 },
-  { name: "HomePlus", productCount: 112, rating: 4.4 },
-];
+import {
+  marketplaceCategories,
+  featuredProducts,
+  marketplaceVendors,
+} from "@/data/marketplaceMockData";
 
 export default function MarketplacePage() {
   return (
@@ -59,9 +41,9 @@ export default function MarketplacePage() {
           }
         >
           <MarketplaceGrid cols={3}>
-            {placeholderCategories.map((cat) => (
+            {marketplaceCategories.slice(0, 6).map((cat) => (
               <CategoryTile
-                key={cat.name}
+                key={cat.id}
                 name={cat.name}
                 count={cat.count}
               />
@@ -79,8 +61,8 @@ export default function MarketplacePage() {
           }
         >
           <MarketplaceGrid cols={4}>
-            {placeholderProducts.map((product) => (
-              <ProductTile key={product.name} {...product} />
+            {featuredProducts.map((product) => (
+              <ProductTile key={product.id} name={product.name} price={product.price} originalPrice={product.originalPrice} rating={product.rating} reviewCount={product.reviewCount} vendor={product.vendor} badge={product.badge} />
             ))}
           </MarketplaceGrid>
         </MarketplaceSection>
@@ -95,8 +77,8 @@ export default function MarketplacePage() {
           }
         >
           <MarketplaceGrid cols={4}>
-            {placeholderVendors.map((vendor) => (
-              <VendorTile key={vendor.name} {...vendor} />
+            {marketplaceVendors.map((vendor) => (
+              <VendorTile key={vendor.id} name={vendor.name} productCount={vendor.productCount} rating={vendor.rating} />
             ))}
           </MarketplaceGrid>
         </MarketplaceSection>

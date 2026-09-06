@@ -16,31 +16,23 @@ import {
   BookOpen,
   Baby,
 } from "lucide-react";
+import {
+  marketplaceCategories,
+  categoryFilterPriceRanges,
+  categoryFilterRatings,
+  categoryFilterVendors,
+} from "@/data/marketplaceMockData";
 
-const departments = [
-  { name: "Electronics", count: 120, icon: Laptop },
-  { name: "Fashion", count: 85, icon: Shirt },
-  { name: "Home & Garden", count: 64, icon: Home },
-  { name: "Sports & Outdoors", count: 42, icon: Dumbbell },
-  { name: "Beauty & Health", count: 38, icon: Sparkles },
-  { name: "Toys & Games", count: 29, icon: Gamepad2 },
-  { name: "Books & Media", count: 21, icon: BookOpen },
-  { name: "Baby & Kids", count: 18, icon: Baby },
-];
-
-const priceRanges = [
-  { label: "Under ₦5,000", count: 234 },
-  { label: "₦5,000 - ₦15,000", count: 189 },
-  { label: "₦15,000 - ₦50,000", count: 156 },
-  { label: "₦50,000 - ₦100,000", count: 67 },
-  { label: "Over ₦100,000", count: 34 },
-];
-
-const ratings = [
-  { label: "4★ & above", count: 312 },
-  { label: "3★ & above", count: 445 },
-  { label: "2★ & above", count: 489 },
-];
+const iconMap: Record<string, React.ReactNode> = {
+  Laptop: <Laptop size={24} />,
+  Shirt: <Shirt size={24} />,
+  Home: <Home size={24} />,
+  Dumbbell: <Dumbbell size={24} />,
+  Sparkles: <Sparkles size={24} />,
+  Gamepad2: <Gamepad2 size={24} />,
+  BookOpen: <BookOpen size={24} />,
+  Baby: <Baby size={24} />,
+};
 
 export default function CategoriesPage() {
   return (
@@ -57,7 +49,7 @@ export default function CategoriesPage() {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <MarketplaceSidebar className="lg:col-span-1">
               <SidebarSection title="Price Range">
-                {priceRanges.map((range) => (
+                {categoryFilterPriceRanges.map((range) => (
                   <SidebarCheckbox
                     key={range.label}
                     label={range.label}
@@ -66,7 +58,7 @@ export default function CategoriesPage() {
                 ))}
               </SidebarSection>
               <SidebarSection title="Rating">
-                {ratings.map((rating) => (
+                {categoryFilterRatings.map((rating) => (
                   <SidebarCheckbox
                     key={rating.label}
                     label={rating.label}
@@ -75,20 +67,25 @@ export default function CategoriesPage() {
                 ))}
               </SidebarSection>
               <SidebarSection title="Vendor">
-                <SidebarCheckbox label="Verified Only" count={89} />
-                <SidebarCheckbox label="Top Rated" count={45} />
+                {categoryFilterVendors.map((v) => (
+                  <SidebarCheckbox
+                    key={v.label}
+                    label={v.label}
+                    count={v.count}
+                  />
+                ))}
               </SidebarSection>
             </MarketplaceSidebar>
 
             <div className="lg:col-span-3">
               <MarketplaceSection title="Departments" subtitle="All product categories">
                 <MarketplaceGrid cols={4}>
-                  {departments.map((dept) => (
+                  {marketplaceCategories.map((dept) => (
                     <CategoryTile
-                      key={dept.name}
+                      key={dept.id}
                       name={dept.name}
                       count={dept.count}
-                      icon={<dept.icon size={24} />}
+                      icon={iconMap[dept.icon || "Tag"]}
                     />
                   ))}
                 </MarketplaceGrid>

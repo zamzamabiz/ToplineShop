@@ -17,22 +17,19 @@ import {
   Settings,
   FileText,
 } from "lucide-react";
+import { ownerPreviewMetrics, ownerNavItems } from "@/data/marketplaceMockData";
 
-const executiveMetrics = [
-  { label: "GMV (MTD)", value: "₦0.00", icon: <DollarSign /> },
-  { label: "Revenue (MTD)", value: "₦0.00", change: { value: "Commission: 0%", positive: true }, icon: <TrendingUp /> },
-  { label: "Active Users", value: "0", icon: <Users /> },
-  { label: "Active Vendors", value: "0", icon: <Store /> },
-];
-
-const controlSections = [
-  { title: "Revenue Dashboard", description: "Track GMV, revenue, and commission earnings", icon: BarChart3, status: "PLANNED" },
-  { title: "Platform Health", description: "Monitor system status and performance", icon: Activity, status: "PLANNED" },
-  { title: "User & Vendor Oversight", description: "Manage platform participants", icon: Users, status: "PLANNED" },
-  { title: "Risk & Compliance", description: "Fraud detection and compliance monitoring", icon: Shield, status: "PLANNED" },
-  { title: "Phase & Project Status", description: "Track development progress and roadmap", icon: FileText, status: "ACTIVE" },
-  { title: "Platform Settings", description: "Configure platform-wide settings", icon: Settings, status: "PLANNED" },
-];
+const iconMap: Record<string, React.ReactNode> = {
+  DollarSign: <DollarSign />,
+  TrendingUp: <TrendingUp />,
+  Users: <Users />,
+  Store: <Store />,
+  Activity: <Activity />,
+  Shield: <Shield />,
+  BarChart3: <BarChart3 />,
+  Settings: <Settings />,
+  FileText: <FileText />,
+};
 
 export default function OwnerPage() {
   return (
@@ -51,21 +48,21 @@ export default function OwnerPage() {
 
           <MarketplaceSection title="Executive Metrics" subtitle="Platform performance overview" className="pt-0">
             <MarketplaceGrid cols={4}>
-              {executiveMetrics.map((metric) => (
-                <MetricCard key={metric.label} {...metric} />
+              {ownerPreviewMetrics.map((metric) => (
+                <MetricCard key={metric.label} label={metric.label} value={metric.value} change={metric.change} icon={metric.icon ? iconMap[metric.icon] : undefined} />
               ))}
             </MarketplaceGrid>
           </MarketplaceSection>
 
           <MarketplaceSection title="Control Center" subtitle="Platform management and oversight">
             <MarketplaceGrid cols={3}>
-              {controlSections.map((section) => (
+              {ownerNavItems.map((section) => (
                 <div
                   key={section.title}
                   className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6 hover:border-primary/50 transition-colors cursor-pointer"
                 >
-                  <section.icon size={24} className="text-primary mb-3" />
-                  <h3 className="font-semibold text-sm">{section.title}</h3>
+                  {iconMap[section.icon]}
+                  <h3 className="font-semibold text-sm mt-3">{section.title}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
                     {section.description}
                   </p>
@@ -82,11 +79,11 @@ export default function OwnerPage() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Current Phase</span>
-                  <span className="font-medium">Phase 1 — UX Architecture</span>
+                  <span className="font-medium">Phase 2 — Public Marketplace</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Overall Progress</span>
-                  <span className="font-medium">18%</span>
+                  <span className="font-medium">25%</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Backend</span>

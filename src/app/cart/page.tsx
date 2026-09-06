@@ -4,11 +4,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Trash2, Minus, Plus, Tag, ShieldCheck, Truck } from "lucide-react";
-
-const placeholderItems = [
-  { id: 1, name: "Wireless Bluetooth Headphones", vendor: "TechStore", price: "₦49,999", quantity: 1, image: null },
-  { id: 2, name: "Organic Cotton T-Shirt", vendor: "FashionHub", price: "₦24,999", quantity: 2, image: null },
-];
+import { cartPreviewItems } from "@/data/marketplaceMockData";
 
 export default function CartPage() {
   return (
@@ -24,7 +20,7 @@ export default function CartPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-4">
-              {placeholderItems.map((item) => (
+              {cartPreviewItems.map((item) => (
                 <div
                   key={item.id}
                   className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-4 sm:p-6"
@@ -68,7 +64,7 @@ export default function CartPage() {
                 </div>
               ))}
 
-              {placeholderItems.length === 0 && (
+              {cartPreviewItems.length === 0 && (
                 <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-12 text-center">
                   <p className="text-muted-foreground">Your cart is empty</p>
                 </div>

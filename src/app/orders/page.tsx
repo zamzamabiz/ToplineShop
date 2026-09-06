@@ -3,44 +3,7 @@ export const dynamic = "force-dynamic";
 import { AppShell } from "@/components/layout/AppShell";
 import { Badge } from "@/components/ui/Badge";
 import { Package, Clock, CheckCircle, XCircle, HelpCircle } from "lucide-react";
-
-const placeholderOrders = [
-  {
-    id: "ORD-001",
-    date: "2026-09-05",
-    status: "Delivered",
-    total: "₦49,999",
-    items: 2,
-    statusColor: "text-green-600",
-    icon: CheckCircle,
-  },
-  {
-    id: "ORD-002",
-    date: "2026-09-04",
-    status: "Shipped",
-    total: "₦24,999",
-    items: 1,
-    statusColor: "text-blue-600",
-    icon: Package,
-  },
-  {
-    id: "ORD-003",
-    date: "2026-09-03",
-    status: "Processing",
-    total: "₦18,999",
-    items: 3,
-    statusColor: "text-amber-600",
-    icon: Clock,
-  },
-];
-
-const statusTimeline = [
-  { label: "Order Placed", done: true },
-  { label: "Payment Confirmed", done: true },
-  { label: "Processing", done: true },
-  { label: "Shipped", done: false },
-  { label: "Delivered", done: false },
-];
+import { orderPreviewItems, orderTimelineSteps } from "@/data/marketplaceMockData";
 
 export default function OrdersPage() {
   return (
@@ -56,7 +19,7 @@ export default function OrdersPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-4">
-              {placeholderOrders.map((order) => (
+              {orderPreviewItems.map((order) => (
                 <div
                   key={order.id}
                   className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-4 sm:p-6"
@@ -65,7 +28,9 @@ export default function OrdersPage() {
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-sm font-medium">{order.id}</span>
-                        <order.icon size={14} className={order.statusColor} />
+                        {order.status === "Delivered" && <CheckCircle size={14} className="text-green-600" />}
+                        {order.status === "Shipped" && <Package size={14} className="text-blue-600" />}
+                        {order.status === "Processing" && <Clock size={14} className="text-amber-600" />}
                         <span className={`text-xs font-medium ${order.statusColor}`}>
                           {order.status}
                         </span>
@@ -84,7 +49,7 @@ export default function OrdersPage() {
                 </div>
               ))}
 
-              {placeholderOrders.length === 0 && (
+              {orderPreviewItems.length === 0 && (
                 <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-12 text-center">
                   <Package size={40} className="mx-auto text-muted-foreground mb-3" />
                   <p className="font-medium">No orders yet</p>
@@ -99,7 +64,7 @@ export default function OrdersPage() {
               <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6 sticky top-24">
                 <h2 className="font-semibold text-sm mb-4">Order Status Timeline</h2>
                 <div className="space-y-3">
-                  {statusTimeline.map((step) => (
+                  {orderTimelineSteps.map((step) => (
                     <div key={step.label} className="flex items-center gap-3">
                       <div
                         className={`h-2 w-2 rounded-full flex-shrink-0 ${

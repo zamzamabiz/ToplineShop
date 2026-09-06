@@ -16,22 +16,18 @@ import {
   CreditCard,
   Settings,
 } from "lucide-react";
+import { vendorPreviewMetrics, vendorNavItems } from "@/data/marketplaceMockData";
 
-const placeholderMetrics = [
-  { label: "Total Products", value: "24", change: { value: "+3 this week", positive: true }, icon: <Package /> },
-  { label: "Total Orders", value: "156", change: { value: "+12 this week", positive: true }, icon: <ShoppingCart /> },
-  { label: "Revenue (MTD)", value: "₦0.00", icon: <DollarSign /> },
-  { label: "Conversion Rate", value: "0%", icon: <TrendingUp /> },
-];
-
-const navCards = [
-  { title: "Product Management", description: "Add, edit, and manage your product catalog", icon: Package, status: "PLANNED" },
-  { title: "Order Management", description: "View and fulfill customer orders", icon: ShoppingCart, status: "PLANNED" },
-  { title: "Analytics Dashboard", description: "Track sales, views, and performance", icon: BarChart3, status: "PLANNED" },
-  { title: "Storefront Settings", description: "Customize your vendor storefront", icon: Store, status: "PLANNED" },
-  { title: "Payouts & Billing", description: "Manage payments and subscription", icon: CreditCard, status: "PLANNED" },
-  { title: "Account Settings", description: "Manage your vendor profile", icon: Settings, status: "PLANNED" },
-];
+const iconMap: Record<string, React.ReactNode> = {
+  Package: <Package />,
+  ShoppingCart: <ShoppingCart />,
+  TrendingUp: <TrendingUp />,
+  DollarSign: <DollarSign />,
+  Store: <Store />,
+  BarChart3: <BarChart3 />,
+  CreditCard: <CreditCard />,
+  Settings: <Settings />,
+};
 
 export default function VendorPage() {
   return (
@@ -50,21 +46,21 @@ export default function VendorPage() {
 
           <MarketplaceSection title="Overview" subtitle="Your store at a glance" className="pt-0">
             <MarketplaceGrid cols={4}>
-              {placeholderMetrics.map((metric) => (
-                <MetricCard key={metric.label} {...metric} />
+              {vendorPreviewMetrics.map((metric) => (
+                <MetricCard key={metric.label} label={metric.label} value={metric.value} change={metric.change} icon={metric.icon ? iconMap[metric.icon] : undefined} />
               ))}
             </MarketplaceGrid>
           </MarketplaceSection>
 
           <MarketplaceSection title="Manage Your Store" subtitle="Quick access to vendor tools">
             <MarketplaceGrid cols={3}>
-              {navCards.map((card) => (
+              {vendorNavItems.map((card) => (
                 <div
                   key={card.title}
                   className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6 hover:border-primary/50 transition-colors cursor-pointer"
                 >
-                  <card.icon size={24} className="text-primary mb-3" />
-                  <h3 className="font-semibold text-sm">{card.title}</h3>
+                  {iconMap[card.icon]}
+                  <h3 className="font-semibold text-sm mt-3">{card.title}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
                     {card.description}
                   </p>
