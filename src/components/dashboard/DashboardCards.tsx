@@ -18,6 +18,8 @@ function StatusBadge({ status }: { status: string }) {
       "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400",
     ENFORCED:
       "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+    ACTIVE:
+      "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
   };
   return (
     <span
@@ -60,6 +62,169 @@ function Card({
   );
 }
 
+export function SourceOfTruthBanner() {
+  return (
+    <div className="rounded-lg border border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/30 px-4 py-3">
+      <div className="flex items-center gap-2 text-sm">
+        <span className="font-medium text-blue-700 dark:text-blue-400">
+          Source of Truth:
+        </span>
+        <code className="text-xs bg-blue-100 dark:bg-blue-900/50 px-2 py-0.5 rounded font-mono">
+          src/project/projectRegistry.ts
+        </code>
+        <span className="text-blue-600 dark:text-blue-500">
+          — All dashboard panels render from this canonical registry.
+        </span>
+      </div>
+    </div>
+  );
+}
+
+export function GitHubPanel({
+  registry,
+}: {
+  registry: ProjectRegistry;
+}) {
+  const gh = registry.github;
+  return (
+    <Card title="GitHub Repository">
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-sm font-medium">
+              {gh.url || "Not configured"}
+            </div>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              Remote origin
+            </div>
+          </div>
+          <StatusBadge
+            status={gh.configured ? "ACTIVE" : "NOT_STARTED"}
+          />
+        </div>
+        <div className="flex items-center justify-between text-xs">
+          <span className="text-muted-foreground">Push allowed:</span>
+          <span>{gh.pushAllowed ? "Yes" : "No — local only until PM approves"}</span>
+        </div>
+        <div className="flex items-center justify-between text-xs">
+          <span className="text-muted-foreground">Last commit:</span>
+          <code className="font-mono">{registry.git.lastCommit || "none"}</code>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+export function PhaseReadinessPanel({
+  registry,
+}: {
+  registry: ProjectRegistry;
+}) {
+  const checks = [
+    { label: "Greenfield root confirmed", done: true },
+    { label: "Dashboard created", done: true },
+    { label: "Registry created", done: true },
+    { label: "WDR structure created", done: true },
+    { label: "Design-system architecture", done: true },
+    { label: "Git initialized", done: registry.git.initialized },
+    { label: "Remote configured", done: registry.github.configured },
+    { label: "Build passing", done: registry.build.lastResult === "PASS" },
+    { label: "PM audit required", done: true },
+  ];
+  return (
+    <Card title="Phase 0 Readiness Checklist">
+      <div className="space-y-2">
+        {checks.map((check) => (
+          <div key={check.label} className="flex items-center gap-2 text-sm">
+            <span
+              className={check.done ? "text-green-600" : "text-zinc-400"}
+            >
+              {check.done ? "✓" : "○"}
+            </span>
+            <span>{check.label}</span>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+export function FddLane() {
+  const stages = [
+    { label: "Frontend Foundation", active: true, done: true },
+    { label: "Design System", active: true, done: false },
+    { label: "Frontend Screens", active: false, done: false },
+    { label: "Frontend Freeze", active: false, done: false },
+    { label: "Backend Later", active: false, done: false },
+  ];
+  return (
+    <Card title="#FDD Lane — Frontend Development First">
+      <div className="flex items-center gap-1">
+        {stages.map((stage, i) => (
+          <div key={stage.label} className="flex items-center">
+            <div
+              className={`px-3 py-1.5 text-xs font-medium rounded-md ${
+                stage.done
+                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                  : stage.active
+                    ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                    : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
+              }`}
+            >
+              {stage.label}
+            </div>
+            {i < stages.length - 1 && (
+              <span className="mx-1 text-zinc-300 dark:text-zinc-600">→</span>
+            )}
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+export function MegaPromptPlan({ registry }: { registry: ProjectRegistry }) {
+  return (
+    <Card title="Mega Prompt Phase Plan">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border">
+              <th className="pb-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                Phase
+              </th>
+              <th className="pb-2 text-center text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                Target
+              </th>
+              <th className="pb-2 text-center text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                Done
+              </th>
+              <th className="pb-2 text-center text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                Remaining
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {registry.phases.map((phase) => (
+              <tr key={phase.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                <td className="py-2 text-xs">
+                  <span className="font-mono text-muted-foreground">P{phase.number}</span>{" "}
+                  {phase.name}
+                </td>
+                <td className="py-2 text-center text-xs">{phase.megaPromptTarget}</td>
+                <td className="py-2 text-center text-xs">{phase.megaPromptsCompleted}</td>
+                <td className="py-2 text-center text-xs">
+                  {phase.megaPromptTarget - phase.megaPromptsCompleted}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Card>
+  );
+}
+
 export function ExecutiveSummary({ registry }: { registry: ProjectRegistry }) {
   const completedTasks = registry.tasks.filter(
     (t) => t.status === "PASS" || t.status === "CLOSED"
@@ -67,6 +232,7 @@ export function ExecutiveSummary({ registry }: { registry: ProjectRegistry }) {
   const blockedTasks = registry.tasks.filter(
     (t) => t.status === "BLOCKED"
   ).length;
+
   const cards = [
     {
       label: "Overall Completion",
@@ -338,24 +504,37 @@ export function GovernancePanel({
   );
 }
 
-export function RiskPanel({ registry }: { registry: ProjectRegistry }) {
+export function RiskPanel() {
   return (
-    <Card title="Risk / Blocker Panel">
+    <Card title="Risk / Deviation Panel">
       <div className="space-y-2">
-        {registry.risks.map((risk) => (
-          <div
-            key={risk.id}
-            className="rounded-lg border border-border p-3"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">{risk.title}</span>
-              <StatusBadge status={risk.status} />
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              {risk.description}
-            </p>
+        <div className="rounded-lg border border-border p-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium">Browser verification</span>
+            <StatusBadge status="PARTIAL" />
           </div>
-        ))}
+          <p className="text-xs text-muted-foreground mt-1">
+            Manual browser verification may be pending — build-generated static pages confirm rendering.
+          </p>
+        </div>
+        <div className="rounded-lg border border-border p-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium">Backend/database intentionally not started</span>
+            <StatusBadge status="PLANNED" />
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            Per #FDD policy — frontend-first. Backend starts in Phase 7.
+          </p>
+        </div>
+        <div className="rounded-lg border border-border p-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium">Phase 1 design system pending</span>
+            <StatusBadge status="READY" />
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            Foundation architecture prepared. Full implementation in Phase 1.
+          </p>
+        </div>
       </div>
     </Card>
   );
@@ -381,6 +560,9 @@ export function WdrRegister({ registry }: { registry: ProjectRegistry }) {
                 Date
               </th>
               <th className="pb-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                Commit
+              </th>
+              <th className="pb-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 PM Audit
               </th>
             </tr>
@@ -398,6 +580,9 @@ export function WdrRegister({ registry }: { registry: ProjectRegistry }) {
                 <td className="py-3 text-xs text-muted-foreground">
                   {wdr.date}
                 </td>
+                <td className="py-3 font-mono text-xs">
+                  {wdr.commitHash || "pending"}
+                </td>
                 <td className="py-3">
                   <StatusBadge status={wdr.pmAudit} />
                 </td>
@@ -410,57 +595,95 @@ export function WdrRegister({ registry }: { registry: ProjectRegistry }) {
   );
 }
 
-export function ProjectTree({ registry }: { registry: ProjectRegistry }) {
+export function ProjectTree() {
   const tree = [
     {
-      label: "Phases",
-      children: registry.phases.map((p) => ({
-        label: `P${p.number}: ${p.name}`,
-        status: p.status,
-      })),
+      label: "Governance",
+      children: [
+        { label: "#FDD — Frontend First", status: "ENFORCED" },
+        { label: "#123 — Protocol", status: "ENFORCED" },
+        { label: "WDR — Work Done Records", status: "ENFORCED" },
+        { label: "Project Constitution", status: "ACTIVE" },
+      ],
     },
     {
       label: "Frontend",
       children: [
-        { label: "Next.js App Router", status: "ACTIVE" },
+        { label: "Next.js 16 App Router", status: "ACTIVE" },
         { label: "React 19", status: "ACTIVE" },
-        { label: "TypeScript", status: "ACTIVE" },
-        { label: "Tailwind CSS", status: "ACTIVE" },
-        { label: "shadcn/ui", status: "PLANNED" },
+        { label: "TypeScript 5", status: "ACTIVE" },
+        { label: "Tailwind CSS 4", status: "ACTIVE" },
       ],
     },
     {
-      label: "Backend",
+      label: "Design System",
+      children: [
+        { label: "Tokens (spacing, radii, shadows)", status: "ACTIVE" },
+        { label: "Status helpers", status: "ACTIVE" },
+        { label: "Navigation structure", status: "ACTIVE" },
+        { label: "UI primitives (Badge, Card, etc.)", status: "ACTIVE" },
+        { label: "shadcn/ui", status: "PLANNED" },
+        { label: "Lucide React", status: "PLANNED" },
+      ],
+    },
+    {
+      label: "Dashboard",
+      children: [
+        { label: "Executive Summary", status: "ACTIVE" },
+        { label: "Phase Timeline", status: "ACTIVE" },
+        { label: "Task Registry", status: "ACTIVE" },
+        { label: "Module Map", status: "ACTIVE" },
+        { label: "Architecture Status", status: "ACTIVE" },
+        { label: "Governance Panel", status: "ACTIVE" },
+        { label: "Risk Panel", status: "ACTIVE" },
+        { label: "WDR Register", status: "ACTIVE" },
+        { label: "GitHub Panel", status: "ACTIVE" },
+        { label: "FDD Lane", status: "ACTIVE" },
+      ],
+    },
+    {
+      label: "Registry",
+      children: [
+        { label: "Project Registry (source of truth)", status: "ACTIVE" },
+        { label: "Phases 0–10", status: "ACTIVE" },
+        { label: "Tasks", status: "ACTIVE" },
+        { label: "Modules", status: "ACTIVE" },
+      ],
+    },
+    {
+      label: "Future Backend",
       children: [{ label: "NestJS", status: "NOT_STARTED" }],
     },
     {
-      label: "Data",
+      label: "Future Database",
       children: [
         { label: "PostgreSQL", status: "NOT_STARTED" },
         { label: "Prisma ORM", status: "NOT_STARTED" },
       ],
     },
     {
-      label: "Security",
+      label: "Future Security",
       children: [
         { label: "JWT Auth", status: "NOT_STARTED" },
         { label: "RBAC", status: "NOT_STARTED" },
       ],
     },
     {
-      label: "Infrastructure",
+      label: "Future Marketplace",
       children: [
-        { label: "Docker", status: "NOT_STARTED" },
-        { label: "Redis", status: "NOT_STARTED" },
-        { label: "CI/CD", status: "NOT_STARTED" },
+        { label: "Public Marketplace", status: "PLANNED" },
+        { label: "B2B Wholesale", status: "PLANNED" },
+        { label: "Customer Commerce", status: "PLANNED" },
+        { label: "Vendor SaaS", status: "PLANNED" },
+        { label: "Admin/Owner", status: "PLANNED" },
       ],
     },
     {
-      label: "Governance",
+      label: "Future Deployment",
       children: [
-        { label: "#FDD", status: "ENFORCED" },
-        { label: "#123", status: "ENFORCED" },
-        { label: "WDR", status: "ENFORCED" },
+        { label: "Docker", status: "NOT_STARTED" },
+        { label: "CI/CD", status: "NOT_STARTED" },
+        { label: "Redis", status: "NOT_STARTED" },
       ],
     },
   ];
@@ -486,6 +709,44 @@ export function ProjectTree({ registry }: { registry: ProjectRegistry }) {
             </div>
           </div>
         ))}
+      </div>
+    </Card>
+  );
+}
+
+export function OwnerSummary() {
+  return (
+    <Card title="Owner Summary — Plain Language">
+      <div className="space-y-3 text-sm">
+        <p>
+          <strong>What is this?</strong>{" "}
+          ToplineShop is a new online marketplace being built from scratch.
+          No old code is being reused.
+        </p>
+        <p>
+          <strong>Current status:</strong>{" "}
+          We are in <strong>Phase 0 — Foundation</strong>. The project scaffolding,
+          management dashboard, and design system architecture are in place.
+        </p>
+        <p>
+          <strong>What&apos;s happening now:</strong>{" "}
+          Hardening the foundation and preparing for Phase 1 (Design System).
+          The dashboard shows all project phases, tasks, and governance status.
+        </p>
+        <p>
+          <strong>What&apos;s next?</strong>{" "}
+          Phase 1 will implement the full design system and UX shell.
+          Backend and database work starts much later (Phase 7–8).
+        </p>
+        <p>
+          <strong>How to track progress:</strong>{" "}
+          Visit the{" "}
+          <a href="/project-management" className="text-primary underline">
+            Control Center
+          </a>{" "}
+          for real-time project status. Everything is driven by a single source
+          of truth — the project registry.
+        </p>
       </div>
     </Card>
   );

@@ -1,5 +1,10 @@
 import { projectRegistry } from "@/project/projectRegistry";
 import {
+  SourceOfTruthBanner,
+  GitHubPanel,
+  PhaseReadinessPanel,
+  FddLane,
+  MegaPromptPlan,
   ExecutiveSummary,
   PhaseTimeline,
   TaskRegistry,
@@ -9,6 +14,7 @@ import {
   RiskPanel,
   WdrRegister,
   ProjectTree,
+  OwnerSummary,
 } from "@/components/dashboard/DashboardCards";
 import Link from "next/link";
 
@@ -41,20 +47,35 @@ export default function ProjectManagement() {
             <div className="hidden sm:flex items-center gap-4 text-xs text-muted-foreground">
               <span>Protocol: {registry.protocol}</span>
               <span>Policy: {registry.developmentPolicy}</span>
-              <span>Updated: {new Date(registry.lastUpdated).toLocaleDateString()}</span>
+              <span>
+                Updated:{" "}
+                {new Date(registry.lastUpdated).toLocaleDateString()}
+              </span>
             </div>
           </div>
         </div>
       </header>
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+        {/* Source of Truth Banner */}
+        <div className="mb-6">
+          <SourceOfTruthBanner />
+        </div>
+
         {/* Title */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold">Project Management Control Center</h1>
+          <h1 className="text-2xl font-bold">
+            Project Management Control Center
+          </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Current Phase: {registry.currentPhase} — Task: {registry.currentTask} —
-            Overall: {registry.overallCompletion}%
+            Current Phase: {registry.currentPhase} — Task:{" "}
+            {registry.currentTask} — Overall: {registry.overallCompletion}%
           </p>
+        </div>
+
+        {/* FDD Lane */}
+        <div className="mb-6">
+          <FddLane />
         </div>
 
         {/* Executive Summary */}
@@ -66,6 +87,8 @@ export default function ProjectManagement() {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* Left Column */}
           <div className="space-y-8">
+            <GitHubPanel registry={registry} />
+            <PhaseReadinessPanel registry={registry} />
             <PhaseTimeline registry={registry} />
             <ModuleMap registry={registry} />
             <GovernancePanel registry={registry} />
@@ -74,11 +97,17 @@ export default function ProjectManagement() {
 
           {/* Right Column */}
           <div className="space-y-8">
+            <MegaPromptPlan registry={registry} />
             <TaskRegistry registry={registry} />
             <ArchitectureStatus registry={registry} />
-            <RiskPanel registry={registry} />
-            <ProjectTree registry={registry} />
+            <RiskPanel />
+            <ProjectTree />
           </div>
+        </div>
+
+        {/* Owner Summary */}
+        <div className="mt-8">
+          <OwnerSummary />
         </div>
 
         {/* Decisions */}
@@ -110,7 +139,9 @@ export default function ProjectManagement() {
       <footer className="border-t border-border bg-white dark:bg-zinc-900 mt-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <span>ToplineShop v{registry.version} — {registry.developmentPolicy}</span>
+            <span>
+              ToplineShop v{registry.version} — {registry.developmentPolicy}
+            </span>
             <span>Protocol: {registry.protocol}</span>
           </div>
         </div>

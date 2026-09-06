@@ -19,7 +19,7 @@ export default function Home() {
                 href="/project-management"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                Project Control Center
+                Control Center
               </Link>
             </nav>
           </div>
@@ -32,9 +32,13 @@ export default function Home() {
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
               ToplineShop
             </h1>
+            <p className="mt-2 text-xl text-muted-foreground">
+              Greenfield Marketplace Platform
+            </p>
             <p className="mt-6 text-lg leading-8 text-muted-foreground">
-              Production marketplace platform. Greenfield development following
-              #FDD (Frontend Development First) with #123 governance protocol.
+              Production marketplace platform built from zero. Following{" "}
+              <strong>#FDD</strong> (Frontend Development First) with{" "}
+              <strong>#123</strong> governance protocol.
             </p>
             <div className="mt-10 flex items-center gap-x-6">
               <Link
@@ -43,42 +47,71 @@ export default function Home() {
               >
                 Open Control Center
               </Link>
-              <span className="text-sm text-muted-foreground">
-                Phase 0 — Foundation & Project Control
-              </span>
+              <a
+                href="https://github.com/zamzamabiz/ToplineShop"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                GitHub Repository →
+              </a>
             </div>
           </div>
 
           <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6">
+            <Link
+              href="/project-management"
+              className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6 hover:border-primary/50 transition-colors"
+            >
               <div className="text-sm font-medium text-muted-foreground">
-                Status
+                Project Status
               </div>
               <div className="mt-2 text-2xl font-bold text-warning">
-                In Progress
+                Phase 0 — In Progress
               </div>
               <div className="mt-1 text-sm text-muted-foreground">
-                Phase 0 — Foundation
+                Foundation & Project Control
+              </div>
+            </Link>
+            <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6">
+              <div className="text-sm font-medium text-muted-foreground">
+                Development Policy
+              </div>
+              <div className="mt-2 text-2xl font-bold text-primary">#FDD</div>
+              <div className="mt-1 text-sm text-muted-foreground">
+                Frontend Development First
               </div>
             </div>
+            <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6">
+              <div className="text-sm font-medium text-muted-foreground">
+                Governance Protocol
+              </div>
+              <div className="mt-2 text-2xl font-bold text-foreground">#123</div>
+              <div className="mt-1 text-sm text-muted-foreground">
+                DISCUSS → DECIDE → EXECUTE → VERIFY → CLOSE → NEXT
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6">
               <div className="text-sm font-medium text-muted-foreground">
                 Frontend
               </div>
-              <div className="mt-2 text-2xl font-bold text-success">Active</div>
+              <div className="mt-2 text-lg font-bold text-success">Active</div>
               <div className="mt-1 text-sm text-muted-foreground">
-                Next.js + React + TypeScript + Tailwind
+                Next.js 16 + React 19 + TypeScript + Tailwind CSS 4
               </div>
             </div>
             <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6">
               <div className="text-sm font-medium text-muted-foreground">
-                Backend
+                Backend / Database
               </div>
-              <div className="mt-2 text-2xl font-bold text-muted-foreground">
+              <div className="mt-2 text-lg font-bold text-muted-foreground">
                 Not Started
               </div>
               <div className="mt-1 text-sm text-muted-foreground">
-                Planned — Phase 7
+                Planned — Phase 7 (NestJS) / Phase 8 (PostgreSQL)
               </div>
             </div>
           </div>

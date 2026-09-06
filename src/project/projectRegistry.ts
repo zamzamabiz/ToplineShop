@@ -130,6 +130,7 @@ export interface ProjectRegistry {
   approvals: { owner: Status; pm: Status };
   wdrs: WdrEntry[];
   git: { initialized: boolean; lastCommit: string | null };
+  github: { configured: boolean; url: string | null; pushAllowed: boolean };
   build: { lastResult: Status; lastRun: string | null };
   tests: { lastResult: Status; lastRun: string | null };
   deployment: { environment: string; status: Status }[];
@@ -142,9 +143,9 @@ export const projectRegistry: ProjectRegistry = {
   developmentPolicy: "#FDD — Frontend Development First",
   protocol: "#123",
   currentPhase: "Phase 0",
-  currentTask: "TOPLINE-P0-001",
+  currentTask: "TOPLINE-P0-002",
   lastCompletedTask: "TOPLINE-P0-001",
-  nextPlannedTask: "TOPLINE-P0-002",
+  nextPlannedTask: "TOPLINE-P1-001",
   overallCompletion: 8,
   lastUpdated: new Date().toISOString(),
   phases: [
@@ -365,7 +366,7 @@ export const projectRegistry: ProjectRegistry = {
       title: "Greenfield Foundation + Dynamic Project Control Center",
       objective:
         "Initialize Next.js frontend, project registry, PM dashboard, WDR structure, governance documentation",
-      status: "PASS",
+      status: "CLOSED",
       priority: "HIGH",
       dependencies: [],
       startedAt: "2026-09-06T00:00:00.000Z",
@@ -384,18 +385,18 @@ export const projectRegistry: ProjectRegistry = {
       title: "Foundation Hardening + Design-System Architecture + Phase-1 Readiness",
       objective:
         "Harden foundation, prepare design system architecture, enable Phase 1 entry",
-      status: "PLANNED",
+      status: "IN_PROGRESS",
       priority: "HIGH",
       dependencies: ["TOPLINE-P0-001"],
-      startedAt: null,
+      startedAt: new Date().toISOString(),
       completedAt: null,
-      wdrPath: null,
+      wdrPath: "WDR/_All/Phase-00-Foundation/TOPLINE-P0-002_WDR_2026-09-06.md",
       commitHash: null,
       tests: "PLANNED",
       build: "PLANNED",
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
-      notes: "Suggested next task — DO NOT execute without PM approval",
+      notes: "Foundation hardening, design-system prep, dashboard improvement",
     },
   ],
   modules: [
@@ -547,6 +548,13 @@ export const projectRegistry: ProjectRegistry = {
       technology: "Next.js 16 + React 19 + TypeScript + Tailwind CSS",
       status: "ACTIVE",
       notes: "App Router, shadcn/ui direction",
+    },
+    {
+      id: "arch-design-system",
+      layer: "Design System",
+      technology: "Custom tokens + UI primitives (Phase 1 ready)",
+      status: "ACTIVE",
+      notes: "src/design-system/ + src/components/ui/",
     },
     {
       id: "arch-backend",
@@ -751,15 +759,29 @@ export const projectRegistry: ProjectRegistry = {
       id: "wdr-001",
       taskId: "TOPLINE-P0-001",
       phase: "phase-0",
-      status: "PASS",
+      status: "CLOSED",
       date: "2026-09-06",
       commitHash: "e864197",
+      pmAudit: "PASS",
+    },
+    {
+      id: "wdr-002",
+      taskId: "TOPLINE-P0-002",
+      phase: "phase-0",
+      status: "IN_PROGRESS",
+      date: "2026-09-06",
+      commitHash: null,
       pmAudit: "PLANNED",
     },
   ],
   git: {
     initialized: true,
-    lastCommit: "e864197",
+    lastCommit: "c2c78b8",
+  },
+  github: {
+    configured: true,
+    url: "https://github.com/zamzamabiz/ToplineShop",
+    pushAllowed: false,
   },
   build: {
     lastResult: "PASS",
