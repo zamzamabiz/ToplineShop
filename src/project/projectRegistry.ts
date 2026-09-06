@@ -109,7 +109,7 @@ export interface ProjectRegistry {
   developmentPolicy: string;
   protocol: string;
   currentPhase: string;
-  currentTask: string;
+  currentTask: string | null;
   lastCompletedTask: string | null;
   nextPlannedTask: string;
   overallCompletion: number;
