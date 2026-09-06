@@ -20,7 +20,13 @@ export interface MarketplaceProduct {
   badge?: string;
   image?: string;
   categoryId: string;
+  categoryName?: string;
   inStock: boolean;
+  stockLabel?: string;
+  description?: string;
+  specifications?: { label: string; value: string }[];
+  deliveryNote?: string;
+  returnNote?: string;
 }
 
 export interface MarketplaceVendor {

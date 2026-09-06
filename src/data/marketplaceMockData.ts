@@ -36,7 +36,19 @@ export const featuredProducts: MarketplaceProduct[] = [
     vendorId: "vend-1",
     badge: "Sale",
     categoryId: "cat-1",
+    categoryName: "Electronics",
     inStock: true,
+    stockLabel: "In Stock",
+    description:
+      "Premium wireless Bluetooth headphones with active noise cancellation and 30-hour battery life. Designed for comfort and superior sound quality.",
+    specifications: [
+      { label: "Driver Size", value: "40mm" },
+      { label: "Battery Life", value: "30 hours" },
+      { label: "Connectivity", value: "Bluetooth 5.2" },
+      { label: "Weight", value: "250g" },
+    ],
+    deliveryNote: "Free delivery within 3-5 business days",
+    returnNote: "7-day return policy",
   },
   {
     id: "prod-2",
@@ -49,7 +61,19 @@ export const featuredProducts: MarketplaceProduct[] = [
     vendor: "FashionHub",
     vendorId: "vend-2",
     categoryId: "cat-2",
+    categoryName: "Fashion",
     inStock: true,
+    stockLabel: "In Stock",
+    description:
+      "Made from 100% organic cotton. Soft, breathable, and environmentally friendly. Perfect for everyday wear.",
+    specifications: [
+      { label: "Material", value: "100% Organic Cotton" },
+      { label: "Fit", value: "Regular Fit" },
+      { label: "Available Sizes", value: "S, M, L, XL" },
+      { label: "Care", value: "Machine washable" },
+    ],
+    deliveryNote: "Free delivery within 3-5 business days",
+    returnNote: "14-day return policy",
   },
   {
     id: "prod-3",
@@ -63,7 +87,19 @@ export const featuredProducts: MarketplaceProduct[] = [
     vendorId: "vend-3",
     badge: "Popular",
     categoryId: "cat-3",
+    categoryName: "Home & Garden",
     inStock: true,
+    stockLabel: "In Stock",
+    description:
+      "Double-walled vacuum insulated stainless steel bottle. Keeps drinks cold for 24 hours or hot for 12 hours.",
+    specifications: [
+      { label: "Capacity", value: "750ml" },
+      { label: "Material", value: "Stainless Steel 304" },
+      { label: "Insulation", value: "Double-wall vacuum" },
+      { label: "Dimensions", value: "28cm x 8cm" },
+    ],
+    deliveryNote: "Free delivery within 3-5 business days",
+    returnNote: "7-day return policy",
   },
   {
     id: "prod-4",
@@ -77,7 +113,19 @@ export const featuredProducts: MarketplaceProduct[] = [
     vendor: "TechStore",
     vendorId: "vend-1",
     categoryId: "cat-1",
+    categoryName: "Electronics",
     inStock: true,
+    stockLabel: "In Stock",
+    description:
+      "Compact portable Bluetooth speaker with rich bass and clear highs. IPX5 waterproof rating makes it perfect for outdoor use.",
+    specifications: [
+      { label: "Battery Life", value: "12 hours" },
+      { label: "Connectivity", value: "Bluetooth 5.0" },
+      { label: "Water Resistance", value: "IPX5" },
+      { label: "Output Power", value: "10W" },
+    ],
+    deliveryNote: "Free delivery within 3-5 business days",
+    returnNote: "7-day return policy",
   },
 ];
 
@@ -94,7 +142,19 @@ export const productListingItems: MarketplaceProduct[] = [
     vendor: "TechStore",
     vendorId: "vend-1",
     categoryId: "cat-1",
+    categoryName: "Electronics",
     inStock: true,
+    stockLabel: "In Stock",
+    description:
+      "Track your fitness goals with this smartwatch. Features heart rate monitoring, step counting, and sleep tracking.",
+    specifications: [
+      { label: "Display", value: "1.3-inch AMOLED" },
+      { label: "Battery Life", value: "7 days" },
+      { label: "Water Resistance", value: "5 ATM" },
+      { label: "Sensors", value: "Heart rate, SpO2, accelerometer" },
+    ],
+    deliveryNote: "Free delivery within 3-5 business days",
+    returnNote: "7-day return policy",
   },
   {
     id: "prod-6",
@@ -107,7 +167,19 @@ export const productListingItems: MarketplaceProduct[] = [
     vendor: "BeautyPlus",
     vendorId: "vend-4",
     categoryId: "cat-5",
+    categoryName: "Beauty & Health",
     inStock: true,
+    stockLabel: "In Stock",
+    description:
+      "All-natural face moisturizer made with shea butter and essential oils. Suitable for all skin types.",
+    specifications: [
+      { label: "Volume", value: "100ml" },
+      { label: "Skin Type", value: "All skin types" },
+      { label: "Key Ingredients", value: "Shea butter, Vitamin E" },
+      { label: "Fragrance", value: "Unscented" },
+    ],
+    deliveryNote: "Free delivery within 3-5 business days",
+    returnNote: "14-day return policy",
   },
   {
     id: "prod-7",
@@ -122,7 +194,19 @@ export const productListingItems: MarketplaceProduct[] = [
     vendorId: "vend-5",
     badge: "Sale",
     categoryId: "cat-4",
+    categoryName: "Sports & Outdoors",
     inStock: true,
+    stockLabel: "In Stock",
+    description:
+      "Premium non-slip yoga mat with alignment marks. Ideal for yoga, Pilates, and floor exercises.",
+    specifications: [
+      { label: "Thickness", value: "6mm" },
+      { label: "Dimensions", value: "183cm x 68cm" },
+      { label: "Material", value: "TPE (Eco-friendly)" },
+      { label: "Weight", value: "1.2kg" },
+    ],
+    deliveryNote: "Free delivery within 3-5 business days",
+    returnNote: "7-day return policy",
   },
   {
     id: "prod-8",
@@ -135,7 +219,19 @@ export const productListingItems: MarketplaceProduct[] = [
     vendor: "HomePlus",
     vendorId: "vend-6",
     categoryId: "cat-3",
+    categoryName: "Home & Garden",
     inStock: true,
+    stockLabel: "In Stock",
+    description:
+      "Set of 4 premium ceramic coffee mugs. Microwave and dishwasher safe. Perfect for home or office use.",
+    specifications: [
+      { label: "Set Size", value: "4 mugs" },
+      { label: "Material", value: "Ceramic" },
+      { label: "Capacity", value: "350ml" },
+      { label: "Care", value: "Microwave & dishwasher safe" },
+    ],
+    deliveryNote: "Free delivery within 3-5 business days",
+    returnNote: "7-day return policy",
   },
 ];
 

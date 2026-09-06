@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { ShoppingCart } from "lucide-react";
+import Link from "next/link";
 
 export function ProductTile({
   name,
@@ -10,6 +11,7 @@ export function ProductTile({
   vendor,
   image,
   badge,
+  href,
   className,
 }: {
   name: string;
@@ -20,12 +22,14 @@ export function ProductTile({
   vendor?: string;
   image?: string;
   badge?: string;
+  href?: string;
   className?: string;
 }) {
-  return (
+  const content = (
     <div
       className={cn(
         "group rounded-xl border border-border bg-white dark:bg-zinc-900 overflow-hidden hover:border-primary/50 hover:shadow-sm transition-all",
+        href && "cursor-pointer",
         className
       )}
     >
@@ -69,4 +73,9 @@ export function ProductTile({
       </div>
     </div>
   );
+
+  if (href) {
+    return <Link href={href}>{content}</Link>;
+  }
+  return content;
 }

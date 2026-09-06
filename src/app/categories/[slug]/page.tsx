@@ -80,7 +80,7 @@ export default async function CategoryDetailPage({
             <MarketplaceSection title={`Featured in ${category.name}`} subtitle={`Showing ${categoryProducts.length} mock products`}>
               <MarketplaceGrid cols={3}>
                 {categoryProducts.map((product) => (
-                  <ProductTile key={product.id} name={product.name} price={product.price} originalPrice={product.originalPrice} rating={product.rating} reviewCount={product.reviewCount} vendor={product.vendor} badge={product.badge} />
+                  <ProductTile key={product.id} name={product.name} price={product.price} originalPrice={product.originalPrice} rating={product.rating} reviewCount={product.reviewCount} vendor={product.vendor} badge={product.badge} href={`/products/${product.id}`} />
                 ))}
               </MarketplaceGrid>
             </MarketplaceSection>
