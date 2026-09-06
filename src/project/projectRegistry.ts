@@ -142,11 +142,11 @@ export const projectRegistry: ProjectRegistry = {
   status: "IN_PROGRESS",
   developmentPolicy: "#FDD — Frontend Development First",
   protocol: "#123",
-  currentPhase: "Phase 1",
-  currentTask: "TOPLINE-P1-002",
-  lastCompletedTask: "TOPLINE-P1-001",
-  nextPlannedTask: "TOPLINE-P1-003",
-  overallCompletion: 22,
+  currentPhase: "Phase 2",
+  currentTask: null,
+  lastCompletedTask: "TOPLINE-P1-002",
+  nextPlannedTask: "TOPLINE-P2-001",
+  overallCompletion: 25,
   lastUpdated: new Date().toISOString(),
   phases: [
     {
