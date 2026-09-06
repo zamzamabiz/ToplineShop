@@ -19,7 +19,7 @@
 **Status**: IN_PROGRESS  
 **Objective**: Backend architecture planning, database design, auth/RBAC design, API contracts, backend bootstrap.  
 **Dependencies**: Phase 2
-**Current Task**: TOPLINE-P3-001 (Architecture Plan)
+**Current Task**: TOPLINE-P3-002 (Stack Decision)
 
 ## Phase 4: Customer Commerce Frontend
 **Status**: PLANNED  

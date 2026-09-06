@@ -588,6 +588,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PLANNED",
       notes: "Architecture planning only — no backend code written",
     },
+    {
+      id: "TOPLINE-P3-002",
+      phase: "phase-3",
+      title: "Backend Stack Decision + Project Structure Plan",
+      objective:
+        "Decide backend stack (Option C: Hybrid Next.js + NestJS), plan project structure, define frontend/backend boundary",
+      status: "IN_PROGRESS",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P3-001"],
+      startedAt: new Date().toISOString(),
+      completedAt: null,
+      wdrPath: "WDR/_All/Phase-03-Backend-Readiness/TOPLINE-P3-002_WDR_2026-09-07.md",
+      commitHash: null,
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "Stack decision and project structure planning only — no backend code written",
+    },
   ],
   modules: [
     {
@@ -1056,6 +1075,15 @@ export const projectRegistry: ProjectRegistry = {
     {
       id: "wdr-013",
       taskId: "TOPLINE-P3-001",
+      phase: "phase-3",
+      status: "PASS",
+      date: "2026-09-07",
+      commitHash: "52b0c88",
+      pmAudit: "PLANNED",
+    },
+    {
+      id: "wdr-014",
+      taskId: "TOPLINE-P3-002",
       phase: "phase-3",
       status: "PASS",
       date: "2026-09-07",
