@@ -36,6 +36,15 @@ export interface MarketplaceVendor {
   productCount: number;
   rating: number;
   avatar?: string;
+  description?: string;
+  verified?: boolean;
+  location?: string;
+  joinedLabel?: string;
+  responseRate?: string;
+  deliveryNote?: string;
+  returnPolicy?: string;
+  supportNote?: string;
+  storeMetrics?: { label: string; value: string }[];
 }
 
 export interface MarketplaceB2BCategory {

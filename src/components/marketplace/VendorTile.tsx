@@ -1,23 +1,29 @@
 import { cn } from "@/lib/utils";
-import { Store } from "lucide-react";
+import { Store, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
 
 export function VendorTile({
   name,
   productCount,
   rating,
   avatar,
+  verified,
+  href,
   className,
 }: {
   name: string;
   productCount?: number;
   rating?: number;
   avatar?: string;
+  verified?: boolean;
+  href?: string;
   className?: string;
 }) {
-  return (
+  const content = (
     <div
       className={cn(
         "rounded-xl border border-border bg-white dark:bg-zinc-900 p-6 hover:border-primary/50 hover:shadow-sm transition-all",
+        href && "cursor-pointer",
         className
       )}
     >
@@ -30,7 +36,10 @@ export function VendorTile({
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="font-medium text-sm truncate">{name}</h3>
+          <div className="flex items-center gap-1.5">
+            <h3 className="font-medium text-sm truncate">{name}</h3>
+            {verified && <CheckCircle2 size={14} className="text-green-500 flex-shrink-0" />}
+          </div>
           <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
             {productCount !== undefined && <span>{productCount} products</span>}
             {rating !== undefined && (
@@ -41,4 +50,9 @@ export function VendorTile({
       </div>
     </div>
   );
+
+  if (href) {
+    return <Link href={href}>{content}</Link>;
+  }
+  return content;
 }

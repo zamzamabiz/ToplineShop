@@ -5,7 +5,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { MarketplaceGrid } from "@/components/marketplace/MarketplaceGrid";
 import { ProductTile } from "@/components/marketplace/ProductTile";
 import { Badge } from "@/components/ui/Badge";
-import { productListingItems, marketplaceCategories } from "@/data/marketplaceMockData";
+import { productListingItems, marketplaceCategories, marketplaceVendors } from "@/data/marketplaceMockData";
 
 export default async function ProductDetailPage({
   params,
@@ -46,6 +46,7 @@ export default async function ProductDetailPage({
   }
 
   const category = marketplaceCategories.find((c) => c.id === product.categoryId);
+  const productVendor = marketplaceVendors.find((v) => v.id === product.vendorId);
   const relatedProducts = productListingItems
     .filter((p) => p.categoryId === product.categoryId && p.id !== product.id)
     .slice(0, 4);
@@ -86,7 +87,14 @@ export default async function ProductDetailPage({
                 <h1 className="text-2xl font-bold">{product.name}</h1>
                 {product.vendor && (
                   <div className="text-sm text-muted-foreground mt-2">
-                    by <span className="font-medium">{product.vendor}</span>
+                    by{" "}
+                    {productVendor ? (
+                      <Link href={`/vendors/${productVendor.slug}`} className="font-medium text-foreground hover:underline">
+                        {product.vendor}
+                      </Link>
+                    ) : (
+                      <span className="font-medium">{product.vendor}</span>
+                    )}
                   </div>
                 )}
               </div>

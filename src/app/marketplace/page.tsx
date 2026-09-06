@@ -78,7 +78,7 @@ export default function MarketplacePage() {
         >
           <MarketplaceGrid cols={4}>
             {marketplaceVendors.map((vendor) => (
-              <VendorTile key={vendor.id} name={vendor.name} productCount={vendor.productCount} rating={vendor.rating} />
+              <VendorTile key={vendor.id} name={vendor.name} productCount={vendor.productCount} rating={vendor.rating} verified={vendor.verified} href={`/vendors/${vendor.slug}`} />
             ))}
           </MarketplaceGrid>
         </MarketplaceSection>

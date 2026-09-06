@@ -236,10 +236,94 @@ export const productListingItems: MarketplaceProduct[] = [
 ];
 
 export const marketplaceVendors: MarketplaceVendor[] = [
-  { id: "vend-1", name: "TechStore", slug: "techstore", productCount: 156, rating: 4.7 },
-  { id: "vend-2", name: "FashionHub", slug: "fashionhub", productCount: 89, rating: 4.5 },
-  { id: "vend-3", name: "EcoLiving", slug: "ecoliving", productCount: 67, rating: 4.8 },
-  { id: "vend-6", name: "HomePlus", slug: "homeplus", productCount: 112, rating: 4.4 },
+  {
+    id: "vend-1",
+    name: "TechStore",
+    slug: "techstore",
+    productCount: 156,
+    rating: 4.7,
+    verified: true,
+    description:
+      "Nigeria's leading electronics retailer. Specializing in consumer electronics, gadgets, and tech accessories since 2018.",
+    location: "Lagos, Nigeria",
+    joinedLabel: "Joined September 2021",
+    responseRate: "98%",
+    deliveryNote: "Ships within 24 hours",
+    returnPolicy: "30-day return policy",
+    supportNote: "24/7 customer support via chat and phone",
+    storeMetrics: [
+      { label: "Orders Completed", value: "12,450+" },
+      { label: "Avg. Delivery Time", value: "2.3 days" },
+      { label: "Response Time", value: "< 1 hour" },
+      { label: "Repeat Buyers", value: "68%" },
+    ],
+  },
+  {
+    id: "vend-2",
+    name: "FashionHub",
+    slug: "fashionhub",
+    productCount: 89,
+    rating: 4.5,
+    verified: true,
+    description:
+      "Premium fashion retailer offering trendy and sustainable clothing for men and women. Curated collections from local designers.",
+    location: "Abuja, Nigeria",
+    joinedLabel: "Joined March 2022",
+    responseRate: "95%",
+    deliveryNote: "Free shipping on orders over ₦25,000",
+    returnPolicy: "14-day return policy",
+    supportNote: "Support available Monday-Friday, 9am-6pm",
+    storeMetrics: [
+      { label: "Orders Completed", value: "5,200+" },
+      { label: "Avg. Delivery Time", value: "3.1 days" },
+      { label: "Response Time", value: "< 2 hours" },
+      { label: "Repeat Buyers", value: "54%" },
+    ],
+  },
+  {
+    id: "vend-3",
+    name: "EcoLiving",
+    slug: "ecoliving",
+    productCount: 67,
+    rating: 4.8,
+    verified: true,
+    description:
+      "Sustainable and eco-friendly products for home and lifestyle. All products are ethically sourced and environmentally conscious.",
+    location: "Port Harcourt, Nigeria",
+    joinedLabel: "Joined January 2023",
+    responseRate: "97%",
+    deliveryNote: "Ships within 48 hours",
+    returnPolicy: "14-day return policy",
+    supportNote: "Email support with 24-hour response time",
+    storeMetrics: [
+      { label: "Orders Completed", value: "3,890+" },
+      { label: "Avg. Delivery Time", value: "2.8 days" },
+      { label: "Response Time", value: "< 3 hours" },
+      { label: "Repeat Buyers", value: "72%" },
+    ],
+  },
+  {
+    id: "vend-6",
+    name: "HomePlus",
+    slug: "homeplus",
+    productCount: 112,
+    rating: 4.4,
+    verified: true,
+    description:
+      "Your one-stop shop for home essentials, kitchenware, and home decor. Quality products at wholesale-friendly prices.",
+    location: "Kano, Nigeria",
+    joinedLabel: "Joined August 2021",
+    responseRate: "93%",
+    deliveryNote: "Free delivery within Kano metropolis",
+    returnPolicy: "7-day return policy",
+    supportNote: "WhatsApp support available during business hours",
+    storeMetrics: [
+      { label: "Orders Completed", value: "8,120+" },
+      { label: "Avg. Delivery Time", value: "2.5 days" },
+      { label: "Response Time", value: "< 4 hours" },
+      { label: "Repeat Buyers", value: "61%" },
+    ],
+  },
 ];
 
 export const b2bBenefits = [
