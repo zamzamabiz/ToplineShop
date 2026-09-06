@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { ArrowRight, Store } from "lucide-react";
+import {
+  ArrowRight,
+  Store,
+  LayoutDashboard,
+  ShoppingBag,
+  Truck,
+  Shield,
+  Crown,
+} from "lucide-react";
 
 export default function Home() {
   return (
@@ -14,8 +22,11 @@ export default function Home() {
               <span className="text-lg font-semibold">ToplineShop</span>
             </div>
             <nav className="flex items-center gap-6">
+              <Link href="/marketplace" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                Marketplace
+              </Link>
               <Link href="/app" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                Open App
+                App Shell
               </Link>
               <Link href="/project-management" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                 Control Center
@@ -38,7 +49,7 @@ export default function Home() {
           <div className="max-w-3xl">
             <div className="flex items-center gap-2 mb-6">
               <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                Phase 1 — Design System
+                Phase 1 — Design System + UX Architecture
               </span>
               <span className="inline-flex items-center rounded-full bg-green-100 dark:bg-green-900/30 px-3 py-1 text-xs font-medium text-green-700 dark:text-green-400">
                 #FDD Active
@@ -53,15 +64,15 @@ export default function Home() {
             <p className="mt-6 text-lg leading-8 text-muted-foreground">
               Production marketplace being built from zero. Following{" "}
               <strong>#FDD</strong> (Frontend Development First) with{" "}
-              <strong>#123</strong> governance protocol. The UX shell and design
-              system foundation are now in place.
+              <strong>#123</strong> governance protocol. Marketplace layout system
+              and responsive UX foundations are now in place.
             </p>
             <div className="mt-10 flex items-center gap-x-6">
               <Link
-                href="/app"
+                href="/marketplace"
                 className="rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors inline-flex items-center gap-2"
               >
-                Open App Shell
+                Open Marketplace Preview
                 <ArrowRight size={16} />
               </Link>
               <Link
@@ -75,16 +86,31 @@ export default function Home() {
 
           <div className="mt-20 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <Link
-              href="/app"
+              href="/marketplace"
               className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6 hover:border-primary/50 transition-colors group"
             >
               <div className="flex items-center gap-3 mb-3">
                 <Store size={20} className="text-primary" />
-                <span className="font-semibold">UX Shell</span>
+                <span className="font-semibold">Marketplace Preview</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Application shell with sidebar navigation, topbar, and module
-                cards. Ready for marketplace screens.
+                Public marketplace shell with hero, categories, product grid, vendor highlights, and B2B callout.
+              </p>
+              <div className="mt-4 text-xs text-primary font-medium group-hover:underline">
+                Open Marketplace →
+              </div>
+            </Link>
+
+            <Link
+              href="/app"
+              className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6 hover:border-primary/50 transition-colors group"
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <LayoutDashboard size={20} className="text-primary" />
+                <span className="font-semibold">App Shell</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Application shell with sidebar navigation, topbar, and module cards.
               </p>
               <div className="mt-4 text-xs text-primary font-medium group-hover:underline">
                 Open Shell →
@@ -96,43 +122,51 @@ export default function Home() {
               className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6 hover:border-primary/50 transition-colors group"
             >
               <div className="flex items-center gap-3 mb-3">
-                <span className="text-primary font-bold">P</span>
+                <span className="text-primary font-bold text-lg">P</span>
                 <span className="font-semibold">Project Management</span>
               </div>
               <p className="text-sm text-muted-foreground">
                 Dynamic dashboard driven by the canonical project registry.
-                All phases, tasks, and governance status.
               </p>
               <div className="mt-4 text-xs text-primary font-medium group-hover:underline">
                 Open Dashboard →
               </div>
             </Link>
+          </div>
 
-            <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <span className="font-semibold">Governance</span>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">#FDD</span>
-                  <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full">
-                    Enforced
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">#123</span>
-                  <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full">
-                    Enforced
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">WDR</span>
-                  <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full">
-                    Enforced
-                  </span>
-                </div>
-              </div>
-            </div>
+          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {[
+              { label: "Cart", href: "/cart", icon: ShoppingBag },
+              { label: "Orders", href: "/orders", icon: ShoppingBag },
+              { label: "B2B Wholesale", href: "/b2b", icon: Truck },
+              { label: "Vendor SaaS", href: "/vendor", icon: Store },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-lg border border-border bg-white dark:bg-zinc-900 p-4 hover:border-primary/50 transition-colors text-center"
+              >
+                <item.icon size={20} className="mx-auto text-muted-foreground mb-2" />
+                <div className="text-sm font-medium">{item.label}</div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3">
+            {[
+              { label: "Admin Panel", href: "/admin", icon: Shield },
+              { label: "Owner Control", href: "/owner", icon: Crown },
+              { label: "Categories", href: "/categories", icon: Store },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-lg border border-border bg-white dark:bg-zinc-900 p-4 hover:border-primary/50 transition-colors text-center"
+              >
+                <item.icon size={20} className="mx-auto text-muted-foreground mb-2" />
+                <div className="text-sm font-medium">{item.label}</div>
+              </Link>
+            ))}
           </div>
 
           <div className="mt-12 rounded-xl border border-border bg-white dark:bg-zinc-900 p-6">
@@ -140,7 +174,7 @@ export default function Home() {
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 text-sm">
               <div>
                 <div className="text-muted-foreground">Phase</div>
-                <div className="font-medium">Phase 1 — Design System</div>
+                <div className="font-medium">Phase 1 — UX Architecture</div>
               </div>
               <div>
                 <div className="text-muted-foreground">Frontend</div>
