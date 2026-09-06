@@ -1,39 +1,40 @@
 # ToplineShop — Master Phase Plan
 
 ## Phase 0: Foundation & Project Control
-**Status**: IN_PROGRESS  
+**Status**: CLOSED  
 **Objective**: Establish project scaffold, governance, registry, and dashboard.  
 **Tasks**: TOPLINE-P0-001, TOPLINE-P0-002
 
 ## Phase 1: UX Architecture & Design System
-**Status**: PLANNED  
+**Status**: CLOSED  
 **Objective**: Design system tokens, component library, responsive patterns.  
 **Dependencies**: Phase 0
 
 ## Phase 2: Public B2C Marketplace Frontend
-**Status**: PLANNED  
+**Status**: CLOSED  
 **Objective**: Complete public marketplace UI — product browsing, search, categories, vendor stores.  
 **Dependencies**: Phase 1
 
-## Phase 3: B2B / Wholesale Marketplace Frontend
-**Status**: PLANNED  
-**Objective**: Wholesale pricing, bulk ordering, B2B vendor storefronts.  
+## Phase 3: Backend Readiness + B2B Foundation
+**Status**: IN_PROGRESS  
+**Objective**: Backend architecture planning, database design, auth/RBAC design, API contracts, backend bootstrap.  
 **Dependencies**: Phase 2
+**Current Task**: TOPLINE-P3-001 (Architecture Plan)
 
 ## Phase 4: Customer Commerce Frontend
 **Status**: PLANNED  
 **Objective**: Cart, checkout, order history, customer account management.  
-**Dependencies**: Phase 2
+**Dependencies**: Phase 3
 
 ## Phase 5: Vendor SaaS Frontend
 **Status**: PLANNED  
 **Objective**: Vendor dashboard, product management, analytics, storefront customization.  
-**Dependencies**: Phase 2
+**Dependencies**: Phase 3
 
 ## Phase 6: Admin & Platform Owner Frontend
 **Status**: PLANNED  
 **Objective**: Admin panel, platform management, owner control center.  
-**Dependencies**: Phase 2
+**Dependencies**: Phase 3
 
 ## Phase 7: Backend/API Foundation
 **Status**: PLANNED  
