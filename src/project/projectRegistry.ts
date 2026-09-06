@@ -804,7 +804,7 @@ export const projectRegistry: ProjectRegistry = {
   ],
   git: {
     initialized: true,
-    lastCommit: "e276573",
+    lastCommit: "07a4a19",
   },
   github: {
     configured: true,
