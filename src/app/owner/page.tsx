@@ -79,11 +79,11 @@ export default function OwnerPage() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Current Phase</span>
-                  <span className="font-medium">Phase 2 — Public Marketplace</span>
+                  <span className="font-medium">Phase 3 — B2B / Wholesale</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Overall Progress</span>
-                  <span className="font-medium">25%</span>
+                  <span className="font-medium">50%</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Backend</span>

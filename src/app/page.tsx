@@ -174,11 +174,11 @@ export default function Home() {
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 text-sm">
               <div>
                 <div className="text-muted-foreground">Phase</div>
-                <div className="font-medium">Phase 1 — UX Architecture</div>
+                <div className="font-medium">Phase 2 — Complete</div>
               </div>
               <div>
                 <div className="text-muted-foreground">Frontend</div>
-                <div className="font-medium text-green-600">Active</div>
+                <div className="font-medium text-blue-600">Frozen</div>
               </div>
               <div>
                 <div className="text-muted-foreground">Backend</div>
