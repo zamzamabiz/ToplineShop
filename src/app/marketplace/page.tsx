@@ -11,7 +11,8 @@ import { B2BCallout } from "@/components/marketplace/B2BCallout";
 import { TrustBar } from "@/components/marketplace/TrustBar";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { ArrowRight } from "lucide-react";
+import { Search, ArrowRight, TrendingUp, Sparkles, Zap } from "lucide-react";
+import Link from "next/link";
 import {
   marketplaceCategories,
   featuredProducts,
@@ -27,7 +28,34 @@ export default function MarketplacePage() {
           subtitle="Discover products from verified vendors across Nigeria and beyond."
           ctaLabel="Browse Products"
           ctaHref="/products"
-        />
+        >
+          <div className="relative w-full max-w-md">
+            <Search
+              size={18}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+            />
+            <input
+              type="text"
+              placeholder="Search products, categories, vendors..."
+              disabled
+              className="w-full rounded-lg border border-border bg-white dark:bg-zinc-900 pl-10 pr-4 py-2.5 text-sm opacity-60 cursor-not-allowed"
+            />
+            <Button size="sm" className="absolute right-1 top-1/2 -translate-y-1/2" disabled>
+              Search
+            </Button>
+          </div>
+        </MarketplaceHero>
+
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
+          <div className="rounded-lg border border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/30 px-4 py-3">
+            <div className="flex items-center gap-2 text-sm">
+              <Search size={14} className="text-blue-600 dark:text-blue-400 flex-shrink-0" />
+              <span className="text-blue-700 dark:text-blue-400">
+                Search is a frontend placeholder. Real search will be implemented in a later backend phase.
+              </span>
+            </div>
+          </div>
+        </div>
 
         <TrustBar />
 
@@ -35,34 +63,68 @@ export default function MarketplacePage() {
           title="Shop by Category"
           subtitle="Browse popular categories"
           action={
-            <Button variant="ghost" size="sm">
+            <Link href="/categories" className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               View All <ArrowRight size={14} />
-            </Button>
+            </Link>
           }
         >
-          <MarketplaceGrid cols={3}>
-            {marketplaceCategories.slice(0, 6).map((cat) => (
+          <MarketplaceGrid cols={4}>
+            {marketplaceCategories.slice(0, 8).map((cat) => (
               <CategoryTile
                 key={cat.id}
                 name={cat.name}
                 count={cat.count}
+                slug={cat.slug}
               />
             ))}
           </MarketplaceGrid>
         </MarketplaceSection>
 
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              { icon: TrendingUp, title: "Trending Now", desc: "See what other shoppers are buying", color: "text-orange-500 bg-orange-50 dark:bg-orange-950/30" },
+              { icon: Sparkles, title: "New Arrivals", desc: "Fresh products added daily", color: "text-purple-500 bg-purple-50 dark:bg-purple-950/30" },
+              { icon: Zap, title: "Flash Deals", desc: "Limited-time offers from top vendors", color: "text-amber-500 bg-amber-50 dark:bg-amber-950/30" },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="flex items-center gap-4 rounded-xl border border-border bg-white dark:bg-zinc-900 p-4"
+              >
+                <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${item.color}`}>
+                  <item.icon size={20} />
+                </div>
+                <div>
+                  <div className="font-medium text-sm">{item.title}</div>
+                  <div className="text-xs text-muted-foreground">{item.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <MarketplaceSection
           title="Featured Products"
           subtitle="Handpicked products just for you"
           action={
-            <Button variant="ghost" size="sm">
+            <Link href="/products" className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               View All <ArrowRight size={14} />
-            </Button>
+            </Link>
           }
         >
           <MarketplaceGrid cols={4}>
             {featuredProducts.map((product) => (
-              <ProductTile key={product.id} name={product.name} price={product.price} originalPrice={product.originalPrice} rating={product.rating} reviewCount={product.reviewCount} vendor={product.vendor} badge={product.badge} />
+              <ProductTile
+                key={product.id}
+                name={product.name}
+                price={product.price}
+                originalPrice={product.originalPrice}
+                rating={product.rating}
+                reviewCount={product.reviewCount}
+                vendor={product.vendor}
+                badge={product.badge}
+                href={`/products/${product.id}`}
+              />
             ))}
           </MarketplaceGrid>
         </MarketplaceSection>
@@ -78,7 +140,14 @@ export default function MarketplacePage() {
         >
           <MarketplaceGrid cols={4}>
             {marketplaceVendors.map((vendor) => (
-              <VendorTile key={vendor.id} name={vendor.name} productCount={vendor.productCount} rating={vendor.rating} verified={vendor.verified} href={`/vendors/${vendor.slug}`} />
+              <VendorTile
+                key={vendor.id}
+                name={vendor.name}
+                productCount={vendor.productCount}
+                rating={vendor.rating}
+                verified={vendor.verified}
+                href={`/vendors/${vendor.slug}`}
+              />
             ))}
           </MarketplaceGrid>
         </MarketplaceSection>
@@ -92,7 +161,7 @@ export default function MarketplacePage() {
             <div className="flex items-center gap-2 text-sm">
               <Badge>Frontend Placeholder</Badge>
               <span className="text-amber-700 dark:text-amber-400">
-                Business logic not implemented yet. All data shown is mock/placeholder.
+                Business logic not implemented yet. All data shown is mock/placeholder. Search, filters, and cart are not functional.
               </span>
             </div>
           </div>

@@ -1,24 +1,27 @@
 import { cn } from "@/lib/utils";
 import { Tag } from "lucide-react";
+import Link from "next/link";
 
 export function CategoryTile({
   name,
   count,
   icon,
-  href = "#",
+  slug,
   className,
 }: {
   name: string;
   count?: number;
   icon?: React.ReactNode;
-  href?: string;
+  slug?: string;
   className?: string;
 }) {
-  return (
-    <a
-      href={href}
+  const href = slug ? `/categories/${slug}` : "#";
+
+  const content = (
+    <div
       className={cn(
         "flex flex-col items-center gap-3 rounded-xl border border-border bg-white dark:bg-zinc-900 p-6 hover:border-primary/50 hover:shadow-sm transition-all",
+        slug && "cursor-pointer",
         className
       )}
     >
@@ -33,6 +36,11 @@ export function CategoryTile({
           </div>
         )}
       </div>
-    </a>
+    </div>
   );
+
+  if (slug) {
+    return <Link href={href}>{content}</Link>;
+  }
+  return content;
 }

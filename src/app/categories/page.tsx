@@ -101,7 +101,7 @@ export default function CategoriesPage() {
                       name={dept.name}
                       count={dept.count}
                       icon={iconMap[dept.icon || "Tag"]}
-                      href={`/categories/${dept.slug}`}
+                      slug={dept.slug}
                     />
                   ))}
                 </MarketplaceGrid>
