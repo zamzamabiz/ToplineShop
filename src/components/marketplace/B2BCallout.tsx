@@ -21,7 +21,7 @@ export function B2BCallout({
             businesses.
           </p>
         </div>
-        <Button variant="outline" className="flex-shrink-0">
+        <Button variant="outline" className="flex-shrink-0" disabled aria-disabled>
           Learn More
           <ArrowRight size={14} />
         </Button>

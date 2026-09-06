@@ -41,7 +41,7 @@ export default function OrdersPage() {
                     </div>
                     <div className="text-right">
                       <div className="font-semibold text-sm">{order.total}</div>
-                      <button className="text-xs text-primary mt-1 hover:underline">
+                      <button disabled aria-disabled className="text-xs text-primary mt-1 cursor-not-allowed opacity-50">
                         View Details
                       </button>
                     </div>
@@ -86,11 +86,11 @@ export default function OrdersPage() {
                     Need Help?
                   </h3>
                   <div className="space-y-2">
-                    <button className="w-full flex items-center gap-2 rounded-lg border border-border p-3 text-sm hover:bg-muted transition-colors">
+                    <button disabled aria-disabled className="w-full flex items-center gap-2 rounded-lg border border-border p-3 text-sm cursor-not-allowed opacity-50">
                       <HelpCircle size={16} className="text-muted-foreground" />
                       <span>Contact Support</span>
                     </button>
-                    <button className="w-full flex items-center gap-2 rounded-lg border border-border p-3 text-sm hover:bg-muted transition-colors">
+                    <button disabled aria-disabled className="w-full flex items-center gap-2 rounded-lg border border-border p-3 text-sm cursor-not-allowed opacity-50">
                       <XCircle size={16} className="text-muted-foreground" />
                       <span>Cancel Order</span>
                     </button>
@@ -104,7 +104,7 @@ export default function OrdersPage() {
             <div className="flex items-center gap-2 text-sm">
               <Badge>Frontend Placeholder</Badge>
               <span className="text-amber-700 dark:text-amber-400">
-                Order data is mock/placeholder. Real order tracking, persistence, and support are not implemented.
+                Order data is mock/placeholder. Real order tracking, support, and cancellation are not implemented.
               </span>
             </div>
           </div>

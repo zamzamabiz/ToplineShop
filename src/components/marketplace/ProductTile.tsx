@@ -44,7 +44,7 @@ export function ProductTile({
             {badge}
           </span>
         )}
-        <button className="absolute top-3 right-3 h-8 w-8 rounded-full bg-white/80 dark:bg-zinc-900/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+        <button disabled aria-disabled aria-label="Add to cart - not yet implemented" className="absolute top-3 right-3 h-8 w-8 rounded-full bg-white/80 dark:bg-zinc-900/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-not-allowed opacity-50!">
           <ShoppingCart size={14} />
         </button>
       </div>

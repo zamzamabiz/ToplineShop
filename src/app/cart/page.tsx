@@ -41,19 +41,19 @@ export default function CartPage() {
                             Vendor: {item.vendor}
                           </p>
                         </div>
-                        <button className="text-muted-foreground hover:text-destructive transition-colors">
+                        <button disabled aria-disabled className="text-muted-foreground cursor-not-allowed opacity-50">
                           <Trash2 size={16} />
                         </button>
                       </div>
                       <div className="mt-3 flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <button className="h-7 w-7 rounded-md border border-border flex items-center justify-center hover:bg-muted">
+                          <button disabled aria-disabled className="h-7 w-7 rounded-md border border-border flex items-center justify-center cursor-not-allowed opacity-50">
                             <Minus size={12} />
                           </button>
                           <span className="text-sm font-medium w-8 text-center">
                             {item.quantity}
                           </span>
-                          <button className="h-7 w-7 rounded-md border border-border flex items-center justify-center hover:bg-muted">
+                          <button disabled aria-disabled className="h-7 w-7 rounded-md border border-border flex items-center justify-center cursor-not-allowed opacity-50">
                             <Plus size={12} />
                           </button>
                         </div>
@@ -133,7 +133,7 @@ export default function CartPage() {
             <div className="flex items-center gap-2 text-sm">
               <Badge>Frontend Placeholder</Badge>
               <span className="text-amber-700 dark:text-amber-400">
-                Cart state, checkout, and payment are not implemented. All data is mock/placeholder.
+                Cart state, checkout, payment, and quantity controls are not implemented. All data is mock/placeholder.
               </span>
             </div>
           </div>
