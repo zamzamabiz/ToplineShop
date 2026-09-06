@@ -470,8 +470,8 @@ export const projectRegistry: ProjectRegistry = {
       commitHash: "c6eee1b",
       tests: "PASS",
       build: "PASS",
-      ownerApproval: "PENDING",
-      pmApproval: "PENDING",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
       notes: "Breadcrumbs, filter placeholders, category detail route, UX improvements",
     },
     {
