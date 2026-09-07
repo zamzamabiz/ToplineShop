@@ -4,13 +4,14 @@ NestJS backend service for ToplineShop multi-vendor SaaS marketplace.
 
 ## Current Status
 
-**Audit Logging Foundation** — Audit module skeleton implemented.
+**Vendor Read Service** — Read-only vendor API implemented.
 
 - ✅ NestJS application structure
 - ✅ Common API response standard (`ok`, `data`, `meta`)
 - ✅ Health endpoint with database status (`GET /health`)
 - ✅ Version endpoint (`GET /version`)
 - ✅ Tenant read endpoints (`GET /tenants`, `GET /tenants/:id`)
+- ✅ Vendor read endpoints (`GET /vendors`, `GET /vendors/:id`)
 - ✅ Audit logging foundation (AuditModule, AuditService)
 - ✅ Smoke test script
 - ✅ Prisma installed (schema + service)
@@ -19,8 +20,8 @@ NestJS backend service for ToplineShop multi-vendor SaaS marketplace.
 - ✅ Database health check (SELECT 1)
 - ❌ No auth/RBAC implemented
 - ❌ No payment/commerce logic
-- ❌ No tenant write endpoints
-- ❌ No vendor/category/product CRUD
+- ❌ No tenant/vendor write endpoints
+- ❌ No category/product CRUD
 - ❌ No automatic audit logging on read endpoints
 - ❌ No CRM/ERP/FMCG modules
 
@@ -75,35 +76,46 @@ All endpoints return a standardized response format:
 | `/version` | GET | Service version info |
 | `/tenants` | GET | List all tenants (read-only) |
 | `/tenants/:id` | GET | Get tenant by ID (read-only) |
+| `/vendors` | GET | List vendors (read-only, optional `?tenantId=` filter) |
+| `/vendors/:id` | GET | Get vendor by ID (read-only) |
 
-## Audit Logging
+### `GET /vendors`
 
-### Current State
+Returns safe vendor summaries. Optional `tenantId` query parameter for filtering.
 
-- AuditLog model exists in database (7 fields: id, tenantId, actorUserId, action, entityType, entityId, summary, metadata, createdAt)
-- AuditModule and AuditService exist as foundation
-- AuditService.recordEvent() method available for future use
-- Metadata is sanitized (secrets redacted) before persistence
-- **No automatic audit logging on current read endpoints**
-- Audit logging will be activated for write operations in future tasks
+```json
+{
+  "ok": true,
+  "data": [
+    {
+      "id": "...",
+      "tenantId": "...",
+      "name": "...",
+      "status": "...",
+      "createdAt": "..."
+    }
+  ],
+  "meta": {
+    "count": 0,
+    "phase": "P5-005"
+  }
+}
+```
 
-### AuditEvent Fields
+**Note:** Empty list is acceptable if no vendors exist. No seed data required.
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| action | Yes | Event type (e.g., TENANT_CREATED) |
-| entityType | Yes | Affected entity type |
-| entityId | No | Affected entity ID |
-| tenantId | No | Tenant context |
-| actorUserId | No | User who performed action |
-| metadata | No | Additional data (sanitized) |
-| createdAt | No | Event timestamp |
+### `GET /vendors/:id`
 
-### Security
+Returns single vendor summary or 404 if not found.
 
-- Sensitive keys (password, token, secret, apiKey, DATABASE_URL) are redacted
-- Audit write failures are logged but do not crash requests
-- No secrets in audit metadata
+### Vendor DTO Safe Fields
+
+Only these fields are returned:
+- `id`
+- `tenantId`
+- `name`
+- `status`
+- `createdAt`
 
 ## Smoke Test
 
@@ -111,7 +123,7 @@ All endpoints return a standardized response format:
 npm run smoke
 ```
 
-Verifies all endpoints return correct responses.
+Verifies all7 endpoints return correct responses.
 
 ## Prisma Commands
 
@@ -125,15 +137,15 @@ npm run prisma:generate
 
 ## Safety Boundaries
 
-- Read-only tenant endpoints
+- Read-only tenant and vendor endpoints
 - Audit foundation only (no automatic logging)
 - No authentication or authorization
 - No payment processing
-- No tenant write operations
-- No vendor/category/product CRUD
+- No write operations
+- No category/product CRUD
 - No real secrets committed
 - Frontend at root remains unchanged
 
 ## Next Steps
 
-- **TOPLINE-P5-005**: Vendor Read Service (requires PM approval)
+- **TOPLINE-P5-006**: Category Read Service (requires PM approval)

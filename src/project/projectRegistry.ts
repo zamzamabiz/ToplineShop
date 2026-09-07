@@ -968,6 +968,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PLANNED",
       notes: "AuditModule/AuditService skeleton, recordEvent(), metadata sanitization, no auto-logging",
     },
+    {
+      id: "TOPLINE-P5-005",
+      phase: "phase-5",
+      title: "Vendor Read Service — Safe Read-Only API",
+      objective:
+        "Implement read-only vendor endpoints with optional tenantId filter — no writes, no auth",
+      status: "CLOSED",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P5-004"],
+      startedAt: new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      wdrPath: "WDR/_All/Phase-05-Backend-API-Foundation/TOPLINE-P5-005_WDR_2026-09-08.md",
+      commitHash: null,
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "Read-only vendor endpoints, safe DTO, optional tenantId filter, no writes",
+    },
   ],
   modules: [
     {
@@ -1621,6 +1640,15 @@ export const projectRegistry: ProjectRegistry = {
       date: "2026-09-08",
       commitHash: "d3d0cab",
       pmAudit: "PASS",
+    },
+    {
+      id: "wdr-034",
+      taskId: "TOPLINE-P5-005",
+      phase: "phase-5",
+      status: "PASS",
+      date: "2026-09-08",
+      commitHash: null,
+      pmAudit: "PLANNED",
     },
   ],
   git: {
