@@ -4,13 +4,14 @@ NestJS backend service for ToplineShop multi-vendor SaaS marketplace.
 
 ## Current Status
 
-**Tenant Read Service** — Read-only tenant API implemented.
+**Audit Logging Foundation** — Audit module skeleton implemented.
 
 - ✅ NestJS application structure
 - ✅ Common API response standard (`ok`, `data`, `meta`)
 - ✅ Health endpoint with database status (`GET /health`)
 - ✅ Version endpoint (`GET /version`)
 - ✅ Tenant read endpoints (`GET /tenants`, `GET /tenants/:id`)
+- ✅ Audit logging foundation (AuditModule, AuditService)
 - ✅ Smoke test script
 - ✅ Prisma installed (schema + service)
 - ✅ Core schema models (7 models, 7 enums)
@@ -20,6 +21,7 @@ NestJS backend service for ToplineShop multi-vendor SaaS marketplace.
 - ❌ No payment/commerce logic
 - ❌ No tenant write endpoints
 - ❌ No vendor/category/product CRUD
+- ❌ No automatic audit logging on read endpoints
 - ❌ No CRM/ERP/FMCG modules
 
 ## Setup
@@ -74,53 +76,34 @@ All endpoints return a standardized response format:
 | `/tenants` | GET | List all tenants (read-only) |
 | `/tenants/:id` | GET | Get tenant by ID (read-only) |
 
-### `GET /tenants`
+## Audit Logging
 
-Returns safe tenant summaries only.
+### Current State
 
-```json
-{
-  "ok": true,
-  "data": [
-    {
-      "id": "...",
-      "name": "...",
-      "type": "...",
-      "status": "...",
-      "createdAt": "..."
-    }
-  ],
-  "meta": {
-    "count": 0,
-    "phase": "P5-003"
-  }
-}
-```
+- AuditLog model exists in database (7 fields: id, tenantId, actorUserId, action, entityType, entityId, summary, metadata, createdAt)
+- AuditModule and AuditService exist as foundation
+- AuditService.recordEvent() method available for future use
+- Metadata is sanitized (secrets redacted) before persistence
+- **No automatic audit logging on current read endpoints**
+- Audit logging will be activated for write operations in future tasks
 
-**Note:** Empty list is acceptable if no tenants exist. No seed data required.
+### AuditEvent Fields
 
-### `GET /tenants/:id`
+| Field | Required | Description |
+|-------|----------|-------------|
+| action | Yes | Event type (e.g., TENANT_CREATED) |
+| entityType | Yes | Affected entity type |
+| entityId | No | Affected entity ID |
+| tenantId | No | Tenant context |
+| actorUserId | No | User who performed action |
+| metadata | No | Additional data (sanitized) |
+| createdAt | No | Event timestamp |
 
-Returns single tenant summary or404 if not found.
+### Security
 
-**Not found response:**
-```json
-{
-  "statusCode": 404,
-  "message": "Tenant not found"
-}
-```
-
-### Tenant DTO Safe Fields
-
-Only these fields are returned:
-- `id`
-- `name`
-- `type`
-- `status`
-- `createdAt`
-
-Not returned: secrets, DB info, relations, internal flags.
+- Sensitive keys (password, token, secret, apiKey, DATABASE_URL) are redacted
+- Audit write failures are logged but do not crash requests
+- No secrets in audit metadata
 
 ## Smoke Test
 
@@ -128,11 +111,7 @@ Not returned: secrets, DB info, relations, internal flags.
 npm run smoke
 ```
 
-Verifies all endpoints return correct responses. Validates:
-- `ok === true` on success endpoints
-- `/tenants` returns array
-- `/tenants/:id` handles not-found safely (404)
-- No secrets or DATABASE_URL in responses
+Verifies all endpoints return correct responses.
 
 ## Prisma Commands
 
@@ -147,13 +126,14 @@ npm run prisma:generate
 ## Safety Boundaries
 
 - Read-only tenant endpoints
+- Audit foundation only (no automatic logging)
 - No authentication or authorization
 - No payment processing
-- No tenant write operations (create/update/delete)
+- No tenant write operations
 - No vendor/category/product CRUD
 - No real secrets committed
 - Frontend at root remains unchanged
 
 ## Next Steps
 
-- **TOPLINE-P5-004**: Audit Logging Foundation (requires PM approval)
+- **TOPLINE-P5-005**: Vendor Read Service (requires PM approval)

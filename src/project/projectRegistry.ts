@@ -949,6 +949,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PLANNED",
       notes: "Read-only tenant endpoints, safe DTO, no writes, no auth",
     },
+    {
+      id: "TOPLINE-P5-004",
+      phase: "phase-5",
+      title: "Audit Logging Foundation — Design + Minimal Service Skeleton",
+      objective:
+        "Create audit module/service skeleton with safe recordEvent method — no automatic logging",
+      status: "CLOSED",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P5-003"],
+      startedAt: new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      wdrPath: "WDR/_All/Phase-05-Backend-API-Foundation/TOPLINE-P5-004_WDR_2026-09-08.md",
+      commitHash: null,
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "AuditModule/AuditService skeleton, recordEvent(), metadata sanitization, no auto-logging",
+    },
   ],
   modules: [
     {
@@ -1593,6 +1612,15 @@ export const projectRegistry: ProjectRegistry = {
       date: "2026-09-08",
       commitHash: "955227f",
       pmAudit: "PASS",
+    },
+    {
+      id: "wdr-033",
+      taskId: "TOPLINE-P5-004",
+      phase: "phase-5",
+      status: "PASS",
+      date: "2026-09-08",
+      commitHash: null,
+      pmAudit: "PLANNED",
     },
   ],
   git: {
