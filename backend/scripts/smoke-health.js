@@ -46,6 +46,20 @@ async function main() {
     b.data.version === '0.1.0' &&
     b.data.phase === 'P5-002'
   );
+  await checkEndpoint('/tenants', 200, (b) =>
+    b.ok === true &&
+    Array.isArray(b.data) &&
+    typeof b.meta.count === 'number' &&
+    b.meta.phase === 'P5-003' &&
+    !JSON.stringify(b).includes('DATABASE_URL') &&
+    !JSON.stringify(b).includes('password')
+  );
+  await checkEndpoint('/tenants/non-existent-id', 404, (b) =>
+    b.statusCode === 404 &&
+    b.message === 'Tenant not found' &&
+    !JSON.stringify(b).includes('DATABASE_URL') &&
+    !JSON.stringify(b).includes('password')
+  );
 
   console.log('\nAll smoke tests passed.');
 }

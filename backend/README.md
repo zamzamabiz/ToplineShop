@@ -4,12 +4,13 @@ NestJS backend service for ToplineShop multi-vendor SaaS marketplace.
 
 ## Current Status
 
-**API Standards + Database Health** — Common response format and database health status implemented.
+**Tenant Read Service** — Read-only tenant API implemented.
 
 - ✅ NestJS application structure
 - ✅ Common API response standard (`ok`, `data`, `meta`)
 - ✅ Health endpoint with database status (`GET /health`)
 - ✅ Version endpoint (`GET /version`)
+- ✅ Tenant read endpoints (`GET /tenants`, `GET /tenants/:id`)
 - ✅ Smoke test script
 - ✅ Prisma installed (schema + service)
 - ✅ Core schema models (7 models, 7 enums)
@@ -17,7 +18,8 @@ NestJS backend service for ToplineShop multi-vendor SaaS marketplace.
 - ✅ Database health check (SELECT 1)
 - ❌ No auth/RBAC implemented
 - ❌ No payment/commerce logic
-- ❌ No business CRUD APIs
+- ❌ No tenant write endpoints
+- ❌ No vendor/category/product CRUD
 - ❌ No CRM/ERP/FMCG modules
 
 ## Setup
@@ -50,7 +52,7 @@ All endpoints return a standardized response format:
 }
 ```
 
-### Error (future)
+### Error
 
 ```json
 {
@@ -69,62 +71,56 @@ All endpoints return a standardized response format:
 | `/` | GET | Bootstrap status check |
 | `/health` | GET | System health with database status |
 | `/version` | GET | Service version info |
+| `/tenants` | GET | List all tenants (read-only) |
+| `/tenants/:id` | GET | Get tenant by ID (read-only) |
 
-### `GET /`
+### `GET /tenants`
 
-```json
-{
-  "ok": true,
-  "data": {
-    "message": "ToplineShop backend bootstrap is running",
-    "status": "ok"
-  }
-}
-```
-
-### `GET /health`
+Returns safe tenant summaries only.
 
 ```json
 {
   "ok": true,
-  "data": {
-    "status": "ok",
-    "service": "toplineshop-api",
-    "version": "0.1.0",
-    "environment": "development",
-    "checks": {
-      "api": "ok",
-      "prisma": "configured",
-      "database": "ok",
-      "auth": "not_configured",
-      "payments": "locked"
+  "data": [
+    {
+      "id": "...",
+      "name": "...",
+      "type": "...",
+      "status": "...",
+      "createdAt": "..."
     }
-  },
+  ],
   "meta": {
-    "phase": "P5-002"
+    "count": 0,
+    "phase": "P5-003"
   }
 }
 ```
 
-**Database health behavior:**
-- Runs `SELECT 1` through Prisma on each request
-- Returns `"ok"` if database is reachable
-- Returns `"unavailable"` if database connection fails
-- Does not crash the backend if database is unavailable
-- Does not expose DATABASE_URL, credentials, or error details
+**Note:** Empty list is acceptable if no tenants exist. No seed data required.
 
-### `GET /version`
+### `GET /tenants/:id`
 
+Returns single tenant summary or404 if not found.
+
+**Not found response:**
 ```json
 {
-  "ok": true,
-  "data": {
-    "service": "toplineshop-api",
-    "version": "0.1.0",
-    "phase": "P5-002"
-  }
+  "statusCode": 404,
+  "message": "Tenant not found"
 }
 ```
+
+### Tenant DTO Safe Fields
+
+Only these fields are returned:
+- `id`
+- `name`
+- `type`
+- `status`
+- `createdAt`
+
+Not returned: secrets, DB info, relations, internal flags.
 
 ## Smoke Test
 
@@ -132,11 +128,11 @@ All endpoints return a standardized response format:
 npm run smoke
 ```
 
-Verifies all three endpoints return standardized responses. Validates:
-- `ok === true` on all endpoints
-- `/health` includes `api`, `prisma`, `database`, `auth`, `payments` checks
+Verifies all endpoints return correct responses. Validates:
+- `ok === true` on success endpoints
+- `/tenants` returns array
+- `/tenants/:id` handles not-found safely (404)
 - No secrets or DATABASE_URL in responses
-- No password fields in responses
 
 ## Prisma Commands
 
@@ -150,14 +146,14 @@ npm run prisma:generate
 
 ## Safety Boundaries
 
-- Common API response standard implemented
-- Database health check (non-business SELECT 1)
+- Read-only tenant endpoints
 - No authentication or authorization
 - No payment processing
-- No business CRUD APIs
+- No tenant write operations (create/update/delete)
+- No vendor/category/product CRUD
 - No real secrets committed
 - Frontend at root remains unchanged
 
 ## Next Steps
 
-- **TOPLINE-P5-003**: Tenant Read Service (requires PM approval)
+- **TOPLINE-P5-004**: Audit Logging Foundation (requires PM approval)

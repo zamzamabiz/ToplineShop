@@ -930,6 +930,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PLANNED",
       notes: "Common response standard, DB health check (SELECT 1), standardized endpoints",
     },
+    {
+      id: "TOPLINE-P5-003",
+      phase: "phase-5",
+      title: "Tenant Read Service — Safe Read-Only API",
+      objective:
+        "Implement read-only tenant endpoints to validate module/controller/service pattern and Prisma read access",
+      status: "CLOSED",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P5-002"],
+      startedAt: new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      wdrPath: "WDR/_All/Phase-05-Backend-API-Foundation/TOPLINE-P5-003_WDR_2026-09-08.md",
+      commitHash: null,
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "Read-only tenant endpoints, safe DTO, no writes, no auth",
+    },
   ],
   modules: [
     {
@@ -1565,6 +1584,15 @@ export const projectRegistry: ProjectRegistry = {
       date: "2026-09-08",
       commitHash: "8835aed",
       pmAudit: "PASS",
+    },
+    {
+      id: "wdr-032",
+      taskId: "TOPLINE-P5-003",
+      phase: "phase-5",
+      status: "PASS",
+      date: "2026-09-08",
+      commitHash: null,
+      pmAudit: "PLANNED",
     },
   ],
   git: {
