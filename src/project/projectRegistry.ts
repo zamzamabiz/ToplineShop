@@ -854,6 +854,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PLANNED",
       notes: "7 models + 7 enums implemented, schema validated, no migration executed",
     },
+    {
+      id: "TOPLINE-P4-004B",
+      phase: "phase-4",
+      title: "Local PostgreSQL Readiness + First Migration Execution",
+      objective:
+        "Verify local PostgreSQL readiness, execute first migration for approved 7-model schema — local dev only",
+      status: "CLOSED",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P4-004A"],
+      startedAt: new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      wdrPath: "WDR/_All/Phase-04-Database-Foundation/TOPLINE-P4-004B_WDR_2026-09-07.md",
+      commitHash: null,
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "PostgreSQL 17.6 ready, first migration executed (7 tables, 7 enums), local dev only",
+    },
   ],
   modules: [
     {
@@ -1453,6 +1472,15 @@ export const projectRegistry: ProjectRegistry = {
       date: "2026-09-07",
       commitHash: "1b07983",
       pmAudit: "PASS",
+    },
+    {
+      id: "wdr-028",
+      taskId: "TOPLINE-P4-004B",
+      phase: "phase-4",
+      status: "PASS",
+      date: "2026-09-07",
+      commitHash: null,
+      pmAudit: "PLANNED",
     },
   ],
   git: {
