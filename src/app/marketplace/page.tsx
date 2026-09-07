@@ -21,7 +21,7 @@ import {
 
 export default function MarketplacePage() {
   return (
-    <AppShell>
+    <AppShell dashboard="marketplace">
       <div style={{ backgroundColor: "var(--app-canvas)" }}>
         <MarketplaceHero
           title="ToplineShop Marketplace"

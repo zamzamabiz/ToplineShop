@@ -1,4 +1,4 @@
-import type { ThemeMeta } from "./theme.types";
+import type { ThemeId, ThemeMeta } from "./theme.types";
 
 export const themes: ThemeMeta[] = [
   {
@@ -149,3 +149,7 @@ export const themes: ThemeMeta[] = [
     },
   },
 ];
+
+export const THEMES: Record<ThemeId, ThemeMeta> = Object.fromEntries(
+  themes.map((t) => [t.id, t])
+) as Record<ThemeId, ThemeMeta>;

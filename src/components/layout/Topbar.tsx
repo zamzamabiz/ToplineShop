@@ -1,8 +1,13 @@
 import Link from "next/link";
 import { Bell, Search, User } from "lucide-react";
 import { ThemeSwitcher } from "./ThemeSwitcher";
+import { DashboardThemeOverride } from "./DashboardThemeOverride";
 
-export function Topbar() {
+interface TopbarProps {
+  dashboard?: string;
+}
+
+export function Topbar({ dashboard }: TopbarProps) {
   return (
     <header
       className="flex items-center justify-between h-16 px-6 border-b"
@@ -40,6 +45,7 @@ export function Topbar() {
         >
           Control Center
         </Link>
+        {dashboard && <DashboardThemeOverride dashboard={dashboard} />}
         <ThemeSwitcher />
         <button
           className="relative p-2 rounded-md transition-colors"
@@ -53,7 +59,7 @@ export function Topbar() {
         >
           <Bell size={18} />
           <span
-            className="absolute top-1 right-1 h-2 w-2 rounded-full"
+            className="absolute top- right-1 h-2 w-2 rounded-full"
             style={{ backgroundColor: "var(--brand-primary)" }}
           />
         </button>

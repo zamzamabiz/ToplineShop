@@ -17,6 +17,7 @@ import {
   OwnerSummary,
 } from "@/components/dashboard/DashboardCards";
 import Link from "next/link";
+import { DashboardThemeOverride } from "@/components/layout/DashboardThemeOverride";
 
 export default function ProjectManagement() {
   const registry = projectRegistry;
@@ -51,6 +52,7 @@ export default function ProjectManagement() {
                 Updated:{" "}
                 {new Date(registry.lastUpdated).toLocaleDateString()}
               </span>
+              <DashboardThemeOverride dashboard="project-management" />
             </div>
           </div>
         </div>

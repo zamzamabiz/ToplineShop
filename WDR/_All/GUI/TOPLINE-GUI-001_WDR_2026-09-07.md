@@ -212,12 +212,13 @@ PASS — No typecheck script, validated via build
 - [x] No routes removed
 - [x] Frontend remains functional
 - [x] Six themes implemented
-- [x] P3-007 not started
+- [x] P3-007 was already PASS / CLOSED before GUI-001
+- [x] GUI-001 did not modify backend/P3-007 implementation
+- [x] TOPLINE-P3-008 was not started
 - [x] No unrelated task bundled
 
 ## KNOWN LIMITATIONS
 
-- Dashboard override persistence hook created but not wired to UI yet (future task)
 - Status badge colors in DashboardCards use semantic tokens but some status-specific colors are still inline
 - Some legacy design-system/tokens.ts statusColors still reference dark: classes (not blocking)
 
@@ -231,5 +232,5 @@ Complete global enterprise theme engine with 6 themes, semantic tokens, global s
 
 - Approve theme system architecture
 - Approve 6 locked theme families
+- Approve dashboard override UI
 - Approve TOPLINE-GUI-001 as PASS / CLOSED
-- Approve resumption of TOPLINE-P3-007
