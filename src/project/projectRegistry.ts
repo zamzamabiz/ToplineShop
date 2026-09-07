@@ -816,6 +816,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PASS",
       notes: "Prisma 6.19.3 installed, schema validated, service scaffold created — no models/migrations",
     },
+    {
+      id: "TOPLINE-P4-003",
+      phase: "phase-4",
+      title: "Core Schema Foundation Design Lock — Documentation Only",
+      objective:
+        "Lock exact safe schema group for first real database implementation — 7 models, tenant isolation, audit, migration safety",
+      status: "CLOSED",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P4-002"],
+      startedAt: new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      wdrPath: "WDR/_All/Phase-04-Database-Foundation/TOPLINE-P4-003_WDR_2026-09-07.md",
+      commitHash: null,
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "7 first-scope models locked: Tenant, User, Membership, Vendor, Category, Product, AuditLog",
+    },
   ],
   modules: [
     {
@@ -1397,6 +1416,15 @@ export const projectRegistry: ProjectRegistry = {
       date: "2026-09-07",
       commitHash: "a715fcb",
       pmAudit: "PASS",
+    },
+    {
+      id: "wdr-026",
+      taskId: "TOPLINE-P4-003",
+      phase: "phase-4",
+      status: "PASS",
+      date: "2026-09-07",
+      commitHash: null,
+      pmAudit: "PLANNED",
     },
   ],
   git: {
