@@ -835,6 +835,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PLANNED",
       notes: "7 first-scope models locked: Tenant, User, Membership, Vendor, Category, Product, AuditLog",
     },
+    {
+      id: "TOPLINE-P4-004A",
+      phase: "phase-4",
+      title: "Core Prisma Models Implementation + Migration File Generation Review",
+      objective:
+        "Implement 7 approved Prisma models + 7 enums, validate/generate, prepare migration review — no DB execution",
+      status: "CLOSED",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P4-003"],
+      startedAt: new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      wdrPath: "WDR/_All/Phase-04-Database-Foundation/TOPLINE-P4-004A_WDR_2026-09-07.md",
+      commitHash: null,
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "7 models + 7 enums implemented, schema validated, no migration executed",
+    },
   ],
   modules: [
     {
@@ -1425,6 +1444,15 @@ export const projectRegistry: ProjectRegistry = {
       date: "2026-09-07",
       commitHash: "327fc6e",
       pmAudit: "PASS",
+    },
+    {
+      id: "wdr-027",
+      taskId: "TOPLINE-P4-004A",
+      phase: "phase-4",
+      status: "PASS",
+      date: "2026-09-07",
+      commitHash: null,
+      pmAudit: "PLANNED",
     },
   ],
   git: {

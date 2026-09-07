@@ -4,14 +4,14 @@ NestJS backend service for ToplineShop multi-vendor SaaS marketplace.
 
 ## Current Status
 
-**Prisma Bootstrap** — Database tooling initialized, no models or migrations.
+**Core Schema Foundation** — 7 Prisma models implemented, no migrations executed.
 
 - ✅ NestJS application structure
 - ✅ Health endpoint (`GET /health`)
 - ✅ Version endpoint (`GET /version`)
 - ✅ Smoke test script
 - ✅ Prisma installed (schema + service scaffold)
-- ❌ No database models created
+- ✅ Core schema models (7 models, 7 enums)
 - ❌ No migrations created or run
 - ❌ No database connection active
 - ❌ No auth/RBAC implemented
@@ -44,7 +44,7 @@ npm run prisma:validate
 npm run prisma:generate
 ```
 
-**Note:** No models exist yet. These commands validate the minimal schema configuration.
+**Note:** Schema has 7 models (Tenant, User, Membership, Vendor, Category, Product, AuditLog) and 7 enums. No migrations executed yet. No database connection active.
 
 ## Endpoints
 
@@ -110,7 +110,8 @@ See `.env.example` for available configuration options.
 
 ## Safety Boundaries
 
-- No database schema or migrations (Prisma schema has generator + datasource only)
+- Core schema models implemented (7 models, 7 enums)
+- No migrations created or run
 - No database connection active
 - No authentication or authorization
 - No payment processing
@@ -119,4 +120,4 @@ See `.env.example` for available configuration options.
 
 ## Next Steps
 
-- **TOPLINE-P4-003**: Core schema foundation (Tenant, User, Vendor, Category, Product, AuditLog)
+- **TOPLINE-P4-004B**: Local PostgreSQL connection + migration run (requires PM approval)
