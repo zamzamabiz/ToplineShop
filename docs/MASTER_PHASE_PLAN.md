@@ -17,10 +17,10 @@
 
 ## Phase 3: Backend Readiness + B2B Foundation
 **Status**: IN_PROGRESS  
-**Objective**: Backend architecture planning, database design, auth/RBAC design, API contracts, backend bootstrap.  
+**Objective**: Backend architecture planning, database design, auth/RBAC design, API contracts, environment/secrets safety, backend bootstrap.  
 **Dependencies**: Phase 2
-**Current Task**: TOPLINE-P3-005 (Auth/RBAC Design)
-**Note**: P3-005 Auth/RBAC design must support SaaS multi-tenant modular platform strategy.
+**Current Task**: TOPLINE-P3-006 (Environment + Secrets Safety Plan)
+**Note**: P3-006 safety plan protects secrets before backend bootstrap.
 
 ## Phase 4: Customer Commerce Frontend
 **Status**: PLANNED  
