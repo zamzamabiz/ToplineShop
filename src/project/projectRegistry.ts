@@ -892,6 +892,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PLANNED",
       notes: "Phase 4 frozen — 7 models, 7 enums, 1 migration, no prohibited items",
     },
+    {
+      id: "TOPLINE-P5-001",
+      phase: "phase-5",
+      title: "Backend API Readiness Plan + Service Layer Architecture",
+      objective:
+        "Create readiness plan and service layer architecture for backend API phase — documentation only",
+      status: "CLOSED",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P4-005"],
+      startedAt: new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      wdrPath: "WDR/_All/Phase-05-Backend-API-Foundation/TOPLINE-P5-001_WDR_2026-09-07.md",
+      commitHash: null,
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "Service layer architecture documented, API standards defined, P5-002 recommended",
+    },
   ],
   modules: [
     {
@@ -1509,6 +1528,15 @@ export const projectRegistry: ProjectRegistry = {
       date: "2026-09-07",
       commitHash: "efa5502",
       pmAudit: "PASS",
+    },
+    {
+      id: "wdr-030",
+      taskId: "TOPLINE-P5-001",
+      phase: "phase-5",
+      status: "PASS",
+      date: "2026-09-07",
+      commitHash: null,
+      pmAudit: "PLANNED",
     },
   ],
   git: {
