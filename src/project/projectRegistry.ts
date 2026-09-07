@@ -664,6 +664,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PLANNED",
       notes: "Strategy documentation only — no modules/backend/API implemented",
     },
+    {
+      id: "TOPLINE-P3-005",
+      phase: "phase-3",
+      title: "Auth & RBAC Design Document",
+      objective:
+        "Design authentication and role-based access control for SaaS multi-tenant modular platform before any auth implementation",
+      status: "IN_PROGRESS",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P3-004A"],
+      startedAt: new Date().toISOString(),
+      completedAt: null,
+      wdrPath: "WDR/_All/Phase-03-Backend-Readiness/TOPLINE-P3-005_WDR_2026-09-07.md",
+      commitHash: null,
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "Auth/RBAC design documentation only — no auth implementation created",
+    },
   ],
   modules: [
     {
@@ -1168,6 +1187,15 @@ export const projectRegistry: ProjectRegistry = {
     {
       id: "wdr-017",
       taskId: "TOPLINE-P3-004A",
+      phase: "phase-3",
+      status: "PASS",
+      date: "2026-09-07",
+      commitHash: "c2f51ea",
+      pmAudit: "PLANNED",
+    },
+    {
+      id: "wdr-018",
+      taskId: "TOPLINE-P3-005",
       phase: "phase-3",
       status: "PASS",
       date: "2026-09-07",
