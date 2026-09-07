@@ -4,7 +4,7 @@ NestJS backend service for ToplineShop multi-vendor SaaS marketplace.
 
 ## Current Status
 
-**Vendor Read Service** — Read-only vendor API implemented.
+**Category Read Service** — Read-only category API implemented.
 
 - ✅ NestJS application structure
 - ✅ Common API response standard (`ok`, `data`, `meta`)
@@ -12,6 +12,7 @@ NestJS backend service for ToplineShop multi-vendor SaaS marketplace.
 - ✅ Version endpoint (`GET /version`)
 - ✅ Tenant read endpoints (`GET /tenants`, `GET /tenants/:id`)
 - ✅ Vendor read endpoints (`GET /vendors`, `GET /vendors/:id`)
+- ✅ Category read endpoints (`GET /categories`, `GET /categories/:id`)
 - ✅ Audit logging foundation (AuditModule, AuditService)
 - ✅ Smoke test script
 - ✅ Prisma installed (schema + service)
@@ -20,8 +21,8 @@ NestJS backend service for ToplineShop multi-vendor SaaS marketplace.
 - ✅ Database health check (SELECT 1)
 - ❌ No auth/RBAC implemented
 - ❌ No payment/commerce logic
-- ❌ No tenant/vendor write endpoints
-- ❌ No category/product CRUD
+- ❌ No tenant/vendor/category write endpoints
+- ❌ No product CRUD
 - ❌ No automatic audit logging on read endpoints
 - ❌ No CRM/ERP/FMCG modules
 
@@ -76,12 +77,16 @@ All endpoints return a standardized response format:
 | `/version` | GET | Service version info |
 | `/tenants` | GET | List all tenants (read-only) |
 | `/tenants/:id` | GET | Get tenant by ID (read-only) |
-| `/vendors` | GET | List vendors (read-only, optional `?tenantId=` filter) |
+| `/vendors` | GET | List vendors (read-only, optional `?tenantId=`) |
 | `/vendors/:id` | GET | Get vendor by ID (read-only) |
+| `/categories` | GET | List categories (read-only, optional `?tenantId=`, `?parentId=`) |
+| `/categories/:id` | GET | Get category by ID (read-only) |
 
-### `GET /vendors`
+### `GET /categories`
 
-Returns safe vendor summaries. Optional `tenantId` query parameter for filtering.
+Returns safe category summaries. Optional query parameters:
+- `tenantId` — filter by tenant
+- `parentId` — filter by parent category (use `null` for root categories)
 
 ```json
 {
@@ -90,31 +95,35 @@ Returns safe vendor summaries. Optional `tenantId` query parameter for filtering
     {
       "id": "...",
       "tenantId": "...",
+      "parentId": "...",
       "name": "...",
       "status": "...",
+      "sortOrder": 0,
       "createdAt": "..."
     }
   ],
   "meta": {
     "count": 0,
-    "phase": "P5-005"
+    "phase": "P5-006"
   }
 }
 ```
 
-**Note:** Empty list is acceptable if no vendors exist. No seed data required.
+**Note:** Empty list is acceptable if no categories exist. No seed data required.
 
-### `GET /vendors/:id`
+### `GET /categories/:id`
 
-Returns single vendor summary or 404 if not found.
+Returns single category summary or 404 if not found.
 
-### Vendor DTO Safe Fields
+### Category DTO Safe Fields
 
 Only these fields are returned:
 - `id`
 - `tenantId`
+- `parentId`
 - `name`
 - `status`
+- `sortOrder`
 - `createdAt`
 
 ## Smoke Test
@@ -123,7 +132,7 @@ Only these fields are returned:
 npm run smoke
 ```
 
-Verifies all7 endpoints return correct responses.
+Verifies all 9 endpoints return correct responses.
 
 ## Prisma Commands
 
@@ -137,15 +146,15 @@ npm run prisma:generate
 
 ## Safety Boundaries
 
-- Read-only tenant and vendor endpoints
+- Read-only tenant, vendor, and category endpoints
 - Audit foundation only (no automatic logging)
 - No authentication or authorization
 - No payment processing
 - No write operations
-- No category/product CRUD
+- No product CRUD
 - No real secrets committed
 - Frontend at root remains unchanged
 
 ## Next Steps
 
-- **TOPLINE-P5-006**: Category Read Service (requires PM approval)
+- **TOPLINE-P5-007**: Product Read Service (requires PM approval)

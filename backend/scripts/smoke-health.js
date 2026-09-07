@@ -74,6 +74,20 @@ async function main() {
     !JSON.stringify(b).includes('DATABASE_URL') &&
     !JSON.stringify(b).includes('password')
   );
+  await checkEndpoint('/categories', 200, (b) =>
+    b.ok === true &&
+    Array.isArray(b.data) &&
+    typeof b.meta.count === 'number' &&
+    b.meta.phase === 'P5-006' &&
+    !JSON.stringify(b).includes('DATABASE_URL') &&
+    !JSON.stringify(b).includes('password')
+  );
+  await checkEndpoint('/categories/non-existent-id', 404, (b) =>
+    b.statusCode === 404 &&
+    b.message === 'Category not found' &&
+    !JSON.stringify(b).includes('DATABASE_URL') &&
+    !JSON.stringify(b).includes('password')
+  );
 
   console.log('\nAll smoke tests passed.');
 }
