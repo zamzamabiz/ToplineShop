@@ -1561,10 +1561,10 @@ export const projectRegistry: ProjectRegistry = {
       id: "wdr-031",
       taskId: "TOPLINE-P5-002",
       phase: "phase-5",
-      status: "PASS",
+      status: "CLOSED",
       date: "2026-09-08",
       commitHash: "8835aed",
-      pmAudit: "PLANNED",
+      pmAudit: "PASS",
     },
   ],
   git: {
