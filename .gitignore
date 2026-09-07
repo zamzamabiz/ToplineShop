@@ -42,6 +42,10 @@ backend/.env.*
 !backend/.env.example
 !backend/.env.*.example
 
+# backend build/dist
+backend/dist/
+backend/node_modules/
+
 # vercel
 .vercel
 
