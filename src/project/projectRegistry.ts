@@ -873,6 +873,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PLANNED",
       notes: "PostgreSQL 17.6 ready, first migration executed (7 tables, 7 enums), local dev only",
     },
+    {
+      id: "TOPLINE-P4-005",
+      phase: "phase-4",
+      title: "Database Foundation Freeze Gate — Audit + Documentation Only",
+      objective:
+        "Full Phase 4 freeze gate audit — verify safe implementation, no prohibited items, ready for next phase",
+      status: "CLOSED",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P4-004B"],
+      startedAt: new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      wdrPath: "WDR/_All/Phase-04-Database-Foundation/TOPLINE-P4-005_WDR_2026-09-07.md",
+      commitHash: null,
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "Phase 4 frozen — 7 models, 7 enums, 1 migration, no prohibited items",
+    },
   ],
   modules: [
     {
@@ -1481,6 +1500,15 @@ export const projectRegistry: ProjectRegistry = {
       date: "2026-09-07",
       commitHash: "f8b3d3c",
       pmAudit: "PASS",
+    },
+    {
+      id: "wdr-029",
+      taskId: "TOPLINE-P4-005",
+      phase: "phase-4",
+      status: "PASS",
+      date: "2026-09-07",
+      commitHash: null,
+      pmAudit: "PLANNED",
     },
   ],
   git: {
