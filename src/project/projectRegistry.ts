@@ -607,6 +607,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PLANNED",
       notes: "Stack decision and project structure planning only — no backend code written",
     },
+    {
+      id: "TOPLINE-P3-003",
+      phase: "phase-3",
+      title: "Database Schema Design Document",
+      objective:
+        "Design database schema for multi-vendor marketplace — entities, relationships, constraints, safety rules",
+      status: "IN_PROGRESS",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P3-002"],
+      startedAt: new Date().toISOString(),
+      completedAt: null,
+      wdrPath: "WDR/_All/Phase-03-Backend-Readiness/TOPLINE-P3-003_WDR_2026-09-07.md",
+      commitHash: null,
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "Database design documentation only — no schema/migrations created",
+    },
   ],
   modules: [
     {
@@ -1084,6 +1103,15 @@ export const projectRegistry: ProjectRegistry = {
     {
       id: "wdr-014",
       taskId: "TOPLINE-P3-002",
+      phase: "phase-3",
+      status: "PASS",
+      date: "2026-09-07",
+      commitHash: "e114771",
+      pmAudit: "PLANNED",
+    },
+    {
+      id: "wdr-015",
+      taskId: "TOPLINE-P3-003",
       phase: "phase-3",
       status: "PASS",
       date: "2026-09-07",
