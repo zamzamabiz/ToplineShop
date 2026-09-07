@@ -747,9 +747,9 @@ enum ProductStatus {
 
 ## 14. P4-004 Implementation Recommendation
 
-### 14.1 Recommended Scope
+### 14.1 Recommended Scope — Split into P4-004A and P4-004B
 
-**TOPLINE-P4-004 — Core Schema Foundation Implementation — First Migration**
+**TOPLINE-P4-004A — Core Prisma Models Implementation + Migration File Generation Review**
 
 **Scope:**
 - Add the 7 approved Prisma models to `backend/prisma/schema.prisma`:
@@ -761,34 +761,43 @@ enum ProductStatus {
   - Product (with ProductStatus enum)
   - AuditLog (no enum)
 - Run `prisma validate` and `prisma generate`
-- Run `prisma migrate dev --name <name>` (local only, with dummy DATABASE_URL)
-- Verify migration SQL is non-destructive
+- Create migration review documentation (inspect generated SQL without executing)
 - Verify backend builds
 - Verify backend smoke passes
 - Verify root lint and build pass
-- Create WDR with migration evidence
+- Create WDR with migration review evidence
+- **Must NOT run migration against a database unless PM separately approves DB readiness**
 - Do NOT run seed scripts
 - Do NOT connect to real PostgreSQL
 - Do NOT implement auth/RBAC
 - Do NOT implement payment/order/commerce logic
 
-### 14.2 P4-004 Deliverables
+**TOPLINE-P4-004B — Local PostgreSQL Connection + Migration Run**
+
+**Scope (only after DB readiness is confirmed):**
+- Connect to local PostgreSQL (dev database)
+- Run `prisma migrate dev --name <name>` (local only)
+- Verify migration SQL is non-destructive
+- Verify backend builds and smoke passes
+- Create WDR with migration evidence
+- Requires PM approval before execution
+
+### 14.2 P4-004A Deliverables
 
 | Deliverable | Purpose |
 |-------------|---------|
 | Updated `backend/prisma/schema.prisma` | 7 models + enums |
-| `prisma/migrations/<timestamp>_<name>/` | Migration SQL |
-| `prisma/migrations/<timestamp>_<name>/migration.sql` | Reviewed for safety |
+| Migration review document | SQL review without execution |
 | WDR | Evidence of safe implementation |
 | Registry update | Task + WDR entries |
 
-### 14.3 P4-004 Expected Model Count
+### 14.3 P4-004A Expected Model Count
 
 7 models, 7 enums.
 
-### 14.4 P4-004 Expected Migration Count
+### 14.4 P4-004A Expected Migration Count
 
-1 migration (single initial migration with all 7 models).
+0 migrations executed. Migration file generated for review only.
 
 ---
 
@@ -836,7 +845,7 @@ enum ProductStatus {
 
 ## 17. Final Design Lock Decision
 
-### READY FOR P4-004 IMPLEMENTATION REVIEW
+### READY FOR P4-004A IMPLEMENTATION REVIEW
 
 **Evidence:**
 - Phase 3 frozen and all tasks closed
@@ -853,7 +862,8 @@ enum ProductStatus {
 - Design principles documented
 - Tenant isolation rules documented
 - Migration safety plan documented
-- P4-004 scope clearly defined
+- P4-004A scope clearly defined (models + migration review, no DB execution)
+- P4-004B scope clearly defined (DB connection + migration run, after DB readiness confirmed)
 - Prohibited actions for P4-004 clearly listed
 
-**The project is ready for P4-004 implementation review.**
+**The project is ready for P4-004A implementation review.**
