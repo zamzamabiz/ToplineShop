@@ -23,18 +23,18 @@ export default async function VendorStorefrontPage({
   if (!vendor) {
     return (
       <AppShell>
-        <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+        <div className="min-h-screen" style={{ backgroundColor: "var(--app-canvas)" }}>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-            <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6">
+            <nav className="flex items-center gap-1.5 text-sm mb-6" style={{ color: "var(--text-muted)" }}>
               <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
               <span>/</span>
               <Link href="/marketplace" className="hover:text-foreground transition-colors">Marketplace</Link>
               <span>/</span>
               <span className="text-foreground font-medium">Not Found</span>
             </nav>
-            <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-12 text-center">
+            <div className="rounded-xl border border-border p-12 text-center" style={{ backgroundColor: "var(--surface-primary)" }}>
               <h1 className="text-xl font-bold mb-2">Vendor Not Found</h1>
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-sm mb-4" style={{ color: "var(--text-muted)" }}>
                 The vendor you are looking for does not exist.
               </p>
               <Link
@@ -56,9 +56,9 @@ export default async function VendorStorefrontPage({
 
   return (
     <AppShell>
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      <div className="min-h-screen" style={{ backgroundColor: "var(--app-canvas)" }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-          <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6">
+          <nav className="flex items-center gap-1.5 text-sm mb-6" style={{ color: "var(--text-muted)" }}>
             <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
             <span>/</span>
             <Link href="/marketplace" className="hover:text-foreground transition-colors">Marketplace</Link>
@@ -66,7 +66,7 @@ export default async function VendorStorefrontPage({
             <span className="text-foreground font-medium">{vendor.name}</span>
           </nav>
 
-          <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-8 mb-8">
+          <div className="rounded-xl border border-border p-8 mb-8" style={{ backgroundColor: "var(--surface-primary)" }}>
             <div className="flex flex-col sm:flex-row items-start gap-6">
               <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                 {vendor.avatar ? (
@@ -83,9 +83,9 @@ export default async function VendorStorefrontPage({
                   )}
                 </div>
                 {vendor.description && (
-                  <p className="text-sm text-muted-foreground mt-2">{vendor.description}</p>
+                  <p className="text-sm mt-2" style={{ color: "var(--text-muted)" }}>{vendor.description}</p>
                 )}
-                <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-muted-foreground">
+                <div className="flex flex-wrap items-center gap-4 mt-3 text-sm" style={{ color: "var(--text-muted)" }}>
                   {vendor.location && (
                     <span className="flex items-center gap-1"><MapPin size={14} /> {vendor.location}</span>
                   )}
@@ -106,7 +106,7 @@ export default async function VendorStorefrontPage({
                 <h2 className="text-lg font-bold">Products</h2>
                 <Badge>{vendor.productCount} total</Badge>
               </div>
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-sm mb-4" style={{ color: "var(--text-muted)" }}>
                 Showing {vendorProducts.length} featured products from this vendor
               </p>
               {vendorProducts.length > 0 ? (
@@ -126,8 +126,8 @@ export default async function VendorStorefrontPage({
                   ))}
                 </MarketplaceGrid>
               ) : (
-                <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-12 text-center">
-                  <p className="text-muted-foreground">
+                <div className="rounded-xl border border-border p-12 text-center" style={{ backgroundColor: "var(--surface-primary)" }}>
+                  <p style={{ color: "var(--text-muted)" }}>
                     No featured products from this vendor yet.
                   </p>
                 </div>
@@ -135,24 +135,24 @@ export default async function VendorStorefrontPage({
             </div>
 
             <div className="space-y-6">
-              <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6">
+              <div className="rounded-xl border border-border p-6" style={{ backgroundColor: "var(--surface-primary)" }}>
                 <h3 className="font-semibold text-sm mb-4">Store Information</h3>
                 <div className="space-y-3 text-sm">
                   {vendor.rating !== undefined && (
                     <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Rating</span>
+                      <span style={{ color: "var(--text-muted)" }}>Rating</span>
                       <span className="text-amber-500 font-medium">★ {vendor.rating.toFixed(1)}</span>
                     </div>
                   )}
                   {vendor.productCount !== undefined && (
                     <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Products</span>
+                      <span style={{ color: "var(--text-muted)" }}>Products</span>
                       <span className="font-medium">{vendor.productCount}</span>
                     </div>
                   )}
                   {vendor.responseRate && (
                     <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Response Rate</span>
+                      <span style={{ color: "var(--text-muted)" }}>Response Rate</span>
                       <span className="font-medium">{vendor.responseRate}</span>
                     </div>
                   )}
@@ -160,12 +160,12 @@ export default async function VendorStorefrontPage({
               </div>
 
               {vendor.storeMetrics && vendor.storeMetrics.length > 0 && (
-                <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6">
+                <div className="rounded-xl border border-border p-6" style={{ backgroundColor: "var(--surface-primary)" }}>
                   <h3 className="font-semibold text-sm mb-4">Store Metrics</h3>
                   <div className="space-y-3 text-sm">
                     {vendor.storeMetrics.map((metric, idx) => (
                       <div key={idx} className="flex items-center justify-between">
-                        <span className="text-muted-foreground">{metric.label}</span>
+                        <span style={{ color: "var(--text-muted)" }}>{metric.label}</span>
                         <span className="font-medium">{metric.value}</span>
                       </div>
                     ))}
@@ -173,25 +173,25 @@ export default async function VendorStorefrontPage({
                 </div>
               )}
 
-              <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6">
+              <div className="rounded-xl border border-border p-6" style={{ backgroundColor: "var(--surface-primary)" }}>
                 <h3 className="font-semibold text-sm mb-4">Policies</h3>
                 <div className="space-y-3 text-sm">
                   {vendor.deliveryNote && (
                     <div>
                       <span className="font-medium">Delivery:</span>{" "}
-                      <span className="text-muted-foreground">{vendor.deliveryNote}</span>
+                      <span style={{ color: "var(--text-muted)" }}>{vendor.deliveryNote}</span>
                     </div>
                   )}
                   {vendor.returnPolicy && (
                     <div>
                       <span className="font-medium">Returns:</span>{" "}
-                      <span className="text-muted-foreground">{vendor.returnPolicy}</span>
+                      <span style={{ color: "var(--text-muted)" }}>{vendor.returnPolicy}</span>
                     </div>
                   )}
                   {vendor.supportNote && (
                     <div>
                       <span className="font-medium">Support:</span>{" "}
-                      <span className="text-muted-foreground">{vendor.supportNote}</span>
+                      <span style={{ color: "var(--text-muted)" }}>{vendor.supportNote}</span>
                     </div>
                   )}
                 </div>
@@ -207,7 +207,7 @@ export default async function VendorStorefrontPage({
                 <button disabled className="w-full h-11 rounded-lg border border-border font-medium text-sm opacity-50 cursor-not-allowed">
                   Request Quote
                 </button>
-                <p className="text-xs text-muted-foreground text-center">
+                <p className="text-xs text-center" style={{ color: "var(--text-muted)" }}>
                   <Badge>Frontend Placeholder</Badge> — Contact, follow, and quote features are not yet implemented
                 </p>
               </div>

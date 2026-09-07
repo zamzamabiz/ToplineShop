@@ -1,5 +1,3 @@
-import { getStatusClasses } from "@/design-system/tokens";
-
 export function Badge({
   children,
   variant = "default",
@@ -7,27 +5,46 @@ export function Badge({
 }: {
   children: React.ReactNode;
   variant?: "default" | "status";
-  status?: string;
   className?: string;
 }) {
   const base =
     "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium";
-  const variants = {
-    default:
-      "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-    status: "",
-  };
+  const variantStyle: React.CSSProperties =
+    variant === "default"
+      ? {
+          backgroundColor: "var(--surface-muted)",
+          color: "var(--text-secondary)",
+        }
+      : {};
   return (
-    <span className={`${base} ${variants[variant]} ${className}`}>
+    <span className={`${base} ${className}`} style={variantStyle}>
       {children}
     </span>
   );
 }
 
 export function StatusBadge({ status }: { status: string }) {
+  const colorMap: Record<string, { bg: string; text: string }> = {
+    PLANNED: { bg: "var(--surface-muted)", text: "var(--text-muted)" },
+    READY: { bg: "#dbeafe", text: "#1d4ed8" },
+    IN_PROGRESS: { bg: "#fef3c7", text: "#b45309" },
+    BLOCKED: { bg: "#fee2e2", text: "#dc2626" },
+    PARTIAL: { bg: "#ffedd5", text: "#ea580c" },
+    PASS: { bg: "#dcfce7", text: "#16a34a" },
+    CLOSED: { bg: "var(--surface-muted)", text: "var(--text-muted)" },
+    DEFERRED: { bg: "#f3e8ff", text: "#9333ea" },
+    NOT_STARTED: { bg: "var(--surface-muted)", text: "var(--text-muted)" },
+    ACTIVE: { bg: "#dcfce7", text: "#16a34a" },
+    ENFORCED: { bg: "#dcfce7", text: "#16a34a" },
+    HIGH: { bg: "#fee2e2", text: "#dc2626" },
+    MEDIUM: { bg: "#fef3c7", text: "#b45309" },
+    LOW: { bg: "var(--surface-muted)", text: "var(--text-muted)" },
+  };
+  const colors = colorMap[status] || colorMap.PLANNED;
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusClasses(status)}`}
+      className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+      style={{ backgroundColor: colors.bg, color: colors.text }}
     >
       {status.replace(/_/g, " ")}
     </span>

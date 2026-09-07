@@ -15,22 +15,26 @@ export function MetricCard({
 }) {
   return (
     <div
-      className={cn(
-        "rounded-xl border border-border bg-white dark:bg-zinc-900 p-6",
-        className
-      )}
+      className={cn("rounded-xl border p-6", className)}
+      style={{
+        backgroundColor: "var(--surface-primary)",
+        borderColor: "var(--border-default)",
+        color: "var(--text-primary)",
+      }}
     >
       <div className="flex items-center justify-between">
-        <div className="text-sm font-medium text-muted-foreground">{label}</div>
-        {icon && <div className="text-muted-foreground">{icon}</div>}
+        <div className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
+          {label}
+        </div>
+        {icon && <div style={{ color: "var(--text-muted)" }}>{icon}</div>}
       </div>
       <div className="mt-2 text-2xl font-bold">{value}</div>
       {change && (
         <div
-          className={cn(
-            "mt-1 text-xs font-medium",
-            change.positive ? "text-green-600" : "text-red-600"
-          )}
+          className="mt-1 text-xs font-medium"
+          style={{
+            color: change.positive ? "var(--state-success)" : "var(--state-danger)",
+          }}
         >
           {change.value}
         </div>

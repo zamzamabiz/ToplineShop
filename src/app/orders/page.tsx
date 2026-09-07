@@ -8,11 +8,11 @@ import { orderPreviewItems, orderTimelineSteps } from "@/data/marketplaceMockDat
 export default function OrdersPage() {
   return (
     <AppShell>
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      <div className="min-h-screen" style={{ backgroundColor: "var(--app-canvas)" }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-8">
             <h1 className="text-2xl font-bold">Order History</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
               View your past orders and track current shipments
             </p>
           </div>
@@ -22,20 +22,21 @@ export default function OrdersPage() {
               {orderPreviewItems.map((order) => (
                 <div
                   key={order.id}
-                  className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-4 sm:p-6"
+                  className="rounded-xl border p-4 sm:p-6"
+                  style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-sm font-medium">{order.id}</span>
-                        {order.status === "Delivered" && <CheckCircle size={14} className="text-green-600" />}
+                        {order.status === "Delivered" && <CheckCircle size={14} style={{ color: "var(--state-success)" }} />}
                         {order.status === "Shipped" && <Package size={14} className="text-blue-600" />}
                         {order.status === "Processing" && <Clock size={14} className="text-amber-600" />}
                         <span className={`text-xs font-medium ${order.statusColor}`}>
                           {order.status}
                         </span>
                       </div>
-                      <div className="text-xs text-muted-foreground mt-1">
+                      <div className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>
                         Placed on {order.date} — {order.items} item(s)
                       </div>
                     </div>
@@ -50,10 +51,10 @@ export default function OrdersPage() {
               ))}
 
               {orderPreviewItems.length === 0 && (
-                <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-12 text-center">
-                  <Package size={40} className="mx-auto text-muted-foreground mb-3" />
+                <div className="rounded-xl border p-12 text-center" style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}>
+                  <Package size={40} className="mx-auto mb-3" style={{ color: "var(--text-muted)" }} />
                   <p className="font-medium">No orders yet</p>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
                     Your order history will appear here
                   </p>
                 </div>
@@ -61,37 +62,41 @@ export default function OrdersPage() {
             </div>
 
             <div className="lg:col-span-1">
-              <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6 sticky top-24">
+              <div className="rounded-xl border p-6 sticky top-24" style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}>
                 <h2 className="font-semibold text-sm mb-4">Order Status Timeline</h2>
                 <div className="space-y-3">
                   {orderTimelineSteps.map((step) => (
                     <div key={step.label} className="flex items-center gap-3">
                       <div
                         className={`h-2 w-2 rounded-full flex-shrink-0 ${
-                          step.done ? "bg-green-500" : "bg-zinc-300 dark:bg-zinc-600"
+                          step.done ? "" : ""
                         }`}
+                        style={{
+                          backgroundColor: step.done ? "var(--state-success)" : "var(--surface-muted)",
+                        }}
                       />
                       <span
-                        className={`text-sm ${
-                          step.done ? "text-foreground" : "text-muted-foreground"
-                        }`}
+                        className="text-sm"
+                        style={{
+                          color: step.done ? "var(--text-primary)" : "var(--text-muted)",
+                        }}
                       >
                         {step.label}
                       </span>
                     </div>
                   ))}
                 </div>
-                <div className="mt-6 pt-4 border-t border-border">
-                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+                <div className="mt-6 pt-4 border-t" style={{ borderColor: "var(--border-default)" }}>
+                  <h3 className="text-xs font-semibold uppercase tracking-wide mb-3" style={{ color: "var(--text-muted)" }}>
                     Need Help?
                   </h3>
                   <div className="space-y-2">
-                    <button disabled aria-disabled className="w-full flex items-center gap-2 rounded-lg border border-border p-3 text-sm cursor-not-allowed opacity-50">
-                      <HelpCircle size={16} className="text-muted-foreground" />
+                    <button disabled aria-disabled className="w-full flex items-center gap-2 rounded-lg border p-3 text-sm cursor-not-allowed opacity-50" style={{ borderColor: "var(--border-default)" }}>
+                      <HelpCircle size={16} style={{ color: "var(--text-muted)" }} />
                       <span>Contact Support</span>
                     </button>
-                    <button disabled aria-disabled className="w-full flex items-center gap-2 rounded-lg border border-border p-3 text-sm cursor-not-allowed opacity-50">
-                      <XCircle size={16} className="text-muted-foreground" />
+                    <button disabled aria-disabled className="w-full flex items-center gap-2 rounded-lg border p-3 text-sm cursor-not-allowed opacity-50" style={{ borderColor: "var(--border-default)" }}>
+                      <XCircle size={16} style={{ color: "var(--text-muted)" }} />
                       <span>Cancel Order</span>
                     </button>
                   </div>
@@ -100,10 +105,13 @@ export default function OrdersPage() {
             </div>
           </div>
 
-          <div className="mt-8 rounded-lg border border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/30 px-4 py-3">
+          <div
+            className="mt-8 rounded-lg border px-4 py-3"
+            style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-muted)" }}
+          >
             <div className="flex items-center gap-2 text-sm">
               <Badge>Frontend Placeholder</Badge>
-              <span className="text-amber-700 dark:text-amber-400">
+              <span style={{ color: "var(--text-muted)" }}>
                 Order data is mock/placeholder. Real order tracking, support, and cancellation are not implemented.
               </span>
             </div>

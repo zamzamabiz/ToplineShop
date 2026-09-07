@@ -1,29 +1,27 @@
 import type { ProjectRegistry } from "@/project/projectRegistry";
 
 function StatusBadge({ status }: { status: string }) {
-  const colors: Record<string, string> = {
-    PLANNED: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-    READY: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-    IN_PROGRESS:
-      "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-    BLOCKED:
-      "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-    PARTIAL:
-      "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
-    PASS: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-    CLOSED: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-    DEFERRED:
-      "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
-    NOT_STARTED:
-      "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400",
-    ENFORCED:
-      "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-    ACTIVE:
-      "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  const colorMap: Record<string, { bg: string; text: string }> = {
+    PLANNED: { bg: "var(--surface-muted)", text: "var(--text-muted)" },
+    READY: { bg: "#dbeafe", text: "#1d4ed8" },
+    IN_PROGRESS: { bg: "#fef3c7", text: "#b45309" },
+    BLOCKED: { bg: "#fee2e2", text: "#dc2626" },
+    PARTIAL: { bg: "#ffedd5", text: "#ea580c" },
+    PASS: { bg: "#dcfce7", text: "#16a34a" },
+    CLOSED: { bg: "var(--surface-muted)", text: "var(--text-muted)" },
+    DEFERRED: { bg: "#f3e8ff", text: "#9333ea" },
+    NOT_STARTED: { bg: "var(--surface-muted)", text: "var(--text-muted)" },
+    ENFORCED: { bg: "#dcfce7", text: "#16a34a" },
+    ACTIVE: { bg: "#dcfce7", text: "#16a34a" },
+    HIGH: { bg: "#fee2e2", text: "#dc2626" },
+    MEDIUM: { bg: "#fef3c7", text: "#b45309" },
+    LOW: { bg: "var(--surface-muted)", text: "var(--text-muted)" },
   };
+  const colors = colorMap[status] || colorMap.PLANNED;
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${colors[status] || colors.PLANNED}`}
+      className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+      style={{ backgroundColor: colors.bg, color: colors.text }}
     >
       {status.replace(/_/g, " ")}
     </span>
@@ -32,10 +30,16 @@ function StatusBadge({ status }: { status: string }) {
 
 function ProgressBar({ value }: { value: number }) {
   return (
-    <div className="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-2">
+    <div
+      className="w-full rounded-full h-2"
+      style={{ backgroundColor: "var(--surface-muted)" }}
+    >
       <div
-        className="bg-primary h-2 rounded-full transition-all duration-300"
-        style={{ width: `${value}%` }}
+        className="h-2 rounded-full transition-all duration-300"
+        style={{
+          width: `${value}%`,
+          backgroundColor: "var(--brand-primary)",
+        }}
       />
     </div>
   );
@@ -52,9 +56,17 @@ function Card({
 }) {
   return (
     <div
-      className={`rounded-xl border border-border bg-white dark:bg-zinc-900 ${className}`}
+      className={`rounded-xl border ${className}`}
+      style={{
+        backgroundColor: "var(--surface-primary)",
+        borderColor: "var(--border-default)",
+        color: "var(--text-primary)",
+      }}
     >
-      <div className="px-6 py-4 border-b border-border">
+      <div
+        className="px-6 py-4 border-b"
+        style={{ borderColor: "var(--border-default)" }}
+      >
         <h3 className="text-sm font-semibold">{title}</h3>
       </div>
       <div className="p-6">{children}</div>
@@ -64,15 +76,27 @@ function Card({
 
 export function SourceOfTruthBanner() {
   return (
-    <div className="rounded-lg border border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/30 px-4 py-3">
+    <div
+      className="rounded-lg border px-4 py-3"
+      style={{
+        backgroundColor: "var(--surface-secondary)",
+        borderColor: "var(--border-default)",
+      }}
+    >
       <div className="flex items-center gap-2 text-sm">
-        <span className="font-medium text-blue-700 dark:text-blue-400">
+        <span className="font-medium" style={{ color: "var(--brand-primary)" }}>
           Source of Truth:
         </span>
-        <code className="text-xs bg-blue-100 dark:bg-blue-900/50 px-2 py-0.5 rounded font-mono">
+        <code
+          className="text-xs px-2 py-0.5 rounded font-mono"
+          style={{
+            backgroundColor: "var(--surface-muted)",
+            color: "var(--text-secondary)",
+          }}
+        >
           src/project/projectRegistry.ts
         </code>
-        <span className="text-blue-600 dark:text-blue-500">
+        <span style={{ color: "var(--text-muted)" }}>
           — All dashboard panels render from this canonical registry.
         </span>
       </div>
@@ -137,7 +161,9 @@ export function PhaseReadinessPanel({
         {checks.map((check) => (
           <div key={check.label} className="flex items-center gap-2 text-sm">
             <span
-              className={check.done ? "text-green-600" : "text-zinc-400"}
+              style={{
+                color: check.done ? "var(--state-success)" : "var(--text-muted)",
+              }}
             >
               {check.done ? "✓" : "○"}
             </span>
@@ -163,18 +189,29 @@ export function FddLane() {
         {stages.map((stage, i) => (
           <div key={stage.label} className="flex items-center">
             <div
-              className={`px-3 py-1.5 text-xs font-medium rounded-md ${
-                stage.done
-                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+              className="px-3 py-1.5 text-xs font-medium rounded-md"
+              style={{
+                backgroundColor: stage.done
+                  ? "#dcfce7"
                   : stage.active
-                    ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
-                    : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
-              }`}
+                    ? "#fef3c7"
+                    : "var(--surface-muted)",
+                color: stage.done
+                  ? "#16a34a"
+                  : stage.active
+                    ? "#b45309"
+                    : "var(--text-muted)",
+              }}
             >
               {stage.label}
             </div>
             {i < stages.length - 1 && (
-              <span className="mx-1 text-zinc-300 dark:text-zinc-600">→</span>
+              <span
+                className="mx-1"
+                style={{ color: "var(--text-muted)" }}
+              >
+                →
+              </span>
             )}
           </div>
         ))}
@@ -206,7 +243,7 @@ export function MegaPromptPlan({ registry }: { registry: ProjectRegistry }) {
           </thead>
           <tbody className="divide-y divide-border">
             {registry.phases.map((phase) => (
-              <tr key={phase.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+              <tr key={phase.id} className="transition-colors" style={{ ["--hover-bg" as string]: "var(--table-row-hover)" }}>
                 <td className="py-2 text-xs">
                   <span className="font-mono text-muted-foreground">P{phase.number}</span>{" "}
                   {phase.name}

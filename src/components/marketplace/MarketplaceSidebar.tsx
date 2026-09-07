@@ -9,10 +9,12 @@ export function MarketplaceSidebar({
 }) {
   return (
     <aside
-      className={cn(
-        "rounded-xl border border-border bg-white dark:bg-zinc-900 p-6",
-        className
-      )}
+      className={cn("rounded-xl border p-6", className)}
+      style={{
+        backgroundColor: "var(--surface-primary)",
+        borderColor: "var(--border-default)",
+        color: "var(--text-primary)",
+      }}
     >
       {children}
     </aside>

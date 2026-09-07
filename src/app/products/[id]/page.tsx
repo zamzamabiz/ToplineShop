@@ -18,18 +18,18 @@ export default async function ProductDetailPage({
   if (!product) {
     return (
       <AppShell>
-        <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+        <div className="min-h-screen" style={{ backgroundColor: "var(--app-canvas)" }}>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-            <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6">
+            <nav className="flex items-center gap-1.5 text-sm mb-6" style={{ color: "var(--text-muted)" }}>
               <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
               <span>/</span>
               <Link href="/products" className="hover:text-foreground transition-colors">Products</Link>
               <span>/</span>
               <span className="text-foreground font-medium">Not Found</span>
             </nav>
-            <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-12 text-center">
+            <div className="rounded-xl border border-border p-12 text-center" style={{ backgroundColor: "var(--surface-primary)" }}>
               <h1 className="text-xl font-bold mb-2">Product Not Found</h1>
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-sm mb-4" style={{ color: "var(--text-muted)" }}>
                 The product you are looking for does not exist.
               </p>
               <Link
@@ -53,9 +53,9 @@ export default async function ProductDetailPage({
 
   return (
     <AppShell>
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      <div className="min-h-screen" style={{ backgroundColor: "var(--app-canvas)" }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-          <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6">
+          <nav className="flex items-center gap-1.5 text-sm mb-6" style={{ color: "var(--text-muted)" }}>
             <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
             <span>/</span>
             <Link href="/products" className="hover:text-foreground transition-colors">Products</Link>
@@ -64,12 +64,12 @@ export default async function ProductDetailPage({
           </nav>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 overflow-hidden">
-              <div className="aspect-square bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center relative">
+            <div className="rounded-xl border border-border overflow-hidden" style={{ backgroundColor: "var(--surface-primary)" }}>
+              <div className="aspect-square flex items-center justify-center relative" style={{ backgroundColor: "var(--surface-muted)" }}>
                 {product.image ? (
                   <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
                 ) : (
-                  <div className="text-muted-foreground text-sm">No image available</div>
+                  <div className="text-sm" style={{ color: "var(--text-muted)" }}>No image available</div>
                 )}
                 {product.badge && (
                   <span className="absolute top-4 left-4 inline-flex items-center rounded-full bg-primary px-3 py-1 text-sm font-medium text-primary-foreground">
@@ -82,11 +82,11 @@ export default async function ProductDetailPage({
             <div className="space-y-6">
               <div>
                 {category && (
-                  <div className="text-sm text-muted-foreground mb-2">{category.name}</div>
+                  <div className="text-sm mb-2" style={{ color: "var(--text-muted)" }}>{category.name}</div>
                 )}
                 <h1 className="text-2xl font-bold">{product.name}</h1>
                 {product.vendor && (
-                  <div className="text-sm text-muted-foreground mt-2">
+                  <div className="text-sm mt-2" style={{ color: "var(--text-muted)" }}>
                     by{" "}
                     {productVendor ? (
                       <Link href={`/vendors/${productVendor.slug}`} className="font-medium text-foreground hover:underline">
@@ -102,7 +102,7 @@ export default async function ProductDetailPage({
               <div className="flex items-baseline gap-3">
                 <span className="text-3xl font-bold">{product.price}</span>
                 {product.originalPrice && (
-                  <span className="text-lg text-muted-foreground line-through">
+                  <span className="text-lg line-through" style={{ color: "var(--text-muted)" }}>
                     {product.originalPrice}
                   </span>
                 )}
@@ -115,7 +115,7 @@ export default async function ProductDetailPage({
                       {"★".repeat(Math.round(product.rating))}
                     </span>
                     <span>{product.rating.toFixed(1)}</span>
-                    <span className="text-muted-foreground">({product.reviewCount} reviews)</span>
+                    <span style={{ color: "var(--text-muted)" }}>({product.reviewCount} reviews)</span>
                   </div>
                 )}
               </div>
@@ -125,7 +125,7 @@ export default async function ProductDetailPage({
               </div>
 
               {product.description && (
-                <div className="text-sm text-muted-foreground leading-relaxed">
+                <div className="text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>
                   {product.description}
                 </div>
               )}
@@ -137,30 +137,30 @@ export default async function ProductDetailPage({
                 <button disabled className="w-full h-11 rounded-lg border border-border font-medium text-sm opacity-50 cursor-not-allowed">
                   Buy Now
                 </button>
-                <p className="text-xs text-muted-foreground text-center">
+                <p className="text-xs text-center" style={{ color: "var(--text-muted)" }}>
                   <Badge>Frontend Placeholder</Badge> — Cart and checkout are not yet implemented
                 </p>
               </div>
 
-              <div className="rounded-lg bg-zinc-100 dark:bg-zinc-800 p-4 space-y-2 text-sm">
+              <div className="rounded-lg p-4 space-y-2 text-sm" style={{ backgroundColor: "var(--surface-muted)" }}>
                 {product.deliveryNote && (
                   <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground">🚚</span>
+                    <span style={{ color: "var(--text-muted)" }}>🚚</span>
                     <span>{product.deliveryNote}</span>
                   </div>
                 )}
                 {product.returnNote && (
                   <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground">↩️</span>
+                    <span style={{ color: "var(--text-muted)" }}>↩️</span>
                     <span>{product.returnNote}</span>
                   </div>
                 )}
                 <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground">🔒</span>
+                  <span style={{ color: "var(--text-muted)" }}>🔒</span>
                   <span>Secure payment at checkout</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground">✓</span>
+                  <span style={{ color: "var(--text-muted)" }}>✓</span>
                   <span>Verified vendor</span>
                 </div>
               </div>
@@ -170,13 +170,13 @@ export default async function ProductDetailPage({
           {product.specifications && product.specifications.length > 0 && (
             <div className="mb-12">
               <h2 className="text-lg font-bold mb-4">Specifications</h2>
-              <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 overflow-hidden">
+              <div className="rounded-xl border border-border overflow-hidden" style={{ backgroundColor: "var(--surface-primary)" }}>
                 <table className="w-full text-sm">
                   <tbody>
                     {product.specifications.map((spec, idx) => (
-                      <tr key={idx} className={idx % 2 === 0 ? "bg-zinc-50 dark:bg-zinc-800/50" : ""}>
+                      <tr key={idx} className={idx % 2 === 0 ? "" : ""} style={idx % 2 === 0 ? { backgroundColor: "var(--surface-muted)" } : undefined}>
                         <td className="px-4 py-3 font-medium w-1/3">{spec.label}</td>
-                        <td className="px-4 py-3 text-muted-foreground">{spec.value}</td>
+                        <td className="px-4 py-3" style={{ color: "var(--text-muted)" }}>{spec.value}</td>
                       </tr>
                     ))}
                   </tbody>

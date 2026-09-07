@@ -8,7 +8,7 @@ export function MarketplaceShell({
   className?: string;
 }) {
   return (
-    <div className={cn("min-h-screen bg-zinc-50 dark:bg-zinc-950", className)}>
+    <div className={cn("min-h-screen", className)} style={{ backgroundColor: "var(--app-canvas)" }}>
       {children}
     </div>
   );

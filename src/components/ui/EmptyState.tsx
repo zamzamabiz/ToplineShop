@@ -21,10 +21,13 @@ export function EmptyState({
       )}
     >
       {icon && (
-        <div className="mb-4 text-muted-foreground">{icon}</div>
+        <div className="mb-4" style={{ color: "var(--text-muted)" }}>{icon}</div>
       )}
       <h3 className="text-lg font-semibold">{title}</h3>
-      <p className="mt-1 text-sm text-muted-foreground max-w-sm">
+      <p
+        className="mt-1 text-sm max-w-sm"
+        style={{ color: "var(--text-muted)" }}
+      >
         {description}
       </p>
       {action && <div className="mt-4">{action}</div>}

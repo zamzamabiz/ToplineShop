@@ -23,18 +23,18 @@ export default async function CategoryDetailPage({
   if (!category) {
     return (
       <AppShell>
-        <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+        <div className="min-h-screen" style={{ backgroundColor: "var(--app-canvas)" }}>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-            <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6">
+            <nav className="flex items-center gap-1.5 text-sm mb-6" style={{ color: "var(--text-muted)" }}>
               <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
               <span>/</span>
               <Link href="/categories" className="hover:text-foreground transition-colors">Categories</Link>
               <span>/</span>
               <span className="text-foreground font-medium">Not Found</span>
             </nav>
-            <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-12 text-center">
+            <div className="rounded-xl border border-border p-12 text-center" style={{ backgroundColor: "var(--surface-primary)" }}>
               <h1 className="text-xl font-bold mb-2">Category Not Found</h1>
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-sm mb-4" style={{ color: "var(--text-muted)" }}>
                 The category you are looking for does not exist.
               </p>
               <Link
@@ -56,9 +56,9 @@ export default async function CategoryDetailPage({
 
   return (
     <AppShell>
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      <div className="min-h-screen" style={{ backgroundColor: "var(--app-canvas)" }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-          <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6">
+          <nav className="flex items-center gap-1.5 text-sm mb-6" style={{ color: "var(--text-muted)" }}>
             <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
             <span>/</span>
             <Link href="/categories" className="hover:text-foreground transition-colors">Categories</Link>
@@ -71,7 +71,7 @@ export default async function CategoryDetailPage({
               <h1 className="text-2xl font-bold">{category.name}</h1>
               <Badge>{category.count} items</Badge>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm" style={{ color: "var(--text-muted)" }}>
               Browse {category.name.toLowerCase()} products from verified vendors
             </p>
           </div>
@@ -85,8 +85,8 @@ export default async function CategoryDetailPage({
               </MarketplaceGrid>
             </MarketplaceSection>
           ) : (
-            <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-12 text-center">
-              <p className="text-muted-foreground">
+            <div className="rounded-xl border border-border p-12 text-center" style={{ backgroundColor: "var(--surface-primary)" }}>
+              <p style={{ color: "var(--text-muted)" }}>
                 No products in this category yet. More mock products coming soon.
               </p>
             </div>

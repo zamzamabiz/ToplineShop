@@ -22,9 +22,9 @@ export default function ProjectManagement() {
   const registry = projectRegistry;
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--app-canvas)" }}>
       {/* Header */}
-      <header className="border-b border-border bg-white dark:bg-zinc-900 sticky top-0 z-10">
+      <header className="border-b sticky top-0 z-10" style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-3">
@@ -39,12 +39,12 @@ export default function ProjectManagement() {
                 </div>
                 <span className="text-lg font-semibold">ToplineShop</span>
               </Link>
-              <span className="text-muted-foreground">|</span>
-              <span className="text-sm text-muted-foreground">
+              <span style={{ color: "var(--text-muted)" }}>|</span>
+              <span className="text-sm" style={{ color: "var(--text-muted)" }}>
                 Project Management Control Center
               </span>
             </div>
-            <div className="hidden sm:flex items-center gap-4 text-xs text-muted-foreground">
+            <div className="hidden sm:flex items-center gap-4 text-xs" style={{ color: "var(--text-muted)" }}>
               <span>Protocol: {registry.protocol}</span>
               <span>Policy: {registry.developmentPolicy}</span>
               <span>
@@ -67,7 +67,7 @@ export default function ProjectManagement() {
           <h1 className="text-2xl font-bold">
             Project Management Control Center
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
             Current Phase: {registry.currentPhase} — Task:{" "}
             {registry.currentTask} — Overall: {registry.overallCompletion}%
           </p>
@@ -111,22 +111,26 @@ export default function ProjectManagement() {
         </div>
 
         {/* Decisions */}
-        <div className="mt-8 rounded-xl border border-border bg-white dark:bg-zinc-900 p-6">
+        <div className="mt-8 rounded-xl border p-6" style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}>
           <h3 className="text-sm font-semibold mb-4">Key Decisions</h3>
           <div className="space-y-2">
             {registry.decisions.map((decision) => (
               <div
                 key={decision.id}
-                className="flex items-center justify-between rounded-lg border border-border p-3"
+                className="flex items-center justify-between rounded-lg border p-3"
+                style={{ borderColor: "var(--border-default)" }}
               >
                 <div>
                   <div className="text-sm font-medium">{decision.title}</div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs" style={{ color: "var(--text-muted)" }}>
                     {decision.description} — by {decision.decidedBy} on{" "}
                     {decision.date}
                   </div>
                 </div>
-                <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                <span
+                  className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+                  style={{ backgroundColor: "rgba(34,197,94,0.1)", color: "var(--state-success)" }}
+                >
                   {decision.status}
                 </span>
               </div>
@@ -136,9 +140,9 @@ export default function ProjectManagement() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-white dark:bg-zinc-900 mt-8">
+      <footer className="border-t mt-8" style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <div className="flex items-center justify-between text-sm" style={{ color: "var(--text-muted)" }}>
             <span>
               ToplineShop v{registry.version} — {registry.developmentPolicy}
             </span>

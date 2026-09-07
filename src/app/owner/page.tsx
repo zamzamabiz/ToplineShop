@@ -34,14 +34,14 @@ const iconMap: Record<string, React.ReactNode> = {
 export default function OwnerPage() {
   return (
     <AppShell>
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      <div className="min-h-screen" style={{ backgroundColor: "var(--app-canvas)" }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-8">
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-bold">Owner Control Center</h1>
               <Badge>Executive Dashboard</Badge>
             </div>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
               Platform oversight, revenue tracking, and strategic control
             </p>
           </div>
@@ -59,11 +59,12 @@ export default function OwnerPage() {
               {ownerNavItems.map((section) => (
                 <div
                   key={section.title}
-                  className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6 hover:border-primary/50 transition-colors cursor-pointer"
+                  className="rounded-xl border p-6 hover:border-primary/50 transition-colors cursor-pointer"
+                  style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}
                 >
                   {iconMap[section.icon]}
                   <h3 className="font-semibold text-sm mt-3">{section.title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
                     {section.description}
                   </p>
                   <div className="mt-3">
@@ -78,33 +79,36 @@ export default function OwnerPage() {
             <Card title="Development Progress">
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Current Phase</span>
+                  <span style={{ color: "var(--text-muted)" }}>Current Phase</span>
                   <span className="font-medium">Phase 3 — B2B / Wholesale</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Overall Progress</span>
+                  <span style={{ color: "var(--text-muted)" }}>Overall Progress</span>
                   <span className="font-medium">50%</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Backend</span>
+                  <span style={{ color: "var(--text-muted)" }}>Backend</span>
                   <Badge>NOT_STARTED</Badge>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Database</span>
+                  <span style={{ color: "var(--text-muted)" }}>Database</span>
                   <Badge>NOT_STARTED</Badge>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Auth</span>
+                  <span style={{ color: "var(--text-muted)" }}>Auth</span>
                   <Badge>NOT_STARTED</Badge>
                 </div>
               </div>
             </Card>
           </MarketplaceSection>
 
-          <div className="rounded-lg border border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/30 px-4 py-3">
+          <div
+            className="rounded-lg border px-4 py-3"
+            style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-muted)" }}
+          >
             <div className="flex items-center gap-2 text-sm">
               <Badge>Frontend Placeholder</Badge>
-              <span className="text-amber-700 dark:text-amber-400">
+              <span style={{ color: "var(--text-muted)" }}>
                 Revenue, commission, and financial data are not real. This is a frontend placeholder for the owner dashboard layout.
               </span>
             </div>

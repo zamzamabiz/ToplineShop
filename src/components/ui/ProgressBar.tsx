@@ -7,11 +7,15 @@ export function ProgressBar({
 }) {
   return (
     <div
-      className={`w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-2 ${className}`}
+      className={`w-full rounded-full h-2 ${className}`}
+      style={{ backgroundColor: "var(--surface-muted)" }}
     >
       <div
-        className="bg-primary h-2 rounded-full transition-all duration-300"
-        style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
+        className="h-2 rounded-full transition-all duration-300"
+        style={{
+          width: `${Math.min(100, Math.max(0, value))}%`,
+          backgroundColor: "var(--brand-primary)",
+        }}
       />
     </div>
   );

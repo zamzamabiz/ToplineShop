@@ -32,14 +32,14 @@ const iconMap: Record<string, React.ReactNode> = {
 export default function VendorPage() {
   return (
     <AppShell>
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      <div className="min-h-screen" style={{ backgroundColor: "var(--app-canvas)" }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-8">
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-bold">Vendor Dashboard</h1>
               <Badge>SaaS Shell</Badge>
             </div>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
               Manage your storefront, products, and orders
             </p>
           </div>
@@ -57,11 +57,12 @@ export default function VendorPage() {
               {vendorNavItems.map((card) => (
                 <div
                   key={card.title}
-                  className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6 hover:border-primary/50 transition-colors cursor-pointer"
+                  className="rounded-xl border p-6 hover:border-primary/50 transition-colors cursor-pointer"
+                  style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}
                 >
                   {iconMap[card.icon]}
                   <h3 className="font-semibold text-sm mt-3">{card.title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
                     {card.description}
                   </p>
                   <div className="mt-3">
@@ -77,7 +78,7 @@ export default function VendorPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-sm font-medium">Free Tier</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">
+                  <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
                     Basic vendor features. Upgrade for advanced analytics and priority support.
                   </div>
                 </div>
@@ -86,10 +87,13 @@ export default function VendorPage() {
             </Card>
           </MarketplaceSection>
 
-          <div className="rounded-lg border border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/30 px-4 py-3">
+          <div
+            className="rounded-lg border px-4 py-3"
+            style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-muted)" }}
+          >
             <div className="flex items-center gap-2 text-sm">
               <Badge>Frontend Placeholder</Badge>
-              <span className="text-amber-700 dark:text-amber-400">
+              <span style={{ color: "var(--text-muted)" }}>
                 Vendor SaaS logic not implemented yet. Product management, orders, analytics, and billing are placeholder concepts.
               </span>
             </div>

@@ -30,7 +30,7 @@ const iconMap: Record<string, React.ReactNode> = {
 export default function B2BPage() {
   return (
     <AppShell>
-      <div className="bg-zinc-50 dark:bg-zinc-950">
+      <div style={{ backgroundColor: "var(--app-canvas)" }}>
         <MarketplaceHero
           title="B2B Wholesale Marketplace"
           subtitle="Connect with verified suppliers for bulk orders and wholesale pricing across Nigeria."
@@ -51,11 +51,12 @@ export default function B2BPage() {
             {b2bBenefits.map((benefit) => (
               <div
                 key={benefit.id}
-                className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-6"
+                className="rounded-xl border p-6"
+                style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}
               >
                 {iconMap[benefit.icon]}
                 <h3 className="font-semibold text-sm mt-3">{benefit.title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
                   {benefit.description}
                 </p>
               </div>
@@ -77,10 +78,11 @@ export default function B2BPage() {
             {b2bSupplierCategories.map((cat) => (
               <div
                 key={cat.id}
-                className="flex items-center justify-between rounded-xl border border-border bg-white dark:bg-zinc-900 p-4 hover:border-primary/50 transition-colors cursor-pointer"
+                className="flex items-center justify-between rounded-xl border p-4 hover:border-primary/50 transition-colors cursor-pointer"
+                style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}
               >
                 <span className="font-medium text-sm">{cat.name}</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs" style={{ color: "var(--text-muted)" }}>
                   {cat.count} suppliers
                 </span>
               </div>
@@ -104,8 +106,8 @@ export default function B2BPage() {
                   {item.step}
                 </div>
                 <h3 className="font-semibold text-sm">{item.title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{item.desc}</p>
-                <p className="mt-2 text-xs text-muted-foreground italic">Coming later</p>
+                <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>{item.desc}</p>
+                <p className="mt-2 text-xs italic" style={{ color: "var(--text-muted)" }}>Coming later</p>
               </div>
             ))}
           </div>
@@ -124,7 +126,8 @@ export default function B2BPage() {
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-3 rounded-xl border border-border bg-white dark:bg-zinc-900 p-4"
+                className="flex items-center gap-3 rounded-xl border p-4"
+                style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}
               >
                 <span className="text-primary">{item.icon}</span>
                 <span className="text-sm font-medium">{item.label}</span>
@@ -134,26 +137,29 @@ export default function B2BPage() {
         </MarketplaceSection>
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-          <div className="rounded-xl border border-border bg-white dark:bg-zinc-900 p-8 text-center">
+          <div className="rounded-xl border p-8 text-center" style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}>
             <h2 className="text-lg font-bold mb-2">Ready to Start Wholesale Ordering?</h2>
-            <p className="text-sm text-muted-foreground mb-6 max-w-xl mx-auto">
+            <p className="text-sm mb-6 max-w-xl mx-auto" style={{ color: "var(--text-muted)" }}>
               Wholesale account approval, RFQ submission, and bulk ordering are not yet implemented. 
               These features will be available in a future phase.
             </p>
             <Button disabled className="opacity-50 cursor-not-allowed">
               Create Business Account
             </Button>
-            <p className="text-xs text-muted-foreground mt-3">
+            <p className="text-xs mt-3" style={{ color: "var(--text-muted)" }}>
               <Badge>Frontend Placeholder</Badge> — Account creation and RFQ workflow are not yet implemented
             </p>
           </div>
         </div>
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-10">
-          <div className="rounded-lg border border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/30 px-4 py-3">
+          <div
+            className="rounded-lg border px-4 py-3"
+            style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-muted)" }}
+          >
             <div className="flex items-center gap-2 text-sm">
               <Badge>Frontend Placeholder</Badge>
-              <span className="text-amber-700 dark:text-amber-400">
+              <span style={{ color: "var(--text-muted)" }}>
                 B2B logic not implemented yet. RFQ, supplier verification, wholesale accounts, and bulk ordering are placeholder concepts.
               </span>
             </div>
