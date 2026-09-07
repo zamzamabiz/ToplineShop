@@ -911,6 +911,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PLANNED",
       notes: "Service layer architecture documented, API standards defined, P5-002 recommended",
     },
+    {
+      id: "TOPLINE-P5-002",
+      phase: "phase-5",
+      title: "Backend Common API Standards + Database Health Status",
+      objective:
+        "Implement common API response standard and database health status — no business CRUD",
+      status: "CLOSED",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P5-001"],
+      startedAt: new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      wdrPath: "WDR/_All/Phase-05-Backend-API-Foundation/TOPLINE-P5-002_WDR_2026-09-08.md",
+      commitHash: null,
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "Common response standard, DB health check (SELECT 1), standardized endpoints",
+    },
   ],
   modules: [
     {
@@ -1537,6 +1556,15 @@ export const projectRegistry: ProjectRegistry = {
       date: "2026-09-07",
       commitHash: "361fe99",
       pmAudit: "PASS",
+    },
+    {
+      id: "wdr-031",
+      taskId: "TOPLINE-P5-002",
+      phase: "phase-5",
+      status: "PASS",
+      date: "2026-09-08",
+      commitHash: null,
+      pmAudit: "PLANNED",
     },
   ],
   git: {

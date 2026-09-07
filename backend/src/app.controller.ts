@@ -1,33 +1,23 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
+import { ApiResponse } from './common/api-response';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getRoot(): { message: string; status: string } {
+  getRoot() {
     return this.appService.getRoot();
   }
 
   @Get('health')
-  getHealth(): {
-    status: string;
-    service: string;
-    version: string;
-    environment: string;
-    checks: {
-      api: string;
-      database: string;
-      auth: string;
-      payments: string;
-    };
-  } {
+  async getHealth() {
     return this.appService.getHealth();
   }
 
   @Get('version')
-  getVersion(): { service: string; version: string; phase: string } {
+  getVersion() {
     return this.appService.getVersion();
   }
 }

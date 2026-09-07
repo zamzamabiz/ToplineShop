@@ -27,9 +27,25 @@ async function checkEndpoint(path, expectedStatus, validate) {
 async function main() {
   console.log(`Running smoke tests against ${BASE_URL}\n`);
 
-  await checkEndpoint('/', 200, (b) => b.status === 'ok' && b.message);
-  await checkEndpoint('/health', 200, (b) => b.status === 'ok' && b.service === 'toplineshop-api');
-  await checkEndpoint('/version', 200, (b) => b.version === '0.1.0' && b.phase === 'P3-008');
+  await checkEndpoint('/', 200, (b) => b.ok === true && b.data.status === 'ok' && b.data.message);
+  await checkEndpoint('/health', 200, (b) =>
+    b.ok === true &&
+    b.data.status === 'ok' &&
+    b.data.service === 'toplineshop-api' &&
+    b.data.checks.api === 'ok' &&
+    b.data.checks.prisma === 'configured' &&
+    typeof b.data.checks.database === 'string' &&
+    b.data.checks.auth === 'not_configured' &&
+    b.data.checks.payments === 'locked' &&
+    typeof b.data.environment === 'string' &&
+    !JSON.stringify(b).includes('DATABASE_URL') &&
+    !JSON.stringify(b).includes('password')
+  );
+  await checkEndpoint('/version', 200, (b) =>
+    b.ok === true &&
+    b.data.version === '0.1.0' &&
+    b.data.phase === 'P5-002'
+  );
 
   console.log('\nAll smoke tests passed.');
 }

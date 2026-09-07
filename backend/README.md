@@ -4,18 +4,20 @@ NestJS backend service for ToplineShop multi-vendor SaaS marketplace.
 
 ## Current Status
 
-**Core Schema Foundation** — 7 Prisma models implemented, no migrations executed.
+**API Standards + Database Health** — Common response format and database health status implemented.
 
 - ✅ NestJS application structure
-- ✅ Health endpoint (`GET /health`)
+- ✅ Common API response standard (`ok`, `data`, `meta`)
+- ✅ Health endpoint with database status (`GET /health`)
 - ✅ Version endpoint (`GET /version`)
 - ✅ Smoke test script
-- ✅ Prisma installed (schema + service scaffold)
+- ✅ Prisma installed (schema + service)
 - ✅ Core schema models (7 models, 7 enums)
-- ❌ No migrations created or run
-- ❌ No database connection active
+- ✅ Local PostgreSQL migration applied
+- ✅ Database health check (SELECT 1)
 - ❌ No auth/RBAC implemented
 - ❌ No payment/commerce logic
+- ❌ No business CRUD APIs
 - ❌ No CRM/ERP/FMCG modules
 
 ## Setup
@@ -34,6 +36,108 @@ npm run start:dev
 npm run start:prod
 ```
 
+## API Response Standard
+
+All endpoints return a standardized response format:
+
+### Success
+
+```json
+{
+  "ok": true,
+  "data": { ... },
+  "meta": { ... }
+}
+```
+
+### Error (future)
+
+```json
+{
+  "ok": false,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Safe human-readable message"
+  }
+}
+```
+
+## Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/` | GET | Bootstrap status check |
+| `/health` | GET | System health with database status |
+| `/version` | GET | Service version info |
+
+### `GET /`
+
+```json
+{
+  "ok": true,
+  "data": {
+    "message": "ToplineShop backend bootstrap is running",
+    "status": "ok"
+  }
+}
+```
+
+### `GET /health`
+
+```json
+{
+  "ok": true,
+  "data": {
+    "status": "ok",
+    "service": "toplineshop-api",
+    "version": "0.1.0",
+    "environment": "development",
+    "checks": {
+      "api": "ok",
+      "prisma": "configured",
+      "database": "ok",
+      "auth": "not_configured",
+      "payments": "locked"
+    }
+  },
+  "meta": {
+    "phase": "P5-002"
+  }
+}
+```
+
+**Database health behavior:**
+- Runs `SELECT 1` through Prisma on each request
+- Returns `"ok"` if database is reachable
+- Returns `"unavailable"` if database connection fails
+- Does not crash the backend if database is unavailable
+- Does not expose DATABASE_URL, credentials, or error details
+
+### `GET /version`
+
+```json
+{
+  "ok": true,
+  "data": {
+    "service": "toplineshop-api",
+    "version": "0.1.0",
+    "phase": "P5-002"
+  }
+}
+```
+
+## Smoke Test
+
+```bash
+npm run smoke
+```
+
+Verifies all three endpoints return standardized responses. Validates:
+- `ok === true` on all endpoints
+- `/health` includes `api`, `prisma`, `database`, `auth`, `payments` checks
+- No secrets or DATABASE_URL in responses
+- No password fields in responses
+
 ## Prisma Commands
 
 ```bash
@@ -44,80 +148,16 @@ npm run prisma:validate
 npm run prisma:generate
 ```
 
-**Note:** Schema has 7 models (Tenant, User, Membership, Vendor, Category, Product, AuditLog) and 7 enums. No migrations executed yet. No database connection active.
-
-## Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | GET | Bootstrap status check |
-| `/health` | GET | System health with subsystem status |
-| `/version` | GET | Service version info |
-
-### `GET /`
-
-```json
-{
-  "message": "ToplineShop backend bootstrap is running",
-  "status": "ok"
-}
-```
-
-### `GET /health`
-
-```json
-{
-  "status": "ok",
-  "service": "toplineshop-api",
-  "version": "0.1.0",
-  "environment": "development",
-  "checks": {
-    "api": "ok",
-    "database": "not_configured",
-    "auth": "not_configured",
-    "payments": "locked"
-  }
-}
-```
-
-### `GET /version`
-
-```json
-{
-  "service": "toplineshop-api",
-  "version": "0.1.0",
-  "phase": "P3-008"
-}
-```
-
-## Smoke Test
-
-```bash
-npm run smoke
-```
-
-Verifies all three endpoints return correct responses. Exits non-zero on failure.
-
-## Configuration
-
-Copy `.env.example` to `.env.local` and fill in values:
-
-```bash
-cp .env.example .env.local
-```
-
-See `.env.example` for available configuration options.
-
 ## Safety Boundaries
 
-- Core schema models implemented (7 models, 7 enums)
-- No migrations created or run
-- No database connection active
+- Common API response standard implemented
+- Database health check (non-business SELECT 1)
 - No authentication or authorization
 - No payment processing
+- No business CRUD APIs
 - No real secrets committed
 - Frontend at root remains unchanged
 
 ## Next Steps
 
-- **TOPLINE-P4-004B**: Local PostgreSQL connection + migration run (requires PM approval)
+- **TOPLINE-P5-003**: Tenant Read Service (requires PM approval)
