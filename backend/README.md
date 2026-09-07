@@ -4,15 +4,17 @@ NestJS backend service for ToplineShop multi-vendor SaaS marketplace.
 
 ## Current Status
 
-**Health Check + Smoke Test** — Minimal backend with system readiness endpoints.
+**Prisma Bootstrap** — Database tooling initialized, no models or migrations.
 
 - ✅ NestJS application structure
 - ✅ Health endpoint (`GET /health`)
 - ✅ Version endpoint (`GET /version`)
 - ✅ Smoke test script
-- ❌ No database connected
+- ✅ Prisma installed (schema + service scaffold)
+- ❌ No database models created
+- ❌ No migrations created or run
+- ❌ No database connection active
 - ❌ No auth/RBAC implemented
-- ❌ No API contract routes implemented
 - ❌ No payment/commerce logic
 - ❌ No CRM/ERP/FMCG modules
 
@@ -31,6 +33,18 @@ npm run start:dev
 # Production
 npm run start:prod
 ```
+
+## Prisma Commands
+
+```bash
+# Validate schema
+npm run prisma:validate
+
+# Generate Prisma client
+npm run prisma:generate
+```
+
+**Note:** No models exist yet. These commands validate the minimal schema configuration.
 
 ## Endpoints
 
@@ -96,7 +110,8 @@ See `.env.example` for available configuration options.
 
 ## Safety Boundaries
 
-- No database schema or migrations
+- No database schema or migrations (Prisma schema has generator + datasource only)
+- No database connection active
 - No authentication or authorization
 - No payment processing
 - No real secrets committed
@@ -104,4 +119,4 @@ See `.env.example` for available configuration options.
 
 ## Next Steps
 
-- **TOPLINE-P3-009**: Database schema design (future)
+- **TOPLINE-P4-003**: Core schema foundation (Tenant, User, Vendor, Category, Product, AuditLog)

@@ -797,6 +797,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PASS",
       notes: "Readiness audit only — no Prisma/database implementation",
     },
+    {
+      id: "TOPLINE-P4-002",
+      phase: "phase-4",
+      title: "Prisma Bootstrap Only — No Models, No Migrations",
+      objective:
+        "Bootstrap Prisma tooling in NestJS backend — install packages, minimal schema, service scaffold",
+      status: "CLOSED",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P4-001"],
+      startedAt: new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      wdrPath: "WDR/_All/Phase-04-Database-Foundation/TOPLINE-P4-002_WDR_2026-09-07.md",
+      commitHash: null,
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "Prisma 6.19.3 installed, schema validated, service scaffold created — no models/migrations",
+    },
   ],
   modules: [
     {
@@ -1369,6 +1388,15 @@ export const projectRegistry: ProjectRegistry = {
       date: "2026-09-07",
       commitHash: "e2fb037",
       pmAudit: "PASS",
+    },
+    {
+      id: "wdr-025",
+      taskId: "TOPLINE-P4-002",
+      phase: "phase-4",
+      status: "PASS",
+      date: "2026-09-07",
+      commitHash: null,
+      pmAudit: "PLANNED",
     },
   ],
   git: {
