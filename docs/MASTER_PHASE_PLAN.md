@@ -19,7 +19,8 @@
 **Status**: IN_PROGRESS  
 **Objective**: Backend architecture planning, database design, auth/RBAC design, API contracts, backend bootstrap.  
 **Dependencies**: Phase 2
-**Current Task**: TOPLINE-P3-002 (Stack Decision)
+**Current Task**: TOPLINE-P3-004A (SaaS Platform Strategy)
+**Note**: P3-004A inserted before P3-005. Auth/RBAC must account for SaaS, multi-tenant, modular, multi-business platform strategy.
 
 ## Phase 4: Customer Commerce Frontend
 **Status**: PLANNED  

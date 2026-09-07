@@ -645,6 +645,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PLANNED",
       notes: "API contract design documentation only — no backend/API code created",
     },
+    {
+      id: "TOPLINE-P3-004A",
+      phase: "phase-3",
+      title: "SaaS Multi-Tenant Modular Business Platform Strategy",
+      objective:
+        "Define ToplineShop as SaaS-first, multi-tenant, modular, multi-business platform — protect future architecture before Auth/RBAC implementation",
+      status: "IN_PROGRESS",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P3-004"],
+      startedAt: new Date().toISOString(),
+      completedAt: null,
+      wdrPath: "WDR/_All/Phase-03-Backend-Readiness/TOPLINE-P3-004A_WDR_2026-09-07.md",
+      commitHash: null,
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "Strategy documentation only — no modules/backend/API implemented",
+    },
   ],
   modules: [
     {
@@ -1140,6 +1159,15 @@ export const projectRegistry: ProjectRegistry = {
     {
       id: "wdr-016",
       taskId: "TOPLINE-P3-004",
+      phase: "phase-3",
+      status: "PASS",
+      date: "2026-09-07",
+      commitHash: "438ffae",
+      pmAudit: "PLANNED",
+    },
+    {
+      id: "wdr-017",
+      taskId: "TOPLINE-P3-004A",
       phase: "phase-3",
       status: "PASS",
       date: "2026-09-07",
