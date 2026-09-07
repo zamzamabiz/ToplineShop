@@ -626,6 +626,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PLANNED",
       notes: "Database design documentation only — no schema/migrations created",
     },
+    {
+      id: "TOPLINE-P3-004",
+      phase: "phase-3",
+      title: "API Contract Design Document",
+      objective:
+        "Design API contracts for multi-vendor marketplace — routes, request/response, validation, auth, error handling",
+      status: "IN_PROGRESS",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P3-003"],
+      startedAt: new Date().toISOString(),
+      completedAt: null,
+      wdrPath: "WDR/_All/Phase-03-Backend-Readiness/TOPLINE-P3-004_WDR_2026-09-07.md",
+      commitHash: null,
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "API contract design documentation only — no backend/API code created",
+    },
   ],
   modules: [
     {
@@ -1112,6 +1131,15 @@ export const projectRegistry: ProjectRegistry = {
     {
       id: "wdr-015",
       taskId: "TOPLINE-P3-003",
+      phase: "phase-3",
+      status: "PASS",
+      date: "2026-09-07",
+      commitHash: "eab9d01",
+      pmAudit: "PLANNED",
+    },
+    {
+      id: "wdr-016",
+      taskId: "TOPLINE-P3-004",
       phase: "phase-3",
       status: "PASS",
       date: "2026-09-07",
