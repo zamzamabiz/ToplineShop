@@ -17,10 +17,10 @@
 
 ## Phase 3: Backend Readiness + B2B Foundation
 **Status**: IN_PROGRESS  
-**Objective**: Backend architecture planning, database design, auth/RBAC design, API contracts, environment/secrets safety, backend bootstrap.  
+**Objective**: Backend architecture planning, database design, auth/RBAC design, API contracts, environment/secrets safety, backend bootstrap, health check, B2B foundation.  
 **Dependencies**: Phase 2
-**Current Task**: TOPLINE-P3-006 (Environment + Secrets Safety Plan)
-**Note**: P3-006 safety plan protects secrets before backend bootstrap.
+**Current Task**: TOPLINE-P3-007 (Backend Bootstrap)
+**Note**: P3-007 creates minimal NestJS backend scaffold. P3-008 will add health check API.
 
 ## Phase 4: Customer Commerce Frontend
 **Status**: PLANNED  
