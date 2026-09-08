@@ -3,7 +3,7 @@
 ## Current WDR
 
 **TOPLINE-P7-003** — Observability + Logging Foundation  
-**Status**: PASS / CLOSED  
+**Status**: PASS implementation / PM audit BLOCKED  
 **Date**: 2026-09-08  
 **Commit**: `517421a`
 
@@ -22,3 +22,7 @@ Observability foundation implemented:
 - Logs method, path, status, duration, correlation ID, sanitized user agent
 - No sensitive data logged
 - No write APIs, no auth/RBAC, no schema changes
+
+## PM Audit
+
+P7-003 is not approved because the logging interceptor writes raw exception messages into logs. The audit is saved at `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-003-AUDIT_2026-09-08.md`. Corrective task `TOPLINE-P7-003-R1` is required before P7-004.

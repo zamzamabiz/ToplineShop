@@ -1268,7 +1268,7 @@ export const projectRegistry: ProjectRegistry = {
       tests: "PASS",
       build: "PASS",
       ownerApproval: "PLANNED",
-      pmApproval: "PASS",
+      pmApproval: "BLOCKED",
       notes: "Logging interceptor — no write APIs, no auth",
       commitHash: "517421a",
     },
@@ -2068,7 +2068,7 @@ export const projectRegistry: ProjectRegistry = {
       status: "PASS",
       date: "2026-09-08",
       commitHash: "517421a",
-      pmAudit: "PASS",
+      pmAudit: "BLOCKED",
     },
   ],
   git: {
