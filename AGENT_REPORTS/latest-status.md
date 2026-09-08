@@ -9,7 +9,7 @@
 **TOPLINE-P6-008-GOV-RECONCILIATION** — Phase 6 Governance Reconciliation  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: pending
+**Commit**: `16a1144`
 
 ## Previous Task
 
