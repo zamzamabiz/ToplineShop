@@ -9,7 +9,7 @@
 **TOPLINE-P7-002** — Error Handling + Validation Foundation  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: pending
+**Commit**: `ad0ac0f`
 
 ## Previous Task
 
