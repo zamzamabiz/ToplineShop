@@ -5,7 +5,7 @@
 **TOPLINE-P7-003-R1** — Safe Error Logging Reconciliation  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: pending
+**Commit**: `7a70bf6`
 
 ## Previous WDR Reviewed
 
