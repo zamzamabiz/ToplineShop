@@ -239,10 +239,13 @@ export default function AdminVendorsPage() {
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="sm" disabled title="View details (deferred)">
+                            <Link
+                              href={`/admin/vendors/${vendor.id}`}
+                              className="inline-flex items-center justify-center rounded-md text-sm font-medium h-9 px-3 hover:opacity-80 transition-colors"
+                              style={{ backgroundColor: "transparent", color: "var(--text-secondary)" }}
+                            >
                               View
-                            </Button>
-                            <Lock className="h-3 w-3" style={{ color: "var(--text-muted)" }} />
+                            </Link>
                           </div>
                         </td>
                       </tr>

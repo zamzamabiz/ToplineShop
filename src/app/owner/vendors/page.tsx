@@ -224,10 +224,13 @@ export default function OwnerVendorsPage() {
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="sm" disabled title="Owner action (deferred)">
+                            <Link
+                              href={`/owner/vendors/${vendor.id}`}
+                              className="inline-flex items-center justify-center rounded-md text-sm font-medium h-9 px-3 hover:opacity-80 transition-colors"
+                              style={{ backgroundColor: "transparent", color: "var(--text-secondary)" }}
+                            >
                               Review
-                            </Button>
-                            <Lock className="h-3 w-3" style={{ color: "var(--text-muted)" }} />
+                            </Link>
                           </div>
                         </td>
                       </tr>

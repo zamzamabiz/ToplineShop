@@ -2,22 +2,25 @@
 
 ## Current WDR
 
+**TOPLINE-P6-007** — Admin/Owner Detail Pages  
+**Status**: PASS / CLOSED  
+**Date**: 2026-09-08  
+**Commit**: pending
+
+## Previous WDR Reviewed
+
 **TOPLINE-P6-006** — Owner Product + Platform Health Pages  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
 **Commit**: `2ac252b`
 
-## Previous WDR Reviewed
-
-**TOPLINE-P6-005** — Owner Dashboard + Vendor Oversight Page  
-**Status**: PASS / CLOSED  
-**Date**: 2026-09-08  
-**Commit**: `9ae4d43`
-
 ## Summary
 
-Owner product oversight and platform health pages created:
-- `src/app/owner/products/page.tsx` — product oversight table/cards, loading/error/empty states
-- `src/app/owner/platform/page.tsx` — service info, health checks, overall status
-- `src/app/owner/page.tsx` — Product Oversight and Platform Health Detail now READ-ONLY links
+Five detail pages created for admin and owner list flows:
+- `src/app/admin/vendors/[id]/page.tsx` — vendor detail with fields, loading/error/not-found states
+- `src/app/admin/products/[id]/page.tsx` — product detail with fields, loading/error/not-found states
+- `src/app/admin/categories/[id]/page.tsx` — category detail with fields, loading/error/not-found states
+- `src/app/owner/vendors/[id]/page.tsx` — vendor detail with fields, loading/error/not-found states
+- `src/app/owner/products/[id]/page.tsx` — product detail with fields, loading/error/not-found states
+- Five list pages updated: disabled buttons changed to working links
 - No write operations, no auth/RBAC, no backend changes
