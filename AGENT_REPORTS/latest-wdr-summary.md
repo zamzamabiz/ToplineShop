@@ -2,28 +2,24 @@
 
 ## Current WDR
 
-**TOPLINE-P7-001** — Phase 7 Backend/API Readiness Plan  
+**TOPLINE-P7-002** — Error Handling + Validation Foundation  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Task commit**: `504c916`
-**Audit/approval commit**: `8e51123`
+**Commit**: pending
 
 ## Previous WDR Reviewed
 
-**TOPLINE-P6-008-GOV-RECONCILIATION-FINAL** — Phase 6 Governance Reconciliation Final  
+**TOPLINE-P7-001** — Phase 7 Backend/API Readiness Plan  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: `e169f90`
+**Commit**: `504c916`
 
 ## Summary
 
-Phase 7 readiness plan created:
-- `docs/PHASE-07-BACKEND-API-READINESS-PLAN.md` — scope, architecture, task sequence
-- Phase 7 now IN_PROGRESS with 10 planned tasks
-- Backend scaffold inspected (NestJS 11, Prisma 6.19.3, 7 models, 11 read-only endpoints)
-- No implementation code written
-- Phase 7 implementation blocked pending PM approval
-
-## PM Audit
-
-P7-001 was reviewed against the repository and git history. The audit is saved at `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-001-AUDIT_2026-09-08.md`. The WDR is approved PASS / CLOSED. `TOPLINE-P7-002` is the next approved prompt, but it has not been executed.
+Error handling and validation foundation implemented:
+- `backend/src/common/pipes/validation.pipe.ts` — global ValidationPipe with class-validator
+- `backend/src/common/filters/all-exceptions.filter.ts` — global exception filter
+- `backend/src/common/api-response.ts` — added details field for validation errors
+- `backend/src/main.ts` — integrated validation pipe and exception filter
+- `backend/package.json` — added class-validator, class-transformer
+- No write APIs, no auth/RBAC, no schema changes
