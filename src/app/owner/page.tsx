@@ -241,9 +241,37 @@ export default function OwnerPage() {
                     </div>
                   </Link>
 
+                  <Link
+                    href="/owner/products"
+                    className="rounded-xl border p-5 hover:border-primary/50 transition-colors"
+                    style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}
+                  >
+                    <Tag className="h-5 w-5" style={{ color: "var(--brand-primary)" }} />
+                    <h3 className="font-semibold text-sm mt-3">Product Oversight</h3>
+                    <p className="mt-1 text-xs" style={{ color: "var(--text-muted)" }}>
+                      Review all platform products without write actions
+                    </p>
+                    <div className="mt-3">
+                      <Badge>READ-ONLY</Badge>
+                    </div>
+                  </Link>
+
+                  <Link
+                    href="/owner/platform"
+                    className="rounded-xl border p-5 hover:border-primary/50 transition-colors"
+                    style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}
+                  >
+                    <Activity className="h-5 w-5" style={{ color: "var(--brand-primary)" }} />
+                    <h3 className="font-semibold text-sm mt-3">Platform Health Detail</h3>
+                    <p className="mt-1 text-xs" style={{ color: "var(--text-muted)" }}>
+                      Monitor platform health status and version information
+                    </p>
+                    <div className="mt-3">
+                      <Badge>READ-ONLY</Badge>
+                    </div>
+                  </Link>
+
                   {[
-                    { title: "Product Oversight", desc: "Product review view planned for P6-006", icon: Tag },
-                    { title: "Platform Health Detail", desc: "Expanded health view planned for P6-006", icon: Activity },
                     { title: "Risk & Compliance", desc: "Compliance workflows require later auth/RBAC", icon: ShieldAlert },
                     { title: "Financial Controls", desc: "Revenue and settlement actions remain deferred", icon: BarChart3 },
                     { title: "Audit Reports", desc: "Audit read views are not available in Phase 6", icon: FileText },

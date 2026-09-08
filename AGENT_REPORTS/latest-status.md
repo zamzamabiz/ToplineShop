@@ -2,20 +2,20 @@
 
 ## Current Status
 
-**Owner dashboard + vendor oversight page implemented**
+**Owner product + platform health pages implemented**
 
 ## Last Completed Governed Task
 
-**TOPLINE-P6-005** - Owner Dashboard + Vendor Oversight Page  
-**Status**: PASS / CLOSED pending PM audit  
+**TOPLINE-P6-006** — Owner Product + Platform Health Pages  
+**Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: `9ae4d43`
+**Commit**: pending
 
 ## Previous Task
 
-**TOPLINE-P6-004** - Admin Product + Category List Pages  
+**TOPLINE-P6-005** — Owner Dashboard + Vendor Oversight Page  
 **Status**: PASS / CLOSED  
-**Commit**: `1936b5e`
+**Commit**: `9ae4d43`
 
 ## Next PM Prompt Source
 
