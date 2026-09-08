@@ -297,7 +297,7 @@ export const projectRegistry: ProjectRegistry = {
       databaseGate: "NOT_STARTED",
       testingGate: "NOT_STARTED",
       ownerApproval: "PLANNED",
-      currentTask: "TOPLINE-P7-001",
+      currentTask: null,
       taskCount: 10,
       completedTaskCount: 1,
     },
