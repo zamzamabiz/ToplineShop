@@ -107,10 +107,38 @@ The governance records are not fully reconciled. Phase 7 should remain blocked u
 ## PM DECISION
 
 **Phase 6 functional direction: CORRECT**  
-**Phase 6 governance records: NEED RECONCILIATION**  
-**Phase 7 entry: BLOCKED pending governance cleanup and explicit PM approval**
+**Phase 6 governance records: RECONCILED**  
+**Phase 7 entry: PENDING explicit PM approval**
 
 ## AUDIT LIMITATIONS
 
 Browser verification was unavailable during the source and repository audit. No claim of visual verification is made by this report.
+
+## RECONCILIATION RESOLUTION
+
+This section documents the resolution status of each finding after TOPLINE-P6-008-GOV-RECONCILIATION.
+
+### P6-AUDIT-001 — RESOLVED
+
+**Resolution**: P6-001 through P6-006 `pmApproval` updated from `PLANNED` to `PASS` in registry. WDR entries `wdr-038` through `wdr-043` `pmAudit` updated from `PLANNED` to `PASS`. PM AUDIT DECISION sections added to P6-001 through P6-006 WDRs documenting approval.
+
+### P6-AUDIT-002 — RESOLVED
+
+**Resolution**: P6-001 registry `commitHash` updated from `null` to `388bfe5`. Git evidence confirmed commit `388bfe5` exists and contains the P6-001 WDR, readiness plan, and registry update.
+
+### P6-AUDIT-003 — RESOLVED
+
+**Resolution**: P6-008 WDR freeze gate decision updated from "All routes verified" to "All routes compile and passed source inspection. Browser verification was unavailable." Self-assessment updated similarly.
+
+### P6-AUDIT-004 — RESOLVED
+
+**Resolution**: `git.lastCommit` updated from `9ae4d43` to `f1b6912` (actual latest commit).
+
+### P6-AUDIT-005 — RESOLVED
+
+**Resolution**: Global `currentTask` already cleared to `null` after Phase 6 closure. Registry state is consistent.
+
+### P6-AUDIT-006 — RETAINED WITH RATIONALE
+
+**Resolution**: `megaPromptsCompleted: 0` retained. The project uses mega prompts as planning targets per phase, not as completed task counts. The `completedTaskCount` field tracks actual governed task completion. The `megaPromptsCompleted` field is intentionally separate and reflects that Phase 6 mega prompts were not formally tracked as a separate PM-approved workflow. No project convention requires these values to match.
 
