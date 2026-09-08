@@ -1100,6 +1100,7 @@ export const projectRegistry: ProjectRegistry = {
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
       notes: "Admin dashboard + vendor list — read-only, no auth/RBAC, no writes",
+      commitHash: "6600d16",
     },
   ],
   modules: [
@@ -1815,7 +1816,7 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-6",
       status: "PASS",
       date: "2026-09-08",
-      commitHash: null,
+      commitHash: "6600d16",
       pmAudit: "PLANNED",
     },
   ],
