@@ -1232,6 +1232,7 @@ export const projectRegistry: ProjectRegistry = {
       ownerApproval: "PLANNED",
       pmApproval: "PASS",
       notes: "Validation pipe + exception filter — no write APIs, no auth",
+      commitHash: "ad0ac0f",
     },
   ],
   modules: [
@@ -2010,7 +2011,7 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-7",
       status: "PASS",
       date: "2026-09-08",
-      commitHash: null,
+      commitHash: "ad0ac0f",
       pmAudit: "PASS",
     },
   ],
