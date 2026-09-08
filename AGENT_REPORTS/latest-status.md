@@ -2,20 +2,20 @@
 
 ## Current Status
 
-**Admin dashboard + vendor list page implemented**
+**OpenCode automation discovery complete**
 
 ## Last Completed Governed Task
 
-**TOPLINE-P6-003** — Admin Dashboard + Vendor List Page  
+**TOPLINE-GOV-OC-AUTO-002** — OpenCode Internal Automation Capability Discovery  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: `6600d16`
+**Commit**: N/A (no files changed)
 
 ## Previous Task
 
-**TOPLINE-P6-002-R1** — Correct P6-002 Commit Hash in Agent Reports  
+**TOPLINE-P6-003** — Admin Dashboard + Vendor List Page  
 **Status**: PASS / CLOSED  
-**Commit**: `2119726`
+**Commit**: `6600d16`
 
 ## Next PM Prompt Source
 
