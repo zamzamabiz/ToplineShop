@@ -143,10 +143,10 @@ export const projectRegistry: ProjectRegistry = {
   developmentPolicy: "#FDD — Frontend Development First",
   protocol: "#123",
   currentPhase: "Phase 7",
-  currentTask: "TOPLINE-P7-001",
+  currentTask: null,
   lastCompletedTask: "TOPLINE-P7-001",
   nextPlannedTask: "TOPLINE-P7-002",
-  overallCompletion: 100,
+  overallCompletion: 83,
   lastUpdated: new Date().toISOString(),
   phases: [
     {
@@ -1989,7 +1989,7 @@ export const projectRegistry: ProjectRegistry = {
   ],
   git: {
     initialized: true,
-    lastCommit: "e169f90",
+    lastCommit: "602adf6",
   },
   github: {
     configured: true,
