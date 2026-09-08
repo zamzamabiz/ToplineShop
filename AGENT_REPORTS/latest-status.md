@@ -9,7 +9,7 @@
 **TOPLINE-P6-007** — Admin/Owner Detail Pages  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: pending
+**Commit**: `317aa04`
 
 ## Previous Task
 
