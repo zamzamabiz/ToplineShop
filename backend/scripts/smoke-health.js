@@ -88,6 +88,20 @@ async function main() {
     !JSON.stringify(b).includes('DATABASE_URL') &&
     !JSON.stringify(b).includes('password')
   );
+  await checkEndpoint('/products', 200, (b) =>
+    b.ok === true &&
+    Array.isArray(b.data) &&
+    typeof b.meta.count === 'number' &&
+    b.meta.phase === 'P5-007' &&
+    !JSON.stringify(b).includes('DATABASE_URL') &&
+    !JSON.stringify(b).includes('password')
+  );
+  await checkEndpoint('/products/non-existent-id', 404, (b) =>
+    b.statusCode === 404 &&
+    b.message === 'Product not found' &&
+    !JSON.stringify(b).includes('DATABASE_URL') &&
+    !JSON.stringify(b).includes('password')
+  );
 
   console.log('\nAll smoke tests passed.');
 }
