@@ -2,20 +2,20 @@
 
 ## Current Status
 
-**P6-002 commit hash corrected in agent reports**
+**Admin dashboard + vendor list page implemented**
 
 ## Last Completed Governed Task
 
-**TOPLINE-P6-002-R1** — Correct P6-002 Commit Hash in Agent Reports  
+**TOPLINE-P6-003** — Admin Dashboard + Vendor List Page  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: `2119726`
+**Commit**: pending
 
 ## Previous Task
 
-**TOPLINE-P6-002** — API Client Layer + Response Types  
+**TOPLINE-P6-002-R1** — Correct P6-002 Commit Hash in Agent Reports  
 **Status**: PASS / CLOSED  
-**Commit**: `fd437c7`
+**Commit**: `2119726`
 
 ## Next PM Prompt Source
 

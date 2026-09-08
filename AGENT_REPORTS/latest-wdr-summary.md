@@ -2,21 +2,21 @@
 
 ## Current WDR
 
+**TOPLINE-P6-003** — Admin Dashboard + Vendor List Page  
+**Status**: PASS / CLOSED  
+**Date**: 2026-09-08  
+**Commit**: pending
+
+## Previous WDR Reviewed
+
 **TOPLINE-P6-002-R1** — Correct P6-002 Commit Hash in Agent Reports  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
 **Commit**: `2119726`
 
-## Previous WDR Reviewed
-
-**TOPLINE-P6-002** — API Client Layer + Response Types  
-**Status**: PASS / CLOSED  
-**Date**: 2026-09-08  
-**Commit**: `fd437c7`
-
 ## Summary
 
-Fixed commit hash mismatch in AGENT_REPORTS for TOPLINE-P6-002:
-- `AGENT_REPORTS/latest-status.md` — commit updated to `fd437c7`
-- `AGENT_REPORTS/latest-wdr-summary.md` — commit updated to `fd437c7`
-- Both files now match P6-002 WDR
+Admin dashboard upgraded with real API data and vendor list page created:
+- `src/app/admin/page.tsx` — real metrics from Phase 5 APIs, system health, safety banner
+- `src/app/admin/vendors/page.tsx` — vendor table/cards, loading/error/empty states
+- No write operations, no auth/RBAC, no backend changes
