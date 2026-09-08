@@ -1137,7 +1137,7 @@ export const projectRegistry: ProjectRegistry = {
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
       notes: "Owner dashboard + vendor oversight — read-only, no auth/RBAC, no writes",
-      commitHash: "deab8c0",
+      commitHash: "9ae4d43",
     },
   ],
   modules: [
@@ -1871,13 +1871,13 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-6",
       status: "PASS",
       date: "2026-09-08",
-      commitHash: "deab8c0",
+      commitHash: "9ae4d43",
       pmAudit: "PLANNED",
     },
   ],
   git: {
     initialized: true,
-    lastCommit: "deab8c0",
+    lastCommit: "9ae4d43",
   },
   github: {
     configured: true,
