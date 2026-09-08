@@ -5,7 +5,7 @@
 **TOPLINE-P7-001** — Phase 7 Backend/API Readiness Plan  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Task commit**: `504c916`  
+**Task commit**: `504c916`
 **Audit/approval commit**: `8e51123`
 
 ## Previous WDR Reviewed
