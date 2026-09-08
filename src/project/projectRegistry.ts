@@ -144,8 +144,8 @@ export const projectRegistry: ProjectRegistry = {
   protocol: "#123",
   currentPhase: "Phase 7",
   currentTask: "TOPLINE-P7-003",
-  lastCompletedTask: "TOPLINE-P7-003",
-  nextPlannedTask: "TOPLINE-P7-004",
+  lastCompletedTask: "TOPLINE-P7-002-R1",
+  nextPlannedTask: "TOPLINE-P7-003-R1",
   overallCompletion: 83,
   lastUpdated: new Date().toISOString(),
   phases: [
@@ -288,7 +288,7 @@ export const projectRegistry: ProjectRegistry = {
       name: "Backend/API Foundation",
       objective: "NestJS backend, API architecture, service layer",
       status: "IN_PROGRESS",
-      progress: 30,
+      progress: 20,
       megaPromptTarget: 4,
       megaPromptsCompleted: 0,
       dependencies: ["phase-2"],
@@ -299,7 +299,7 @@ export const projectRegistry: ProjectRegistry = {
       ownerApproval: "PLANNED",
       currentTask: "TOPLINE-P7-003",
       taskCount: 10,
-      completedTaskCount: 3,
+      completedTaskCount: 2,
     },
     {
       id: "phase-8",

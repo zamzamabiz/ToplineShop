@@ -3,7 +3,7 @@
 ## Current WDR
 
 **TOPLINE-P7-003** — Observability + Logging Foundation  
-**Status**: PASS implementation / PM audit BLOCKED  
+**Status**: PASS implementation / PM audit BLOCKED
 **Date**: 2026-09-08  
 **Commit**: `517421a`
 
