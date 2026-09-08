@@ -2,14 +2,14 @@
 
 ## Current Status
 
-**OpenCode automation discovery complete**
+**Admin product + category list pages implemented**
 
 ## Last Completed Governed Task
 
-**TOPLINE-GOV-OC-AUTO-002** — OpenCode Internal Automation Capability Discovery  
+**TOPLINE-P6-004** — Admin Product + Category List Pages  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: N/A (no files changed)
+**Commit**: pending
 
 ## Previous Task
 

@@ -261,10 +261,41 @@ export default function AdminPage() {
                     </div>
                   </Link>
 
+                  {/* Product Management - Available */}
+                  <Link
+                    href="/admin/products"
+                    className="rounded-xl border p-5 hover:border-primary/50 transition-colors"
+                    style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}
+                  >
+                    <Tag className="h-5 w-5" style={{ color: "var(--brand-primary)" }} />
+                    <h3 className="font-semibold text-sm mt-3">Product Management</h3>
+                    <p className="mt-1 text-xs" style={{ color: "var(--text-muted)" }}>
+                      View all products on the platform
+                    </p>
+                    <div className="mt-3">
+                      <Badge>READ-ONLY</Badge>
+                    </div>
+                  </Link>
+
+                  {/* Category Management - Available */}
+                  <Link
+                    href="/admin/categories"
+                    className="rounded-xl border p-5 hover:border-primary/50 transition-colors"
+                    style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}
+                  >
+                    <BarChart3 className="h-5 w-5" style={{ color: "var(--brand-primary)" }} />
+                    <h3 className="font-semibold text-sm mt-3">Category Management</h3>
+                    <p className="mt-1 text-xs" style={{ color: "var(--text-muted)" }}>
+                      View and organize product categories
+                    </p>
+                    <div className="mt-3">
+                      <Badge>READ-ONLY</Badge>
+                    </div>
+                  </Link>
+
                   {/* Other tools - Deferred */}
                   {[
                     { title: "User Management", desc: "View, suspend, and manage platform users", icon: Users },
-                    { title: "Category Management", desc: "Create and organize product categories", icon: Tag },
                     { title: "Content Moderation", desc: "Review flagged content and listings", icon: ShieldAlert },
                     { title: "Support Queue", desc: "Manage customer and vendor support tickets", icon: Headphones },
                     { title: "Platform Settings", desc: "Configure platform-wide settings", icon: Settings },

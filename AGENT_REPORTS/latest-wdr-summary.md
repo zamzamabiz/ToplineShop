@@ -2,10 +2,10 @@
 
 ## Current WDR
 
-**TOPLINE-GOV-OC-AUTO-002** — OpenCode Internal Automation Capability Discovery  
+**TOPLINE-P6-004** — Admin Product + Category List Pages  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: N/A (no files changed)
+**Commit**: pending
 
 ## Previous WDR Reviewed
 
@@ -16,4 +16,9 @@
 
 ## Summary
 
-Discovery task completed. OpenCode does not have built-in automation/watch mode. Recommended external scheduler + standing instruction pattern. No files changed. PM decision needed on whether to implement external automation.
+Admin product and category list pages created:
+- `src/app/admin/products/page.tsx` — product table/cards, loading/error/empty states
+- `src/app/admin/categories/page.tsx` — category table/cards, loading/error/empty states
+- `src/app/admin/page.tsx` — Product and Category Management now READ-ONLY links
+- No write operations, no auth/RBAC, no backend changes
+- Registry stale currentTask cleaned up (P6-003 → P6-004)
