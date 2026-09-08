@@ -9,7 +9,7 @@
 **TOPLINE-P6-004** — Admin Product + Category List Pages  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: pending
+**Commit**: `1936b5e`
 
 ## Previous Task
 
