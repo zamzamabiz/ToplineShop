@@ -66,7 +66,7 @@ Correct findings from the Phase 6 analytic audit (TOPLINE-P6-008-AUDIT). Reconci
 ## GIT EVIDENCE
 
 - Final substantive reconciliation commit: `e169f90`
-- Documentation hash-backfill commit: pending final report update
+- Documentation hash-backfill commit: `c74fffe`
 
 ## SELF-ASSESSMENT
 
