@@ -2,14 +2,14 @@
 
 ## Current Status
 
-**Phase 6 governance reconciliation complete**
+**Phase 6 governance reconciliation complete and verified**
 
 ## Last Completed Governed Task
 
-**TOPLINE-P6-008-GOV-RECONCILIATION** — Phase 6 Governance Reconciliation  
+**TOPLINE-P6-008-GOV-RECONCILIATION-FINAL** — Phase 6 Governance Reconciliation Final
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: `16a1144`
+**Commit**: `e169f90`
 
 ## Previous Task
 
