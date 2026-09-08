@@ -72,11 +72,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
         };
       }
     } else if (exception instanceof Error) {
-      // Log unexpected errors but don't expose details
-      this.logger.error(
-        `Unexpected error: ${exception.message}`,
-        exception.stack,
-      );
+      // Log only the error classification, not the message or stack
+      this.logger.error(`Unexpected error: ${this.getErrorCode(500)}`);
 
       errorResponse = {
         ok: false,
@@ -87,9 +84,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
       };
     }
 
-    // Log the request and error
+    // Log the request with safe error code only
     this.logger.warn(
-      `${request.method} ${request.url} ${status} - ${errorResponse.error.code}`,
+      JSON.stringify({
+        type: 'error',
+        method: request.method,
+        url: request.url,
+        status,
+        errorCode: errorResponse.error.code,
+      }),
     );
 
     response.status(status).json(errorResponse);

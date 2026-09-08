@@ -143,9 +143,9 @@ export const projectRegistry: ProjectRegistry = {
   developmentPolicy: "#FDD — Frontend Development First",
   protocol: "#123",
   currentPhase: "Phase 7",
-  currentTask: "TOPLINE-P7-003",
-  lastCompletedTask: "TOPLINE-P7-002-R1",
-  nextPlannedTask: "TOPLINE-P7-003-R1",
+  currentTask: "TOPLINE-P7-003-R1",
+  lastCompletedTask: "TOPLINE-P7-003-R1",
+  nextPlannedTask: "TOPLINE-P7-004",
   overallCompletion: 83,
   lastUpdated: new Date().toISOString(),
   phases: [
@@ -1272,6 +1272,24 @@ export const projectRegistry: ProjectRegistry = {
       notes: "Logging interceptor — no write APIs, no auth",
       commitHash: "517421a",
     },
+    {
+      id: "TOPLINE-P7-003-R1",
+      phase: "phase-7",
+      title: "Safe Error Logging Reconciliation",
+      objective:
+        "Correct observability foundation so logs cannot expose raw exception details, stack traces, or sensitive data",
+      status: "PASS",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P7-003"],
+      startedAt: new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      wdrPath: "WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-003-R1_WDR_2026-09-08.md",
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PASS",
+      notes: "Safe error logging — no raw exception details, correlation ID validation",
+    },
   ],
   modules: [
     {
@@ -2069,6 +2087,15 @@ export const projectRegistry: ProjectRegistry = {
       date: "2026-09-08",
       commitHash: "517421a",
       pmAudit: "BLOCKED",
+    },
+    {
+      id: "wdr-050",
+      taskId: "TOPLINE-P7-003-R1",
+      phase: "phase-7",
+      status: "PASS",
+      date: "2026-09-08",
+      commitHash: null,
+      pmAudit: "PASS",
     },
   ],
   git: {

@@ -10,6 +10,8 @@ import { tap } from 'rxjs/operators';
 import { Request, Response } from 'express';
 import { randomUUID } from 'crypto';
 
+const CORRELATION_ID_REGEX = /^[a-zA-Z0-9\-_]{1,64}$/;
+
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger('HTTP');
@@ -19,15 +21,14 @@ export class LoggingInterceptor implements NestInterceptor {
     const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
 
-    // Generate or extract correlation ID
-    const correlationId =
-      (request.headers['x-correlation-id'] as string) || randomUUID();
+    // Validate or generate correlation ID
+    const rawCorrelationId = request.headers['x-correlation-id'] as string;
+    const correlationId = this.sanitizeCorrelationId(rawCorrelationId);
 
     // Attach correlation ID to response headers
     response.setHeader('x-correlation-id', correlationId);
 
     const { method, url } = request;
-    const userAgent = request.headers['user-agent'] || '';
     const startTime = Date.now();
 
     return next.handle().pipe(
@@ -44,7 +45,6 @@ export class LoggingInterceptor implements NestInterceptor {
               status: statusCode,
               duration: `${duration}ms`,
               correlationId,
-              userAgent: this.sanitizeUserAgent(userAgent),
             }),
           );
         },
@@ -52,6 +52,7 @@ export class LoggingInterceptor implements NestInterceptor {
           const duration = Date.now() - startTime;
           const statusCode = error.status || 500;
 
+          // Log only safe, non-sensitive error classification
           this.logger.warn(
             JSON.stringify({
               type: 'request',
@@ -60,7 +61,7 @@ export class LoggingInterceptor implements NestInterceptor {
               status: statusCode,
               duration: `${duration}ms`,
               correlationId,
-              error: error.message || 'Unknown error',
+              errorCode: this.getSafeErrorCode(statusCode),
             }),
           );
         },
@@ -68,11 +69,28 @@ export class LoggingInterceptor implements NestInterceptor {
     );
   }
 
-  private sanitizeUserAgent(userAgent: string): string {
-    // Truncate long user agents and remove potential sensitive info
-    if (userAgent.length > 200) {
-      return userAgent.substring(0, 200) + '...';
+  private sanitizeCorrelationId(raw: string | undefined): string {
+    if (raw && CORRELATION_ID_REGEX.test(raw)) {
+      return raw;
     }
-    return userAgent;
+    return randomUUID();
+  }
+
+  private getSafeErrorCode(statusCode: number): string {
+    const codeMap: Record<number, string> = {
+      400: 'BAD_REQUEST',
+      401: 'UNAUTHORIZED',
+      403: 'FORBIDDEN',
+      404: 'NOT_FOUND',
+      405: 'METHOD_NOT_ALLOWED',
+      408: 'REQUEST_TIMEOUT',
+      409: 'CONFLICT',
+      422: 'UNPROCESSABLE_ENTITY',
+      429: 'TOO_MANY_REQUESTS',
+      500: 'INTERNAL_ERROR',
+      502: 'BAD_GATEWAY',
+      503: 'SERVICE_UNAVAILABLE',
+    };
+    return codeMap[statusCode] || 'HTTP_ERROR';
   }
 }
