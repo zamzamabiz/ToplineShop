@@ -42,6 +42,5 @@ Use mega prompts as governed execution packets: one approved task, one bounded s
 - Use only Phase 5 GET endpoints and `src/lib/api-client.ts`.
 - Do not add auth/RBAC, write APIs, schema changes, migrations, packages, or financial execution.
 - Remaining sequence:
-  - `TOPLINE-P6-006` - Owner Product + Platform Health Pages
   - `TOPLINE-P6-007` - Admin/Owner Detail Pages
   - `TOPLINE-P6-008` - Phase 6 Freeze Gate
