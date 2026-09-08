@@ -9,7 +9,7 @@
 **TOPLINE-P6-002** — API Client Layer + Response Types  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: pending
+**Commit**: `fd437c7`
 
 ## Previous Task
 
