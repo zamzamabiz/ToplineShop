@@ -1194,6 +1194,7 @@ export const projectRegistry: ProjectRegistry = {
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
       notes: "Phase 6 freeze gate — all tasks closed, all routes verified",
+      commitHash: "5a601a9",
     },
   ],
   modules: [
@@ -1954,7 +1955,7 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-6",
       status: "PASS",
       date: "2026-09-08",
-      commitHash: null,
+      commitHash: "5a601a9",
       pmAudit: "PLANNED",
     },
   ],
