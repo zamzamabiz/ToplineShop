@@ -5,7 +5,7 @@
 **TOPLINE-P7-003** — Observability + Logging Foundation  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: pending
+**Commit**: `517421a`
 
 ## Previous WDR Reviewed
 
