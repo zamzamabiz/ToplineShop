@@ -2,20 +2,20 @@
 
 ## Current Status
 
-**Admin/owner detail pages implemented**
+**Phase 6 freeze gate audit complete — Phase 6 CLOSED**
 
 ## Last Completed Governed Task
 
-**TOPLINE-P6-007** — Admin/Owner Detail Pages  
+**TOPLINE-P6-008** — Phase 6 Freeze Gate  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: `317aa04`
+**Commit**: pending
 
 ## Previous Task
 
-**TOPLINE-P6-006** — Owner Product + Platform Health Pages  
+**TOPLINE-P6-007** — Admin/Owner Detail Pages  
 **Status**: PASS / CLOSED  
-**Commit**: `2ac252b`
+**Commit**: `317aa04`
 
 ## Next PM Prompt Source
 

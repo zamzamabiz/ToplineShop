@@ -2,25 +2,24 @@
 
 ## Current WDR
 
+**TOPLINE-P6-008** — Phase 6 Freeze Gate  
+**Status**: PASS / CLOSED  
+**Date**: 2026-09-08  
+**Commit**: pending
+
+## Previous WDR Reviewed
+
 **TOPLINE-P6-007** — Admin/Owner Detail Pages  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
 **Commit**: `317aa04`
 
-## Previous WDR Reviewed
-
-**TOPLINE-P6-006** — Owner Product + Platform Health Pages  
-**Status**: PASS / CLOSED  
-**Date**: 2026-09-08  
-**Commit**: `2ac252b`
-
 ## Summary
 
-Five detail pages created for admin and owner list flows:
-- `src/app/admin/vendors/[id]/page.tsx` — vendor detail with fields, loading/error/not-found states
-- `src/app/admin/products/[id]/page.tsx` — product detail with fields, loading/error/not-found states
-- `src/app/admin/categories/[id]/page.tsx` — category detail with fields, loading/error/not-found states
-- `src/app/owner/vendors/[id]/page.tsx` — vendor detail with fields, loading/error/not-found states
-- `src/app/owner/products/[id]/page.tsx` — product detail with fields, loading/error/not-found states
-- Five list pages updated: disabled buttons changed to working links
-- No write operations, no auth/RBAC, no backend changes
+Phase 6 freeze gate audit complete:
+- All 8 tasks (P6-001 through P6-008) PASS / CLOSED
+- All 13 admin/owner routes verified (7 admin + 6 owner)
+- TypeScript, lint, and build all PASS
+- No auth/RBAC, write operations, or backend changes
+- Phase 6 marked CLOSED in registry
+- Ready for Phase 7 entry
