@@ -143,7 +143,7 @@ export const projectRegistry: ProjectRegistry = {
   developmentPolicy: "#FDD — Frontend Development First",
   protocol: "#123",
   currentPhase: "Phase 7",
-  currentTask: "TOPLINE-P7-002-R1",
+  currentTask: null,
   lastCompletedTask: "TOPLINE-P7-002-R1",
   nextPlannedTask: "TOPLINE-P7-003",
   overallCompletion: 83,
@@ -297,7 +297,7 @@ export const projectRegistry: ProjectRegistry = {
       databaseGate: "NOT_STARTED",
       testingGate: "NOT_STARTED",
       ownerApproval: "PLANNED",
-      currentTask: "TOPLINE-P7-002",
+      currentTask: null,
       taskCount: 10,
       completedTaskCount: 2,
     },
@@ -2045,7 +2045,7 @@ export const projectRegistry: ProjectRegistry = {
   ],
   git: {
     initialized: true,
-    lastCommit: "598724a",
+    lastCommit: "2f732b3",
   },
   github: {
     configured: true,
