@@ -1192,7 +1192,7 @@ export const projectRegistry: ProjectRegistry = {
       tests: "PASS",
       build: "PASS",
       ownerApproval: "PLANNED",
-      pmApproval: "PLANNED",
+      pmApproval: "PASS",
       notes: "Phase 6 freeze gate — all tasks closed, all routes verified",
       commitHash: "5a601a9",
     },
@@ -1956,7 +1956,7 @@ export const projectRegistry: ProjectRegistry = {
       status: "PASS",
       date: "2026-09-08",
       commitHash: "5a601a9",
-      pmAudit: "PLANNED",
+      pmAudit: "PASS",
     },
   ],
   git: {
