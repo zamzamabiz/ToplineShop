@@ -1213,7 +1213,7 @@ export const projectRegistry: ProjectRegistry = {
       ownerApproval: "PLANNED",
       pmApproval: "PASS",
       notes: "Readiness plan only — no backend implementation",
-      commitHash: null,
+      commitHash: "504c916",
     },
   ],
   modules: [
@@ -1983,7 +1983,7 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-7",
       status: "PASS",
       date: "2026-09-08",
-      commitHash: null,
+      commitHash: "504c916",
       pmAudit: "PASS",
     },
   ],
