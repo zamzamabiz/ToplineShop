@@ -132,13 +132,12 @@ This section documents the resolution status of each finding after TOPLINE-P6-00
 
 ### P6-AUDIT-004 — RESOLVED
 
-**Resolution**: `git.lastCommit` updated from `9ae4d43` to `f1b6912` (actual latest commit).
+**Resolution**: Registry pointer is maintained as the final substantive reconciliation state. Later documentation-only hash-backfill commits are recorded in the reconciliation WDR and reports; the pointer is not treated as a self-referential pointer to its own commit.
 
 ### P6-AUDIT-005 — RESOLVED
 
-**Resolution**: Global `currentTask` already cleared to `null` after Phase 6 closure. Registry state is consistent.
+**Resolution**: Global `currentTask` cleared to `null` because Phase 6 is CLOSED and TOPLINE-P7-001 is not approved.
 
 ### P6-AUDIT-006 — RETAINED WITH RATIONALE
 
 **Resolution**: `megaPromptsCompleted: 0` retained. The project uses mega prompts as planning targets per phase, not as completed task counts. The `completedTaskCount` field tracks actual governed task completion. The `megaPromptsCompleted` field is intentionally separate and reflects that Phase 6 mega prompts were not formally tracked as a separate PM-approved workflow. No project convention requires these values to match.
-

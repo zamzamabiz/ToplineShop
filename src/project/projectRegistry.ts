@@ -143,7 +143,7 @@ export const projectRegistry: ProjectRegistry = {
   developmentPolicy: "#FDD — Frontend Development First",
   protocol: "#123",
   currentPhase: "Phase 6",
-  currentTask: "TOPLINE-P6-008",
+  currentTask: null,
   lastCompletedTask: "TOPLINE-P6-008",
   nextPlannedTask: "TOPLINE-P7-001",
   overallCompletion: 100,
@@ -1893,7 +1893,7 @@ export const projectRegistry: ProjectRegistry = {
       status: "PASS",
       date: "2026-09-08",
       commitHash: "388bfe5",
-      pmAudit: "PLANNED",
+      pmAudit: "PASS",
     },
     {
       id: "wdr-039",
@@ -1902,7 +1902,7 @@ export const projectRegistry: ProjectRegistry = {
       status: "PASS",
       date: "2026-09-08",
       commitHash: "fd437c7",
-      pmAudit: "PLANNED",
+      pmAudit: "PASS",
     },
     {
       id: "wdr-040",
@@ -1911,7 +1911,7 @@ export const projectRegistry: ProjectRegistry = {
       status: "PASS",
       date: "2026-09-08",
       commitHash: "6600d16",
-      pmAudit: "PLANNED",
+      pmAudit: "PASS",
     },
     {
       id: "wdr-041",
@@ -1920,7 +1920,7 @@ export const projectRegistry: ProjectRegistry = {
       status: "PASS",
       date: "2026-09-08",
       commitHash: "1936b5e",
-      pmAudit: "PLANNED",
+      pmAudit: "PASS",
     },
     {
       id: "wdr-042",
@@ -1929,7 +1929,7 @@ export const projectRegistry: ProjectRegistry = {
       status: "PASS",
       date: "2026-09-08",
       commitHash: "9ae4d43",
-      pmAudit: "PLANNED",
+      pmAudit: "PASS",
     },
     {
       id: "wdr-043",
@@ -1938,7 +1938,7 @@ export const projectRegistry: ProjectRegistry = {
       status: "PASS",
       date: "2026-09-08",
       commitHash: "2ac252b",
-      pmAudit: "PLANNED",
+      pmAudit: "PASS",
     },
     {
       id: "wdr-044",

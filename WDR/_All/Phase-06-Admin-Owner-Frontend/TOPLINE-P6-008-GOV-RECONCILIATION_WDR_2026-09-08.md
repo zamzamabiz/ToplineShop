@@ -26,11 +26,12 @@ Correct findings from the Phase 6 analytic audit (TOPLINE-P6-008-AUDIT). Reconci
 ### P6-AUDIT-003 — RESOLVED
 - P6-008 WDR wording corrected: "All routes compile and passed source inspection. Browser verification was unavailable."
 
-### P6-AUDIT-004 — RESOLVED
-- `git.lastCommit` updated from `9ae4d43` to `f1b6912`
+### P6-AUDIT-004 — RESOLVED WITH EXPLICIT POINTER SEMANTICS
+- Registry `git.lastCommit` points to the final substantive reconciliation state.
+- Documentation-only hash-backfill commits are recorded separately in this WDR and the latest reports.
 
 ### P6-AUDIT-005 — RESOLVED
-- Global `currentTask` already cleared after Phase 6 closure
+- Global `currentTask` cleared to `null` after Phase 6 closure.
 
 ### P6-AUDIT-006 — RETAINED WITH RATIONALE
 - `megaPromptsCompleted: 0` retained — project convention tracks mega prompts separately from governed tasks
