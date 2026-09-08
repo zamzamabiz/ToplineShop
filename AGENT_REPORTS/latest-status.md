@@ -9,8 +9,8 @@
 **TOPLINE-P7-002-R1** — API Connectivity and Configuration Reconciliation  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Task commit**: `2f732b3`  
-**Audit/approval commit**: pending final governance commit
+**Task commit**: `2f732b3`
+**Audit/approval commit**: `2c662ca`
 
 ## Previous Task
 
