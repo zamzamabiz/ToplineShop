@@ -5,7 +5,7 @@
 **TOPLINE-P6-008** — Phase 6 Freeze Gate  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: pending
+**Commit**: `5a601a9`
 
 ## Previous WDR Reviewed
 
