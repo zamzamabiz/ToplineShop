@@ -1270,6 +1270,7 @@ export const projectRegistry: ProjectRegistry = {
       ownerApproval: "PLANNED",
       pmApproval: "PASS",
       notes: "Logging interceptor — no write APIs, no auth",
+      commitHash: "517421a",
     },
   ],
   modules: [
@@ -2066,7 +2067,7 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-7",
       status: "PASS",
       date: "2026-09-08",
-      commitHash: null,
+      commitHash: "517421a",
       pmAudit: "PASS",
     },
   ],
