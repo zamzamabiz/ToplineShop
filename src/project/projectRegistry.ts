@@ -1173,7 +1173,7 @@ export const projectRegistry: ProjectRegistry = {
       tests: "PASS",
       build: "PASS",
       ownerApproval: "PLANNED",
-      pmApproval: "PLANNED",
+      pmApproval: "PASS",
       notes: "Admin/owner detail pages — read-only, no auth/RBAC, no writes",
       commitHash: "317aa04",
     },
@@ -1928,7 +1928,7 @@ export const projectRegistry: ProjectRegistry = {
       status: "PASS",
       date: "2026-09-08",
       commitHash: "317aa04",
-      pmAudit: "PLANNED",
+      pmAudit: "PASS",
     },
   ],
   git: {
