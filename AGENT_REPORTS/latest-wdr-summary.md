@@ -2,10 +2,10 @@
 
 ## Current WDR
 
-**TOPLINE-GOV-AUTO-001** — PM/OpenCode Communication Bridge Setup  
+**TOPLINE-P6-002** — API Client Layer + Response Types  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: `e37005f`
+**Commit**: pending
 
 ## Previous WDR Reviewed
 
@@ -16,9 +16,7 @@
 
 ## Summary
 
-Communication bridge files created for PM/OpenCode coordination:
-- `PM_OUTBOX/next-opencode-prompt.md` — PM writes next prompt here
-- `AGENT_REPORTS/latest-status.md` — OpenCode reports current status
-- `AGENT_REPORTS/latest-wdr-summary.md` — OpenCode reports latest WDR summary
-
-This enables structured file-based communication between PM (ChatGPT/Codex) and execution agent (OpenCode).
+API client layer and typed response contracts created for Phase 6 admin/owner pages:
+- `src/types/api.ts` — 17 TypeScript types for API responses and entities
+- `src/lib/api-client.ts` — 11 read-only API methods matching Phase 5 endpoints
+- No write methods, no auth/RBAC, no backend changes
