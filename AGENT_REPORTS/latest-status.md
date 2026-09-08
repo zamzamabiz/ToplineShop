@@ -2,12 +2,12 @@
 
 ## Current Status
 
-**Safe error logging reconciled — no raw exception details in logs**
+**P7-003-R1 audit blocked - safe request path correction required**
 
 ## Last Completed Governed Task
 
 **TOPLINE-P7-003-R1** — Safe Error Logging Reconciliation  
-**Status**: PASS / CLOSED  
+**Status**: PASS implementation / PM audit BLOCKED  
 **Date**: 2026-09-08  
 **Commit**: `7a70bf6`
 
@@ -19,7 +19,7 @@
 
 ## Next PM Prompt Source
 
-`PM_OUTBOX/next-opencode-prompt.md`
+`PM_OUTBOX/next-opencode-prompt.md` - TOPLINE-P7-003-R2 corrective prompt
 
 ## Last Updated
 
