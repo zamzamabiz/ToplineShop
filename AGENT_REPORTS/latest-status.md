@@ -2,20 +2,20 @@
 
 ## Current Status
 
-**Error handling + validation foundation implemented**
+**API connectivity reconciled — port, env var, CORS fixed**
 
 ## Last Completed Governed Task
 
-**TOPLINE-P7-002** — Error Handling + Validation Foundation  
+**TOPLINE-P7-002-R1** — API Connectivity and Configuration Reconciliation  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: `ad0ac0f`
+**Commit**: pending
 
 ## Previous Task
 
-**TOPLINE-P7-001** — Phase 7 Backend/API Readiness Plan  
+**TOPLINE-P7-002** — Error Handling + Validation Foundation  
 **Status**: PASS / CLOSED  
-**Commit**: `504c916`
+**Commit**: `ad0ac0f`
 
 ## Next PM Prompt Source
 

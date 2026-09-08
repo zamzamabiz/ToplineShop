@@ -12,7 +12,7 @@ import type {
 } from "@/types/api";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 async function fetchApi<T>(endpoint: string): Promise<ApiResponse<T>> {
   const url = `${API_BASE_URL}${endpoint}`;
