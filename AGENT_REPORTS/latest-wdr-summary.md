@@ -5,7 +5,7 @@
 **TOPLINE-P6-003** — Admin Dashboard + Vendor List Page  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: pending
+**Commit**: `6600d16`
 
 ## Previous WDR Reviewed
 
