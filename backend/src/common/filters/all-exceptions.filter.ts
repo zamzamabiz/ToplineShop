@@ -84,18 +84,24 @@ export class AllExceptionsFilter implements ExceptionFilter {
       };
     }
 
-    // Log the request with safe error code only
+    // Log the request with safe path and error code only
     this.logger.warn(
       JSON.stringify({
         type: 'error',
         method: request.method,
-        url: request.url,
+        path: this.getSafePath(request.url),
         status,
         errorCode: errorResponse.error.code,
       }),
     );
 
     response.status(status).json(errorResponse);
+  }
+
+  private getSafePath(url: string): string {
+    // Extract pathname only, exclude query strings
+    const queryIndex = url.indexOf('?');
+    return queryIndex >= 0 ? url.substring(0, queryIndex) : url;
   }
 
   private getErrorCode(status: number): string {

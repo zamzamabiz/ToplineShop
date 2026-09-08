@@ -28,7 +28,8 @@ export class LoggingInterceptor implements NestInterceptor {
     // Attach correlation ID to response headers
     response.setHeader('x-correlation-id', correlationId);
 
-    const { method, url } = request;
+    const { method } = request;
+    const path = this.getSafePath(request.url);
     const startTime = Date.now();
 
     return next.handle().pipe(
@@ -41,7 +42,7 @@ export class LoggingInterceptor implements NestInterceptor {
             JSON.stringify({
               type: 'request',
               method,
-              url,
+              path,
               status: statusCode,
               duration: `${duration}ms`,
               correlationId,
@@ -57,7 +58,7 @@ export class LoggingInterceptor implements NestInterceptor {
             JSON.stringify({
               type: 'request',
               method,
-              url,
+              path,
               status: statusCode,
               duration: `${duration}ms`,
               correlationId,
@@ -67,6 +68,12 @@ export class LoggingInterceptor implements NestInterceptor {
         },
       }),
     );
+  }
+
+  private getSafePath(url: string): string {
+    // Extract pathname only, exclude query strings
+    const queryIndex = url.indexOf('?');
+    return queryIndex >= 0 ? url.substring(0, queryIndex) : url;
   }
 
   private sanitizeCorrelationId(raw: string | undefined): string {

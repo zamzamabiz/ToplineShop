@@ -2,24 +2,24 @@
 
 ## Current Status
 
-**P7-003-R1 audit blocked - safe request path correction required**
+**Safe request path logging reconciled — no query strings in logs**
 
 ## Last Completed Governed Task
 
-**TOPLINE-P7-003-R1** — Safe Error Logging Reconciliation  
-**Status**: PASS implementation / PM audit BLOCKED
+**TOPLINE-P7-003-R2** — Safe Request Path Logging Reconciliation  
+**Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: `7a70bf6`
+**Commit**: pending
 
 ## Previous Task
 
-**TOPLINE-P7-003** — Observability + Logging Foundation  
+**TOPLINE-P7-003-R1** — Safe Error Logging Reconciliation  
 **Status**: PASS / CLOSED  
-**Commit**: `517421a`
+**Commit**: `7a70bf6`
 
 ## Next PM Prompt Source
 
-`PM_OUTBOX/next-opencode-prompt.md` - TOPLINE-P7-003-R2 corrective prompt
+`PM_OUTBOX/next-opencode-prompt.md`
 
 ## Last Updated
 
