@@ -1,39 +1,23 @@
 /**
  * Test suite for Tenant Write API (POST /tenants)
- * Tests the actual CreateTenantDto validation and TenantsService.create() behavior
- * Including: DTO validation, successful creation, and duplicate slug conflict detection
+ * Tests the actual CreateTenantDto validation and the real TenantsService.create()
+ * implementation (imported from compiled backend output), including successful
+ * creation and duplicate slug conflict behavior against a mocked PrismaService.
+ *
+ * Requires `npm run build` to have been run first (imports from ../dist).
  */
 
 const { validate } = require('class-validator');
 const { plainToInstance } = require('class-transformer');
+const { ConflictException } = require('@nestjs/common');
 
-// Import the real DTO class and constants (from compiled output)
-// Note: These paths assume the dist/ folder structure from the compiled build
-let CreateTenantDto;
-let TENANT_TYPES;
-let TENANT_STATUSES;
+// Import the real DTO class from compiled output — no fallback: if this
+// fails, the build is stale/missing and results would not reflect the
+// real implementation.
+const { CreateTenantDto } = require('../dist/tenants/dto/create-tenant.dto');
 
-try {
-  // Try to load from dist if available
-  const createTenantModule = require('../dist/tenants/dto/create-tenant.dto');
-  CreateTenantDto = createTenantModule.CreateTenantDto;
-  TENANT_TYPES = createTenantModule.TENANT_TYPES;
-  TENANT_STATUSES = createTenantModule.TENANT_STATUSES;
-} catch (e) {
-  // Fallback: define inline for testing without build
-  TENANT_TYPES = ['PLATFORM', 'VENDOR'];
-  TENANT_STATUSES = ['ACTIVE', 'SUSPENDED'];
-
-  // Create a test helper that mimics the DTO validation
-  CreateTenantDto = class {
-    constructor(data) {
-      this.name = data.name;
-      this.slug = data.slug;
-      this.type = data.type;
-      this.status = data.status;
-    }
-  };
-}
+// Import the real TenantsService from compiled output — same requirement.
+const { TenantsService } = require('../dist/tenants/tenants.service');
 
 let passed = 0;
 let failed = 0;
@@ -155,117 +139,124 @@ async function testValidation() {
   assert(numSlugErrors.length === 0, 'Slug with numbers is valid');
 }
 
-async function testServiceBehavior() {
-  console.log('\n=== Testing TenantsService.create() Behavior ===\n');
+/**
+ * Builds a mocked PrismaService-shaped dependency that records every call
+ * made to tenant.findUnique() / tenant.create() so tests can assert on
+ * exactly what the real TenantsService did, not just its return value.
+ */
+function createMockPrisma() {
+  const tenants = [];
+  const calls = { findUnique: [], create: [] };
 
-  // Simulate service behavior with mocked Prisma
-  const mockDb = {};
+  return {
+    _calls: calls,
+    _tenants: tenants,
+    tenant: {
+      findUnique: async (args) => {
+        calls.findUnique.push(args);
+        const found = tenants.find(
+          (t) => (args.where.slug && t.slug === args.where.slug) || (args.where.id && t.id === args.where.id),
+        );
+        return found || null;
+      },
+      create: async (args) => {
+        calls.create.push(args);
+        const tenant = {
+          id: 'tenant-' + (tenants.length + 1),
+          name: args.data.name,
+          slug: args.data.slug,
+          type: args.data.type,
+          status: args.data.status,
+          createdAt: new Date(),
+        };
+        tenants.push(tenant);
+        return tenant;
+      },
+    },
+  };
+}
 
-  class MockTenantsService {
-    async create(dto) {
-      // Check for duplicate slug (mimics actual service)
-      if (mockDb[dto.slug]) {
-        throw new Error(`Tenant with slug "${dto.slug}" already exists`);
-      }
+async function testRealServiceBehavior() {
+  console.log('\n=== Testing REAL TenantsService.create() (imported from dist/tenants/tenants.service) ===\n');
 
-      // Create tenant
-      const tenant = {
-        id: 'tenant-' + Math.random().toString(36).substr(2, 9),
-        name: dto.name,
-        slug: dto.slug,
-        type: dto.type,
-        status: dto.status,
-        createdAt: new Date(),
-      };
+  // Test 11: Successful create — real service, mocked Prisma
+  const prismaA = createMockPrisma();
+  const serviceA = new TenantsService(prismaA);
+  const dtoA = { name: 'First Tenant', slug: 'first-tenant', type: 'VENDOR', status: 'ACTIVE' };
 
-      mockDb[dto.slug] = tenant;
-      return tenant;
-    }
-  }
+  const resultA = await serviceA.create(dtoA);
 
-  const service = new MockTenantsService();
+  assert(prismaA._calls.findUnique.length === 1, 'create() calls prisma.tenant.findUnique()');
+  assert(prismaA._calls.findUnique[0].where.slug === 'first-tenant', 'findUnique() called with correct slug');
+  assert(prismaA._calls.create.length === 1, 'Successful create calls prisma.tenant.create()');
+  assert(resultA.ok === true, 'Successful create returns ok:true response envelope');
+  assert(resultA.data.slug === 'first-tenant', 'Returned tenant has correct slug');
+  assert(resultA.data.name === 'First Tenant', 'Returned tenant has correct name');
 
-  // Test 11: Successful tenant creation
+  // Test 12: Duplicate slug — real service throws real Nest ConflictException
+  const prismaB = createMockPrisma();
+  const serviceB = new TenantsService(prismaB);
+  const dtoB = { name: 'Dup Tenant', slug: 'dup-tenant', type: 'VENDOR', status: 'ACTIVE' };
+
+  await serviceB.create(dtoB); // first create succeeds
+
+  let thrown = null;
   try {
-    const result = await service.create({
-      name: 'First Tenant',
-      slug: 'first-tenant',
-      type: 'VENDOR',
-      status: 'ACTIVE',
-    });
-    assert(result !== null, 'Successful create returns tenant object');
-    assert(result.slug === 'first-tenant', 'Created tenant has correct slug');
+    await serviceB.create(dtoB); // duplicate slug
   } catch (e) {
-    assert(false, 'Successful create should not throw error');
+    thrown = e;
   }
 
-  // Test 12: Duplicate slug conflict detection
+  assert(thrown instanceof ConflictException, 'Duplicate slug throws actual @nestjs/common ConflictException');
+  assert(
+    thrown !== null && typeof thrown.message === 'string' && thrown.message.includes('already exists'),
+    'ConflictException carries expected message',
+  );
+  assert(
+    prismaB._calls.create.length === 1,
+    'Duplicate slug does NOT call prisma.tenant.create() a second time',
+  );
+  assert(prismaB._calls.findUnique.length === 2, 'Duplicate slug attempt still calls prisma.tenant.findUnique()');
+
+  // Test 13: Multiple different tenants can be created against the real service
+  const prismaC = createMockPrisma();
+  const serviceC = new TenantsService(prismaC);
+  await serviceC.create({ name: 'Second Tenant', slug: 'second-tenant', type: 'PLATFORM', status: 'ACTIVE' });
+  await serviceC.create({ name: 'Third Tenant', slug: 'third-tenant', type: 'VENDOR', status: 'SUSPENDED' });
+  assert(prismaC._tenants.length === 2, 'Multiple distinct tenants can be created via real service');
+  assert(prismaC._calls.create.length === 2, 'prisma.tenant.create() called once per distinct tenant');
+
+  // Test 14: Slug uniqueness enforced across repeated attempts on the real service
+  let secondThrown = null;
   try {
-    await service.create({
-      name: 'Duplicate Tenant',
-      slug: 'first-tenant',
-      type: 'VENDOR',
-      status: 'ACTIVE',
-    });
-    assert(false, 'Duplicate slug should throw ConflictException');
+    await serviceC.create({ name: 'Another Dup', slug: 'second-tenant', type: 'VENDOR', status: 'ACTIVE' });
   } catch (e) {
-    assert(e.message.includes('already exists'), 'Duplicate slug throws conflict error');
+    secondThrown = e;
   }
+  assert(secondThrown instanceof ConflictException, 'Second duplicate slug also throws ConflictException');
+  assert(prismaC._calls.create.length === 2, 'Second duplicate does not increase prisma.tenant.create() calls');
 
-  // Test 13: Multiple different tenants can be created
-  try {
-    await service.create({
-      name: 'Second Tenant',
-      slug: 'second-tenant',
-      type: 'PLATFORM',
-      status: 'ACTIVE',
-    });
-    await service.create({
-      name: 'Third Tenant',
-      slug: 'third-tenant',
-      type: 'VENDOR',
-      status: 'SUSPENDED',
-    });
-    assert(Object.keys(mockDb).length === 3, 'Multiple tenants can be created');
-  } catch (e) {
-    assert(false, 'Creating different tenants should succeed');
-  }
-
-  // Test 14: Slug uniqueness is enforced
-  try {
-    await service.create({
-      name: 'Another Duplicate',
-      slug: 'second-tenant',
-      type: 'VENDOR',
-      status: 'ACTIVE',
-    });
-    assert(false, 'Second duplicate slug should also throw');
-  } catch (e) {
-    assert(e.message.includes('already exists'), 'Second duplicate slug throws conflict error');
-  }
-
-  // Test 15: Service correctly validates through DTO
+  // Test 15: Real service accepts a real validated CreateTenantDto instance
+  const prismaD = createMockPrisma();
+  const serviceD = new TenantsService(prismaD);
   const validatedDto = plainToInstance(CreateTenantDto, {
     name: 'Final Tenant',
     slug: 'final-tenant',
     type: 'VENDOR',
     status: 'ACTIVE',
   });
-  try {
-    const result = await service.create(validatedDto);
-    assert(result !== null, 'Service accepts validated DTO and creates tenant');
-  } catch (e) {
-    assert(false, 'Service should accept validated DTO');
-  }
+  const resultD = await serviceD.create(validatedDto);
+  assert(resultD.ok === true, 'Real service accepts validated CreateTenantDto instance and creates tenant');
+  assert(prismaD._calls.create.length === 1, 'Validated DTO path calls prisma.tenant.create() exactly once');
 }
 
 // Main execution
 async function run() {
   console.log('Testing Tenant Write API (POST /tenants)\n');
-  console.log('Implementation: CreateTenantDto + TenantsService.create()\n');
+  console.log('Implementation: CreateTenantDto + TenantsService.create() (both imported from dist)\n');
 
   await testValidation();
-  await testServiceBehavior();
+  await testRealServiceBehavior();
 
   console.log(`\n=== RESULTS ===`);
   console.log(`${passed} passed, ${failed} failed`);
