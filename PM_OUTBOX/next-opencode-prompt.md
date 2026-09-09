@@ -4,10 +4,10 @@
 
 **Awaiting PM prompt**
 
-`TOPLINE-P7-005` (Vendor Write API) has been implemented and is submitted for
-PM/Codex audit — see
-`WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-005_WDR_2026-09-10.md`.
-Do not start `TOPLINE-P7-006` until P7-005 is approved and closed.
+`TOPLINE-P7-005` (Vendor Write API) is approved and closed — see
+`WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-005-AUDIT_2026-09-10.md`.
+Next eligible governed task: `TOPLINE-P7-006 — Category Write API`. Do not
+start it without PM approval.
 
 ## Instructions for OpenCode
 

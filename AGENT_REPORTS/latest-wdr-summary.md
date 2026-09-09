@@ -3,10 +3,11 @@
 ## Current WDR
 
 **TOPLINE-P7-005** — Vendor Write API
-**Status**: PASS (implementation) — pending PM/Codex audit
+**Status**: PASS / CLOSED
 **Date**: 2026-09-10
 **Implementation Commit**: `189a587`
-**WDR**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-005_WDR_2026-09-10.md`
+**Governance Commit**: `c46902f`
+**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-005-AUDIT_2026-09-10.md`
 
 ## Previous WDR Approved
 
@@ -36,5 +37,6 @@ TOPLINE-P7-005 implements `POST /vendors`:
   frontend, category/product, payment, auth/RBAC, package, migration,
   infrastructure, secret, or `shop.com` changes.
 
-P7-005 is submitted for PM/Codex audit. Do not start `TOPLINE-P7-006` until
-this task is approved and closed.
+P7-005 is approved and closed.
+
+Next planned task: `TOPLINE-P7-006 — Category Write API`. Do not execute it without PM approval.
