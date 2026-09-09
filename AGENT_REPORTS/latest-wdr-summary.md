@@ -5,7 +5,7 @@
 **TOPLINE-P7-004** — Tenant Write API  
 **Status**: PASS / CLOSED  
 **Date**: 2026-09-08  
-**Commit**: pending
+**Commit**: `1f799ff`
 
 ## Previous WDR Reviewed
 
