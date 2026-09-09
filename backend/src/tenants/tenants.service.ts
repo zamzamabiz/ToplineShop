@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { TenantSummaryDto } from './dto/tenant-summary.dto';
+import { CreateTenantDto } from './dto/create-tenant.dto';
 import { ApiResponse, success } from '../common/api-response';
 
 @Injectable()
@@ -39,5 +40,34 @@ export class TenantsService {
     }
 
     return success(tenant, { phase: 'P5-003' });
+  }
+
+  async create(dto: CreateTenantDto): Promise<ApiResponse<TenantSummaryDto>> {
+    const existing = await this.prisma.tenant.findUnique({
+      where: { slug: dto.slug },
+      select: { id: true },
+    });
+
+    if (existing) {
+      throw new ConflictException(`Tenant with slug "${dto.slug}" already exists`);
+    }
+
+    const tenant = await this.prisma.tenant.create({
+      data: {
+        name: dto.name,
+        slug: dto.slug,
+        type: dto.type,
+        status: dto.status,
+      },
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        status: true,
+        createdAt: true,
+      },
+    });
+
+    return success(tenant, { phase: 'P7-004' });
   }
 }
