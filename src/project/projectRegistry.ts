@@ -144,8 +144,8 @@ export const projectRegistry: ProjectRegistry = {
   protocol: "#123",
   currentPhase: "Phase 7",
   currentTask: null,
-  lastCompletedTask: "TOPLINE-P7-006",
-  nextPlannedTask: "TOPLINE-P7-007",
+  lastCompletedTask: "TOPLINE-P7-007",
+  nextPlannedTask: "TOPLINE-P7-008",
   overallCompletion: 83,
   lastUpdated: new Date().toISOString(),
   phases: [
@@ -1367,6 +1367,25 @@ export const projectRegistry: ProjectRegistry = {
       notes: "P7-006 approved: POST /categories with CreateCategoryDto validation, tenant existence check, optional parent category tenant-scope check, duplicate composite (tenantId, slug) check, real-service tests against compiled CategoriesService; 57/57 tests pass.",
       commitHash: "031005c",
     },
+    {
+      id: "TOPLINE-P7-007",
+      phase: "phase-7",
+      title: "Product Write API",
+      objective:
+        "Add POST /products endpoint with class-validator DTO — create product with tenant/vendor/category existence + same-tenant relationship safety, duplicate (tenantId, slug) detection, decimal basePrice handling, currency validation, and stock/status handling",
+      status: "PASS",
+      priority: "MEDIUM",
+      dependencies: ["TOPLINE-P7-006", "TOPLINE-P7-005"],
+      startedAt: new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      wdrPath: "WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-007_WDR_2026-09-10.md",
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "P7-007 implementation complete, awaiting PM audit: POST /products with CreateProductDto validation (required tenantId/vendorId/categoryId/name/slug/basePrice/status; optional description/currency/inStock), tenant + vendor + category existence + same-tenant relationship safety, composite (tenantId, slug) duplicate check, Decimal(19,4) basePrice + ISO 4217 currency + inStock handling, real-service tests against real compiled ProductsService with call-tracking Prisma mock; 82/82 tests pass.",
+      commitHash: "9b3ec1e",
+    },
   ],
   modules: [
     {
@@ -2228,10 +2247,19 @@ export const projectRegistry: ProjectRegistry = {
       commitHash: "031005c",
       pmAudit: "PASS",
     },
+    {
+      id: "wdr-057",
+      taskId: "TOPLINE-P7-007",
+      phase: "phase-7",
+      status: "PASS",
+      date: "2026-09-10",
+      commitHash: "9b3ec1e",
+      pmAudit: "PLANNED",
+    },
   ],
   git: {
     initialized: true,
-    lastCommit: "031005c",
+    lastCommit: "9b3ec1e",
   },
   github: {
     configured: true,
