@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { VendorSummaryDto } from './dto/vendor-summary.dto';
+import { CreateVendorDto } from './dto/create-vendor.dto';
 import { ApiResponse, success } from '../common/api-response';
 
 @Injectable()
@@ -42,5 +43,45 @@ export class VendorsService {
     }
 
     return success(vendor, { phase: 'P5-005' });
+  }
+
+  async create(dto: CreateVendorDto): Promise<ApiResponse<VendorSummaryDto>> {
+    const tenant = await this.prisma.tenant.findUnique({
+      where: { id: dto.tenantId },
+      select: { id: true },
+    });
+
+    if (!tenant) {
+      throw new NotFoundException('Tenant not found');
+    }
+
+    const existing = await this.prisma.vendor.findUnique({
+      where: { slug: dto.slug },
+      select: { id: true },
+    });
+
+    if (existing) {
+      throw new ConflictException(`Vendor with slug "${dto.slug}" already exists`);
+    }
+
+    const vendor = await this.prisma.vendor.create({
+      data: {
+        tenantId: dto.tenantId,
+        name: dto.name,
+        slug: dto.slug,
+        status: dto.status,
+        description: dto.description,
+        logo: dto.logo,
+      },
+      select: {
+        id: true,
+        tenantId: true,
+        name: true,
+        status: true,
+        createdAt: true,
+      },
+    });
+
+    return success(vendor, { phase: 'P7-005' });
   }
 }
