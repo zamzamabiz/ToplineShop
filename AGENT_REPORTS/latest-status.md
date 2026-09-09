@@ -2,7 +2,7 @@
 
 ## Current Status
 
-**TOPLINE-P7-006 implementation complete — awaiting PM audit**
+**TOPLINE-P7-006 approved — closed**
 
 ## Last Completed Governed Task
 
@@ -12,16 +12,17 @@
 **Implementation Commit**: `189a587`
 **Governance Commit**: `c46902f`
 
-## Just Implemented (Pending PM Audit)
+## Last Completed Governed Task
 
 **TOPLINE-P7-006** — Category Write API
-**Status**: PASS — pending PM audit
+**Status**: PASS / CLOSED
 **Date**: 2026-09-10
 **Implementation Commit**: `031005c`
+**Governance Commit**: `e2b8113`
 
-## Audit (P7-005)
+## Audit
 
-`WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-005-AUDIT_2026-09-10.md`
+`WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-006-AUDIT_2026-09-10.md`
 
 ## Next Planned Task
 
@@ -45,6 +46,7 @@ same-slug-different-tenant (proves composite unique is honored), and the
 `sortOrder` defaulting + optional `icon`/`parentId` pass-through paths,
 asserted against the actual `@nestjs/common` exception types. PM audit
 pending: `npm run build` PASS, `node scripts/test-category-create.js` PASS
+PM audit verified `npm run build` PASS, `node scripts/test-category-create.js` PASS
 (57/57), and `git diff --check` PASS. Read endpoints (`GET /categories`,
 `GET /categories/:id`) unchanged.
 

@@ -3,10 +3,10 @@
 ## Current WDR
 
 **TOPLINE-P7-006** — Category Write API
-**Status**: PASS — pending PM audit
+**Status**: PASS / CLOSED
 **Date**: 2026-09-10
 **Implementation Commit**: `031005c`
-**PM Audit**: pending
+**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-006-AUDIT_2026-09-10.md`
 
 ## Previous WDR Approved
 
@@ -46,7 +46,7 @@ TOPLINE-P7-006 implements `POST /categories`:
   for existence validation), payment, auth/RBAC, package, migration,
   infrastructure, secret, or `shop.com` changes.
 
-P7-006 implementation complete, awaiting PM audit.
+P7-006 is approved and closed.
 
 Next planned task: `TOPLINE-P7-007 — Product Write API`. Do not execute it
 without PM approval.
