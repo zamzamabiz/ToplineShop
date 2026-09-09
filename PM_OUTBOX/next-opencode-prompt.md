@@ -19,8 +19,9 @@
 
 <!-- PM: Write your next execution prompt below this line -->
 
-_Awaiting PM prompt._
+Awaiting PM audit of TOPLINE-P7-004-R2 (commit `ce2bc2b`,
+WDR `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-004-R2_WDR_2026-09-10.md`).
 
-TOPLINE-P7-005 is not approved. Do not start it without explicit PM approval.
+TOPLINE-P7-005 is not approved. Do not start it.
 
 <!-- PM: End of prompt -->

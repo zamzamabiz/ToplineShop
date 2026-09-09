@@ -2,32 +2,36 @@
 
 ## Current WDR
 
-**TOPLINE-P7-004** — Tenant Write API  
-**Status**: PASS / CLOSED  
-**Date**: 2026-09-08  
-**Commit**: `1f799ff`
+**TOPLINE-P7-004-R2** — Tenant Write API Real Service Test Evidence
+**Status**: PASS (self-assessed, pending PM audit)
+**Date**: 2026-09-10
+**Commit**: `ce2bc2b`
 
-## Previous WDR Reviewed
+## Previous WDR — Audit Result
 
-**TOPLINE-P7-003-R2** — Safe Request Path Logging Reconciliation  
-**Status**: PASS / CLOSED  
-**Date**: 2026-09-08  
+**TOPLINE-P7-004-R1-AUDIT** — Tenant Write API Evidence Correction Audit
+**Status**: BLOCKED
+**Date**: 2026-09-10
+**Commit Reviewed**: `4e18565`
+**Finding**: Service tests used a local `MockTenantsService` instead of the real
+`TenantsService.create()` implementation.
+
+## Previous WDR Approved
+
+**TOPLINE-P7-003-R2** — Safe Request Path Logging Reconciliation
+**Status**: PASS / CLOSED
+**Date**: 2026-09-08
 **Commit**: `2d0009c`
-
-## Superseded WDR
-
-**TOPLINE-P7-003-R1** — Safe Error Logging Reconciliation  
-**Status**: BLOCKED (superseded by R2)  
-**Commit**: `7a70bf6`
 
 ## Summary
 
-Tenant Write API implemented:
-- `backend/src/tenants/dto/create-tenant.dto.ts` — CreateTenantDto with class-validator
-- `backend/src/tenants/tenants.service.ts` — create() method with duplicate slug check
-- `backend/src/tenants/tenants.controller.ts` — POST /tenants endpoint
-- `backend/scripts/test-tenant-create.js` — 15 focused validation tests (all pass)
-- Backend build PASS
-- No frontend API client changes (deferred per task scope)
-- No auth/RBAC, payment, settlement changes
-- No database schema or migration changes
+P7-004-R2 corrects the R1 audit finding:
+- Removed the local `MockTenantsService`.
+- Imports and instantiates the real `TenantsService` from `backend/dist/tenants/tenants.service.js`.
+- Uses a call-tracking mock of `PrismaService` (`tenant.findUnique`, `tenant.create`).
+- Asserts the real `@nestjs/common` `ConflictException` is thrown on duplicate slug.
+- Asserts `prisma.tenant.create()` is NOT called on a duplicate-slug attempt.
+- Keeps the existing real `CreateTenantDto` / class-validator tests.
+- 30/30 tests pass.
+
+Submitted for PM/Codex audit. Do not start TOPLINE-P7-005 until approved and closed.
