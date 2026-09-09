@@ -1346,7 +1346,7 @@ export const projectRegistry: ProjectRegistry = {
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
       notes: "POST /vendors with CreateVendorDto validation, tenant existence check (NotFoundException), duplicate slug check (ConflictException), real-service tests against real compiled VendorsService with call-tracking Prisma mock; 33/33 tests pass. Awaiting PM audit.",
-      commitHash: null,
+      commitHash: "189a587",
     },
   ],
   modules: [
@@ -2197,13 +2197,13 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-7",
       status: "PASS",
       date: "2026-09-10",
-      commitHash: null,
+      commitHash: "189a587",
       pmAudit: "PLANNED",
     },
   ],
   git: {
     initialized: true,
-    lastCommit: "cc7e8a9",
+    lastCommit: "189a587",
   },
   github: {
     configured: true,

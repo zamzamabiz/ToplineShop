@@ -2,6 +2,14 @@
 
 ## Current WDR
 
+**TOPLINE-P7-005** — Vendor Write API
+**Status**: PASS (implementation) — pending PM/Codex audit
+**Date**: 2026-09-10
+**Implementation Commit**: `189a587`
+**WDR**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-005_WDR_2026-09-10.md`
+
+## Previous WDR Approved
+
 **TOPLINE-P7-004-R2** — Tenant Write API Real Service Test Evidence
 **Status**: PASS / CLOSED
 **Date**: 2026-09-10
@@ -9,33 +17,24 @@
 **Governance Commit**: `9e2a951`
 **PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-004-R2-AUDIT_2026-09-10.md`
 
-## Previous WDR — Audit Result
-
-**TOPLINE-P7-004-R1-AUDIT** — Tenant Write API Evidence Correction Audit
-**Status**: BLOCKED
-**Date**: 2026-09-10
-**Commit Reviewed**: `4e18565`
-**Finding**: Service tests used a local `MockTenantsService` instead of the real
-`TenantsService.create()` implementation.
-
-## Previous WDR Approved
-
-**TOPLINE-P7-003-R2** — Safe Request Path Logging Reconciliation
-**Status**: PASS / CLOSED
-**Date**: 2026-09-08
-**Commit**: `2d0009c`
-
 ## Summary
 
-P7-004-R2 corrects the R1 audit finding:
-- Removed the local `MockTenantsService`.
-- Imports and instantiates the real `TenantsService` from `backend/dist/tenants/tenants.service.js`.
-- Uses a call-tracking mock of `PrismaService` (`tenant.findUnique`, `tenant.create`).
-- Asserts the real `@nestjs/common` `ConflictException` is thrown on duplicate slug.
-- Asserts `prisma.tenant.create()` is NOT called on a duplicate-slug attempt.
-- Keeps the existing real `CreateTenantDto` / class-validator tests.
-- 30/30 tests pass.
+TOPLINE-P7-005 implements `POST /vendors`:
+- `CreateVendorDto` (tenantId, name, slug, status, optional description/logo)
+  using class-validator, matching `CreateTenantDto`'s style.
+- `VendorsService.create()`: tenant existence check throwing a real
+  `NotFoundException`, duplicate slug check throwing a real
+  `ConflictException`, safe create via the existing `success()` envelope.
+- `POST /vendors` controller endpoint (201 Created).
+- `backend/scripts/test-vendor-create.js` imports the real compiled
+  `CreateVendorDto`/`VendorsService` from `dist/` and exercises them against
+  a call-tracking mocked `PrismaService` — applying the exact real-service
+  testing standard the P7-004-R1 audit required. 33/33 tests pass (14 DTO
+  validation + 19 real-service behavior).
+- `npm run build` PASS, `git diff --check` PASS.
+- Read endpoints (`GET /vendors`, `GET /vendors/:id`) unchanged. No
+  frontend, category/product, payment, auth/RBAC, package, migration,
+  infrastructure, secret, or `shop.com` changes.
 
-P7-004 is approved and closed through P7-004-R2.
-
-Next planned task: `TOPLINE-P7-005 — Vendor Write API`. Do not execute it without PM approval.
+P7-005 is submitted for PM/Codex audit. Do not start `TOPLINE-P7-006` until
+this task is approved and closed.
