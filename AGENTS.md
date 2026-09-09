@@ -14,6 +14,7 @@ Frontend behavior must be proved visually before deep backend work. Backend/data
 
 ## #123 — Governance Protocol
 DISCUSS → DECIDE → EXECUTE → VERIFY/AUDIT → CLOSE → NEXT
+- Include safety boundaries, token-saving context use, and next-prompt preparation after WDR when possible.
 
 ## Git Rules
 - Never use `git add .`, `git add -A`, or `git add --all`

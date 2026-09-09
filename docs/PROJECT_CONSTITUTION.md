@@ -24,6 +24,13 @@
 
 **#123** — DISCUSS → DECIDE → EXECUTE → VERIFY/AUDIT → CLOSE → NEXT
 
+Protocol expansion:
+- **Safety first**: every task must declare allowed scope, forbidden scope, stop conditions, and exact-file git rules.
+- **Mega prompt discipline**: one approved governed task per prompt; maximum-useful prompt detail, but no repeated bulk context.
+- **Token saving**: keep standing rules in repository files; prompts should reference canonical files and use targeted reads/search.
+- **WDR first**: every execution produces a WDR with evidence before any closure or next task.
+- **Next prompt after audit**: after WDR audit, prepare the next prompt when possible, but do not execute it without PM approval.
+
 ## Documentation Budget
 
 ~90% implementation / verification, ~10% documentation. Machine-readable project state preferred over duplicated prose.

@@ -4,12 +4,17 @@
 
 Use mega prompts as governed execution packets: one approved task, one bounded scope, one verification trail, one stop point.
 
+This strategy is part of `#123`: DISCUSS -> DECIDE -> EXECUTE -> VERIFY/AUDIT -> CLOSE -> NEXT.
+
 ## Standing Strategy
 
 - Keep each mega prompt tied to a single task ID from `src/project/projectRegistry.ts`.
 - For Haiku execution, use `docs/HAIKU_EXECUTION_PROTOCOL.md` and `PM_OUTBOX/haiku-compact-prompt-template.md` to avoid repeated long context blocks.
+- Use maximum useful prompt clarity with minimum repeated context: cite standing files instead of pasting them.
 - Start every prompt with the approval boundary: exactly which task is approved and which next task is not approved.
 - Preserve #123 governance: DISCUSS -> DECIDE -> EXECUTE -> VERIFY/AUDIT -> CLOSE -> NEXT.
+- Carry explicit safety boundaries: allowed files/scope, forbidden scope, stop conditions, and exact-file staging.
+- After each WDR audit, prepare the next prompt when possible; execution still requires explicit PM approval.
 - Preserve #FDD: frontend behavior must be implemented and visually proved before deeper backend/database/auth work.
 - Treat docs, WDRs, registry, and PM_OUTBOX as context unless the PM prompt explicitly instructs execution.
 - Include a PM audit context from the previous task before allowing edits.
