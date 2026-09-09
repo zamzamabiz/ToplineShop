@@ -144,8 +144,8 @@ export const projectRegistry: ProjectRegistry = {
   protocol: "#123",
   currentPhase: "Phase 7",
   currentTask: null,
-  lastCompletedTask: "TOPLINE-P7-007",
-  nextPlannedTask: "TOPLINE-P7-008",
+  lastCompletedTask: "TOPLINE-P7-008",
+  nextPlannedTask: "TOPLINE-P7-009",
   overallCompletion: 83,
   lastUpdated: new Date().toISOString(),
   phases: [
@@ -2256,10 +2256,19 @@ export const projectRegistry: ProjectRegistry = {
       commitHash: "9b3ec1e",
       pmAudit: "PASS",
     },
+    {
+      id: "wdr-058",
+      taskId: "TOPLINE-P7-008",
+      phase: "phase-7",
+      status: "PASS",
+      date: "2026-09-10",
+      commitHash: "2197d84",
+      pmAudit: "PLANNED",
+    },
   ],
   git: {
     initialized: true,
-    lastCommit: "9b3ec1e",
+    lastCommit: "2197d84",
   },
   github: {
     configured: true,

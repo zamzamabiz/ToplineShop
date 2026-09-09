@@ -1,59 +1,51 @@
 # Latest WDR Summary
 
-## Latest Approved WDR
+## Current WDR
+
+**TOPLINE-P7-008** — Testing Foundation
+**Status**: PASS — pending PM audit
+**Date**: 2026-09-10
+**Implementation Commit**: `2197d84`
+**PM Audit**: pending
+
+## Previous WDR Approved
 
 **TOPLINE-P7-007** — Product Write API
 **Status**: PASS / CLOSED
 **Date**: 2026-09-10
 **Implementation Commit**: `9b3ec1e`
-**Governance Commit**: `6770116`
-**WDR Hash-Fill Commit**: `dd6f00d`
 **PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-007-AUDIT_2026-09-10.md`
-
-## Previous WDR Approved
-
-**TOPLINE-P7-006** — Category Write API
-**Status**: PASS / CLOSED
-**Date**: 2026-09-10
-**Implementation Commit**: `031005c`
-**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-006-AUDIT_2026-09-10.md`
 
 ## Summary
 
-TOPLINE-P7-007 implements `POST /products`:
-- `CreateProductDto` (required: `tenantId`, `vendorId`, `categoryId`,
-  `name`, `slug`, `basePrice` as finite non-negative number, `status` ∈
-  {DRAFT, ACTIVE, ARCHIVED}; optional: `description` ≤2000, `currency`
-  matching `/^[A-Z]{3}$/`, `inStock` boolean) using class-validator,
-  matching the `CreateVendorDto`/`CreateTenantDto`/`CreateCategoryDto`
-  style with product-specific numeric/currency/stock handling.
-- `ProductsService.create()`:
-  1. Tenant existence check throws a real `NotFoundException`.
-  2. Vendor existence + tenant-scope check throws a real
-     `NotFoundException` carrying a "Vendor not found" message (cross-tenant
-     parents are also rejected as "Vendor not found" to avoid leaking
-     cross-tenant existence).
-  3. Category existence + tenant-scope check throws a real
-     `NotFoundException` carrying a "Category not found" message (same
-     anti-leak rationale).
-  4. Composite `(tenantId, slug)` duplicate check via
-     `prisma.product.findFirst` throws a real `ConflictException` —
-     proving the composite unique key, not a global slug uniqueness.
-  5. Safe create via the existing `success()` envelope with
-     `meta.phase = 'P7-007'`, defaulting `currency` to `"NGN"` and
-     `inStock` to `true` to mirror Prisma column defaults.
-- `POST /products` controller endpoint (201 Created).
-- `backend/scripts/test-product-create.js` imports the real compiled
-  `CreateProductDto`/`ProductsService` from `dist/` and exercises them
-  against a call-tracking mocked `PrismaService` — applying the exact
-  real-service testing standard the P7-004-R1 audit required. 82/82 tests
-  pass (36 DTO validation + 46 real-service behavior sub-asserts).
-- `npm run build` PASS, `git diff --check` PASS.
-- Read endpoints (`GET /products`, `GET /products/:id`) unchanged. No
-  frontend, update/delete, payment, auth/RBAC, package, migration,
-  infrastructure, secret, or `shop.com` changes.
+TOPLINE-P7-008 establishes the backend testing foundation:
+- `backend/jest.config.js` (new) — Jest configuration: ts-jest preset,
+  Node test env, src/ root, dist/node_modules excluded, deterministic
+  ordering.
+- `backend/package.json` — added `"test": "jest"` script + 4 devDeps
+  (`jest@29`, `ts-jest`, `@types/jest`, `@nestjs/testing`). No production
+  runtime dep added.
+- `backend/src/testing/test.utils.ts` (new) — `createPrismaMock(seed?)`
+  factory with first-class call tracking for tenant/vendor/category/
+  product, `findUnique` by id or slug, `findFirst` by composite
+  `(tenantId, slug)`, `create` with auto-increment id and `createdAt`.
+  Replaces the four duplicated `createMockPrisma()` blocks in
+  `backend/scripts/test-*-create.js`.
+- `backend/src/testing/test.module.ts` (new) —
+  `createServiceTestHarness<T>(ServiceClass, seed?)` returns
+  `{ module, service, prisma, reset, close }` and wires the real service
+  via real NestJS DI with a mocked `PrismaService`.
+- `backend/src/testing/test.utils.spec.ts` (new) — 12 Jest tests proving
+  both halves of the foundation work end-to-end against the real
+  `TenantsService` via real NestJS DI and the real
+  `@nestjs/common` exception classes.
 
-P7-007 is approved and closed.
+Verification: 12/12 Jest tests pass; 4 existing `test-*-create.js`
+evidence scripts preserved and still pass (30+33+57+82 = 202 tests);
+`npm run build` PASS; `git diff --check` PASS. No production source file
+was modified.
 
-Next planned task: `TOPLINE-P7-008 — Testing Foundation`. Do not execute
-it without PM approval.
+P7-008 implementation complete, awaiting PM audit.
+
+Next planned task: `TOPLINE-P7-009 — Frontend API Client Write Methods`.
+Do not execute it without PM approval.

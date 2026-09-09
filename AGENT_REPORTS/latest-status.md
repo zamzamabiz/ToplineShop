@@ -2,7 +2,7 @@
 
 ## Current Status
 
-**TOPLINE-P7-007 approved / closed**
+**TOPLINE-P7-008 implementation complete — awaiting PM audit**
 
 ## Last Completed Governed Task
 
@@ -10,54 +10,52 @@
 **Status**: PASS / CLOSED
 **Date**: 2026-09-10
 **Implementation Commit**: `9b3ec1e`
-**Governance Commit**: `6770116`
-**WDR Hash-Fill Commit**: `dd6f00d`
 **PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-007-AUDIT_2026-09-10.md`
+
+## Just Implemented (Pending PM Audit)
+
+**TOPLINE-P7-008** — Testing Foundation
+**Status**: PASS — pending PM audit
+**Date**: 2026-09-10
+**Implementation Commit**: `2197d84`
 
 ## Next Planned Task
 
-**TOPLINE-P7-008** — Testing Foundation
+**TOPLINE-P7-009** — Frontend API Client Write Methods
 
 ## Summary
 
-P7-007 implements `POST /products` following the P7-005/P7-006 write-API
-pattern, with the extra product-specific relational safety the task asked
-for: `CreateProductDto` (class-validator — required: `tenantId`, `vendorId`,
-`categoryId`, `name`, `slug`, `basePrice` (Decimal(19,4) — finite
-non-negative number, NaN/strings/negatives rejected), `status` ∈
-{DRAFT, ACTIVE, ARCHIVED}; optional: `description` ≤2000, `currency`
-matching `/^[A-Z]{3}$/`, `inStock` boolean),
-`ProductsService.create()` with five guards in order:
-1. Tenant existence (`NotFoundException`).
-2. Vendor existence + same-tenant tenant-scope check (`NotFoundException`
-   carrying "Vendor not found" — cross-tenant rejected with same message
-   to avoid leaking cross-tenant existence).
-3. Category existence + same-tenant tenant-scope check (`NotFoundException`
-   carrying "Category not found").
-4. Composite `(tenantId, slug)` duplicate check via
-   `prisma.product.findFirst` (`ConflictException`).
-5. Safe create via the established `success()` envelope with
-   `meta.phase = 'P7-007'`, defaulting `currency` to `"NGN"` and `inStock`
-   to `true` (mirroring Prisma column defaults).
+P7-008 establishes the testing foundation in the planned `backend/src/testing/`
+area. Dev-dependency additions: `jest@29`, `ts-jest`, `@types/jest`,
+`@nestjs/testing`. New `npm test` script. New `backend/jest.config.js`
+(ts-jest preset, src/ root, dist/node_modules excluded, deterministic
+ordering).
 
-P7-007 is approved and closed. Test evidence
-(`backend/scripts/test-product-create.js`) imports the real
-compiled `CreateProductDto`/`ProductsService` from `dist/` and exercises them
-against a call-tracking mocked `PrismaService` — 82/82 tests pass,
-including all five failure branches (missing-tenant, missing-vendor,
-cross-tenant-vendor, missing-category, cross-tenant-category, duplicate-
-`(tenantId, slug)`), the composite-unique-key behavior (same slug in a
-different tenant is allowed), and the optional `currency`/`inStock`
-defaulting + pass-through, asserted against the actual `@nestjs/common`
-exception types. PM audit verification: `npm run build` PASS,
-`node scripts/test-product-create.js` PASS (82/82), and `git diff --check`
-PASS. Read endpoints (`GET /products`, `GET /products/:id`) unchanged. No
-unauthorized frontend, update/delete, payment, settlement, auth/RBAC, package,
-migration, infrastructure, secret, or `shop.com` changes were found.
+Two reusable utilities:
+1. `backend/src/testing/test.utils.ts` — `createPrismaMock()` factory with
+   call tracking for tenant/vendor/category/product, `findUnique` by id or
+   slug, `findFirst` by composite `(tenantId, slug)`, `create` with
+   auto-increment id and `createdAt`. Replaces the four duplicated
+   `createMockPrisma()` blocks in `backend/scripts/test-*-create.js`.
+2. `backend/src/testing/test.module.ts` — `createServiceTestHarness()`
+   using `@nestjs/testing`'s `Test.createTestingModule` to wire the real
+   service via real NestJS DI with a mocked `PrismaService`. Includes
+   `reset()` (clears call logs) and `close()` (releases the module).
+
+Proof test `backend/src/testing/test.utils.spec.ts` exercises both halves
+end-to-end against the real `TenantsService` — 12 Jest tests covering
+mock seed/find/create/call-tracking, NestJS DI wiring, real
+`ConflictException`/`NotFoundException` paths, and `harness.reset()`
+clearing. **12/12 Jest tests pass**.
+
+Existing `backend/scripts/test-*-create.js` evidence scripts preserved
+and still pass (30+33+57+82 = 202 tests). `npm run build` PASS,
+`git diff --check` PASS. No production source file outside
+`backend/src/testing/**` was modified.
 
 ## Next PM Prompt Source
 
-`PM_OUTBOX/next-opencode-prompt.md` (TOPLINE-P7-008 PM-approved prompt)
+`PM_OUTBOX/next-opencode-prompt.md` (reset to awaiting PM prompt)
 
 ## Last Updated
 
