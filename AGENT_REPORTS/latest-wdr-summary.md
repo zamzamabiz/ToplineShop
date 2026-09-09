@@ -1,12 +1,14 @@
 # Latest WDR Summary
 
-## Current WDR
+## Latest Approved WDR
 
 **TOPLINE-P7-007** — Product Write API
-**Status**: PASS — pending PM audit
+**Status**: PASS / CLOSED
 **Date**: 2026-09-10
 **Implementation Commit**: `9b3ec1e`
-**PM Audit**: pending
+**Governance Commit**: `6770116`
+**WDR Hash-Fill Commit**: `dd6f00d`
+**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-007-AUDIT_2026-09-10.md`
 
 ## Previous WDR Approved
 
@@ -51,7 +53,7 @@ TOPLINE-P7-007 implements `POST /products`:
   frontend, update/delete, payment, auth/RBAC, package, migration,
   infrastructure, secret, or `shop.com` changes.
 
-P7-007 implementation complete, awaiting PM audit.
+P7-007 is approved and closed.
 
 Next planned task: `TOPLINE-P7-008 — Testing Foundation`. Do not execute
 it without PM approval.
