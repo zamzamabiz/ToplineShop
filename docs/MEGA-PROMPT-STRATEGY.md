@@ -7,6 +7,7 @@ Use mega prompts as governed execution packets: one approved task, one bounded s
 ## Standing Strategy
 
 - Keep each mega prompt tied to a single task ID from `src/project/projectRegistry.ts`.
+- For Haiku execution, use `docs/HAIKU_EXECUTION_PROTOCOL.md` and `PM_OUTBOX/haiku-compact-prompt-template.md` to avoid repeated long context blocks.
 - Start every prompt with the approval boundary: exactly which task is approved and which next task is not approved.
 - Preserve #123 governance: DISCUSS -> DECIDE -> EXECUTE -> VERIFY/AUDIT -> CLOSE -> NEXT.
 - Preserve #FDD: frontend behavior must be implemented and visually proved before deeper backend/database/auth work.

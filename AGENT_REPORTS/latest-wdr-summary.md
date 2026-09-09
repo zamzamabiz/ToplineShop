@@ -3,9 +3,11 @@
 ## Current WDR
 
 **TOPLINE-P7-004-R2** — Tenant Write API Real Service Test Evidence
-**Status**: PASS (self-assessed, pending PM audit)
+**Status**: PASS / CLOSED
 **Date**: 2026-09-10
-**Commit**: `ce2bc2b`
+**Implementation Commit**: `ce2bc2b`
+**Governance Commit**: `9e2a951`
+**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-004-R2-AUDIT_2026-09-10.md`
 
 ## Previous WDR — Audit Result
 
@@ -34,4 +36,6 @@ P7-004-R2 corrects the R1 audit finding:
 - Keeps the existing real `CreateTenantDto` / class-validator tests.
 - 30/30 tests pass.
 
-Submitted for PM/Codex audit. Do not start TOPLINE-P7-005 until approved and closed.
+P7-004 is approved and closed through P7-004-R2.
+
+Next planned task: `TOPLINE-P7-005 — Vendor Write API`. Do not execute it without PM approval.
