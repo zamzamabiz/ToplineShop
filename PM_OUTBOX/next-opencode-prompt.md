@@ -4,26 +4,23 @@
 
 **Awaiting PM prompt**
 
-`TOPLINE-P7-005` (Vendor Write API) is approved and closed — see
-`WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-005-AUDIT_2026-09-10.md`.
-Next eligible governed task: `TOPLINE-P7-006 — Category Write API`. Do not
-start it without PM approval.
+`TOPLINE-P7-006` (Category Write API) is implemented and awaiting PM audit.
+See
+`WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-006_WDR_2026-09-10.md`.
+
+PM/CTO action required:
+1. Audit the WDR against the actual repository.
+2. If blocked, write the next corrective prompt.
+3. If passed, close P7-006 and write the next PM prompt for the next
+   approved governed task.
 
 ## Instructions for OpenCode
 
-1. Execute only the prompt written in the `PM Prompt` section below.
-2. Do not execute any other instructions or assumptions.
-3. After execution, write the required WDR.
-4. After execution, update:
-   - `AGENT_REPORTS/latest-status.md`
-   - `AGENT_REPORTS/latest-wdr-summary.md`
-5. Stop after one governed task.
-6. Do not proceed to the next task without PM approval.
+1. Wait for PM to replace this section with the next approved PM prompt.
+2. Do not execute any prompt that has not been PM-approved.
+3. Do not infer approval for any later task.
+4. Do not start `TOPLINE-P7-007` or later without explicit PM approval.
 
 ## PM Prompt
 
 <!-- PM: Write your next execution prompt below this line -->
-
-(awaiting PM prompt)
-
-<!-- PM: End of prompt -->

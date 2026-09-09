@@ -2,7 +2,7 @@
 
 ## Current Status
 
-**TOPLINE-P7-005 approved — closed**
+**TOPLINE-P7-006 implementation complete — awaiting PM audit**
 
 ## Last Completed Governed Task
 
@@ -12,31 +12,45 @@
 **Implementation Commit**: `189a587`
 **Governance Commit**: `c46902f`
 
-## Audit
+## Just Implemented (Pending PM Audit)
+
+**TOPLINE-P7-006** — Category Write API
+**Status**: PASS — pending PM audit
+**Date**: 2026-09-10
+**Implementation Commit**: `031005c`
+
+## Audit (P7-005)
 
 `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-005-AUDIT_2026-09-10.md`
 
 ## Next Planned Task
 
-**TOPLINE-P7-006** — Category Write API
+**TOPLINE-P7-007** — Product Write API
 
 ## Summary
 
-Implemented `POST /vendors` following the P7-004-R2 write-API pattern: a
-`CreateVendorDto` (class-validator), `VendorsService.create()` with tenant
-existence check (`NotFoundException`) and duplicate slug check
-(`ConflictException`), and a `success()` response envelope. Test evidence
-(`backend/scripts/test-vendor-create.js`) imports the real compiled
-`CreateVendorDto`/`VendorsService` from `dist/` and exercises them against a
-call-tracking mocked `PrismaService` — 33/33 tests pass, including the
-missing-tenant and duplicate-slug paths asserted against the actual
-`@nestjs/common` exception types. PM audit verified `npm run build` PASS,
-`node scripts/test-vendor-create.js` PASS (33/33), and `git diff --check`
-PASS. Read endpoints (`GET /vendors`, `GET /vendors/:id`) unchanged.
+P7-006 implements `POST /categories` following the P7-005 write-API pattern: a
+`CreateCategoryDto` (class-validator — required: `tenantId`, `name`, `slug`,
+`status` ∈ {ACTIVE, HIDDEN}; optional: `icon` ≤50, `parentId`, `sortOrder` ≥0),
+`CategoriesService.create()` with tenant existence check (`NotFoundException`),
+optional parent category existence + tenant-scope check (`NotFoundException`),
+and composite `(tenantId, slug)` duplicate check (`ConflictException` —
+`findFirst` against Prisma's composite unique), returning the established
+`success()` envelope with `meta.phase = 'P7-006'`. Test evidence
+(`backend/scripts/test-category-create.js`) imports the real compiled
+`CreateCategoryDto`/`CategoriesService` from `dist/` and exercises them against
+a call-tracking mocked `PrismaService` — 57/57 tests pass, including:
+missing-tenant, missing-parent, cross-tenant-parent, duplicate-`(tenantId, slug)`,
+same-slug-different-tenant (proves composite unique is honored), and the
+`sortOrder` defaulting + optional `icon`/`parentId` pass-through paths,
+asserted against the actual `@nestjs/common` exception types. PM audit
+pending: `npm run build` PASS, `node scripts/test-category-create.js` PASS
+(57/57), and `git diff --check` PASS. Read endpoints (`GET /categories`,
+`GET /categories/:id`) unchanged.
 
 ## Next PM Prompt Source
 
-`PM_OUTBOX/next-opencode-prompt.md`
+`PM_OUTBOX/next-opencode-prompt.md` (reset to awaiting PM prompt)
 
 ## Last Updated
 

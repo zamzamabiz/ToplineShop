@@ -144,8 +144,8 @@ export const projectRegistry: ProjectRegistry = {
   protocol: "#123",
   currentPhase: "Phase 7",
   currentTask: null,
-  lastCompletedTask: "TOPLINE-P7-005",
-  nextPlannedTask: "TOPLINE-P7-006",
+  lastCompletedTask: "TOPLINE-P7-006",
+  nextPlannedTask: "TOPLINE-P7-007",
   overallCompletion: 83,
   lastUpdated: new Date().toISOString(),
   phases: [
@@ -1348,6 +1348,25 @@ export const projectRegistry: ProjectRegistry = {
       notes: "P7-005 audited PASS/CLOSED: POST /vendors with CreateVendorDto validation, tenant existence check (NotFoundException), duplicate slug check (ConflictException), real-service tests against real compiled VendorsService with call-tracking Prisma mock; 33/33 tests pass.",
       commitHash: "189a587",
     },
+    {
+      id: "TOPLINE-P7-006",
+      phase: "phase-7",
+      title: "Category Write API",
+      objective:
+        "Add POST /categories endpoint with class-validator DTO — create category with tenant existence check, optional parent category existence check, and duplicate (tenantId, slug) detection",
+      status: "PASS",
+      priority: "MEDIUM",
+      dependencies: ["TOPLINE-P7-005"],
+      startedAt: new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      wdrPath: "WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-006_WDR_2026-09-10.md",
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "P7-006 implementation complete, awaiting PM audit: POST /categories with CreateCategoryDto validation, tenant existence check (NotFoundException), optional parent category existence + tenant-scope check (NotFoundException), duplicate composite (tenantId, slug) check (ConflictException), real-service tests against real compiled CategoriesService with call-tracking Prisma mock; 57/57 tests pass.",
+      commitHash: "031005c",
+    },
   ],
   modules: [
     {
@@ -2200,10 +2219,19 @@ export const projectRegistry: ProjectRegistry = {
       commitHash: "189a587",
       pmAudit: "PASS",
     },
+    {
+      id: "wdr-056",
+      taskId: "TOPLINE-P7-006",
+      phase: "phase-7",
+      status: "PASS",
+      date: "2026-09-10",
+      commitHash: "031005c",
+      pmAudit: "PLANNED",
+    },
   ],
   git: {
     initialized: true,
-    lastCommit: "189a587",
+    lastCommit: "031005c",
   },
   github: {
     configured: true,
