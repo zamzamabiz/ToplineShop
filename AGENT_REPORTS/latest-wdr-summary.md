@@ -21,4 +21,4 @@ P7-003 observability foundation fully reconciled:
 - R1 is blocked/superseded; R2 is the approved corrective revision
 - No `request.url` logged directly anywhere
 - Registry currentTask cleared (P7-004 unapproved)
-- git.lastCommit updated to final commit `702a89b`
+- git.lastCommit updated to final commit `13638d9`
