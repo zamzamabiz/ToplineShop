@@ -105,4 +105,4 @@ R4 is documentation/governance only. It must:
 - Phase 8: BLOCKED.
 - Next approved task: TOPLINE-P8-001-R4 only.
 
-PM audit commit: `PENDING_UNTIL_COMMIT`
+PM audit commit: `b43a5114e2f8845e55e28f64cd987b4e4e9a80ce`
