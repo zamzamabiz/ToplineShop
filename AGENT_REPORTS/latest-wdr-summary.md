@@ -2,54 +2,38 @@
 
 ## Current WDR
 
+**TOPLINE-P8-001** — Phase 8 Database/Auth/RBAC Readiness Plan
+**Status**: PASS — pending PM audit
+**Date**: 2026-09-10
+**Implementation Commit**: `<P8-001_IMPL_HASH>`
+**Evidence-Fill Commit**: `<P8-001_FILL_HASH>`
+**PM Audit**: pending
+
+## Previous WDR Approved
+
 **TOPLINE-P7-010-R2** — Phase 7 Corrective Registry Source-of-Truth
 Completion
-**Status**: PASS — PM approved
+**Status**: PASS / CLOSED
 **Date**: 2026-09-10
-**Registry Completion Commit**: `719075517af496b6e22c82de015d99d0294fd759`
-**Evidence-Fill Commit**: `06bc94ab519e8f85ab5293ff317fa236483d6862`
-**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-010-R2-AUDIT_2026-09-10.md` (PASS)
-
-## Previous WDR (BLOCKED)
-
-**TOPLINE-P7-010-R1** — Phase 7 Freeze Gate Dashboard Rollup
-Reconciliation
-**Status**: implementation PASS — PM approved after R2
-**Date**: 2026-09-10
-**Implementation Commit**: `e5decfb`
-**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-010-R1-AUDIT_2026-09-10.md` (resolved by R2; registry now PASS)
-
-**TOPLINE-P7-010** — Phase 7 Freeze Gate
-**Status**: implementation PASS — PM approved after R2
-**Date**: 2026-09-10
-**Implementation Commit**: `feea2bf`
-**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-010-AUDIT_2026-09-10.md` (resolved by R1/R2; registry now PASS)
+**Registry Completion Commit**: `7190755`
+**PM Audit**: approved in commit `5db0076`
 
 ## Summary
 
-TOPLINE-P7-010-R2 is a corrective governed task that closes the
-corrective governance chain for the Phase 7 freeze gate. The
-P7-010-R1 audit (`WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-010-R1-AUDIT_2026-09-10.md`)
-found the same gap pattern that P7-008-R1 and P7-009-R1 already
-addressed for earlier blocks: the registry was missing the task
-entry and WDR for the corrective task itself.
+TOPLINE-P8-001 is a planning-only governance task that produced the
+Phase 8 readiness plan. No implementation occurred. The plan documents
+the inherited Phase 3 design vs Phase 4/7 implementation state, records
+26 GAPs and 10 RISKs, proposes a 5-task sequence (P8-002..P8-006
+within the registry's `megaPromptTarget: 4` budget), and recommends
+P8-002 as the dependency-first next task.
 
-R2 added:
-- `TOPLINE-P7-010-R1` task entry (`pmApproval: "BLOCKED"` per R1 audit)
-- `wdr-063` for P7-010-R1 (`pmAudit: "BLOCKED"`, commit `e5decfb`)
-- `TOPLINE-P7-010-R2` task entry (`pmApproval: "PLANNED"`)
-- `wdr-064` for P7-010-R2 (`pmAudit: "PLANNED"`)
-- `phase-7.taskCount` / `completedTaskCount` bumped 17 → 19
-  (correctives are not mega-prompts; `megaPromptTarget` /
-  `megaPromptsCompleted` kept at 10/10)
-- Kept `P7-010` task entry and `wdr-062` with
-  `pmApproval` / `pmAudit: "PLANNED"` (still awaiting PM audit)
-- Restored root summary fields to R2-completion state
+P8-001 STOPPED BEFORE `TOPLINE-P8-002`. P8-002 is proposed but
+unapproved. P8-002 has not been registered in `projectRegistry.tasks[]`
+or `projectRegistry.wdrs[]`. No P8-002 work has been started. PM must
+audit this WDR and the plan and write a separate, PM-approved prompt
+for the chosen next Phase 8 task.
 
-Did NOT modify product code, backend files, frontend pages/components,
-packages, migrations, auth/RBAC, infrastructure, secrets, or
-`F:\OpenCode\shop.com`. Did NOT start Phase 8.
+P8-001 implementation complete, awaiting PM audit.
 
-P7-010-R2 PM audit passed. The registry is internally consistent and
-Phase 7 is officially closed, ready to hand off to Phase 8
-Database/Auth/RBAC planning. Next approved task: `TOPLINE-P8-001`.
+Next planned task: **TOPLINE-P8-002** (proposed, unapproved). Do not
+execute it without PM approval.
