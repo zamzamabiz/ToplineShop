@@ -12,6 +12,7 @@
 - PM audit: BLOCKED
 - Implementation commit: `82361970c15181c8a19bc1249f3a525bac4ad9cd`
 - Evidence-fill commit: `894d2b36f52c3442650774b2371f035252d8834b`
+- PM audit commit: `c2282eb5c7cf2c51388e7e538f8a6e61f12bd25c`
 - Audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-AUDIT_2026-09-10.md`
 
 The plan stayed within its six-file governance scope and all builds/tests

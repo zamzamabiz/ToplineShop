@@ -148,4 +148,4 @@ R1 must remain planning-only and must:
 - Phase 8 implementation: not started and not authorized.
 - Next approved corrective task: TOPLINE-P8-001-R1 only.
 
-PM audit commit: `PENDING_UNTIL_COMMIT`
+PM audit commit: `c2282eb5c7cf2c51388e7e538f8a6e61f12bd25c`

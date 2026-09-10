@@ -2473,7 +2473,7 @@ export const projectRegistry: ProjectRegistry = {
   ],
   git: {
     initialized: true,
-    lastCommit: "82361970c15181c8a19bc1249f3a525bac4ad9cd",
+    lastCommit: "c2282eb5c7cf2c51388e7e538f8a6e61f12bd25c",
   },
   github: {
     configured: true,
