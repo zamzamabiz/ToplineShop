@@ -2,58 +2,44 @@
 
 ## Current Status
 
-**TOPLINE-P8-001-R6 execution: PASS — PM audit BLOCKED**
+**TOPLINE-P8-001-R7 execution: PASS — PM audit pending**
 
-## R6 Task
+## R7 Task
 
-**TOPLINE-P8-001-R6** - Phase 8 Package Ownership and Residual State Cleanup
+**TOPLINE-P8-001-R7** - Phase 8 Evidence Status Reconciliation
 
 - Execution status: PASS (planning/governance only)
-- PM audit: BLOCKED
-- Implementation commit: `1f6c3f9f56fc6bfb91cde9564706e0e35808a0cb`
-- Evidence-fill commit: `ab864dc073b244bc24415bb67f8777ceb7504662`
-- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6_WDR_2026-09-11.md`
-- R5 WDR (immutable, with R5 overclaims recorded in R6): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5_WDR_2026-09-11.md`
-- R5 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5-AUDIT_2026-09-11.md`
+- PM audit: PLANNED (pending PM audit)
+- Implementation commit: `PENDING_UNTIL_COMMIT` (replaced with real hash in evidence-fill commit; see WDR + PM_OUTBOX)
+- Evidence-fill commit: reported in #MM final handoff
+- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R7_WDR_2026-09-11.md`
+- R6 WDR (immutable, with R6 status-evidence correction recorded in R7): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6_WDR_2026-09-11.md`
 - R6 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6-AUDIT_2026-09-11.md`
-- R6 PM audit commit: `cbb96c5a80424cc8da88294775685cf9ae8bd99a`
-- R6 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md`
 
-R6 addressed all 6 R5 audit findings:
+R7 corrected the R6 status evidence:
 
-- GAP-20, GAP-21, and GAP-22 corrected: every
-  package addition (`argon2`, `@nestjs/jwt`,
-  `@nestjs/passport`, optional `@nestjs/throttler`) is
-  restricted to **P8-003 only** (or a later separately
-  PM-approved task). **No package is added in P8-002.**
-  P8-003 is the sole planned owner of any future
-  PM-approved auth package installation.
-- Prisma/PostgreSQL connection behavior wording
-  corrected: the "at the time of P8-002/003" split is
-  removed and replaced with a sole future owner (the
-  future PM-approved P8-002 prompt, or a later separately
-  PM-approved task) plus an explicit "not assigned" note.
-- `### Marked unapproved` section updated: now includes
-  the full P8-001 / R1 / R2 / R3 / R4 / R5 corrective
-  chain and states that **R5 stopped before P8-002**; R6
-  is the current corrective task continuing the chain.
-- R5 WDR/report overclaims recorded as historical R5
-  inaccuracies in this R6 WDR and in the latest reports.
-  The R5 WDR remains immutable and is not rewritten.
-- R6 status evidence is BLOCKED: the modified governance WDR
-  is visible in ordinary status output, while
-  `.claude/settings.local.json` exists but is globally ignored
-  and is visible only when ignored files are requested. R6's
-  claim that it is ordinary untracked and not git-ignored is
-  inaccurate.
-- Valid R5 corrections preserved: Session belongs to
-  P8-002 only; RBAC persistence and RBAC guards belong to
-  P8-004 only; P8-003 is schema-free and owns
-  `AuthGuard` and write-endpoint protection only; planned
-  candidates remain absent today until future approved
-  tasks implement them.
+- R6 latest reports and WDR described
+  `.claude/settings.local.json` as "untracked, never
+  tracked". That description was inaccurate. The file is
+  **present** at `E:\ToplineShop\.claude\settings.local.json`
+  and is **gitignored globally** (not untracked).
+- `git status --short --untracked-files=all` does **not**
+  show the file because gitignored paths are excluded from
+  the untracked display.
+- `git status --short --ignored` shows the file's parent
+  directory `!! .claude/` (the leading `!!` is the
+  git-ignored marker).
+- `git check-ignore -v .claude/settings.local.json` returns
+  `C:\Users\a/.config/git/ignore:1:**/.claude/settings.local.json .claude/settings.local.json`,
+  confirming the ignore source is the user's **global git
+  ignore** at `C:\Users\a\.config\git\ignore` (not the
+  repository-local `.gitignore`).
+- The R6 package-ownership, Prisma-ownership, and
+  corrective-chain corrections in the readiness plan are
+  preserved byte-for-byte. R7 only updates the status
+  evidence in the latest reports and the new R7 WDR.
 
-## P8-001 through P8-001-R5 (all BLOCKED)
+## P8-001 through P8-001-R6 (all BLOCKED)
 
 - P8-001 implementation: PASS, PM audit BLOCKED.
 - P8-001-R1 implementation: PASS, PM audit BLOCKED.
@@ -61,6 +47,7 @@ R6 addressed all 6 R5 audit findings:
 - P8-001-R3 implementation: PASS, PM audit BLOCKED.
 - P8-001-R4 implementation: PASS, PM audit BLOCKED.
 - P8-001-R5 implementation: PASS, PM audit BLOCKED.
+- P8-001-R6 implementation: PASS, PM audit BLOCKED.
 - P8-001 implementation commit: `82361970c15181c8a19bc1249f3a525bac4ad9cd`
 - P8-001 evidence-fill commit: `894d2b36f52c3442650774b2371f035252d8834b`
 - P8-001 PM audit commit: `c2282eb5c7cf2c51388e7e538f8a6e61f12bd25c`
@@ -79,32 +66,35 @@ R6 addressed all 6 R5 audit findings:
 - P8-001-R5 implementation commit: `aaa32521d2dd36f520542666b3318486745a150e`
 - P8-001-R5 evidence-fill commit: `9aa86e491486e192378b8ff3856126c5b0b8144b`
 - P8-001-R5 PM audit commit: `5793f29b937197bbf1223185444e28c8b76658c5`
-- P8-001-R5 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5-AUDIT_2026-09-11.md`
+- P8-001-R6 implementation commit: `1f6c3f9f56fc6bfb91cde9564706e0e35808a0cb`
+- P8-001-R6 evidence-fill commit: `ab864dc073b244bc24415bb67f8777ceb7504662`
+- P8-001-R6 PM audit commit: `b2456c2d15388ffe1beb7958f41da21a40bbd604`
+- P8-001-R6 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6-AUDIT_2026-09-11.md`
 
-## Next Task (corrective, planned)
+## Next Task (proposed, unapproved)
 
-**TOPLINE-P8-001-R7** - Phase 8 Evidence Status Reconciliation
+**TOPLINE-P8-002** - Auth Persistence Data Model and Migration Safety Foundation
 
-R7 is a documentation/governance-only correction for the
-ignored-file status evidence. It must preserve the valid R6
-plan corrections and stop before P8-002. P8-002 remains
-proposed, unregistered, and unapproved.
+P8-002 is **proposed but unapproved**. P8-002 has not been
+registered. PM must write a separate, PM-approved prompt for
+P8-002 only after the full P8-001 / R1 / R2 / R3 / R4 / R5
+/ R6 / R7 corrective chain has been audited and PASSED by PM.
+P8-001-R7 STOPPED BEFORE TOPLINE-P8-002 per #123.
 
 ## Phase 8 State
 
-- Status: BLOCKED pending P8-001-R7 completion and PM audit
+- Status: BLOCKED pending P8-001-R7 PM audit
 - Progress: 20
-- Mega-prompt target/completed: 5/1 (R1, R2, R3, R4, R5, R6 are correctives and do not increment)
+- Mega-prompt target/completed: 5/1 (R1, R2, R3, R4, R5, R6, R7 are correctives and do not increment)
 - Registered tasks: 8
-- Completed implementation-agent tasks: 7
+- Completed implementation-agent tasks: 8
 - All implementation/owner gates remain unpassed
 - currentTask: null
 
 ## Preserved Unrelated Changes (real, accurate)
 
-- `WDR/_All/Governance/TOPLINE-GOV-AUTO-001_WDR_2026-09-08.md` (modified, unstaged — never staged by R1, R2, R3, R4, R5, or R6)
-- `.claude/settings.local.json` (present, globally ignored by
-  `C:\Users\a/.config/git/ignore`, never tracked)
+- `WDR/_All/Governance/TOPLINE-GOV-AUTO-001_WDR_2026-09-08.md` (modified, unstaged — never staged by R1, R2, R3, R4, R5, R6, or R7)
+- `.claude/settings.local.json` (present on disk at `E:\ToplineShop\.claude\settings.local.json`, **gitignored globally** via `C:\Users\a\.config\git\ignore` line 1 pattern `**/.claude/settings.local.json`. Not visible in `git status --short --untracked-files=all`. Visible as `!! .claude/` parent directory in `git status --short --ignored`. Contents were not read.)
 
 ## Last Updated
 
