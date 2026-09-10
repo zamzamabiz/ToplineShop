@@ -1441,7 +1441,7 @@ export const projectRegistry: ProjectRegistry = {
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
       notes: "P7-010 Phase 7 Freeze Gate audit complete, awaiting PM audit. Verified all 16 Phase 7 task entries (P7-001..P7-009 + 7 R-corrections: P7-002-R1, P7-003-R1, P7-003-R2, P7-004-R1, P7-004-R2, P7-008-R1, P7-009-R1) and 16 wdr- entries (wdr-046..wdr-061) are present in the registry with internally consistent root summary fields; the effective closing audit for every multi-iteration task chain (P7-003, P7-004) is the final R-task (R2) which is PASS; scope safety verified across all 11 governed task WDRs (no auth/RBAC, no payment/settlement, no migrations, no destructive DB ops, no infrastructure/deployment, no secrets, no shop.com, no unauthorized frontend UI changes); code health verified: npm run build (project root) PASS (all 24 routes), npm run lint PASS (0 errors, 5 pre-existing <img> warnings in files not touched by Phase 7), npm run build (backend) PASS, npm test (backend) PASS (12/12 Jest tests, all 4 existing scripts/test-*-create.js evidence scripts preserved at 30+33+57+82=202 tests); git diff --check PASS. Allowed-changes-only: governance/report/registry updates, freeze-gate WDR. No product implementation changes. No Phase 8 work. FROZEN — phase-7 is ready to hand off to Phase 8 (DB / Auth / RBAC) PM planning.",
-      commitHash: "<P7-010_HASH>",
+      commitHash: "feea2bf",
     },
   ],
   modules: [
@@ -2355,13 +2355,13 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-7",
       status: "PASS",
       date: "2026-09-10",
-      commitHash: "<P7-010_HASH>",
+      commitHash: "feea2bf",
       pmAudit: "PLANNED",
     },
   ],
   git: {
     initialized: true,
-    lastCommit: "<P7-010_HASH>",
+    lastCommit: "feea2bf",
   },
   github: {
     configured: true,

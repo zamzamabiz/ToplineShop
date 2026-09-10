@@ -5,7 +5,7 @@
 **TOPLINE-P7-010** — Phase 7 Freeze Gate
 **Status**: PASS — pending PM audit
 **Date**: 2026-09-10
-**Implementation Commit**: `<P7-010_HASH>`
+**Implementation Commit**: `feea2bf`
 **PM Audit**: pending
 
 ## Previous WDR Approved
