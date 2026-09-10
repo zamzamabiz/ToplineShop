@@ -33,6 +33,7 @@ or the project rules.
 
 - R5 implementation commit: `aaa32521d2dd36f520542666b3318486745a150e`
 - R5 evidence-fill commit: `9aa86e491486e192378b8ff3856126c5b0b8144b`
+- R5 PM audit commit: `5793f29b937197bbf1223185444e28c8b76658c5`
 - R5 PM audit: BLOCKED
 - R5 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5-AUDIT_2026-09-11.md`
 - `TOPLINE-P8-001` through `TOPLINE-P8-001-R5`: execution PASS, PM audit BLOCKED

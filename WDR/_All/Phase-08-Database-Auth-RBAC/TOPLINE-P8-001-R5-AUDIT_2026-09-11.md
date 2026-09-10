@@ -109,4 +109,4 @@ R6 is documentation/governance only. It must:
 - Phase 8: BLOCKED.
 - Next approved task: TOPLINE-P8-001-R6 only.
 
-PM audit commit: pending.
+PM audit commit: `5793f29b937197bbf1223185444e28c8b76658c5`

@@ -12,6 +12,7 @@
 - PM audit: BLOCKED
 - Implementation commit: `aaa32521d2dd36f520542666b3318486745a150e`
 - Evidence-fill commit: `9aa86e491486e192378b8ff3856126c5b0b8144b`
+- PM audit commit: `5793f29b937197bbf1223185444e28c8b76658c5`
 - WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5_WDR_2026-09-11.md`
 - R5 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5-AUDIT_2026-09-11.md`
 - R4 WDR (immutable, with R4 overclaims recorded in R5): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4_WDR_2026-09-11.md`
@@ -53,6 +54,7 @@ R5 remains blocked because the live plan still contains residual contradictions:
 - P8-001-R4 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4-AUDIT_2026-09-11.md`
 - P8-001-R5 implementation commit: `aaa32521d2dd36f520542666b3318486745a150e`
 - P8-001-R5 evidence-fill commit: `9aa86e491486e192378b8ff3856126c5b0b8144b`
+- P8-001-R5 PM audit commit: `5793f29b937197bbf1223185444e28c8b76658c5`
 - P8-001-R5 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5-AUDIT_2026-09-11.md`
 
 ## Next Approved Corrective
