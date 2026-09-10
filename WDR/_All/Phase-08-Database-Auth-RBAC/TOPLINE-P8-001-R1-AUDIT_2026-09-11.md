@@ -120,4 +120,4 @@ R2 is a narrow documentation/governance correction only. It must:
 - Phase 8: BLOCKED.
 - Next approved task: TOPLINE-P8-001-R2 only.
 
-PM audit commit: `PENDING_UNTIL_COMMIT`
+PM audit commit: `f2269d1ea5399bbbc9f0d229c733007b85928c97`
