@@ -16,6 +16,7 @@
 - R6 WDR (immutable, with R6 status-evidence correction recorded in R7): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6_WDR_2026-09-11.md`
 - R6 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6-AUDIT_2026-09-11.md`
 - R7 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R7-AUDIT_2026-09-11.md`
+- R7 PM audit commit: `5a7b67b331b8cfa0f4cdf44aa6256bed46b15965`
 
 R7 corrected the R6 status evidence:
 

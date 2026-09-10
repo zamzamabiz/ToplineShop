@@ -77,4 +77,4 @@ R8 is documentation/governance only. It must:
 - Next approved task: `TOPLINE-P8-001-R8` only.
 - P8-002 remains proposed, unregistered, and unapproved.
 
-PM audit commit: to be filled after this audit commit.
+PM audit commit: `5a7b67b331b8cfa0f4cdf44aa6256bed46b15965`.
