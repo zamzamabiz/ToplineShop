@@ -99,4 +99,4 @@ R5 is documentation/governance only. It must:
 - Phase 8: BLOCKED.
 - Next approved task: TOPLINE-P8-001-R5 only.
 
-PM audit commit: `PENDING_UNTIL_COMMIT`
+PM audit commit: `0f3ea0903943dd8489b8619f0aad1f2c315b936d`
