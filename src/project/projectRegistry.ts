@@ -1573,8 +1573,8 @@ export const projectRegistry: ProjectRegistry = {
       build: "PASS",
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
-      notes: "PENDING_UNTIL_COMMIT — R4 planning correction only; stopped before P8-002. PM audit pending. R4 addresses all 6 R3 audit findings: plan header updated to R4 with date 2026-09-11; every P8-002 may-install-packages statement removed; inventory table reclassifies Session (P8-002 candidate) and Role/Permission/RolePermission/TenantMembershipRole/VendorMembership (P8-004 candidates); blanket all-tables-deferred sentence replaced with exact planned-candidates-vs-deferred split; ownership summaries in early bounded-scope, §D inventory status cells, §J gap register, §K risk register, §L task table, §M verification matrix, and §O all restate the same contract; R3 overstatements recorded as historical R3 inaccuracies; valid R1/R2/R3 corrections preserved.",
-      commitHash: "PENDING_UNTIL_COMMIT",
+      notes: "R4 planning correction only; stopped before P8-002. PM audit pending. R4 addresses all 6 R3 audit findings: plan header updated to R4 with date 2026-09-11; every P8-002 may-install-packages statement removed; inventory table reclassifies Session (P8-002 candidate) and Role/Permission/RolePermission/TenantMembershipRole/VendorMembership (P8-004 candidates); blanket all-tables-deferred sentence replaced with exact planned-candidates-vs-deferred split; ownership summaries in early bounded-scope, §D inventory status cells, §J gap register, §K risk register, §L task table, §M verification matrix, and §O all restate the same contract; R3 overstatements recorded as historical R3 inaccuracies; valid R1/R2/R3 corrections preserved.",
+      commitHash: "5e2b799249cccc5b6d4f1e0b8f2d05d165152ba1",
     },
   ],
   modules: [
@@ -2551,13 +2551,13 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-8",
       status: "PASS",
       date: "2026-09-11",
-      commitHash: "PENDING_UNTIL_COMMIT",
+      commitHash: "5e2b799249cccc5b6d4f1e0b8f2d05d165152ba1",
       pmAudit: "PLANNED",
     },
   ],
   git: {
     initialized: true,
-    lastCommit: "PENDING_UNTIL_COMMIT",
+    lastCommit: "5e2b799249cccc5b6d4f1e0b8f2d05d165152ba1",
   },
   github: {
     configured: true,
