@@ -2,42 +2,59 @@
 
 ## Current Status
 
-**TOPLINE-P7-008 approved / closed**
+**TOPLINE-P7-009 implementation complete — awaiting PM audit**
 
 ## Last Completed Governed Task
 
-**TOPLINE-P7-008** — Testing Foundation
+**TOPLINE-P7-008-R1** — Testing Foundation Registry Reconciliation
 **Status**: PASS / CLOSED
 **Date**: 2026-09-10
-**Implementation Commit**: `2197d84`
 **Registry Reconciliation Commit**: `20bdaeb`
-**WDR Hash-Fill Commit**: `5e3eaa1`
-**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-008-R1-AUDIT_2026-09-10.md`
+**PM Audit**: approved in commit `0333dfa`
+
+## Just Implemented (Pending PM Audit)
+
+**TOPLINE-P7-009** — Frontend API Client Write Methods
+**Status**: PASS — pending PM audit
+**Date**: 2026-09-10
+**Implementation Commit**: `4646688`
 
 ## Next Planned Task
 
-**TOPLINE-P7-009** — Frontend API Client Write Methods
+**TOPLINE-P7-010** — Phase 7 Freeze Gate
 
 ## Summary
 
-P7-008 established the backend testing foundation: Jest config, `npm test`,
-`createPrismaMock`, `createServiceTestHarness`, and a proof spec with 12/12
-Jest tests passing.
+P7-009 adds frontend API client write support for the four existing
+backend write endpoints (`POST /tenants`, `POST /vendors`,
+`POST /categories`, `POST /products`):
 
-The initial PM audit blocked closure because the canonical registry was
-missing the `TOPLINE-P7-008` task-list entry. P7-008-R1 added that entry,
-kept `wdr-058`, added `wdr-059`, and restored root summary fields to
-`lastCompletedTask: "TOPLINE-P7-008"` and
-`nextPlannedTask: "TOPLINE-P7-009"`.
+- `src/types/api.ts` — added 5 enum-like literal union types
+  (`TenantType`, `TenantStatus`, `VendorStatus`, `CategoryStatus`,
+  `ProductStatus`) and 4 request interfaces (`CreateTenantRequest`,
+  `CreateVendorRequest`, `CreateCategoryRequest`, `CreateProductRequest`)
+  mirroring each backend DTO 1:1.
+- `src/lib/api-client.ts` — added a generic `postApi<TRequest, TResponse>`
+  helper plus 4 client methods (`createTenant`, `createVendor`,
+  `createCategory`, `createProduct`). All 11 existing GET methods
+  (`getRoot`, `getHealth`, `getVersion`, `getTenants`, `getTenant`,
+  `getVendors`, `getVendor`, `getCategories`, `getCategory`,
+  `getProducts`, `getProduct`) and the `fetchApi` / `buildQueryString`
+  helpers are preserved byte-identical.
 
-PM re-audit passed: `npm run build` PASS, `npm test` PASS 12/12,
-`git diff --check` PASS, and registry inspection PASS.
+PATCH/DELETE client methods are **explicitly deferred** — no matching
+backend endpoints exist in any controller (all four controllers expose
+only `@Get()` / `@Get(':id')` / `@Post()`). They will be added in future
+PM-approved tasks once the corresponding backend routes ship.
 
-P7-009 is next, but must not start without the PM-approved prompt.
+Verification: `npm run build` PASS (all 24 routes); `npm run lint` PASS
+(0 errors, 5 pre-existing `<img>` warnings in unrelated files);
+`git diff --check` PASS. Zero backend files modified; zero frontend
+page/component modified.
 
 ## Next PM Prompt Source
 
-`PM_OUTBOX/next-opencode-prompt.md` (TOPLINE-P7-009 PM-approved prompt)
+`PM_OUTBOX/next-opencode-prompt.md` (reset to awaiting PM prompt)
 
 ## Last Updated
 
