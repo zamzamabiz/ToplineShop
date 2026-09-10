@@ -144,8 +144,8 @@ export const projectRegistry: ProjectRegistry = {
   protocol: "#123",
   currentPhase: "Phase 7",
   currentTask: null,
-  lastCompletedTask: "TOPLINE-P7-008",
-  nextPlannedTask: "TOPLINE-P7-009",
+  lastCompletedTask: "TOPLINE-P7-007",
+  nextPlannedTask: "TOPLINE-P7-008-R1",
   overallCompletion: 83,
   lastUpdated: new Date().toISOString(),
   phases: [
@@ -2263,7 +2263,7 @@ export const projectRegistry: ProjectRegistry = {
       status: "PASS",
       date: "2026-09-10",
       commitHash: "2197d84",
-      pmAudit: "PLANNED",
+      pmAudit: "BLOCKED",
     },
   ],
   git: {

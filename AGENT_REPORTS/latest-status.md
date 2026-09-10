@@ -2,7 +2,7 @@
 
 ## Current Status
 
-**TOPLINE-P7-008 implementation complete — awaiting PM audit**
+**TOPLINE-P7-008 blocked — registry reconciliation required**
 
 ## Last Completed Governed Task
 
@@ -12,16 +12,17 @@
 **Implementation Commit**: `9b3ec1e`
 **PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-007-AUDIT_2026-09-10.md`
 
-## Just Implemented (Pending PM Audit)
+## Current Audit Result
 
 **TOPLINE-P7-008** — Testing Foundation
-**Status**: PASS — pending PM audit
+**Status**: BLOCKED — governance reconciliation required
 **Date**: 2026-09-10
 **Implementation Commit**: `2197d84`
+**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-008-AUDIT_2026-09-10.md`
 
 ## Next Planned Task
 
-**TOPLINE-P7-009** — Frontend API Client Write Methods
+**TOPLINE-P7-008-R1** — Testing Foundation Registry Reconciliation
 
 ## Summary
 
@@ -53,9 +54,14 @@ and still pass (30+33+57+82 = 202 tests). `npm run build` PASS,
 `git diff --check` PASS. No production source file outside
 `backend/src/testing/**` was modified.
 
+PM audit finding: the backend evidence passes, but the canonical registry is
+missing a `TOPLINE-P7-008` task entry in the task list. The WDR claims the
+entry was added, but only root summary fields and `wdr-058` exist. P7-008
+cannot be closed until the registry is reconciled.
+
 ## Next PM Prompt Source
 
-`PM_OUTBOX/next-opencode-prompt.md` (reset to awaiting PM prompt)
+`PM_OUTBOX/next-opencode-prompt.md` (TOPLINE-P7-008-R1 correction prompt)
 
 ## Last Updated
 

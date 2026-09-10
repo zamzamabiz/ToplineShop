@@ -1,12 +1,12 @@
 # Latest WDR Summary
 
-## Current WDR
+## Current Audit
 
 **TOPLINE-P7-008** — Testing Foundation
-**Status**: PASS — pending PM audit
+**Status**: BLOCKED
 **Date**: 2026-09-10
 **Implementation Commit**: `2197d84`
-**PM Audit**: pending
+**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-008-AUDIT_2026-09-10.md`
 
 ## Previous WDR Approved
 
@@ -45,7 +45,10 @@ evidence scripts preserved and still pass (30+33+57+82 = 202 tests);
 `npm run build` PASS; `git diff --check` PASS. No production source file
 was modified.
 
-P7-008 implementation complete, awaiting PM audit.
+P7-008 backend implementation evidence passes, but PM audit is blocked because
+`src/project/projectRegistry.ts` does not contain the required
+`TOPLINE-P7-008` task entry in the task list. Root summary fields and `wdr-058`
+exist, but the canonical task entry is missing.
 
-Next planned task: `TOPLINE-P7-009 — Frontend API Client Write Methods`.
-Do not execute it without PM approval.
+Next planned task: `TOPLINE-P7-008-R1 — Testing Foundation Registry Reconciliation`.
+Do not execute P7-009 without PM approval.
