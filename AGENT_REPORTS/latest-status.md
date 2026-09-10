@@ -2,19 +2,20 @@
 
 ## Current Status
 
-**TOPLINE-P8-001-R7 execution: PASS — PM audit pending**
+**TOPLINE-P8-001-R7 execution: PASS — PM audit BLOCKED**
 
 ## R7 Task
 
 **TOPLINE-P8-001-R7** - Phase 8 Evidence Status Reconciliation
 
 - Execution status: PASS (planning/governance only)
-- PM audit: PLANNED (pending PM audit)
+- PM audit: BLOCKED
 - Implementation commit: `b9bfa2bcec283815ead71d9d2fd7ce0e39943306`
-- Evidence-fill commit: reported in #MM final handoff
+- Evidence-fill commit: `760f61304b05cd9ce992a9e35ed21abce451e931`
 - WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R7_WDR_2026-09-11.md`
 - R6 WDR (immutable, with R6 status-evidence correction recorded in R7): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6_WDR_2026-09-11.md`
 - R6 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6-AUDIT_2026-09-11.md`
+- R7 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R7-AUDIT_2026-09-11.md`
 
 R7 corrected the R6 status evidence:
 
@@ -71,22 +72,22 @@ R7 corrected the R6 status evidence:
 - P8-001-R6 PM audit commit: `b2456c2d15388ffe1beb7958f41da21a40bbd604`
 - P8-001-R6 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6-AUDIT_2026-09-11.md`
 
-## Next Task (proposed, unapproved)
+## Next Task (corrective, planned)
 
-**TOPLINE-P8-002** - Auth Persistence Data Model and Migration Safety Foundation
+**TOPLINE-P8-001-R8** - Phase 8 R7 Evidence-Fill and WDR State Reconciliation
 
-P8-002 is **proposed but unapproved**. P8-002 has not been
-registered. PM must write a separate, PM-approved prompt for
-P8-002 only after the full P8-001 / R1 / R2 / R3 / R4 / R5
-/ R6 / R7 corrective chain has been audited and PASSED by PM.
-P8-001-R7 STOPPED BEFORE TOPLINE-P8-002 per #123.
+R8 is a documentation/governance-only correction. It must fill
+the real R7 evidence-fill hash in every claimed location, add
+blocked `wdr-071` to the latest WDR summary, preserve the valid
+R7 corrections, and stop before P8-002. P8-002 remains proposed,
+unregistered, and unapproved.
 
 ## Phase 8 State
 
-- Status: BLOCKED pending P8-001-R7 PM audit
+- Status: BLOCKED pending P8-001-R8 completion and PM audit
 - Progress: 20
 - Mega-prompt target/completed: 5/1 (R1, R2, R3, R4, R5, R6, R7 are correctives and do not increment)
-- Registered tasks: 8
+- Registered tasks: 9
 - Completed implementation-agent tasks: 8
 - All implementation/owner gates remain unpassed
 - currentTask: null
