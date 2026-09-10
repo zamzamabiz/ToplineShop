@@ -1,27 +1,42 @@
 # Latest WDR Summary
 
-## Current Audit
+## Current WDR
 
-**TOPLINE-P8-001-R3** - Phase 8 Readiness Plan Residual Consistency Reconciliation
+**TOPLINE-P8-001-R4** - Phase 8 Readiness Plan Canonical Contract Cleanup
 
-- Execution: PASS (planning-only)
-- PM audit: BLOCKED
-- Implementation commit: `fb1d3e2b64961286390b138123adfc3e5bc3d815`
-- Evidence-fill commit: `1c9e886529d9fba34e95bca0f84c552ebb0019f9`
-- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R3_WDR_2026-09-11.md`
-- Audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R3-AUDIT_2026-09-11.md`
+- Execution: PASS (planning/governance only)
+- PM audit: PLANNED (pending PM audit)
+- Implementation commit: `PENDING_UNTIL_COMMIT` (replaced with real hash in evidence-fill commit; see WDR + PM_OUTBOX)
+- Evidence-fill commit: reported in #MM final handoff
+- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4_WDR_2026-09-11.md`
+- R3 WDR (immutable, with R3 overstatements recorded in R4): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R3_WDR_2026-09-11.md`
+- R3 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R3-AUDIT_2026-09-11.md`
+- R4 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md`
+
+## R4 Summary
+
+Scope isolation and verification passed for the R4 canonical
+contract cleanup. R4 corrected the remaining stale live
+contract text: plan header updated to R4 with date
+`2026-09-11`; every P8-002 may-install-packages statement
+removed; inventory table distinguishes Phase 8 P8-002/P8-004
+planned candidates from genuinely deferred items; ownership
+summaries in early §C bounded-scope, §D inventory status
+cells, §J gap register, §K risk register, §L task table,
+§M verification matrix, and §O all restate the same
+persistence/package/schema contract; R3 overstatements are
+recorded as historical R3 inaccuracies (R3 WDR is immutable);
+valid R1/R2/R3 corrections are preserved.
 
 ## Block Summary
 
-R3 is scope-safe and its detailed task corrections are valid. R4 must clean
-the stale R1 framing, remove the live P8-002 package-install permission, and
-reconcile the inventory/deferred table with the P8-002/P8-004 task rows.
+- P8-001, P8-001-R1, P8-001-R2, P8-001-R3, wdr-065, wdr-066,
+  wdr-067, and wdr-068 remain BLOCKED.
+- Phase 8 remains BLOCKED.
+- P8-002 is **proposed but unapproved**.
 
 ## Next WDR
 
-Reserved entry: `wdr-069`
-
-Expected path:
-`WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4_WDR_2026-09-11.md`
-
-R4 is the only approved next task. It must stop before P8-002.
+The next WDR will be assigned only after PM writes a separate
+PM-approved prompt for the next task. No future WDR ID is
+reserved. `TOPLINE-P8-001-R4` STOPPED BEFORE `TOPLINE-P8-002`.

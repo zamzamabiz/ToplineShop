@@ -1,32 +1,41 @@
-# ToplineShop — Phase 8 Database/Auth/RBAC Readiness Plan (R1)
+# ToplineShop — Phase 8 Database/Auth/RBAC Readiness Plan (R4)
 
-> **Status**: READINESS PLAN — PLANNING ONLY (R1-revised)
-> **Date**: 2026-09-10
+> **Status**: READINESS PLAN — PLANNING ONLY (R4-revised)
+> **Date**: 2026-09-11
+> **Current corrective task**: TOPLINE-P8-001-R4 — Phase 8 Readiness Plan Canonical Contract Cleanup
 > **Original task**: TOPLINE-P8-001 (PASS execution, BLOCKED PM audit)
-> **Corrective task**: TOPLINE-P8-001-R1 — Phase 8 Readiness Plan Security and Governance Reconciliation
+> **Prior correctives**: TOPLINE-P8-001-R1, R2, R3 (all PASS execution, all BLOCKED PM audit)
 > **Phase**: Phase 8 — Database, Authentication, RBAC & Security
 > **Author**: Implementation Agent under PM governance
 > **Approval Required**: PM before any database schema change, auth code, package install, or migration
-> **R1 audit commit (predecessor)**: `c2282eb5c7cf2c51388e7e538f8a6e61f12bd25c`
-> **P8-001 implementation commit**: `82361970c15181c8a19bc1249f3a525bac4ad9cd`
-> **P8-001 evidence-fill commit**: `894d2b36f52c3442650774b2371f035252d8834b`
+> **R3 PM audit commit (predecessor)**: `b43a5114e2f8845e55e28f64cd987b4e4e9a80ce`
+> **R1 PM audit commit (historical)**: `c2282eb5c7cf2c51388e7e538f8a6e61f12bd25c`
+> **P8-001 implementation commit (historical)**: `82361970c15181c8a19bc1249f3a525bac4ad9cd`
+> **P8-001 evidence-fill commit (historical)**: `894d2b36f52c3442650774b2371f035252d8834b`
+> **R1 implementation commit (historical)**: `42cc6ac63e375a1adb82f692f3885fd8b29a55ad`
+> **R1 evidence-fill commit (historical)**: `343798502c41cf51a05748371b8fc1b4336d9bfd`
+> **R2 implementation commit (historical)**: `1789cef06978109fef92043668a7e36e62674f5f`
+> **R2 evidence-fill commit (historical)**: `34581637b992ff4f6c9c81a7b9c53e304597d63d`
+> **R3 implementation commit (historical)**: `fb1d3e2b64961286390b138123adfc3e5bc3d815`
+> **R3 evidence-fill commit (historical)**: `1c9e886529d9fba34e95bca0f84c552ebb0019f9`
 
-This is a planning artifact only. **No database commands were executed. No auth/RBAC code, packages, or migrations were written. No implementation occurred.** This R1 revision corrects the P8-001 plan against the PM audit; it does not authorize any Phase 8 implementation work.
+This is a planning artifact only. **No database commands were executed. No auth/RBAC code, packages, or migrations were written. No implementation occurred.** This R4 revision is the final canonical-contract cleanup of the P8-001 readiness plan against the P8-001 / R1 / R2 / R3 PM audits; it does not authorize any Phase 8 implementation work. R4 is governed by `#123` (DISCUSS → DECIDE → EXECUTE → VERIFY/AUDIT → CLOSE → NEXT) and is the only approved corrective task. It does **not** start `TOPLINE-P8-002`.
 
-This revision is governed by `#123` (DISCUSS → DECIDE → EXECUTE → VERIFY/AUDIT → CLOSE → NEXT) and is the only approved corrective task. It does **not** start `TOPLINE-P8-002`.
+Historical R1, R2, and R3 evidence is preserved in their immutable WDRs and audits; this live plan body is the current R4 canonical contract. Earlier framing that named R1 as the current corrective is now historical and is replaced by this R4 header.
 
 ---
 
-## A. Governance Header
+## A. Governance Header (R4 canonical)
 
 - **Original task**: TOPLINE-P8-001 — Phase 8 Database/Auth/RBAC Readiness Plan
-- **Corrective task**: TOPLINE-P8-001-R1 — Phase 8 Readiness Plan Security and Governance Reconciliation
-- **Date**: 2026-09-10
+- **Current corrective task**: TOPLINE-P8-001-R4 — Phase 8 Readiness Plan Canonical Contract Cleanup
+- **Prior correctives**: TOPLINE-P8-001-R1, R2, R3 (all PASS execution, all BLOCKED PM audit; preserved in immutable WDRs/audits)
+- **Date**: 2026-09-11
 - **Phase**: Phase 8 — Database, Authentication, RBAC & Security
 - **Type**: READINESS PLAN REVISION (planning-only)
 - **Approval boundary**: PM must approve before any future TOPLINE-P8-002+ task begins.
-- **Implementation confirmation**: This R1 task did **not** modify any backend source, frontend source, package, Prisma schema, migration, env file, or deployable artifact. The only files created or modified are the six files allowed by the R1 prompt: this plan (revised), the registry update, the two agent reports, the PM_OUTBOX R1 audit hold notice, and the R1 WDR.
-- **Prompt budget correction (R1 §A)**: Phase 8 core mega-prompt target is **5** (within the 2–5 budget of `docs/PROJECT_CONSTITUTION.md` §7), and the core sequence is exactly **P8-001, P8-002, P8-003, P8-004, P8-005**. R1 is a corrective task and does **not** increment `megaPromptsCompleted`. P8-006 is removed from the proposed core sequence.
+- **Implementation confirmation**: This R4 task did **not** modify any backend source, frontend source, package, Prisma schema, migration, env file, or deployable artifact. The only files created or modified are the six files allowed by the R4 prompt: this plan (revised), the registry update, the two agent reports, the PM_OUTBOX R4 audit hold notice, and the R4 WDR.
+- **Prompt budget correction (R1 §A, preserved; restated for R4)**: Phase 8 core mega-prompt target is **5** (within the 2–5 budget of `docs/PROJECT_CONSTITUTION.md` §7), and the core sequence is exactly **P8-001, P8-002, P8-003, P8-004, P8-005**. R1, R2, R3, and R4 are corrective tasks and do **not** increment `megaPromptsCompleted`. P8-006 is removed from the proposed core sequence.
 
 ---
 
@@ -66,10 +75,10 @@ This document is a plan. It is a contract for what later PM-approved tasks will 
 
 ### R1 bounded future scopes (R1 §B)
 
-- **P8-002** is **persistence and migration safety only**: chosen auth persistence model, additive schema, migration SQL review, and explicitly authorized local-only application evidence. **No** login endpoints, **no** guards, **no** JWT issuance, **no** RBAC, **no** frontend work. P8-002 may install packages only if a future PM prompt separately approves them.
-- **P8-003** is authentication and session behavior plus protection of the four current write endpoints. It may install only packages separately approved by a future PM prompt. **No** RBAC schema or permission hierarchy.
-- **P8-004** is tenant-aware role/permission persistence, enforcement, negative cross-tenant tests, authorization freshness, and audit hardening. **No** email verification/reset/OAuth. **No** frontend work.
-- **P8-005** is audit and freeze only. It must not implement fixes silently.
+- **P8-002** is the **sole owner** of all authentication persistence required by P8-003 (chosen auth persistence model, additive schema, the `Session` model, refresh-token digest, audit context columns, related enums/indexes/constraints, the additive forward-only migration, rollback documentation, and explicitly authorized local-only application). P8-002 is **schema/migration-only**: **no** `AuthGuard`, **no** login/logout/refresh endpoint, **no** JWT issuance, **no** auth behavior, **no** RBAC, **no** frontend work, and **no** package installation. **P8-002 installs no packages.** P8-002 must use the decisions explicitly selected by PM in the future P8-002 PM prompt; recommendations in this plan are not approvals.
+- **P8-003** owns authentication and session behavior plus protection of the four current write endpoints: `AuthGuard`, login/logout/refresh, refresh rotation/reuse handling, public-route allowlist, audit redaction/events, and write-endpoint protection. P8-003 is the **sole planned owner** of future PM-approved auth package installation (each package requires separate PM approval). P8-003 must **not** edit `backend/prisma/schema.prisma` or migrations and must **not** create `Session`/credential persistence — those are P8-002 deliverables. **No** RBAC schema or permission hierarchy.
+- **P8-004** owns the RBAC persistence/enforcement additive migration (`Role`, `Permission`, `RolePermission`, `TenantMembershipRole`, `VendorMembership`), `PermissionsGuard`, `TenantContextGuard`, negative cross-tenant tests, authorization freshness, and audit hardening. **No** email verification/reset/OAuth. **No** frontend work.
+- **P8-005** is audit and freeze only. It must not implement fixes silently. P8-005 is **never** an implementation task.
 
 ---
 
@@ -104,18 +113,19 @@ This document is a plan. It is a contract for what later PM-approved tasks will 
 ### Designed (Phase 3 docs) but **not implemented** — must not be assumed to exist
 | Item | Phase 3 design location | Status |
 |---|---|---|
-| `User.passwordHash` column | `PHASE-03-DATABASE-SCHEMA-DESIGN.md` §5.1 | Not implemented; Phase 4 schema explicitly deferred `passwordHash` to Phase 8+ |
+| `User.passwordHash` column | `PHASE-03-DATABASE-SCHEMA-DESIGN.md` §5.1 | Not implemented; **Phase 8 P8-002 planned candidate** (nullable, PM-decided digest per F) |
 | `User.emailVerified` column | `PHASE-03-DATABASE-SCHEMA-DESIGN.md` §5.1 | Not implemented; **deferred — NOT a Phase 8 deliverable** (see §Z) |
-| `AuthAccount` model (OAuth providers, encrypted access/refresh tokens) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.11 | Not implemented; deferred |
-| `Session` model (session tokens, IP, user agent) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.12 | Not implemented; deferred |
-| `Role` model (PLATFORM/TENANT/MODULE scope, `isSystem`) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.4 | Not implemented; deferred |
-| `Permission` model (`module.resource.action`, `isDangerous`) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.5 | Not implemented; deferred |
-| `RolePermission` (M:N) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.6 | Not implemented; deferred |
-| `TenantMembershipRole` (membership × role) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.7 | Not implemented; deferred |
-| `Module` and `TenantModule` (per-tenant module enablement) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.8, §4.9 | Not implemented; deferred |
-| `VendorMembership` (vendor × user × `OWNER`/`MANAGER`/`STAFF`) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.10 | Not implemented; deferred |
-| `ApprovalGate` (financial/AI approval flow) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.13 | Not implemented; deferred |
-| `Auth.js` / `passport` / JWT / cookie / session middleware | `PHASE-03-AUTH-RBAC-DESIGN.md` §10 (packages) | **Not installed**; not implemented |
+| `AuditLog.ipAddress`, `AuditLog.userAgent` columns | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.14 | Not implemented; **Phase 8 P8-002 planned candidate** (additive) |
+| `AuthAccount` model (OAuth providers, encrypted access/refresh tokens) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.11 | Not implemented; **deferred** (see §Z) |
+| `Session` model (session tokens, IP, user agent) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.12 | Not implemented; **Phase 8 P8-002 planned candidate** (additive; PM-decided digest and fields) |
+| `Role` model (PLATFORM/TENANT/MODULE scope, `isSystem`) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.4 | Not implemented; **Phase 8 P8-004 planned candidate** |
+| `Permission` model (`module.resource.action`, `isDangerous`) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.5 | Not implemented; **Phase 8 P8-004 planned candidate** |
+| `RolePermission` (M:N) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.6 | Not implemented; **Phase 8 P8-004 planned candidate** |
+| `TenantMembershipRole` (membership × role) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.7 | Not implemented; **Phase 8 P8-004 planned candidate** |
+| `VendorMembership` (vendor × user × `OWNER`/`MANAGER`/`STAFF`) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.10 | Not implemented; **Phase 8 P8-004 planned candidate** |
+| `Module` and `TenantModule` (per-tenant module enablement) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.8, §4.9 | Not implemented; **deferred** (see §Z) |
+| `ApprovalGate` (financial/AI approval flow) | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.13 | Not implemented; **deferred** (see §Z) |
+| `Auth.js` / `passport` / JWT / cookie / session middleware | `PHASE-03-AUTH-RBAC-DESIGN.md` §10 (packages) | **Not installed**; not implemented. P8-003 is the sole planned owner of any future PM-approved auth package installation. P8-002 installs no packages. |
 | `AuthGuard`, `RolesGuard`, `PermissionsGuard`, `@UseGuards`, `@Roles`, `@SetMetadata` | Various Phase 3 §9 | **None present** in `backend/src` (verified) |
 | Auth header validation, bearer token parsing, request user attachment | n/a | **Not implemented**; `Authorization` header is in CORS allowed list but is never read |
 | `User` model has only identity placeholder fields (email, name, phone, avatar, status) — no password, no session, no role binding | Phase 4 schema | Confirmed in `schema.prisma` |
@@ -123,13 +133,17 @@ This document is a plan. It is a contract for what later PM-approved tasks will 
 | `Vendor.ownerId` is a nullable FK to `User` — used for ownership display, **not** access control | Phase 4 + P7-005 WDR | Confirmed |
 | `AuditLog.metadata` (JSONB) and `AuditLog.summary` columns exist; `AuditService.recordEvent()` exists but **no service calls it** | `backend/src/audit/` | Verified — `recordEvent` callers: 0 in `backend/src` |
 
-### Deferred
-- All Phase 3 design tables listed under "Designed but not implemented" above are deferred from Phase 8 to later PM-approved phases. Phase 8 may add a small **subset** (the minimum needed for tenant-aware auth) but must record every addition in a future WDR.
+### Deferred vs Phase 8 planned candidates (exact split)
+- **Phase 8 P8-002 planned candidates** (additive migration, schema/migration-only, no packages, no auth behavior): `User.passwordHash` (nullable, PM-decided digest per F), `AuditLog.ipAddress`, `AuditLog.userAgent`, the `Session` model (PM-decided digest and fields), and any related enums/indexes/constraints. P8-002 must add `Session` exactly once.
+- **Phase 8 P8-004 planned candidates** (additive migration): `Role`, `Permission`, `RolePermission`, `TenantMembershipRole`, `VendorMembership`.
+- **Genuinely deferred items (NOT Phase 8 deliverables — see §Z)**: `User.emailVerified`, `AuthAccount`, `Module`, `TenantModule`, `ApprovalGate`, `UserRole`/`StaffRole` (merged into `Membership` + `TenantMembershipRole`), registration, email verification, password reset, OAuth, real notification delivery.
+- The blanket prior sentence "All Phase 3 design tables are deferred from Phase 8" is replaced by this exact split. Recommendations remain unapproved until each future PM prompt.
 
-### Absent
+### Absent (today's repository state)
 - `passwordHash`, `passwordResetToken`, `emailVerificationToken` columns
-- Any `Session`, `AuthAccount`, `Role`, `Permission`, `RolePermission`, `TenantMembershipRole`, `Module`, `TenantModule`, `VendorMembership`, `ApprovalGate` model
+- Any `AuthAccount`, `Module`, `TenantModule`, `ApprovalGate` model
 - Any `AuthGuard` / `RolesGuard` / `PermissionsGuard` class
+- (Note: `Session`, `Role`, `Permission`, `RolePermission`, `TenantMembershipRole`, and `VendorMembership` are listed in this section today but are **Phase 8 P8-002 / P8-004 planned candidates**, not absent. They will be added by their respective future PM-approved tasks and must not be assumed to exist today.)
 - Any `JwtStrategy`, `PassportStrategy`, `Argon2idHasher`, `BcryptHasher` class
 - Any `@CurrentUser()`, `@RequireAuth()`, `@Roles()`, `@Permissions()` decorator
 - Any cookie/session/bearer-token middleware
@@ -482,9 +496,9 @@ The items below are **not** part of the Phase 8 core sequence. They must not be 
 
 ---
 
-## End of plan (R2)
+## End of plan (R4)
 
-This document is the P8-001-R1 / R2 deliverable. The canonical registry update is `src/project/projectRegistry.ts`; the canonical WDRs are `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R1_WDR_2026-09-10.md` and `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R2_WDR_2026-09-11.md`. The PM_OUTBOX R2 audit hold notice is `PM_OUTBOX/next-opencode-prompt.md`. The two agent reports are `AGENT_REPORTS/latest-status.md` and `AGENT_REPORTS/latest-wdr-summary.md`. No other file was created or modified.
+This document is the P8-001-R1 / R2 / R3 / R4 deliverable. The canonical registry update is `src/project/projectRegistry.ts`; the canonical WDRs are `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R1_WDR_2026-09-10.md`, `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R2_WDR_2026-09-11.md`, `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R3_WDR_2026-09-11.md`, and `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4_WDR_2026-09-11.md`. The PM_OUTBOX R4 audit hold notice is `PM_OUTBOX/next-opencode-prompt.md`. The two agent reports are `AGENT_REPORTS/latest-status.md` and `AGENT_REPORTS/latest-wdr-summary.md`. No other file was created or modified.
 
 **R1 audit findings addressed** (one by one, per `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-AUDIT_2026-09-10.md`):
 1. Prompt budget contradiction — addressed in §A and §L (target 5, sequence P8-001…P8-005, P8-006 removed, R1 not a mega prompt).
@@ -526,3 +540,32 @@ This document is the P8-001-R1 / R2 deliverable. The canonical registry update i
 - The R2 plan's package paragraph allowed `P8-002 or P8-003` for auth packages, contradicting the P8-002 schema/migration-only boundary.
 - The R2 plan's verification matrix intro and P8-005 row reserved `wdr-066` through `wdr-068` for P8-002 through P8-004 (those IDs already belong to the P8-001 corrective chain).
 - The R2 plan's Section O said P8-002 follows "the P8-001-R1 audit", which became stale when R2 and R3 entered the corrective chain.
+
+**R3 audit findings addressed** (one by one, per `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R3-AUDIT_2026-09-11.md`):
+1. Current plan metadata and revision framing — updated to R4, date `2026-09-11`, current corrective task `TOPLINE-P8-001-R4`. Historical R1, R2, R3 evidence is preserved only in immutable WDRs/audits and in the historical evidence block below.
+2. Bounded-scope P8-002 package install — removed. The early §C bounded-scope summary now states that P8-002 installs no packages, is schema/migration-only, and that P8-003 is the sole planned owner of future PM-approved auth package installation.
+3. Inventory table Phase 8 candidates vs deferred — corrected. The `Designed but not implemented` table now labels `User.passwordHash`, `AuditLog.ipAddress`, `AuditLog.userAgent`, and `Session` as **Phase 8 P8-002 planned candidates**; `Role`, `Permission`, `RolePermission`, `TenantMembershipRole`, and `VendorMembership` as **Phase 8 P8-004 planned candidates**. The blanket "all Phase 3 tables deferred" sentence is replaced with the exact split.
+4. Ownership summaries outside the task rows — corrected. The early §C bounded-scope summary, the §D inventory status cells, the §F architecture matrix context, the §J gap register, the §K risk register, the §L task table, the §M verification matrix, and the §O recommended-next-task section all restate the same persistence/package/schema contract for P8-002, P8-003, P8-004, and P8-005.
+5. R3 overstatements recorded as historical R3 inaccuracies (the R3 WDR is immutable; R4 reports and this plan body capture the truth).
+6. Useful R3 corrections preserved — Session verification, P8-003 migration stop condition, task classification paragraph, exact count, future WDR-ID rule, Section O chain reference, and R1/R2 security decisions and safety boundaries remain intact.
+
+**Historical R3 inaccuracies** (recorded in R4 per R3 audit finding 5; the R3 WDR is immutable and is not rewritten):
+- The R3 plan header and revision framing still labeled the live plan as the R1 corrective task with R1's date (`2026-09-10`).
+- The R3 plan's early §C bounded-scope summary still stated that P8-002 may install packages if a future PM prompt separately approves them, contradicting the later statement that P8-002 installs no packages.
+- The R3 plan's `Designed but not implemented` table still labeled `Session`, `Role`, `Permission`, `RolePermission`, `TenantMembershipRole`, and `VendorMembership` as `deferred`, and the following "Deferred" paragraph still said all listed Phase 3 tables are deferred — directly contradicting the later detailed task table that schedules these models in P8-002 and P8-004.
+- The R3 WDR and reports claimed the inventory split and the package restriction were complete; the canonical plan still contained the contradictions above.
+- The R3 WDR and reports claimed that the P8-002 ownership summary was consistent with the task rows; the early §C summary did not state P8-002's sole Session/persistence ownership or P8-003's absolute schema-free boundary.
+
+**Historical R1 / R2 corrections preserved** (live in R3 and R4; historical R1/R2 evidence in immutable WDRs/audits):
+- Phase 8 core objective: login/logout only; deferred identity flows live only in §Z Deferred items.
+- Five-prompt budget formula (P8-001 + P8-002 + P8-003 + P8-004 + P8-005 freeze).
+- RISK-06 enumerates wrong-target connection, migration reset, destructive generated SQL, raw SQL, DROP, TRUNCATE, unsafe ALTER, seed side effects, production/staging targeting.
+- PM decision matrix (F) is preserved with `PM DECISION REQUIRED` on every row.
+- Refresh-token transport comparison (bearer vs HttpOnly cookie) and refresh-token digest decision.
+- Credential/token logging prohibition (G) and AuditService redactor.
+- Authorization freshness, public-route allowlist, tenant-spoof protection, credential bootstrap.
+- Real test inventory: 12 Jest + 5 evidence scripts.
+- `passport-jwt` transitive claim removed.
+- Evidence path/status accuracy: real preserved unrelated file is `WDR/_All/Governance/TOPLINE-GOV-AUTO-001_WDR_2026-09-08.md`; `.claude/` is untracked.
+
+**R4 audit findings addressed** (one by one, per `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R3-AUDIT_2026-09-11.md` — note the audit file is named after R3 because it audits R3's execution): R3 PM audit findings 1–6 are all addressed in the live plan body above. The P8-001 / R1 / R2 / R3 / wdr-065 / wdr-066 / wdr-067 / wdr-068 entries remain BLOCKED in the registry. Future WDR IDs and dates for P8-002 through P8-005 are not reserved or guessed.
