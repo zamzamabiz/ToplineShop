@@ -1592,8 +1592,8 @@ export const projectRegistry: ProjectRegistry = {
       build: "PASS",
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
-      notes: "PENDING_UNTIL_COMMIT — R5 planning correction only; stopped before P8-002. PM audit pending. R5 addresses all 6 R4 audit findings: architecture table now gives Session to P8-002 only and RBAC persistence to P8-004 only; backend-authority section rewritten as staged (P8-003 AuthGuard+write protection, then P8-004 RBAC guards+tenant context); Absent inventory restored with every planned candidate annotated as absent today with planned owner; live R1 labels replaced with R5 canonical labels and future P8-002..P8-005 WDR paths de-dated; R4 overclaims recorded as historical R4 inaccuracies; valid R4 corrections preserved.",
-      commitHash: "PENDING_UNTIL_COMMIT",
+      notes: "R5 planning correction only; stopped before P8-002. PM audit pending. R5 addresses all 6 R4 audit findings: architecture table now gives Session to P8-002 only and RBAC persistence to P8-004 only; backend-authority section rewritten as staged (P8-003 AuthGuard+write protection, then P8-004 RBAC guards+tenant context); Absent inventory restored with every planned candidate annotated as absent today with planned owner; live R1 labels replaced with R5 canonical labels and future P8-002..P8-005 WDR paths de-dated; R4 overclaims recorded as historical R4 inaccuracies; valid R4 corrections preserved.",
+      commitHash: "aaa32521d2dd36f520542666b3318486745a150e",
     },
   ],
   modules: [
@@ -2579,13 +2579,13 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-8",
       status: "PASS",
       date: "2026-09-11",
-      commitHash: "PENDING_UNTIL_COMMIT",
+      commitHash: "aaa32521d2dd36f520542666b3318486745a150e",
       pmAudit: "PLANNED",
     },
   ],
   git: {
     initialized: true,
-    lastCommit: "PENDING_UNTIL_COMMIT",
+    lastCommit: "aaa32521d2dd36f520542666b3318486745a150e",
   },
   github: {
     configured: true,
