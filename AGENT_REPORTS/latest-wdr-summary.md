@@ -1,27 +1,41 @@
 # Latest WDR Summary
 
-## Current Audit
+## Current WDR
 
-**TOPLINE-P8-001-R4** - Phase 8 Readiness Plan Canonical Contract Cleanup
+**TOPLINE-P8-001-R5** - Phase 8 Readiness Plan Ownership and State Reconciliation
 
-- Execution: PASS (planning-only)
-- PM audit: BLOCKED
-- Implementation commit: `5e2b799249cccc5b6d4f1e0b8f2d05d165152ba1`
-- Evidence-fill commit: `038f47a147fb61c4675646383799dccf5678de4a`
-- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4_WDR_2026-09-11.md`
-- Audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4-AUDIT_2026-09-11.md`
+- Execution: PASS (planning/governance only)
+- PM audit: PLANNED (pending PM audit)
+- Implementation commit: `PENDING_UNTIL_COMMIT` (replaced with real hash in evidence-fill commit; see WDR + PM_OUTBOX)
+- Evidence-fill commit: reported in #MM final handoff
+- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5_WDR_2026-09-11.md`
+- R4 WDR (immutable, with R4 overclaims recorded in R5): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4_WDR_2026-09-11.md`
+- R4 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4-AUDIT_2026-09-11.md`
+- R5 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md`
+
+## R5 Summary
+
+Scope isolation and verification passed for the R5 ownership
+and state reconciliation. R5 corrected the remaining
+architecture-table, authority-section, Absent-inventory, and
+label contradictions. The live plan body now states the same
+ownership contract in every section: P8-002 sole persistence
+owner; P8-003 sole `AuthGuard` and write-protection owner;
+P8-004 sole RBAC persistence, guards, and tenant-context
+owner; P8-005 freeze only. Planned candidates are restored to
+the Absent inventory as "absent today; planned candidate".
+R4 overclaims are recorded as historical R4 inaccuracies
+(R4 WDR is immutable).
 
 ## Block Summary
 
-R4 is scope-safe and its primary cleanup is valid. R5 must reconcile the
-architecture decision table, staged guard ownership, planned-versus-absent
-repository state, and stale live labels before P8-002 can be authorized.
+- P8-001, P8-001-R1, P8-001-R2, P8-001-R3, P8-001-R4, wdr-065,
+  wdr-066, wdr-067, wdr-068, and wdr-069 remain BLOCKED.
+- Phase 8 remains BLOCKED.
+- P8-002 is **proposed but unapproved**.
 
 ## Next WDR
 
-Reserved entry: `wdr-070`
-
-Expected path:
-`WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5_WDR_2026-09-11.md`
-
-R5 is the only approved next task. It must stop before P8-002.
+The next WDR will be assigned only after PM writes a separate
+PM-approved prompt for the next task. No future WDR ID is
+reserved. `TOPLINE-P8-001-R5` STOPPED BEFORE `TOPLINE-P8-002`.
