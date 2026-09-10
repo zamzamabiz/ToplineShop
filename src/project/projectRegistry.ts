@@ -1554,8 +1554,8 @@ export const projectRegistry: ProjectRegistry = {
       build: "PASS",
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
-      notes: "PENDING_UNTIL_COMMIT — R3 planning correction only; stopped before P8-002. PM audit pending. R3 addresses all 8 R2 audit findings: P8-002 verification now requires adding Session exactly once, P8-003 verification matrix migration-review cell is n/a with stop condition, only P8-002 and P8-004 are planned migration tasks, inventory split between Phase 8 candidates and deferred items, package ownership restricted to P8-003 only (P8-002 installs no packages), exact five-prompt count with no future WDR ID guessing, R2 overstatements recorded as historical R2 inaccuracies, and valid R1/R2 corrections preserved.",
-      commitHash: "PENDING_UNTIL_COMMIT",
+      notes: "R3 planning correction only; stopped before P8-002. PM audit pending. R3 addresses all 8 R2 audit findings: P8-002 verification now requires adding Session exactly once, P8-003 verification matrix migration-review cell is n/a with stop condition, only P8-002 and P8-004 are planned migration tasks, inventory split between Phase 8 candidates and deferred items, package ownership restricted to P8-003 only (P8-002 installs no packages), exact five-prompt count with no future WDR ID guessing, R2 overstatements recorded as historical R2 inaccuracies, and valid R1/R2 corrections preserved.",
+      commitHash: "fb1d3e2b64961286390b138123adfc3e5bc3d815",
     },
   ],
   modules: [
@@ -2523,13 +2523,13 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-8",
       status: "PASS",
       date: "2026-09-11",
-      commitHash: "PENDING_UNTIL_COMMIT",
+      commitHash: "fb1d3e2b64961286390b138123adfc3e5bc3d815",
       pmAudit: "PLANNED",
     },
   ],
   git: {
     initialized: true,
-    lastCommit: "PENDING_UNTIL_COMMIT",
+    lastCommit: "fb1d3e2b64961286390b138123adfc3e5bc3d815",
   },
   github: {
     configured: true,
