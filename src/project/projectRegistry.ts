@@ -1611,8 +1611,8 @@ export const projectRegistry: ProjectRegistry = {
       build: "PASS",
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
-      notes: "PENDING_UNTIL_COMMIT — R6 planning correction only; stopped before P8-002. PM audit pending. R6 addresses all 6 R5 audit findings: GAP-20/21/22 now restrict package install to P8-003 only with no P8-002 package assignment; Prisma/PostgreSQL connection behavior wording names sole future owner (the future PM-approved P8-002 prompt) and removes the P8-002/003 split; Marked unapproved section now includes the full P8-001/R1/R2/R3/R4/R5 corrective chain and states R5 stopped before P8-002; R5 WDR/report overclaims recorded as historical R5 inaccuracies; valid R5 corrections preserved (Session P8-002 only, RBAC persistence/guards P8-004 only, P8-003 schema-free AuthGuard/write protection only, planned candidates absent today).",
-      commitHash: "PENDING_UNTIL_COMMIT",
+      notes: "R6 planning correction only; stopped before P8-002. PM audit pending. R6 addresses all 6 R5 audit findings: GAP-20/21/22 now restrict package install to P8-003 only with no P8-002 package assignment; Prisma/PostgreSQL connection behavior wording names sole future owner (the future PM-approved P8-002 prompt) and removes the P8-002/003 split; Marked unapproved section now includes the full P8-001/R1/R2/R3/R4/R5 corrective chain and states R5 stopped before P8-002; R5 WDR/report overclaims recorded as historical R5 inaccuracies; valid R5 corrections preserved (Session P8-002 only, RBAC persistence/guards P8-004 only, P8-003 schema-free AuthGuard/write protection only, planned candidates absent today).",
+      commitHash: "1f6c3f9f56fc6bfb91cde9564706e0e35808a0cb",
     },
   ],
   modules: [
@@ -2607,13 +2607,13 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-8",
       status: "PASS",
       date: "2026-09-11",
-      commitHash: "PENDING_UNTIL_COMMIT",
+      commitHash: "1f6c3f9f56fc6bfb91cde9564706e0e35808a0cb",
       pmAudit: "PLANNED",
     },
   ],
   git: {
     initialized: true,
-    lastCommit: "PENDING_UNTIL_COMMIT",
+    lastCommit: "1f6c3f9f56fc6bfb91cde9564706e0e35808a0cb",
   },
   github: {
     configured: true,
