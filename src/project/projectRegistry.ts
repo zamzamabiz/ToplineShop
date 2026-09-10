@@ -1535,8 +1535,8 @@ export const projectRegistry: ProjectRegistry = {
       build: "PASS",
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
-      notes: "PENDING_UNTIL_COMMIT — R2 planning correction only; stopped before P8-002. PM audit pending. R2 addresses all 8 R1 audit findings: removed deferred identity flows and User.emailVerified from Phase 8 core, made P8-002 sole owner of all auth persistence (Session, User.passwordHash, audit context columns), made P8-003 schema-free for Session/credential persistence, removed every P8-002 AuthGuard claim, corrected the five-prompt count, enumerated database risk, and corrected evidence path/status to real preserved unrelated file 2026-09-08 and untracked .claude/.",
-      commitHash: "PENDING_UNTIL_COMMIT",
+      notes: "R2 planning correction only; stopped before P8-002. PM audit pending. R2 addresses all 8 R1 audit findings: removed deferred identity flows and User.emailVerified from Phase 8 core, made P8-002 sole owner of all auth persistence (Session, User.passwordHash, audit context columns), made P8-003 schema-free for Session/credential persistence, removed every P8-002 AuthGuard claim, corrected the five-prompt count, enumerated database risk, and corrected evidence path/status to real preserved unrelated file 2026-09-08 and untracked .claude/.",
+      commitHash: "1789cef06978109fef92043668a7e36e62674f5f",
     },
   ],
   modules: [
@@ -2495,13 +2495,13 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-8",
       status: "PASS",
       date: "2026-09-11",
-      commitHash: "PENDING_UNTIL_COMMIT",
+      commitHash: "1789cef06978109fef92043668a7e36e62674f5f",
       pmAudit: "PLANNED",
     },
   ],
   git: {
     initialized: true,
-    lastCommit: "PENDING_UNTIL_COMMIT",
+    lastCommit: "1789cef06978109fef92043668a7e36e62674f5f",
   },
   github: {
     configured: true,
