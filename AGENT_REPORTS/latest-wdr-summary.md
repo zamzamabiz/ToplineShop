@@ -4,25 +4,26 @@
 
 **TOPLINE-P7-010-R2** — Phase 7 Corrective Registry Source-of-Truth
 Completion
-**Status**: PASS — pending PM re-audit
+**Status**: PASS — PM approved
 **Date**: 2026-09-10
-**Registry Completion Commit**: `7190755`
-**PM Audit**: pending
+**Registry Completion Commit**: `719075517af496b6e22c82de015d99d0294fd759`
+**Evidence-Fill Commit**: `06bc94ab519e8f85ab5293ff317fa236483d6862`
+**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-010-R2-AUDIT_2026-09-10.md` (PASS)
 
 ## Previous WDR (BLOCKED)
 
 **TOPLINE-P7-010-R1** — Phase 7 Freeze Gate Dashboard Rollup
 Reconciliation
-**Status**: implementation PASS — registry source-of-truth corrected by R2
+**Status**: implementation PASS — PM approved after R2
 **Date**: 2026-09-10
 **Implementation Commit**: `e5decfb`
-**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-010-R1-AUDIT_2026-09-10.md` (BLOCKED, awaiting re-audit after R2)
+**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-010-R1-AUDIT_2026-09-10.md` (resolved by R2; registry now PASS)
 
 **TOPLINE-P7-010** — Phase 7 Freeze Gate
-**Status**: implementation PASS — original audit at commit `3493020`
+**Status**: implementation PASS — PM approved after R2
 **Date**: 2026-09-10
 **Implementation Commit**: `feea2bf`
-**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-010-AUDIT_2026-09-10.md` (BLOCKED, awaiting re-audit after R2)
+**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-010-AUDIT_2026-09-10.md` (resolved by R1/R2; registry now PASS)
 
 ## Summary
 
@@ -49,7 +50,6 @@ Did NOT modify product code, backend files, frontend pages/components,
 packages, migrations, auth/RBAC, infrastructure, secrets, or
 `F:\OpenCode\shop.com`. Did NOT start Phase 8.
 
-P7-010-R2 implementation complete, awaiting PM re-audit. Once PM
-re-audit passes, the registry is internally consistent and Phase 7
-is officially closed, ready to hand off to Phase 8 (DB / Auth / RBAC)
-PM planning.
+P7-010-R2 PM audit passed. The registry is internally consistent and
+Phase 7 is officially closed, ready to hand off to Phase 8
+Database/Auth/RBAC planning. Next approved task: `TOPLINE-P8-001`.
