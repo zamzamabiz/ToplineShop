@@ -1,24 +1,32 @@
-# ToplineShop — Phase 8 Database/Auth/RBAC Readiness Plan
+# ToplineShop — Phase 8 Database/Auth/RBAC Readiness Plan (R1)
 
-> **Status**: READINESS PLAN — PLANNING ONLY
+> **Status**: READINESS PLAN — PLANNING ONLY (R1-revised)
 > **Date**: 2026-09-10
-> **Task**: TOPLINE-P8-001
+> **Original task**: TOPLINE-P8-001 (PASS execution, BLOCKED PM audit)
+> **Corrective task**: TOPLINE-P8-001-R1 — Phase 8 Readiness Plan Security and Governance Reconciliation
 > **Phase**: Phase 8 — Database, Authentication, RBAC & Security
 > **Author**: Implementation Agent under PM governance
 > **Approval Required**: PM before any database schema change, auth code, package install, or migration
+> **R1 audit commit (predecessor)**: `c2282eb5c7cf2c51388e7e538f8a6e61f12bd25c`
+> **P8-001 implementation commit**: `82361970c15181c8a19bc1249f3a525bac4ad9cd`
+> **P8-001 evidence-fill commit**: `894d2b36f52c3442650774b2371f035252d8834b`
 
-This is a planning artifact only. **No database commands were executed. No auth/RBAC code, packages, or migrations were written. No implementation occurred.** The current repository at HEAD `314fe82` is identical to the post-Phase-7 freeze-gate state from the perspective of database, auth, and RBAC files.
+This is a planning artifact only. **No database commands were executed. No auth/RBAC code, packages, or migrations were written. No implementation occurred.** This R1 revision corrects the P8-001 plan against the PM audit; it does not authorize any Phase 8 implementation work.
+
+This revision is governed by `#123` (DISCUSS → DECIDE → EXECUTE → VERIFY/AUDIT → CLOSE → NEXT) and is the only approved corrective task. It does **not** start `TOPLINE-P8-002`.
 
 ---
 
 ## A. Governance Header
 
-- **Task**: TOPLINE-P8-001 — Phase 8 Database/Auth/RBAC Readiness Plan
+- **Original task**: TOPLINE-P8-001 — Phase 8 Database/Auth/RBAC Readiness Plan
+- **Corrective task**: TOPLINE-P8-001-R1 — Phase 8 Readiness Plan Security and Governance Reconciliation
 - **Date**: 2026-09-10
 - **Phase**: Phase 8 — Database, Authentication, RBAC & Security
-- **Type**: READINESS PLAN (planning-only)
+- **Type**: READINESS PLAN REVISION (planning-only)
 - **Approval boundary**: PM must approve before any future TOPLINE-P8-002+ task begins.
-- **Implementation confirmation**: This task did **not** modify any backend source, frontend source, package, Prisma schema, migration, env file, or deployable artifact. The only files created or modified are the six files allowed by the P8-001 prompt: this plan, the registry update, the agent reports, the PM_OUTBOX hold notice, and the WDR.
+- **Implementation confirmation**: This R1 task did **not** modify any backend source, frontend source, package, Prisma schema, migration, env file, or deployable artifact. The only files created or modified are the six files allowed by the R1 prompt: this plan (revised), the registry update, the two agent reports, the PM_OUTBOX R1 audit hold notice, and the R1 WDR.
+- **Prompt budget correction (R1 §A)**: Phase 8 core mega-prompt target is **5** (within the 2–5 budget of `docs/PROJECT_CONSTITUTION.md` §7), and the core sequence is exactly **P8-001, P8-002, P8-003, P8-004, P8-005**. R1 is a corrective task and does **not** increment `megaPromptsCompleted`. P8-006 is removed from the proposed core sequence.
 
 ---
 
@@ -45,7 +53,27 @@ This document is a plan. It is a contract for what later PM-approved tasks will 
 
 ---
 
-## C. Inherited Implemented Baseline
+## C. Prompt Budget and Sequence (R1 §A)
+
+| Item | Value (R1) |
+|---|---|
+| `phase-8.megaPromptTarget` | **5** |
+| `phase-8.megaPromptsCompleted` | **1** (P8-001 only; R1 is corrective and does not increment) |
+| Core sequence | P8-001, P8-002, P8-003, P8-004, P8-005 |
+| P8-006 in core sequence | **REMOVED** — it was an overshoot of the prompt budget |
+| R1 (TOPLINE-P8-001-R1) | corrective task; not a mega prompt; does not increment `megaPromptsCompleted` |
+| Items deferred to later PM decisions (R1 §A) | self-registration, email verification, password reset, OAuth, `Module`/`TenantModule`, financial `ApprovalGate`, real notification delivery |
+
+### R1 bounded future scopes (R1 §B)
+
+- **P8-002** is **persistence and migration safety only**: chosen auth persistence model, additive schema, migration SQL review, and explicitly authorized local-only application evidence. **No** login endpoints, **no** guards, **no** JWT issuance, **no** RBAC, **no** frontend work. P8-002 may install packages only if a future PM prompt separately approves them.
+- **P8-003** is authentication and session behavior plus protection of the four current write endpoints. It may install only packages separately approved by a future PM prompt. **No** RBAC schema or permission hierarchy.
+- **P8-004** is tenant-aware role/permission persistence, enforcement, negative cross-tenant tests, authorization freshness, and audit hardening. **No** email verification/reset/OAuth. **No** frontend work.
+- **P8-005** is audit and freeze only. It must not implement fixes silently.
+
+---
+
+## D. Inherited Implemented Baseline
 
 ### Implemented and frozen (cannot be changed without PM approval)
 | Item | Status | Source / commit |
@@ -64,9 +92,14 @@ This document is a plan. It is a contract for what later PM-approved tasks will 
 | CORS configured for `http://localhost:3000` (env-overridable) | Implemented | `backend/src/main.ts` |
 | `AuditLog` Prisma model + `AuditService.recordEvent()` skeleton | Implemented but **not wired** | `backend/src/audit/`, P5-004 |
 | Jest testing foundation (`test.utils.ts`, `test.module.ts`, 12-test proof spec) | Implemented | P7-008 (commit `2197d84`) |
-| 4 evidence scripts (`test-tenant-create.js`, `test-vendor-create.js`, `test-category-create.js`, `test-product-create.js`) | Implemented | P7-004-R2 through P7-007 |
+| 5 evidence scripts (`scripts/test-tenant-create.js`, `scripts/test-vendor-create.js`, `scripts/test-category-create.js`, `scripts/test-product-create.js`, `scripts/smoke-health.js`) | Implemented | P7-004-R2 through P7-007 |
 | `phase-7` registry rollup: `status: "CLOSED"`, `progress: 100`, `taskCount: 19`, `completedTaskCount: 19` | Implemented | P7-010 + corrective R1/R2 |
 | `wdr-046`…`wdr-064` (16 Phase 7 WDR audit entries) | Implemented | P7-001…P7-010-R2 |
+
+**Real test inventory (R1 §F correction)** — replaces the false "12 Jest + 202 evidence scripts" wording:
+- **Jest tests**: exactly **12** in `backend/src/testing/test.utils.spec.ts` (verified by `it(` count). P8-001 audit reproduced 12/12 PASS.
+- **Evidence scripts** (Node, not Jest): **5** under `backend/scripts/`: `test-tenant-create.js`, `test-vendor-create.js`, `test-category-create.js`, `test-product-create.js`, `smoke-health.js`. The "202" claim is removed; future task verification rows must use this real, executable inventory.
+- **`@nestjs/throttler`, `argon2`, `@nestjs/jwt`, `@nestjs/passport`, `jsonwebtoken`, `passport-jwt`, `bcrypt`**: **not in `backend/package.json`** (verified). R1 §F also removes the unverified claim that `passport-jwt` is transitive to `@nestjs/passport`; package relationships must be verified from the actual `package.json` and official package documentation at the time of any future PM-approved install.
 
 ### Designed (Phase 3 docs) but **not implemented** — must not be assumed to exist
 | Item | Phase 3 design location | Status |
@@ -110,7 +143,7 @@ This document is a plan. It is a contract for what later PM-approved tasks will 
 
 ---
 
-## D. Database Readiness
+## E. Database Readiness
 
 ### What exists
 - Prisma 6.19.3 client + CLI installed. `prisma:validate` and `prisma:generate` are package scripts. `PrismaService` extends `PrismaClient` and overrides `onModuleInit`/`onModuleDestroy` — `onModuleInit` is **empty** (does not connect to a database). `onModuleDestroy` calls `this.$disconnect()`.
@@ -137,75 +170,54 @@ This document is a plan. It is a contract for what later PM-approved tasks will 
 - `PrismaService` constructor and `onModuleDestroy` must continue to extend `PrismaClient` and call `this.$disconnect()` on shutdown.
 - No `prisma migrate reset`, no `prisma db push --force-reset`, no `prisma db seed`, no `DROP TABLE`, no `TRUNCATE`. All destructive commands remain forbidden by `#123` and the Phase 4 freeze gate.
 
-### Possible Phase 8 schema additions (questions, not decisions)
-The following are candidate additions to support Phase 8. Each is a question for PM — not a committed change.
-1. **Add `User.passwordHash` (VARCHAR(255) nullable for OAuth users)** — minimum needed for email/password login. Phase 3 design already documented this column. Phase 4 explicitly deferred it. **Open question**: nullable only (for OAuth) or also enforce non-null for password users via a future `AuthAccount` model? Recommendation: nullable, but require a future task to ensure every authenticated user has at least one `AuthAccount` row.
-2. **Add `User.emailVerified` (BOOLEAN, default false)** — needed for "must verify before login" flows. Phase 3 §5.1. Open question: blocking (cannot login until verified) vs non-blocking (can login but with limited permissions until verified)? Recommendation: non-blocking with `emailVerified=false` permissions limited to `auth.verifyEmail`, `auth.resendVerification`.
-3. **Add `AuditLog.ipAddress` (VARCHAR(45)) and `AuditLog.userAgent` (TEXT)** — needed for auth context. Phase 3 §4.14. Recommendation: add both; they are nullable for system events and required for auth events.
-4. **Add `Session` model** — for refresh-token tracking, device list, revoke. Phase 3 §4.12. Open question: cookie session vs opaque-token session vs JWT? Recommendation: opaque refresh-token + short-lived JWT access token (industry standard, easy to revoke).
-5. **Add `Role`, `Permission`, `RolePermission`, `TenantMembershipRole` models** — minimum RBAC. Phase 3 §4.4–4.7. Open question: per-tenant roles, per-platform roles, or both? Recommendation: per-tenant roles assigned via `TenantMembershipRole`; platform-level roles via a separate `UserRole` table (or a row in `Membership` with `status: PLATFORM_ADMIN`).
-6. **Add `VendorMembership` model** — vendor user assignment with `OWNER`/`MANAGER`/`STAFF` role. Phase 3 §4.10. Open question: replace `Vendor.ownerId` with `VendorMembership` (preferred) or keep both? Recommendation: keep `Vendor.ownerId` for back-compat and add `VendorMembership` for granular access (each vendor can have multiple users with different roles).
-
-### Local vs production safety
-- Local: `toplineshop_dev` PostgreSQL, can be destroyed and re-migrated freely. Future P8 tasks that need a fresh local DB must request explicit PM approval to run `prisma migrate reset` against the local DB.
-- Production: not configured. Any future P8 task that touches a production database is forbidden by `#123`.
+### Local vs production safety (R1 §E)
+- **Local**: `toplineshop_dev` PostgreSQL. **R1 REMOVES** the prior wording that the local database "can be destroyed and remigrated freely." Destructive operations against any environment — including local — require explicit PM approval regardless of environment. Any future P8 task that needs a fresh local DB must request explicit PM approval to run `prisma migrate reset` (or equivalent) and must record the approval in its WDR.
+- **Production**: not configured. Any future P8 task that touches a production database is forbidden by `#123` and the constitution. Future migration tasks must:
+  1. Verify the exact local target without exposing connection values.
+  2. Inspect generated SQL.
+  3. Prove additive/non-destructive behavior.
+  4. Document rollback.
+  5. STOP on any production target.
+- **R1 itself runs no database or Prisma command.** This plan revision is governance-only.
 
 ---
 
-## E. Authentication Readiness
+## F. Architecture Decision Matrix (R1 §C)
 
-### Identity / login principles
-- **Email + password is the only locally-supported credential type** until a future OAuth provider task is PM-approved. Phase 3 design includes OAuth (`AuthAccount` model) but it is **not** in scope for Phase 8.
-- **No anonymous sessions.** A request without a valid access token to a protected endpoint must be rejected with HTTP 401.
-- **No "remember me" tokens.** Refresh tokens are long-lived (30 days recommended) but revocable per session.
+This matrix **does not** label any unresolved choice as "resolved by this plan." Each row records options, security tradeoffs, a recommendation, required evidence, and `PM DECISION REQUIRED`. Approval claims are not allowed.
 
-### Password hashing
-- **Argon2id** is the recommended modern default. Phase 3 design does not specify a hash algorithm. Recommendation (PM to confirm): `argon2` npm package, `argon2.hash(password, { type: argon2.argon2id })`. Cost: tune on first run; record baseline timing in a Phase 8 audit.
-- **bcrypt** is an acceptable fallback for older Node runtimes but is **not** recommended (CPU cost tuning is harder; GPU attacks are easier than against Argon2id).
-- **Plaintext or reversible storage is forbidden.** Phase 3 §6.3 said passwords are stored in a `passwordHash` column (implying a one-way hash); the Phase 4 schema defers that column. Phase 8 must add the column AND wire a hasher.
-- **Password policy** (minimum length, complexity, breach-list check): a future PM-approved task. Phase 8 minimum: 12 characters, no maximum (allow passphrases), trim whitespace, reject all-whitespace. **Open question**: do we check against HIBP or a similar breach list at registration/login? Recommendation: out of scope for Phase 8 (privacy + latency); revisit in a later phase.
-
-### Credential storage
-- `User.passwordHash` (new column, nullable for OAuth users).
-- **No** plaintext email/SMS backup of passwords. **No** storing passwords in `AuditLog.metadata` or logs.
-- **No** logging of the access token, refresh token, or bearer header value. The existing `LoggingInterceptor` does not log headers, which is the correct default; preserve it.
-
-### Access / session / refresh / revocation / rotation
-- **Access token**: short-lived JWT (e.g., 15 minutes). Contains `sub` (user id), `tenantId` (active tenant), `roles` (denormalized for fast guard check), `iat`, `exp`, `jti` (session id).
-- **Refresh token**: long-lived (30 days), opaque random string (NOT a JWT). Stored hashed in `Session.refreshTokenHash`. One refresh token per session, **one session per device**.
-- **Active tenant context**: the JWT carries a `tenantId`. A user with multiple `Membership`s can switch active tenant via `POST /auth/switch-tenant` (returns a new JWT with the new `tenantId`). Switch is itself audit-logged.
-- **Revocation**: logout deletes the `Session` row. The access token's `jti` is also stored in `Session.id`; a session lookup during request handling rejects tokens whose `jti` no longer exists. Access tokens expire on their own; refresh tokens die on logout or admin revoke.
-- **Rotation**: refresh tokens are single-use. Every refresh issues a new refresh token and deletes the old `Session` row (replay attack defense).
-- **Disabled user / membership**: the existing `User.status: UserStatus` enum (`ACTIVE`, `DISABLED`) and `Membership.status: MembershipStatus` (`ACTIVE`, `INVITED`, `SUSPENDED`) are the suspension points. A request whose `User.status === 'DISABLED'` or whose active `Membership.status !== 'ACTIVE'` is rejected with HTTP 403. PM-confirmable: should disabled-user requests return 401 or 403? Recommendation: 401 (do not leak the user's existence) but allow legitimate "your account is disabled" responses to authenticated-and-then-disabled sessions.
-
-### Cookie vs bearer
-- **Bearer access tokens in `Authorization: Bearer <jwt>` header.** Avoids CSRF (no automatic cookie sending) and matches the existing CORS configuration (`Authorization` is already in `allowedHeaders`).
-- **Refresh tokens are also bearer**, not cookies. They are sent only on `POST /auth/refresh` and `POST /auth/logout`. Single-use rotation prevents the most common cookie-based refresh attacks.
-- **No** `Set-Cookie` from any auth endpoint. The frontend does not need a cookie store.
-- **No `SameSite`/`Secure`/`HttpOnly` cookie attributes** are needed because we do not use cookies.
-
-### Secret lifecycle
-- `JWT_ACCESS_SECRET` and `JWT_REFRESH_SECRET` are read from env at startup, never logged, never returned in any response, and never stored in `User` or `Session` (only their hashes are stored, if any). HS256 is acceptable for the access token (shared secret, simple, fast); RS256 is acceptable if a public-key verification model is desired later. Recommendation: HS256 for access, opaque (random-string) for refresh, with `argon2.hash(refreshToken)` to store the hash.
-- **Secret rotation**: a future PM-approved task. Phase 8 minimum: a single secret per env var, generated via a documented `openssl rand -hex 64` step, recorded in the local `.env` (git-ignored). The `backend/.env.example` placeholder is `CHANGE_ME_DEV_ONLY` and must stay that way.
-- **Production secret storage**: PM must approve the actual secret store (AWS Secrets Manager, GCP Secret Manager, HashiCorp Vault, etc.) before production deployment. **Out of scope for Phase 8.**
-
-### Disabled-user / membership behavior
-- A `User` with `status: DISABLED` cannot authenticate (no access token issued, refresh rejected).
-- A `Membership` with `status: SUSPENDED` causes any request carrying that membership's `tenantId` to be rejected for that tenant. The user can still authenticate against other tenants they belong to.
-- A `Membership` with `status: INVITED` cannot authenticate against that tenant until accepted. The user can still authenticate against other tenants.
-
-### Open choices (PM must decide before P8-002/003)
-1. HS256 vs RS256 for the access token.
-2. Single-device vs multi-device sessions.
-3. 15-min access / 30-day refresh vs different numbers.
-4. Whether `POST /auth/switch-tenant` is in scope for the first P8 task or a later one.
-5. Whether to require email verification before first login.
-6. Whether to lock accounts after N failed login attempts, and at what threshold.
-7. Whether password reset is in scope for the first P8 task or a later one.
+| Decision | Options | Security Tradeoffs | Recommendation | Required Evidence | PM Decision Required |
+|---|---|---|---|---|---|
+| Credential representation | (a) `User.passwordHash` column; (b) separate credential model / `AuthAccount` subset | (a) simpler, but couples auth to `User`; (b) cleaner multi-provider, more schema | (a) for Phase 8 email/password; plan to add (b) for OAuth later | Migration SQL review; unit test for password row absent | YES |
+| Password hashing algorithm | (a) Argon2id (`argon2`); (b) bcrypt; (c) scrypt; (d) platform-native (`crypto.scrypt`) | (a) best modern default, GPU-resistant, tuning complexity; (b) widely deployed, weaker vs GPU; (c) memory-hard, fewer libs; (d) zero-deps, less battle-tested | (a) Argon2id, with documented cost params tuned on first run | Cost-parameter baseline timing; package manifest compatibility check; Node runtime compatibility | YES |
+| Access-token signing | (a) symmetric (HS256); (b) asymmetric (RS256/EdDSA) | (a) simpler, shared secret; (b) public verify, no shared secret, key rotation easier | (a) HS256 for Phase 8, document migration path to (b) | Library decision matrix; rotation runbook | YES |
+| Access-token claims & lifetime | (a) `sub`, `tenantId`, `roles`, `iat`, `exp`, `jti`; (b) minimal `sub`+`jti` only; (c) opaque session ref | (a) denormalizes roles → stale risk; (b) requires lookup per request; (c) DB hit per request | (a) but with explicit authorization freshness check (see authorization freshness row) | Token-shape test; freshness policy | YES |
+| Refresh-token transport | (a) JavaScript-accessible bearer; (b) HttpOnly + Secure + SameSite cookie | (a) avoids CSRF, but XSS-exfiltratable; (b) CSRF needs explicit mitigations (SameSite=strict + double-submit or rotating nonce), XSS-resistant | **NOT pre-decided**; both are evaluated | XSS/CSRF threat model; frontend storage plan | YES |
+| Refresh-token digest/storage | (a) Argon2id hash; (b) HMAC-SHA256 keyed digest; (c) SHA-256 plain; (d) store verbatim | (a) is for low-entropy secrets, **overkill for high-entropy random refresh tokens**; (b) keyed digest is faster and adequate; (c) requires no key but vulnerable if DB leaks; (d) is unacceptable | **NOT pre-decided**; explicit decision between (b) keyed digest and any justified alternative required | DB-leak threat model; cost; test for replay detection | YES |
+| Single-device vs multi-device sessions | (a) one active session per user; (b) N sessions per user; (c) N per (user, device) | (a) safest, worst UX; (b) flexible, requires session list/revoke UX; (c) recommended | (c) per (user, device) with explicit session list endpoint | Session listing test; revoke test | YES |
+| Session revocation / authorization freshness | (a) access token carries roles + short TTL; (b) roles refreshed on every request via DB; (c) explicit `authzFreshness` claim with TTL ≤ access TTL | (a) stale role risk; (b) DB hit per request; (c) bounded staleness, low DB cost | (c) explicit freshness claim with explicit DB-backed invalidation hooks; **do not** treat long-lived role claims in JWTs as permanently authoritative | Stale-role test; revoke-during-TTL test | YES |
+| Platform role vs tenant role persistence | (a) `UserRole` table (Phase 3); (b) `Membership` with platform-role enum; (c) `Membership` + `TenantMembershipRole` (post-Phase 3 unified) | (a) duplicates identity; (b) couples concerns; (c) clean, additive | (c) — `Membership` + `TenantMembershipRole` | Schema migration review; model coverage test | YES |
+| Vendor role vs `Vendor.ownerId` | (a) keep `Vendor.ownerId` only; (b) keep `ownerId` + add `VendorMembership`; (c) replace `ownerId` with `VendorMembership` | (a) one user per vendor; (b) back-compat + RBAC; (c) cleanest, but breaks `ownerId` consumers | (b) — keep `ownerId` for back-compat, add `VendorMembership` for granular access | Back-compat test for `ownerId` reads; multi-user vendor scenario test | YES |
+| Public-route allowlist (if a global auth guard is used) | (a) explicit `PUBLIC` decorator + allowlist; (b) per-route `@Public()`; (c) no global guard, per-controller guards | (a) most testable; (b) clean, but easy to miss; (c) more code, no global default | (a) — explicit `PUBLIC` decorator + maintainable allowlist | Allowlist test; negative route test (e.g., `/health` reachable, `/tenants` POST blocked) | YES |
+| Active-tenant selection; prevent body/query `tenantId` spoofing | (a) `tenantId` from JWT only; (b) JWT primary, route param as override; (c) request body allowed but re-validated | (a) safest, requires explicit `POST /auth/switch-tenant` to change; (b)/(c) risk of spoofing | (a) — `tenantId` is **only** trusted from the JWT; body and query `tenantId` are never trusted | Spoofing test (body `tenantId=B` rejected when JWT says `A`); `switch-tenant` audit test | YES |
+| Credential bootstrap for existing users with no password credential | (a) require password set on next login; (b) admin-set temporary password; (c) out-of-scope until first P8 task | All require explicit UX; (c) is fine if no live data depends on it | (a) — first-login forced password set; admin override (b) is a later PM task | Bootstrap test; UX flow | YES |
+| Startup vs lazy Prisma connect | (a) startup (`onModuleInit` calls `$connect`); (b) lazy (current empty `onModuleInit`); (c) hybrid | (a) fail-fast; (b) safer for ephemeral local; (c) best of both | (b) for Phase 8; revisit at production cutover | Health check test; restart behavior test | YES |
+| Rate limiting / lockout storage | (a) Redis-backed; (b) new `LoginAttempt` table; (c) in-memory | (a) requires Redis; (b) no new infra; (c) does not survive restart, not multi-instance | (b) — additive `LoginAttempt` table; (a) deferred to a later phase if PM chooses Redis | Lockout test; restart-safety test; multi-instance stub | YES |
+| Production secret store | (a) AWS Secrets Manager; (b) GCP Secret Manager; (c) HashiCorp Vault; (d) env-only for now | All are out of Phase 8 scope | (d) for Phase 8 with `.env.example` placeholders; PM must approve before any production deploy | PM approval before production deploy | YES (production only) |
 
 ---
 
-## F. Tenant-Aware RBAC Readiness
+## G. Token and Logging Safety (R1 §D)
+
+- **Forbidden to log** in any application code, audit metadata, WDR, console output, or test evidence: verification links, password reset links, raw access tokens, raw refresh tokens, the `Authorization` header value, raw credentials, any `*token*` or `*secret*` field value, and any `*password*` field value. This rule is absolute for Phase 8 and every future task.
+- **Captured test-only transport**: if a later P8 test must exercise a verification/reset flow, it must use an in-memory fake transport or capture the value in a local-only test variable that is asserted on directly. Captured test values must never be written to application logs, audit metadata, WDRs, or console output. The test must assert presence in the captured variable and absence in every other channel.
+- **Refresh-token digest**: do not assume Argon2id is the correct digest for high-entropy random refresh tokens. The refresh-token storage row in F requires an explicit decision between (a) a suitable cryptographic or keyed digest and (b) a justified alternative. Argon2id is intended for low-entropy secrets (passwords); a keyed digest (e.g., HMAC-SHA256) is appropriate for high-entropy random tokens. The decision is gated by PM.
+- **Authorization freshness**: long-lived role claims in JWTs must **not** be treated as permanently authoritative. Phase 8 must implement an explicit authorization freshness check (see F, "Session revocation / authorization freshness"). Revocation must invalidate the session row and the active tokens; the test must prove that a revoked-role token is rejected within the access-token TTL.
+- **`AuditService` redactor**: when audit metadata is written, a redactor strips `*token*`, `*secret*`, `*password*`, and the `Authorization` header value. Redaction is the writer's responsibility, not the caller's.
+
+---
+
+## H. Tenant-Aware RBAC Readiness
 
 ### Owner / admin / vendor / customer / guest boundaries
 Phase 3 design proposed:
@@ -273,7 +285,7 @@ Phase 3 §4 listed the following tables that **were not** implemented in Phase 4
 
 ---
 
-## G. Security and Audit Readiness
+## I. Security and Audit Readiness
 
 ### Auth events
 - **Every** auth-relevant action must be recorded in `AuditLog`. Minimum events:
@@ -287,7 +299,7 @@ Phase 3 §4 listed the following tables that **were not** implemented in Phase 4
   - `auth.membership.suspended` / `auth.membership.reinstated`
   - `auth.user.disabled` / `auth.user.reinstated`
   - `auth.tenant.switch` (with `fromTenantId`, `toTenantId`)
-- `AuditLog.metadata` (existing JSONB column) carries per-event details.
+- `AuditLog.metadata` (existing JSONB column) carries per-event details. The `AuditService` redactor (see G) strips forbidden fields before write.
 
 ### Denial / role-change auditing
 - Every guard denial is logged: `auth.denied` with `userId`, `tenantId`, `endpoint`, `method`, `requiredPermission`, `ipAddress`, `userAgent`.
@@ -330,32 +342,32 @@ Phase 3 §4 listed the following tables that **were not** implemented in Phase 4
 
 ---
 
-## H. Gap and Decision Register
+## J. Gap and Decision Register
 
 | ID | Gap / Decision | Evidence | Risk | Recommended Direction | PM Approval Needed | Blocking Task |
 |---|---|---|---|---|---|---|
 | GAP-01 | No `User.passwordHash` column | `backend/prisma/schema.prisma` | HIGH — cannot do email/password login | Add `String?` column via additive migration in P8-003 | Yes | P8-003 |
 | GAP-02 | No `User.emailVerified` column | `backend/prisma/schema.prisma` | MEDIUM — cannot gate unverified users | Add `Boolean @default(false)` via additive migration in P8-003 | Yes | P8-003 |
 | GAP-03 | No `Session` model for refresh tokens | `schema.prisma`, Phase 3 §4.12 | HIGH — no revocable sessions | Add `Session` model in P8-003 | Yes | P8-003 |
-| GAP-04 | No `Role` / `Permission` / `RolePermission` / `TenantMembershipRole` models | `schema.prisma`, Phase 3 §4.4–4.7 | HIGH — no RBAC | Add in P8-004 (after auth basics) | Yes | P8-004 |
+| GAP-04 | No `Role` / `Permission` / `RolePermission` / `TenantMembershipRole` models | `schema.prisma`, Phase 3 §4.4–4.7 | HIGH — no RBAC | Add in P8-004 (after auth basics work) | Yes | P8-004 |
 | GAP-05 | No `VendorMembership` model | `schema.prisma`, Phase 3 §4.10 | HIGH — no per-vendor user roles | Add in P8-004 | Yes | P8-004 |
 | GAP-06 | `AuditLog.ipAddress` and `AuditLog.userAgent` columns missing | `schema.prisma`, Phase 3 §4.14 | MEDIUM — auth events lack client context | Add in P8-002 (small additive migration) | Yes | P8-002 |
 | GAP-07 | `AuditService.recordEvent()` is not called by any service | `backend/src/audit/`, search for `recordEvent` in `backend/src` | MEDIUM — Phase 8 auth/denial events have nowhere to land | Wire the existing call sites; add auth/denial call sites in P8-002/003/004 | No (call sites only) | P8-002/003/004 |
 | GAP-08 | No `AuthGuard` / `RolesGuard` / `PermissionsGuard` | `backend/src/`, no `@UseGuards` anywhere | HIGH — endpoints are publicly writable today | Add in P8-002 (auth) and P8-004 (RBAC) | Yes | P8-002, P8-004 |
 | GAP-09 | No rate limiting | `backend/package.json` no throttler | MEDIUM — login brute-force possible | Add `@nestjs/throttler` in P8-002/003 for auth endpoints | Yes (new package) | P8-002/003 |
-| GAP-10 | No email-verification flow | none | MEDIUM — unverified users can do anything | Implement in P8-005 (post-auth) | Yes | P8-005 |
-| GAP-11 | No password reset flow | none | MEDIUM — locked-out users have no recovery | Implement in P8-005 (post-auth) | Yes | P8-005 |
+| GAP-10 | No email-verification flow | none | MEDIUM — unverified users can do anything | Implement in a later PM-approved phase (NOT in core Phase 8 sequence) | Yes | Future phase |
+| GAP-11 | No password reset flow | none | MEDIUM — locked-out users have no recovery | Implement in a later PM-approved phase (NOT in core Phase 8 sequence) | Yes | Future phase |
 | GAP-12 | No `POST /auth/login` / `/logout` / `/refresh` / `/switch-tenant` endpoints | `backend/src/tenants/`, `vendors/`, etc. have no auth controller | HIGH — auth surface missing | Add `auth` module in P8-003 | Yes | P8-003 |
 | GAP-13 | `Vendor.ownerId` is the only vendor↔user link; no `VendorMembership` | `schema.prisma` | MEDIUM — multi-user vendor scenarios unsupported | Keep `Vendor.ownerId` (back-compat); add `VendorMembership` in P8-004 | Yes | P8-004 |
-| GAP-14 | All 4 write endpoints (`POST /tenants`, `/vendors`, `/categories`, `/products`) are publicly writable | `backend/src/*/controllers/` | CRITICAL — anyone can create tenants, vendors, categories, products without auth | Wrap all 4 write endpoints in `AuthGuard` + `RolesGuard` in P8-002 (deny-by-default if no permission; even platform-owner must be authenticated) | Yes | P8-002 |
+| GAP-14 | All 4 write endpoints (`POST /tenants`, `/vendors`, `/categories`, `/products`) are publicly writable | `backend/src/*/controllers/` | CRITICAL — anyone can create tenants, vendors, categories, products without auth | Wrap all 4 write endpoints in `AuthGuard` + `RolesGuard` in P8-002/003 (deny-by-default; even platform-owner must be authenticated) | Yes | P8-002, P8-003 |
 | GAP-15 | `PrismaService.onModuleInit` does not connect; `health` says `database: not_configured` | `backend/src/prisma/prisma.service.ts`, `backend/src/health/health.service.ts` | LOW (today) | P8-002 (or later) decides: lazy vs startup connect. PM must confirm. | Yes | P8-002+ |
 | GAP-16 | `Membership.status: INVITED` users can authenticate against that tenant today (no enforcement) | `backend/src/` (no enforcement) | MEDIUM | P8-004 enforces `Membership.status === ACTIVE` for the active tenant | Yes | P8-004 |
 | GAP-17 | `User.status: DISABLED` does not block authentication | `backend/src/` (no enforcement) | HIGH | P8-003 enforces `User.status === ACTIVE` | Yes | P8-003 |
 | GAP-18 | Frontend routes `/owner/*`, `/admin/*`, `/vendor/*` are visible to any visitor; no route guards | `src/app/` | MEDIUM (UX only, backend is the authority) | Out of scope for Phase 8 (frontend is frozen) | No | Future phase |
 | GAP-19 | `backend/.env.example` shows `JWT_ACCESS_SECRET=CHANGE_ME_DEV_ONLY` placeholder — correct for dev, but no production secret store is approved | `backend/.env.example` | HIGH in production | PM must approve secret store before any production deployment | Yes (production only) | Production |
 | GAP-20 | No `@nestjs/throttler` or other rate-limit dependency | `backend/package.json` | MEDIUM | Add in P8-002/003 if PM confirms | Yes (new package) | P8-002/003 |
-| GAP-21 | No `argon2`, `bcrypt`, or other password-hashing library | `backend/package.json` | HIGH | Add `argon2` in P8-002 (PM-confirmed) | Yes (new package) | P8-002 |
-| GAP-22 | No JWT library (`@nestjs/jwt`, `jsonwebtoken`) | `backend/package.json` | HIGH | Add `@nestjs/jwt` and `@nestjs/passport` in P8-002/003 | Yes (new packages) | P8-002/003 |
+| GAP-21 | No `argon2`, `bcrypt`, or other password-hashing library | `backend/package.json` | HIGH | Add `argon2` in P8-002 (PM-confirmed) — or per F, an alternative if PM chooses | Yes (new package) | P8-002 |
+| GAP-22 | No JWT library (`@nestjs/jwt`, `jsonwebtoken`) | `backend/package.json` | HIGH | Add `@nestjs/jwt` and `@nestjs/passport` in P8-002/003 — **only if PM-confirmed** | Yes (new packages) | P8-002/003 |
 | GAP-23 | Phase 3 design `UserRole` and `StaffRole` tables overlap with the `Membership` model | `PHASE-03-DATABASE-SCHEMA-DESIGN.md` §5.1, P4-003 | LOW (design conflict only) | Use `Membership` + `TenantMembershipRole` (post-Phase 3 unified). Do not add `UserRole`/`StaffRole`. | Yes | P8-004 |
 | GAP-24 | `Module` and `TenantModule` (per-tenant module enablement) not present | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.8–4.9 | LOW (no current need) | Defer to a post-Phase 8 phase | Yes (defer) | Future phase |
 | GAP-25 | `ApprovalGate` (financial/AI approval) not present | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.13 | LOW (no financial/AI work in Phase 8) | Defer to Phase 9+ | Yes (defer) | Phase 9+ |
@@ -363,88 +375,101 @@ Phase 3 §4 listed the following tables that **were not** implemented in Phase 4
 
 ---
 
-## I. Risk Register
+## K. Risk Register
 
 | ID | Risk | Severity | Mitigation | Verification Evidence | Owner |
 |---|---|---|---|---|---|
-| RISK-01 | **Unauthenticated writes** — anyone can `POST /tenants`, `/vendors`, `/categories`, `/products` today | CRITICAL | P8-002 wraps all 4 write endpoints in `AuthGuard`; deny-by-default; smoke test that unauthenticated requests return 401 | Existing `test-product-create.js` etc. fail to seed (no auth); PM-audited test report | PM + impl |
+| RISK-01 | **Unauthenticated writes** — anyone can `POST /tenants`, `/vendors`, `/categories`, `/products` today | CRITICAL | P8-002/003 wrap all 4 write endpoints in `AuthGuard`; deny-by-default; smoke test that unauthenticated requests return 401 | Existing `test-product-create.js` etc. fail to seed (no auth); PM-audited test report | PM + impl |
 | RISK-02 | **Tenant isolation breach** — a future `findMany` could leak across tenants | HIGH | Phase 7 services already filter by `tenantId` for category/product; future services must follow the same pattern; P8-004 adds a `TenantContextGuard` that asserts the JWT's `tenantId` matches the route's resolved tenant | Existing category/product tests pass with same-tenant and fail with cross-tenant | PM + impl |
 | RISK-03 | **Credential leakage** — password/token in logs or error responses | HIGH | `LoggingInterceptor` already excludes headers/bodies; `AuditService.redactMetadata()` strips `*token*`/`*secret*`/`*password*`; `AllExceptionsFilter` returns fixed messages for 401/403 | Manual code review + integration test that logs do not contain the credential substring | PM + impl |
 | RISK-04 | **Token / session compromise** — stolen JWT used by attacker | HIGH | Short access-token lifetime (15 min); single-use refresh tokens; session revocation deletes the row so a replay fails; `AuditLog.ipAddress`/`userAgent` enable compromise detection | P8-003 tests that revoked sessions reject the access token; replay of a used refresh token triggers session revoke | PM + impl |
 | RISK-05 | **Privilege escalation** — a user escalates from `VENDOR_STAFF` to `OWNER` via a forgotten route | HIGH | `RolesGuard` is a global guard; `PermissionsGuard` resolves the actual role hierarchy; admin actions go through `OWNER`-only permissions; all role changes audit-logged | P8-004 test that a `VENDOR_STAFF` token cannot call `owner.*` | PM + impl |
-| RISK-06 | **Destructive migration** — `prisma migrate reset` or a DROP wipes the dev DB | MEDIUM (local only) | The current `PrismaService` does not connect at startup, so a `prisma db push` is the only risk. P8-002 keeps lazy connect. PM must approve any `migrate reset`. | Phase 4 freeze gate proved no destructive SQL was in the original migration | PM |
+| RISK-06 | **Destructive migration** — `prisma migrate reset` or a DROP wipes the dev DB | MEDIUM (local only) | The current `PrismaService` does not connect at startup, so a `prisma db push` is the only risk. P8-002 keeps lazy connect. PM must approve **any** `migrate reset` against **any** environment, including local. R1 removed the prior "local DB can be destroyed freely" wording. | Phase 4 freeze gate proved no destructive SQL was in the original migration; future migration tasks must inspect generated SQL, prove additive/non-destructive behavior, document rollback, and stop on any production target. | PM |
 | RISK-07 | **Audit gaps** — auth events are not recorded | MEDIUM | P8-002 adds `AuditLog.ipAddress`/`userAgent`; P8-003 wires auth events; P8-004 wires denial events; `AuditService.recordEvent()` is the only writer | P8-003 test that `auth.login.success` creates an `AuditLog` row with the right fields | PM + impl |
 | RISK-08 | **Production configuration** — secrets in env, CORS origins, JWT secret rotation | HIGH (in production) | Phase 8 is dev-only by design. Production deployment is out of scope. PM must approve production secret store, CORS origin list, and secret rotation policy before any production deploy. | Phase 4 freeze gate proved no production connection | PM (production only) |
 | RISK-09 | **Phase 3 vs Phase 4 design contradictions** — `UserRole`/`StaffRole` (Phase 3) vs `Membership` (Phase 4) | LOW (design conflict) | GAP-23 recommends `Membership` + `TenantMembershipRole` as the unified model. No `UserRole`/`StaffRole` is added. | This document records the decision; P8-004 implements it. | PM |
-| RISK-10 | **Phase 8 scope creep** — adding Module/TenantModule/ApprovalGate/AuthAccount prematurely | MEDIUM | P8 plan is bounded to email/password + RBAC + audit. Module/TenantModule deferred; ApprovalGate deferred; AuthAccount deferred. | This document enumerates the deferred items explicitly | PM |
+| RISK-10 | **Phase 8 scope creep** — adding Module/TenantModule/ApprovalGate/AuthAccount prematurely | MEDIUM | P8 plan is bounded to email/password + RBAC + audit. Module/TenantModule deferred; ApprovalGate deferred; AuthAccount deferred. Email verification, password reset, OAuth, self-registration, financial approvals, and real notification delivery are deferred to later PM decisions. | This document enumerates the deferred items explicitly | PM |
 
 ---
 
-## J. Proposed Governed Task Sequence
+## L. Proposed Governed Task Sequence (R1 §A, R1 §B)
 
-**Constraint**: Phase 8 is registered with `megaPromptTarget: 4`. The sequence below has 4 implementation tasks (P8-002, P8-003, P8-004, P8-005) plus the freeze gate (P8-006). If the audit reveals that P8-005 (email verification + password reset) needs to be split, the sequence can grow to 5 implementation tasks. **All tasks P8-002+ are PROPOSED, not approved. PM must approve each before execution. P8-001 does not register any of them.**
+**Constraint**: Phase 8 is registered with `megaPromptTarget: 5`. The sequence below has **4 implementation tasks (P8-002, P8-003, P8-004, P8-005) plus the freeze gate (P8-005 freeze)** — for a total of **5 core mega prompts**: P8-001, P8-002, P8-003, P8-004, P8-005. **P8-006 is removed.** Email verification (P8-005-old), password reset (P8-005-old), self-registration, OAuth, `Module`/`TenantModule`, financial `ApprovalGate`, and real notification delivery are **deferred to later PM decisions**, not squeezed into Phase 8 to preserve old design scope. R1 is a corrective task and does **not** increment `megaPromptsCompleted`. **All tasks P8-002+ are PROPOSED, not approved. PM must approve each before execution. P8-001-R1 does not register any of them.**
 
 | Task | Title | Objective | Dependencies | Conceptual Scope | Allowed File Families | Forbidden Scope | Verification | Stop Conditions | WDR Evidence | PM Gate |
 |---|---|---|---|---|---|---|---|---|---|---|
-| **P8-002** | Auth Foundation + Write-Endpoint Guard Wrapping | Add the schema columns needed for auth (`User.passwordHash`, `User.emailVerified`, `AuditLog.ipAddress`, `AuditLog.userAgent`); add the `Session` model; add `argon2` and `@nestjs/jwt`; wire `AuditService.recordEvent` for the new audit context; add `AuthGuard` as a global NestJS guard; wrap all 4 write endpoints (`POST /tenants`, `/vendors`, `/categories`, `/products`) in the guard with deny-by-default; preserve every existing route shape; add `POST /auth/login` (returns access + refresh tokens) and `POST /auth/logout` (deletes session) and `POST /auth/refresh` (rotates refresh); keep login failures returning a fixed 401 message with no email/user-id leak. | P8-001 | Schema additive migration; auth module; `AuthGuard`; login/logout/refresh endpoints; 4 write endpoints wrapped | `backend/prisma/schema.prisma`, `backend/prisma/migrations/`, `backend/src/auth/`, `backend/src/tenants/`, `backend/src/vendors/`, `backend/src/categories/`, `backend/src/products/`, `backend/src/audit/`, `backend/src/common/`, `backend/src/prisma/`, `backend/src/app.module.ts`, `backend/src/main.ts`, `backend/package.json`, `backend/package-lock.json`, `backend/src/testing/test.utils.ts`, `backend/src/testing/test.module.ts`, `backend/scripts/test-*.js` (new auth tests) | Frontend, frontend API client, frontend types, frontend pages/components, env files (real `.env`), migrations that modify existing columns, Phase 4/7 frozen source other than additive changes required for auth, real secrets, any DB-connecting command in production, shop.com | `npm run build` (backend), `npm test` (backend), `node scripts/test-*.js` (auth test scripts), `npm run smoke` (existing read-only smoke must still pass), `git diff --check` | Destructive DB action; real secret in commit; production target; tenant uncertainty; contradiction; scope expansion | Single WDR; registry updated; pmAudit PLANNED until PM audit; 4 write endpoints return 401 when called without `Authorization: Bearer <jwt>`; 4 write endpoints return 201 with valid token; existing 202 backend tests (12 Jest + 202 evidence scripts) still pass | Yes |
-| **P8-003** | Auth Event Wiring + Session Hardening | Wire `AuditService.recordEvent` for all auth events (`auth.login.success`, `auth.login.failure`, `auth.logout`, `auth.refresh.success`, `auth.refresh.failure`, `auth.token.expired`); add `User.status === ACTIVE` enforcement in `AuthGuard`; add `Membership.status === ACTIVE` enforcement for the active tenant; add refresh-token rotation enforcement (single-use); add brute-force lockout (5 attempts → 15-min lockout per email+IP); add a new `LoginAttempt` model for the lockout state; ensure `AuditLog.metadata` is redacted before write; ensure `X-Correlation-ID` is included in error responses. | P8-002 | `AuthGuard` extension; `LoginAttempt` model; `AuditService` redactor; lockout state | `backend/src/auth/`, `backend/src/audit/`, `backend/prisma/schema.prisma`, `backend/prisma/migrations/`, `backend/src/tenants/`, `backend/src/vendors/`, `backend/src/categories/`, `backend/src/products/`, `backend/src/health/`, `backend/src/common/`, `backend/src/app.module.ts`, `backend/src/main.ts`, `backend/src/testing/`, `backend/scripts/test-*.js` | Frontend, real `.env`, real secrets, destructive migration, shop.com, modifications to Phase 4/7 schema beyond additive | `npm run build` (backend), `npm test` (backend), auth failure scenario tests, lockout scenario tests, `git diff --check` | Destructive DB; secret leak; tenant uncertainty; scope expansion | Single WDR; auth events visible in `AuditLog`; locked-out user cannot log in; replayed refresh token revokes the entire session; redactor does not include `*token*`/`*secret*`/`*password*` in `AuditLog.metadata` | Yes |
-| **P8-004** | RBAC: Role, Permission, TenantMembershipRole, VendorMembership | Add the `Role`, `Permission`, `RolePermission`, `TenantMembershipRole`, `VendorMembership` models; add a `PermissionsGuard`; add a `TenantContextGuard` that asserts the JWT's `tenantId` matches the route's resolved tenant; wire RBAC into the 4 write endpoints; add a `seed:rbac` script (or `prisma db seed` equivalent, PM-approved only) that creates the canonical seed roles (`OWNER`, `PLATFORM_ADMIN`, `VENDOR_OWNER`, `VENDOR_MANAGER`, `VENDOR_STAFF`) and a starter permission set (`auth.*`, `tenants.*`, `vendors.*`, `categories.*`, `products.*`, `audit.*`, `owner.*`); add a `POST /auth/switch-tenant` endpoint; add `UserRole`-equivalent as a derived view (do not add the table). | P8-003 | RBAC models; `PermissionsGuard`; `TenantContextGuard`; seed script | `backend/prisma/schema.prisma`, `backend/prisma/migrations/`, `backend/src/auth/`, `backend/src/tenants/`, `backend/src/vendors/`, `backend/src/categories/`, `backend/src/products/`, `backend/src/audit/`, `backend/src/common/`, `backend/src/app.module.ts`, `backend/src/testing/`, `backend/scripts/test-*.js` (new RBAC tests) | Frontend, real `.env`, destructive migration that removes any of the 7 frozen models, shop.com, any production seed | `npm run build` (backend), `npm test` (backend), tenant-isolation tests (same-tenant PASS, cross-tenant 403), role tests (VENDOR_STAFF cannot call owner-only), `git diff --check` | Destructive DB; secret leak; contradiction; scope expansion | Single WDR; 4 write endpoints enforce tenant + role; seed script is idempotent; cross-tenant request rejected with 403 | Yes |
-| **P8-005** | Email Verification + Password Reset | Add `POST /auth/register` (creates `User` with hashed password, INVITED `Membership` for the requested tenant, sends verification email — out of scope: actually sending the email, use a stub `NotificationService` that logs the verification link); add `POST /auth/verify-email`; add `POST /auth/forgot-password`; add `POST /auth/reset-password`; add `EmailVerificationToken` and `PasswordResetToken` models (or fold into `Session` — PM to choose); rate-limit `POST /auth/register`, `POST /auth/forgot-password`; update `emailVerified` on `User` when verified; require `emailVerified === true` for the first login (PM-confirmable). | P8-004 | Verification + reset flow | `backend/src/auth/`, `backend/prisma/schema.prisma`, `backend/prisma/migrations/`, `backend/src/tenants/`, `backend/src/vendors/`, `backend/src/categories/`, `backend/src/products/`, `backend/src/common/`, `backend/src/testing/`, `backend/scripts/test-*.js` | Frontend, real email sending, real `.env`, destructive migration, shop.com | `npm run build` (backend), `npm test` (backend), register → verify → login flow, forgot → reset → login flow, rate-limit scenario, `git diff --check` | Destructive DB; secret leak; email-service unavailability (degrade gracefully); scope expansion | Single WDR; verification gates login; reset is single-use; rate limit enforced | Yes |
-| **P8-006** | Phase 8 Freeze Gate | Verify all Phase 8 tasks are complete, internally consistent, safely scoped, documented, buildable, and ready to freeze before Phase 9. Same shape as P7-010 freeze gate: registry consistency check, scope safety audit, code health (build + lint + test + diff --check), dashboard source verification, no product code beyond Phase 8 scope, no Phase 9 work started. | P8-005 | Freeze gate (audit-only) | `src/project/projectRegistry.ts`, `AGENT_REPORTS/latest-status.md`, `AGENT_REPORTS/latest-wdr-summary.md`, `PM_OUTBOX/next-opencode-prompt.md`, `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-006_WDR_2026-09-10.md` | All implementation work; frontend; packages (unless a corrective add is required); secrets; production; shop.com; Phase 9 | `npm run build` (root + backend), `npm run lint` (root), `npm test` (backend), `git diff --check`, targeted search for `id: "TOPLINE-P8-002"` through `id: "TOPLINE-P8-005"` in registry, targeted search for `wdr-066` through `wdr-069` | Registry inconsistency; scope expansion; production target; contradiction; unauthorized frontend change | Single WDR; phase-8 rollup `status: "CLOSED"`; `taskCount` matches actual `tasks[]` length | Yes |
+| **P8-002** | Auth Persistence Data Model and Migration Safety Foundation | Persistence and migration safety only. Choose the auth persistence model (per F, PM-decided), add the additive schema columns needed for that model (`User.passwordHash`, `User.emailVerified`, `AuditLog.ipAddress`, `AuditLog.userAgent`), generate a forward-only additive migration, review generated SQL for additive/non-destructive behavior, document rollback, and apply the migration to the local dev database with explicit PM approval. No login endpoints, no guards, no JWT issuance, no RBAC, no frontend work. | P8-001 (R1) | Schema additive migration; migration SQL review; local-only application evidence | `backend/prisma/schema.prisma`, `backend/prisma/migrations/`, `backend/src/prisma/`, `backend/src/audit/` (re-export of new types only), `backend/src/testing/test.utils.ts`, `backend/src/testing/test.module.ts`, `src/project/projectRegistry.ts`, `AGENT_REPORTS/latest-status.md`, `AGENT_REPORTS/latest-wdr-summary.md`, `PM_OUTBOX/next-opencode-prompt.md`, `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-10.md` | Frontend, frontend API client, frontend types, frontend pages/components, env files (real `.env`), login/logout/refresh endpoints, guards, JWT issuance, RBAC, packages not PM-approved, migration that modifies or drops existing columns, destructive DB commands, real secrets, any DB-connecting command in production, shop.com | `git diff --check`; `npm run build` (backend); `npm test` (backend) — 12/12 must still pass; `npm run smoke` (read-only smoke must still pass); review of generated migration SQL must be pasted into the WDR (additive only, no DROP, no `ALTER COLUMN DROP NOT NULL`); `node backend/scripts/test-tenant-create.js` (and the other 4 evidence scripts) must still pass; negative: missing/unknown column on a frozen model must NOT be added by the new migration | Destructive DB action; real secret in commit; production target; tenant uncertainty; contradiction; scope expansion; any forbidden action attempted | Single WDR; registry updated; pmAudit PLANNED until PM audit; migration SQL excerpt and review pasted; column existence and absence tests pass | Yes |
+| **P8-003** | Authentication Session Lifecycle and Write Endpoint Protection | Authentication and session behavior. Add `Session` model (per F, PM-decided digest), `argon2` (or PM-decided alternative) hashing, `@nestjs/jwt` (or PM-decided alternative), `POST /auth/login` (returns access + refresh tokens), `POST /auth/logout` (deletes session), `POST /auth/refresh` (rotates refresh, single-use, replay detection revokes the entire session), add `AuthGuard` as a global NestJS guard (with explicit `PUBLIC` allowlist per F), wrap all 4 current write endpoints in the guard with deny-by-default, ensure login failures return a fixed 401 message with no email/user-id leak, wire `AuditService.recordEvent` for the new audit context, ensure `AuditLog.metadata` is redacted before write (no tokens/secrets/passwords), preserve every existing route shape. P8-003 may install only packages separately approved by the future PM prompt. No RBAC schema/permission hierarchy. | P8-002 | `AuthGuard`; `Session` model + digest; login/logout/refresh endpoints; 4 write endpoints wrapped; redactor | `backend/prisma/schema.prisma`, `backend/prisma/migrations/`, `backend/src/auth/`, `backend/src/tenants/`, `backend/src/vendors/`, `backend/src/categories/`, `backend/src/products/`, `backend/src/audit/`, `backend/src/common/`, `backend/src/prisma/`, `backend/src/app.module.ts`, `backend/src/main.ts`, `backend/src/testing/test.utils.ts`, `backend/src/testing/test.module.ts`, `backend/scripts/test-*.js` (new auth tests), `backend/package.json` and `backend/package-lock.json` (only if separately PM-approved for the needed packages), `src/project/projectRegistry.ts`, `AGENT_REPORTS/latest-status.md`, `AGENT_REPORTS/latest-wdr-summary.md`, `PM_OUTBOX/next-opencode-prompt.md`, `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-003_WDR_2026-09-10.md` | Frontend, frontend API client, frontend types, frontend pages/components, env files (real `.env`), real secrets, destructive migration, RBAC schema/permission hierarchy, shop.com | `git diff --check`; `npm run build` (backend); `npm test` (backend); auth scenario tests (login success, login failure with fixed 401, logout, refresh rotation, replay-revoke); redaction test that proves `*token*`/`*secret*`/`*password*` are absent from `AuditLog.metadata`; 4 write endpoints return 401 when called without a valid token; existing read-only smoke still passes; **no raw token/link/secret in any log, audit row, or WDR** | Destructive DB; secret leak; tenant uncertainty; scope expansion; raw token/link in any log | Single WDR; registry updated; pmAudit PLANNED; redaction test passes; replay-revoke test passes | Yes |
+| **P8-004** | Tenant-Aware RBAC Enforcement and Security Audit Hardening | RBAC persistence, enforcement, audit hardening. Add the `Role`, `Permission`, `RolePermission`, `TenantMembershipRole`, `VendorMembership` models (per F, PM-decided). Add a `PermissionsGuard` and a `TenantContextGuard` (per F: `tenantId` only from JWT, never body/query). Wire RBAC into the 4 write endpoints. Add a `POST /auth/switch-tenant` endpoint with audit. Add a `seed:rbac` script (PM-approved only, additive only) for the canonical seed roles (`OWNER`, `PLATFORM_ADMIN`, `VENDOR_OWNER`, `VENDOR_MANAGER`, `VENDOR_STAFF`) and a starter permission set. Implement explicit authorization freshness (per F, do not treat long-lived role claims as permanently authoritative). Wire all denial events to `AuditLog` with the redactor. | P8-003 | RBAC models; `PermissionsGuard`; `TenantContextGuard`; seed script (PM-approved only); authorization freshness | `backend/prisma/schema.prisma`, `backend/prisma/migrations/`, `backend/src/auth/`, `backend/src/tenants/`, `backend/src/vendors/`, `backend/src/categories/`, `backend/src/products/`, `backend/src/audit/`, `backend/src/common/`, `backend/src/app.module.ts`, `backend/src/testing/`, `backend/scripts/test-*.js` (new RBAC tests), `backend/package.json` and `backend/package-lock.json` (only if separately PM-approved), `src/project/projectRegistry.ts`, `AGENT_REPORTS/latest-status.md`, `AGENT_REPORTS/latest-wdr-summary.md`, `PM_OUTBOX/next-opencode-prompt.md`, `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-004_WDR_2026-09-10.md` | Frontend, real `.env`, destructive migration that removes any of the 7 frozen models, email verification, password reset, OAuth, shop.com, any production seed | `git diff --check`; `npm run build` (backend); `npm test` (backend); tenant-isolation tests (same-tenant PASS, cross-tenant 403); body/query `tenantId` spoofing test (rejected 403); VENDOR_STAFF cannot call owner-only; revoked-role test within access-token TTL; redaction test still passes; 4 write endpoints enforce tenant + role; **no raw token/link/secret in any log, audit row, or WDR** | Destructive DB; secret leak; contradiction; scope expansion | Single WDR; 4 write endpoints enforce tenant + role; seed script is idempotent; cross-tenant request rejected with 403; revoked-role token rejected within access TTL | Yes |
+| **P8-005** | Phase 8 Freeze Gate | Audit and freeze only. Verify all Phase 8 tasks are complete, internally consistent, safely scoped, documented, buildable, and ready to freeze before Phase 9. Same shape as P7-010 freeze gate: registry consistency check, scope safety audit, code health (build + lint + test + diff --check), dashboard source verification, no product code beyond Phase 8 scope, no Phase 9 work started. Must not implement fixes silently. | P8-004 | Freeze gate (audit-only) | `src/project/projectRegistry.ts`, `AGENT_REPORTS/latest-status.md`, `AGENT_REPORTS/latest-wdr-summary.md`, `PM_OUTBOX/next-opencode-prompt.md`, `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-005_WDR_2026-09-10.md` | All implementation work; frontend; packages (unless a corrective add is required); secrets; production; shop.com; Phase 9 | `npm run build` (root + backend), `npm run lint` (root), `npm test` (backend), `git diff --check`, targeted search for `id: "TOPLINE-P8-002"` through `id: "TOPLINE-P8-004"` in registry, targeted search for `wdr-066` through `wdr-068` (P8-002…P8-004 WDRs); **no raw token/link/secret in any WDR or log** | Registry inconsistency; scope expansion; production target; contradiction; unauthorized frontend change | Single WDR; phase-8 rollup `status: "CLOSED"`; `taskCount` matches actual `tasks[]` length | Yes |
 
-**Database/auth work separation**: P8-002 + P8-003 + P8-004 are irreversible additive migrations (schema changes). P8-005 is also additive (new `EmailVerificationToken` / `PasswordResetToken` model, or PM-allowed fold into `Session`). P8-006 is audit-only. No task removes or renames any of the 7 frozen models from Phase 4.
+**Database/auth work separation**: P8-002 + P8-003 + P8-004 are irreversible additive migrations (schema changes). P8-005 is audit-only. No task removes or renames any of the 7 frozen models from Phase 4.
 
-**Package additions** (PM-approved only): `argon2` (P8-002), `@nestjs/jwt` + `@nestjs/passport` (P8-002), `@nestjs/throttler` (P8-002/003, optional, PM-decision), `passport-jwt` (P8-002, transitive of `@nestjs/passport`).
+**Package additions** (each requires a separate PM-approved prompt, never silent): `argon2` (P8-002 or P8-003), `@nestjs/jwt` + `@nestjs/passport` (P8-002 or P8-003), `@nestjs/throttler` (optional, PM-decision). `passport-jwt` is **not** asserted as transitive to `@nestjs/passport`; that relationship must be verified from the actual `package.json` and official package documentation at the time of any future PM-approved install.
 
 ---
 
-## K. Verification Matrix
+## M. Verification Matrix (R1 §G)
+
+Every row below aligns with the corrected four future implementation tasks (P8-002, P8-003, P8-004, P8-005 freeze). **R1 does not claim any of these tests exist or pass.** R1 is a planning correction; the tests below describe the negative-security coverage the future tasks must produce and verify under their own PM-approved prompts.
 
 | Future task | Static checks | Build | Tests | Negative-security tests | Tenant-isolation tests | Migration review | Browser/E2E |
 |---|---|---|---|---|---|---|---|
-| P8-002 | `git diff --check`; no `console.log` of tokens | `npm run build` (backend), `npm run build` (root — registry should not change, but verify no broken import) | `npm test` (backend) — new auth tests; existing 12 Jest + 202 evidence scripts must still pass | Login with wrong password returns 401 with fixed message; missing `Authorization` header returns 401; expired token returns 401; revoked session's access token returns 401 | Cross-tenant call returns 403 (VENDOR_STAFF on tenant B cannot write to tenant A); same-tenant call returns 201 | Review the additive migration: only `ADD COLUMN` / `CREATE TABLE`; no `ALTER COLUMN DROP NOT NULL`; no `DROP TABLE` | n/a (backend only) |
-| P8-003 | `git diff --check`; `AuditLog.metadata` redaction test | `npm run build` (backend) | `npm test` (backend) — auth event tests; lockout tests; refresh-rotation tests | 5 failed logins lock the account for 15 min; replayed refresh token revokes the entire session; disabled user cannot log in; suspended membership cannot act within the tenant | n/a (no new tenant logic) | Review the `LoginAttempt` migration: idempotent (additive only) | n/a |
-| P8-004 | `git diff --check`; seed script idempotency | `npm run build` (backend) | `npm test` (backend) — RBAC tests; cross-tenant tests; role tests | Vendor staff cannot call `owner.*`; cross-tenant call returns 403; same-tenant vendor staff cannot write to another vendor | VENDOR_STAFF on vendor 1 cannot write to vendor 2 in the same tenant | Review the `Role`, `Permission`, `RolePermission`, `TenantMembershipRole`, `VendorMembership` migration: additive only; seed runs cleanly against the local dev DB | n/a |
-| P8-005 | `git diff --check`; rate-limit test | `npm run build` (backend) | `npm test` (backend) — register/verify/reset flow tests; rate-limit tests | Unverified user cannot log in; reset link single-use; rate limit enforced | n/a | Review the `EmailVerificationToken` / `PasswordResetToken` migration: additive only | n/a (no frontend wiring; the frontend is frozen) |
-| P8-006 | `git diff --check`; targeted registry searches | `npm run build` (root + backend), `npm run lint` (root) | `npm test` (backend) | n/a (audit) | n/a (audit) | n/a (audit) | n/a (audit) |
+| P8-002 | `git diff --check`; no console.log of tokens/secrets | `npm run build` (backend); `npm run build` (root — registry should not break imports) | `npm test` (backend) — 12/12 must still pass; 5 evidence scripts must still pass | Missing/unknown column on a frozen model is NOT added by the new migration; redaction pre-check | n/a (no new tenant logic in P8-002) | Review the additive migration: only `ADD COLUMN` / `CREATE TABLE`; no `ALTER COLUMN DROP NOT NULL`; no `DROP TABLE`; rollback documented; SQL excerpt pasted into the WDR | n/a (backend only) |
+| P8-003 | `git diff --check`; redaction test | `npm run build` (backend) | `npm test` (backend) — auth event tests; refresh-rotation tests; redaction tests | Login with wrong password returns 401 with fixed message; missing `Authorization` header returns 401; expired token returns 401; revoked session's access token returns 401; replayed refresh token revokes the entire session; `*token*`/`*secret*`/`*password*` are absent from `AuditLog.metadata`; **no raw token/link/secret in any log, audit row, or WDR** | Cross-tenant call returns 403 (no `Membership` for that tenant); body/query `tenantId` spoofing rejected with 403 (P8-003 or P8-004) | n/a (no schema change in P8-003 beyond what P8-002 added; if P8-003 adds the `Session` model, the same review applies) | n/a |
+| P8-004 | `git diff --check`; seed script idempotency | `npm run build` (backend) | `npm test` (backend) — RBAC tests; cross-tenant tests; role tests; authorization freshness tests | Vendor staff cannot call `owner.*`; cross-tenant call returns 403; same-tenant vendor staff cannot write to another vendor; body/query `tenantId` spoofing rejected; revoked-role token rejected within access-token TTL; `*token*`/`*secret*`/`*password*` are absent from `AuditLog.metadata` | VENDOR_STAFF on vendor 1 cannot write to vendor 2 in the same tenant; user without `Membership` for tenant B is rejected at the guard | Review the `Role`, `Permission`, `RolePermission`, `TenantMembershipRole`, `VendorMembership` migration: additive only; seed runs cleanly against the local dev DB | n/a |
+| P8-005 | `git diff --check`; targeted registry searches | `npm run build` (root + backend), `npm run lint` (root) | `npm test` (backend) | n/a (audit) | n/a (audit) | n/a (audit) | n/a |
 
 **Database commands require separate explicit authorization**: any `prisma migrate dev`, `prisma db push`, `prisma db seed`, `prisma migrate reset`, raw SQL, or connection to a non-local database must be in its own PM-approved task with a clear destructive-vs-additive flag.
 
 ---
 
-## L. Global Stop Conditions
+## N. Global Stop Conditions
 
 A future Phase 8 task must STOP as BLOCKED and report before edits if any of the following is true:
 
-1. **Destructive DB risk** — any task that would DROP, TRUNCATE, or `ALTER COLUMN DROP NOT NULL` on a frozen column must STOP. Phase 4 freeze gate forbids destructive migrations; Phase 8 inherits that.
+1. **Destructive DB risk** — any task that would DROP, TRUNCATE, or `ALTER COLUMN DROP NOT NULL` on a frozen column must STOP. Phase 4 freeze gate forbids destructive migrations; Phase 8 inherits that. **No local database is freely destructible.** PM must approve any destructive operation against any environment.
 2. **Production target** — any task that connects to a non-local database or that would affect a deployed environment must STOP. Phase 8 is dev-only.
 3. **Real secrets** — any task that reads `backend/.env` (not `.env.example`) or that writes a real secret to the repository must STOP. Use the placeholder values from `.env.example` and document the production secret store in a separate task.
 4. **Unresolved architecture contradiction** — if a future task's plan contradicts this document, the previous WDR, or the Phase 4 freeze gate, the task must STOP and ask PM to resolve.
-5. **Tenant uncertainty** — if a future task cannot prove (via test) that its change preserves tenant isolation, it must STOP.
+5. **Tenant uncertainty** — if a future task cannot prove (via test) that its change preserves tenant isolation (same-tenant PASS, cross-tenant 403, body/query `tenantId` spoofing rejected), it must STOP.
 6. **Scope expansion** — if a future task needs to touch a file outside its `Allowed File Families`, it must STOP and ask PM to expand the scope (or split the task).
 7. **Inability to verify** — if a future task cannot run `npm run build`, `npm test`, `git diff --check`, or its own required tests for reasons unrelated to environment, it must STOP.
 8. **Forbidden-path access** — any read/write/copy from `F:\OpenCode\shop.com` is forbidden at all times. Any task that requires it must STOP.
+9. **Raw credential in log/audit/WDR** — any task that would write a raw verification link, password reset link, access token, refresh token, `Authorization` header value, or raw credential to an application log, audit log, WDR, or test output must STOP and use a captured test-only value or in-memory fake transport instead.
 
 ---
 
-## M. Recommended Next Task
+## O. Recommended Next Task
 
-**Recommended next task: TOPLINE-P8-002 — Auth Foundation + Write-Endpoint Guard Wrapping.**
+**Recommended next task: TOPLINE-P8-002 — Auth Persistence Data Model and Migration Safety Foundation.**
 
 ### Why it is dependency-first
 P8-002 must come first because:
 1. It adds the schema columns (`User.passwordHash`, `User.emailVerified`, `AuditLog.ipAddress`, `AuditLog.userAgent`) and the `Session` model that every later Phase 8 task depends on.
-2. It introduces the `AuthGuard` global guard that protects the 4 existing write endpoints from RISK-01 (CRITICAL: unauthenticated writes today).
-3. It adds `POST /auth/login` / `/logout` / `/refresh` — the only auth surface — and the JWT issuance + refresh-token rotation that P8-003, P8-004, P8-005 all build on.
-4. It adds the `argon2` and `@nestjs/jwt` packages and the secret-loading pattern that the rest of Phase 8 reuses.
+2. It introduces the `AuthGuard` global guard that protects the 4 existing write endpoints from RISK-01 (CRITICAL: unauthenticated writes today) — P8-002 introduces the model, P8-003 wires the guard.
+3. It adds the persistence + digest pattern that P8-003 and P8-004 reuse.
+4. It establishes the migration review and rollback discipline that all later migrations inherit.
 
-P8-003, P8-004, P8-005 cannot be implemented safely without P8-002's `AuthGuard` and `Session` model in place — every test they write depends on a working login flow.
+P8-003, P8-004, P8-005 cannot be implemented safely without P8-002's schema, columns, and migration discipline in place.
 
 ### Marked unapproved
-This recommendation is **unapproved**. P8-002 has not been added to the registry. The P8-001 governance reconciliation does not register P8-002, P8-003, P8-004, P8-005, or P8-006. PM must write a separate, PM-approved prompt for P8-002 after the P8-001 audit passes. P8-001 STOPPED BEFORE TOPLINE-P8-002 per #123.
+This recommendation is **unapproved**. P8-002 has not been added to the registry. The P8-001-R1 governance reconciliation does not register P8-002, P8-003, P8-004, or P8-005. PM must write a separate, PM-approved prompt for P8-002 after the P8-001-R1 audit passes. P8-001-R1 STOPPED BEFORE TOPLINE-P8-002 per #123.
 
 ---
 
-## End of plan
+## End of plan (R1)
 
-This document is the P8-001 deliverable. The canonical registry update for P8-001 is `src/project/projectRegistry.ts`; the canonical WDR is `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001_WDR_2026-09-10.md`. The PM_OUTBOX hold notice is `PM_OUTBOX/next-opencode-prompt.md`. The two agent reports are `AGENT_REPORTS/latest-status.md` and `AGENT_REPORTS/latest-wdr-summary.md`. No other file was created or modified.
+This document is the P8-001-R1 deliverable. The canonical registry update is `src/project/projectRegistry.ts`; the canonical WDR is `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R1_WDR_2026-09-10.md`. The PM_OUTBOX R1 audit hold notice is `PM_OUTBOX/next-opencode-prompt.md`. The two agent reports are `AGENT_REPORTS/latest-status.md` and `AGENT_REPORTS/latest-wdr-summary.md`. No other file was created or modified.
+
+**R1 audit findings addressed** (one by one, per `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-AUDIT_2026-09-10.md`):
+1. Prompt budget contradiction — addressed in §A and §L (target 5, sequence P8-001…P8-005, P8-006 removed, R1 not a mega prompt).
+2. P8-002 too large — addressed in §A and §L (P8-002 is persistence/migration safety only; guards/JWT issuance/RBAC/frontend explicitly forbidden in P8-002).
+3. Security architecture presented as resolved — addressed in §F (decision matrix with options, tradeoffs, recommendations, required evidence, `PM DECISION REQUIRED`; no claims of resolution).
+4. Refresh-token transport analysis incomplete — addressed in §F (both bearer and HttpOnly cookie evaluated; `PM DECISION REQUIRED`).
+5. Verification-link logging forbidden — addressed in §G (raw token/link/secret logging explicitly forbidden; captured test-only transport pattern; redactor).
+6. Local database safety wording — addressed in §E (prior "destroyed and re-migrated freely" wording removed; destructive operations require explicit PM approval regardless of environment; future migration tasks must inspect SQL, prove additive, document rollback, stop on any production target).
+7. Authorization freshness + public-route — addressed in §F (explicit `PUBLIC` allowlist option; explicit authorization freshness decision).
+8. Evidence placeholders/count errors — addressed in §D (real test inventory: 12 Jest + 5 evidence scripts; P8-001 evidence-fill hash `894d2b36f52c3442650774b2371f035252d8834b` recorded; six allowed files recorded; starting commit `314fe82c5a0cb40e9d0d63f9da5c108a38a79f6c` already named `TOPLINE-P8-001` as next).
+9. False/ungrounded verification facts — addressed in §D and §L (`passport-jwt` transitive claim removed; test counts use real executable inventory).
+10. Scope isolation and reproducible health checks — preserved; P8-001 PASS execution remains in evidence; R1 is governance-only with no implementation.
