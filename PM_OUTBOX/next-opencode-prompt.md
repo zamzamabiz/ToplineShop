@@ -1,97 +1,32 @@
-# #MM — TOPLINE-P7-009-R1 — Frontend API Client Registry Reconciliation
+# Next OpenCode Execution Prompt
 
-You are approved to execute exactly one corrective governed task:
+## Status
 
-TOPLINE-P7-009-R1 — Frontend API Client Registry Reconciliation
+**Awaiting PM re-audit of P7-009-R1**
 
-Follow #123:
-DISCUSS → DECIDE → EXECUTE → VERIFY/AUDIT → CLOSE → NEXT
+`TOPLINE-P7-009-R1` (Frontend API Client Registry Reconciliation) is
+implemented and awaiting PM re-audit. See
+`WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-009-R1_WDR_2026-09-10.md`.
 
-Do not start TOPLINE-P7-010 or any later task.
+The P7-009 frontend API client write methods (commit `4646688`) are
+intact and pass `npm run build` + `npm run lint` 0 errors. The original
+P7-009 PM audit was BLOCKED because the canonical registry lacked the
+`id: "TOPLINE-P7-009"` task-list entry; that entry is now added.
 
-Read only these files:
-- AGENTS.md
-- docs/HAIKU_EXECUTION_PROTOCOL.md
-- src/project/projectRegistry.ts
-- WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-009_WDR_2026-09-10.md
-- WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-009-AUDIT_2026-09-10.md
-- AGENT_REPORTS/latest-status.md
-- AGENT_REPORTS/latest-wdr-summary.md
-- PM_OUTBOX/next-opencode-prompt.md
+PM/CTO action required:
+1. Re-audit P7-009 + P7-009-R1 against the actual repository.
+2. If blocked, write the next corrective prompt.
+3. If passed, close P7-009 (update `wdr-060.pmAudit` to `PASS` and the
+   P7-009 task entry's `pmApproval` to `PASS`) and write the next PM
+   prompt for the next approved governed task.
 
-Audit finding to correct:
+## Instructions for OpenCode
 
-P7-009 frontend API client implementation evidence passes, but PM audit is BLOCKED because src/project/projectRegistry.ts does not contain the required task-list entry:
+1. Wait for PM to replace this section with the next approved PM prompt.
+2. Do not execute any prompt that has not been PM-approved.
+3. Do not infer approval for any later task.
+4. Do not start `TOPLINE-P7-010` or later without explicit PM approval.
 
-id: "TOPLINE-P7-009"
+## PM Prompt
 
-The registry currently has root summary fields and wdr-060 for P7-009, but the actual TOPLINE-P7-009 task entry is missing. The WDR claimed it was added, but the repository does not contain it.
-
-Required correction:
-
-1. Add the missing TOPLINE-P7-009 task entry in src/project/projectRegistry.ts in the correct Phase 7 task-list position after TOPLINE-P7-008.
-
-2. The entry must accurately describe:
-   - title: Frontend API Client Write Methods
-   - status: PASS
-   - tests: PASS
-   - build: PASS
-   - ownerApproval: PLANNED
-   - pmApproval: PLANNED
-   - commitHash: 4646688
-   - wdrPath: WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-009_WDR_2026-09-10.md
-   - notes: mention Create*Request types, createTenant/createVendor/createCategory/createProduct, existing GET methods preserved, PATCH/DELETE deferred, build/lint passing, and no backend files modified.
-
-3. Make root summary fields consistent:
-   - currentTask: null
-   - lastCompletedTask: TOPLINE-P7-009
-   - nextPlannedTask: TOPLINE-P7-010
-
-4. Keep wdr-060 present and consistent for TOPLINE-P7-009.
-
-5. Update:
-   - AGENT_REPORTS/latest-status.md
-   - AGENT_REPORTS/latest-wdr-summary.md
-   - PM_OUTBOX/next-opencode-prompt.md
-
-6. Write corrected WDR:
-   WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-009-R1_WDR_2026-09-10.md
-
-Strict out of scope:
-
-- Do not change frontend API client implementation unless verification exposes a real break.
-- Do not modify backend files.
-- Do not modify frontend pages/components.
-- Do not start TOPLINE-P7-010.
-- Do not implement Phase 7 Freeze Gate.
-- Do not add packages.
-- Do not modify migrations, auth/RBAC, payment, settlement, infrastructure, deployment, secrets, or business behavior.
-- Do not touch F:\OpenCode\shop.com.
-
-Verification required:
-
-Run and report:
-- npm run build from project root
-- npm run lint from project root
-- git diff --check
-- git status --short --untracked-files=all
-- targeted search proving id: "TOPLINE-P7-009" exists in src/project/projectRegistry.ts
-
-Git rules:
-
-- Preserve unrelated user changes.
-- Never use git add .
-- Never use git add -A
-- Never use git add --all
-- Stage exact files only.
-- Commit the correction and report the exact commit hash.
-
-Final response format:
-
-TASK:
-STATUS:
-WDR:
-COMMIT:
-FILES CHANGED:
-VERIFICATION:
-STOPPED BEFORE NEXT TASK: YES
+<!-- PM: Write your next execution prompt below this line -->

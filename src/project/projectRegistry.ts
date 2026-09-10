@@ -144,8 +144,8 @@ export const projectRegistry: ProjectRegistry = {
   protocol: "#123",
   currentPhase: "Phase 7",
   currentTask: null,
-  lastCompletedTask: "TOPLINE-P7-008",
-  nextPlannedTask: "TOPLINE-P7-009-R1",
+  lastCompletedTask: "TOPLINE-P7-009",
+  nextPlannedTask: "TOPLINE-P7-010",
   overallCompletion: 83,
   lastUpdated: new Date().toISOString(),
   phases: [
@@ -1405,6 +1405,25 @@ export const projectRegistry: ProjectRegistry = {
       notes: "P7-008 approved through P7-008-R1 audit: Jest testing foundation, reusable Prisma mock (createPrismaMock), service test harness (createServiceTestHarness), proof spec (test.utils.spec.ts), 12/12 Jest tests pass, existing evidence scripts preserved, npm run build PASS, git diff --check PASS; missing task-list registry entry corrected by P7-008-R1.",
       commitHash: "2197d84",
     },
+    {
+      id: "TOPLINE-P7-009",
+      phase: "phase-7",
+      title: "Frontend API Client Write Methods",
+      objective:
+        "Add frontend API client write support and typed request contracts for the Phase 7 backend write endpoints — createTenant/createVendor/createCategory/createProduct — while preserving all existing read methods and frontend screens",
+      status: "PASS",
+      priority: "MEDIUM",
+      dependencies: ["TOPLINE-P7-008"],
+      startedAt: new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      wdrPath: "WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-009_WDR_2026-09-10.md",
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "P7-009 frontend API client write methods: src/types/api.ts gained 5 enum-like literal union types (TenantType, TenantStatus, VendorStatus, CategoryStatus, ProductStatus) and 4 request interfaces (CreateTenantRequest, CreateVendorRequest, CreateCategoryRequest, CreateProductRequest) mirroring each backend Create*Dto field-for-field; src/lib/api-client.ts gained a generic postApi<TRequest, TResponse>(endpoint, data) helper (same ApiResponse/ApiError handling style as fetchApi) and 4 client methods (createTenant, createVendor, createCategory, createProduct) targeting the existing backend POST /tenants, POST /vendors, POST /categories, POST /products routes; all 11 existing GET methods (getRoot, getHealth, getVersion, getTenants, getTenant, getVendors, getVendor, getCategories, getCategory, getProducts, getProduct) and the fetchApi + buildQueryString helpers preserved byte-identical; PATCH/DELETE client methods explicitly deferred (no matching backend endpoints exist in any of the four controllers); zero backend files modified; zero frontend pages/components modified; npm run build PASS (all 24 routes compiled); npm run lint PASS (0 errors, 5 pre-existing <img> warnings in unrelated files); git diff --check PASS. Task-list entry added by P7-009-R1 corrective reconciliation after PM audit found the entry missing despite WDR claim.",
+      commitHash: "4646688",
+    },
   ],
   modules: [
     {
@@ -2301,6 +2320,15 @@ export const projectRegistry: ProjectRegistry = {
       date: "2026-09-10",
       commitHash: "4646688",
       pmAudit: "BLOCKED",
+    },
+    {
+      id: "wdr-061",
+      taskId: "TOPLINE-P7-009-R1",
+      phase: "phase-7",
+      status: "PASS",
+      date: "2026-09-10",
+      commitHash: "<R1_HASH>",
+      pmAudit: "PLANNED",
     },
   ],
   git: {
