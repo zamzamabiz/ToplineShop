@@ -1,38 +1,30 @@
 # Latest WDR Summary
 
-## Current WDR
+## Current Audit
 
-**TOPLINE-P8-001-R1** - Phase 8 Readiness Plan Security and Governance Reconciliation
+**TOPLINE-P8-001-R1** - Phase 8 Readiness Plan Security and Governance
+Reconciliation
 
-- Execution: PASS (planning/governance only)
-- PM audit: PLANNED (pending PM audit)
+- Execution: PASS (planning-only)
+- PM audit: BLOCKED
 - Implementation commit: `42cc6ac63e375a1adb82f692f3885fd8b29a55ad`
-- Evidence-fill commit: reported in #MM final handoff
+- Evidence-fill commit: `343798502c41cf51a05748371b8fc1b4336d9bfd`
 - WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R1_WDR_2026-09-10.md`
-- R1 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md`
-
-## R1 Summary
-
-Scope isolation and verification passed for the R1 corrective plan
-revision. P8-001 audit findings addressed one by one in the revised
-plan: prompt budget reconciled to 5; P8-002 bounded to
-persistence/migration safety; P8-003, P8-004, P8-005 freeze bounded
-explicitly; raw verification/reset-link logging guidance removed;
-local-DB safety wording corrected; refresh-token transport/digest,
-authorization freshness, public-route allowlist, tenant spoof
-protection, and credential bootstrap moved into a PM decision matrix
-without resolution claims; test inventory corrected to 12 Jest + 5
-evidence scripts; `passport-jwt` transitive claim removed; six-file
-scope recorded; starting commit and P8-001 evidence-fill hash
-recorded. No Phase 8 implementation.
+- Audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R1-AUDIT_2026-09-11.md`
 
 ## Block Summary
 
-**P8-001 and wdr-065 remain BLOCKED** until P8-001-R1 audit passes.
-Phase 8 remains BLOCKED. P8-002 is **proposed but unapproved**.
+R1 is scope-safe and preserves its successful security corrections. R2 must
+perform final contract alignment: remove deferred identity flows and
+`emailVerified` from Phase 8 core, assign all auth persistence to P8-002,
+make P8-003 schema-free, remove the P8-002 AuthGuard contradiction, correct
+the five-prompt count and DB-risk language, and repair evidence path/status.
 
 ## Next WDR
 
-The next WDR will be `wdr-067` (or later) after PM writes a separate
-PM-approved prompt for the next task. No `wdr-067` exists yet.
-`TOPLINE-P8-001-R1` STOPPED BEFORE `TOPLINE-P8-002`.
+Reserved entry: `wdr-067`
+
+Expected path:
+`WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R2_WDR_2026-09-11.md`
+
+R2 is the only approved next task. It must stop before P8-002.

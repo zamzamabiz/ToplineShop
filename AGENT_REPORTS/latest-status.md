@@ -2,63 +2,44 @@
 
 ## Current Status
 
-**TOPLINE-P8-001-R1 execution: PASS — PM audit pending**
+**TOPLINE-P8-001-R1 BLOCKED - narrow R2 correction approved**
 
-## R1 Task
+## Audited Task
 
-**TOPLINE-P8-001-R1** - Phase 8 Readiness Plan Security and Governance Reconciliation
+**TOPLINE-P8-001-R1** - Phase 8 Readiness Plan Security and Governance
+Reconciliation
 
-- Execution status: PASS (planning/governance only)
-- PM audit: PLANNED (pending PM audit)
+- Execution: PASS (planning/governance only)
+- PM audit: BLOCKED
 - Implementation commit: `42cc6ac63e375a1adb82f692f3885fd8b29a55ad`
-- Evidence-fill commit: reported in #MM final handoff
-- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R1_WDR_2026-09-10.md`
-- R1 corrected the P8-001 readiness plan against the PM audit:
-  prompt budget reconciled to 5; P8-006 removed; P8-002 bounded to
-  persistence/migration safety; refresh-token transport and digest,
-  authorization freshness, public-route allowlist, tenant-spoof
-  protection, and credential bootstrap moved into a PM decision
-  matrix; raw verification/reset-link logging guidance removed;
-  local-DB "destroyed freely" wording removed; test inventory
-  corrected to 12 Jest + 5 evidence scripts; `passport-jwt`
-  transitive claim removed; six-file scope recorded; starting commit
-  `314fe82c5a0cb40e9d0d63f9da5c108a38a79f6c` already named P8-001 as
-  next; P8-001 evidence-fill hash `894d2b36f52c3442650774b2371f035252d8834b`
-  recorded. No Phase 8 implementation.
+- Evidence-fill commit: `343798502c41cf51a05748371b8fc1b4336d9bfd`
+- Audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R1-AUDIT_2026-09-11.md`
 
-## P8-001 (audited)
+R1 resolved most original findings, but future-task contracts remain mixed:
+deferred identity flows still appear in Phase 8 scope, P8-002 is both
+guard-free and described as introducing AuthGuard, Session persistence leaks
+into P8-003, P8-005 is double-counted, and DB/evidence wording is inaccurate.
 
-- Implementation status: PASS (planning-only)
-- PM audit: BLOCKED — remains BLOCKED until P8-001-R1 audit passes
-- Implementation commit: `82361970c15181c8a19bc1249f3a525bac4ad9cd`
-- Evidence-fill commit: `894d2b36f52c3442650774b2371f035252d8834b`
-- PM audit commit: `c2282eb5c7cf2c51388e7e538f8a6e61f12bd25c`
-- Audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-AUDIT_2026-09-10.md`
+## Next Approved Task
 
-## Next Task (proposed, unapproved)
+**TOPLINE-P8-001-R2** - Phase 8 Readiness Plan Final Contract Alignment
 
-**TOPLINE-P8-002** - Auth Persistence Data Model and Migration Safety Foundation
-
-P8-002 is **proposed but unapproved**. P8-002 has not been registered.
-PM must write a separate, PM-approved prompt for P8-002 after the
-P8-001-R1 audit passes. P8-001-R1 STOPPED BEFORE TOPLINE-P8-002 per #123.
+Documentation/governance only. No P8-002 or Phase 8 implementation.
+R2 and reserved `wdr-067` are pre-registered in the canonical registry.
 
 ## Phase 8 State
 
-- Status: BLOCKED pending P8-001-R1 PM audit
+- Status: BLOCKED
 - Progress: 20
-- Mega-prompt target: 5
-- Mega prompts completed: 1 (R1 is corrective and does not increment)
-- Registered tasks: 2
-- Completed implementation-agent tasks: 2
-- All implementation/owner gates remain unpassed
-- currentTask: null
+- Mega-prompt target/completed: 5/1
+- Registered/completed tasks: 3/2
+- All implementation and owner gates remain unpassed
 
 ## Preserved Unrelated Changes
 
-- `WDR/_All/Governance/TOPLINE-GOV-AUTO-001_WDR_2026-09-08.md` (preserved unrelated — never staged by R1)
-- `.claude/` (git-ignored, never tracked)
+- `WDR/_All/Governance/TOPLINE-GOV-AUTO-001_WDR_2026-09-08.md` (modified, unstaged)
+- `.claude/` (untracked)
 
 ## Last Updated
 
-2026-09-10
+2026-09-11
