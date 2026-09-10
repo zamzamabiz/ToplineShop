@@ -2,60 +2,40 @@
 
 ## Current Status
 
-**TOPLINE-P7-010 implementation complete — awaiting PM audit**
+**TOPLINE-P7-010 blocked — dashboard rollup reconciliation required**
 
 ## Last Completed Governed Task
 
-**TOPLINE-P7-010** — Phase 7 Freeze Gate
-**Status**: PASS — pending PM audit
-**Date**: 2026-09-10
-**Implementation Commit**: `feea2bf`
-
-## Previous Task Closed
-
-**TOPLINE-P7-009-R1** — Frontend API Client Registry Reconciliation
+**TOPLINE-P7-009** — Frontend API Client Write Methods
 **Status**: PASS / CLOSED
 **Date**: 2026-09-10
-**Correction Commit**: `64a97af`
+**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-009-R1-AUDIT_2026-09-10.md`
+
+## Current Audit Result
+
+**TOPLINE-P7-010** — Phase 7 Freeze Gate
+**Status**: BLOCKED — registry phase rollup reconciliation required
+**Date**: 2026-09-10
+**Governance Commit**: `feea2bf`
+**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-010-AUDIT_2026-09-10.md`
 
 ## Next Planned Task
 
-**Phase 8 — DB / Auth / RBAC (PM to define first task)**
+**TOPLINE-P7-010-R1** — Phase 7 Freeze Gate Dashboard Rollup Reconciliation
 
 ## Summary
 
-P7-010 is the Phase 7 Freeze Gate audit. It verifies all 16 Phase 7
-task entries (P7-001 through P7-009, plus 7 corrective R-tasks) and
-16 wdr- entries (wdr-046 through wdr-061) are present in
-`src/project/projectRegistry.ts` with internally consistent root
-summary fields. The effective closing audit for every multi-iteration
-task chain is the final R-task, which is `pmAudit: "PASS"`.
+P7-010 freeze-gate verification evidence passes, but the Phase 7 rollup in
+`src/project/projectRegistry.ts` is stale. The `/project-management` Phase
+Timeline reads this rollup directly, so it still shows Phase 7 as in progress
+instead of frozen.
 
-Scope safety verified across all 11 governed task WDRs:
-- No auth/RBAC, no payment/settlement, no migrations, no destructive
-  database operations, no infrastructure/deployment, no secrets, no
-  `F:\OpenCode\shop.com` involvement, no unauthorized frontend UI
-  changes.
-
-Code health verified:
-- `npm run build` (project root): PASS — all 24 routes
-- `npm run lint`: PASS — 0 errors, 5 pre-existing `<img>` warnings
-  in files not touched by Phase 7
-- `npm run build` (backend): PASS
-- `npm test` (backend): PASS — 12/12 Jest tests, all 4 existing
-  `scripts/test-*-create.js` evidence scripts preserved at
-  30+33+57+82 = 202 tests
-- `git diff --check`: PASS
-
-Allowed-changes-only: governance/report/registry updates + freeze-gate
-WDR. No product implementation changes. No Phase 8 work.
-
-Phase 7 is **FROZEN** and ready to hand off to Phase 8 (DB / Auth /
-RBAC) PM planning.
+The correction must update the `phase-7` rollup only; no product
+implementation work is required.
 
 ## Next PM Prompt Source
 
-`PM_OUTBOX/next-opencode-prompt.md` (reset to awaiting PM audit)
+`PM_OUTBOX/next-opencode-prompt.md` (TOPLINE-P7-010-R1 correction prompt)
 
 ## Last Updated
 
