@@ -1,54 +1,48 @@
 # Latest WDR Summary
 
-## Current Audit
+## Current WDR
+
+**TOPLINE-P7-008-R1** — Testing Foundation Registry Reconciliation
+**Status**: PASS — awaiting PM re-audit
+**Date**: 2026-09-10
+**Registry Reconciliation Commit**: `<R1_HASH>`
+**PM Audit**: pending
+
+## Previous WDR (BLOCKED — now reconciled by R1)
 
 **TOPLINE-P7-008** — Testing Foundation
-**Status**: BLOCKED
+**Status**: implementation PASS — registry reconciled by P7-008-R1
 **Date**: 2026-09-10
 **Implementation Commit**: `2197d84`
-**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-008-AUDIT_2026-09-10.md`
-
-## Previous WDR Approved
-
-**TOPLINE-P7-007** — Product Write API
-**Status**: PASS / CLOSED
-**Date**: 2026-09-10
-**Implementation Commit**: `9b3ec1e`
-**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-007-AUDIT_2026-09-10.md`
+**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-008-AUDIT_2026-09-10.md` (BLOCKED, awaiting re-audit after R1)
 
 ## Summary
 
-TOPLINE-P7-008 establishes the backend testing foundation:
-- `backend/jest.config.js` (new) — Jest configuration: ts-jest preset,
-  Node test env, src/ root, dist/node_modules excluded, deterministic
-  ordering.
-- `backend/package.json` — added `"test": "jest"` script + 4 devDeps
-  (`jest@29`, `ts-jest`, `@types/jest`, `@nestjs/testing`). No production
-  runtime dep added.
-- `backend/src/testing/test.utils.ts` (new) — `createPrismaMock(seed?)`
-  factory with first-class call tracking for tenant/vendor/category/
-  product, `findUnique` by id or slug, `findFirst` by composite
-  `(tenantId, slug)`, `create` with auto-increment id and `createdAt`.
-  Replaces the four duplicated `createMockPrisma()` blocks in
-  `backend/scripts/test-*-create.js`.
-- `backend/src/testing/test.module.ts` (new) —
-  `createServiceTestHarness<T>(ServiceClass, seed?)` returns
-  `{ module, service, prisma, reset, close }` and wires the real service
-  via real NestJS DI with a mocked `PrismaService`.
-- `backend/src/testing/test.utils.spec.ts` (new) — 12 Jest tests proving
-  both halves of the foundation work end-to-end against the real
-  `TenantsService` via real NestJS DI and the real
-  `@nestjs/common` exception classes.
+TOPLINE-P7-008-R1 is a corrective governed task that resolves the BLOCKED
+state of the original P7-008 PM audit. The P7-008 backend testing
+foundation was correctly implemented but the canonical registry was
+inconsistent — the WDR claimed a `TOPLINE-P7-008` task-list entry was
+added, but the actual repository did not contain it.
 
-Verification: 12/12 Jest tests pass; 4 existing `test-*-create.js`
-evidence scripts preserved and still pass (30+33+57+82 = 202 tests);
-`npm run build` PASS; `git diff --check` PASS. No production source file
-was modified.
+The R1 correction:
+- Added the missing `TOPLINE-P7-008` task entry in the correct Phase 7
+  task-list position with `status: "PASS"`, `tests: "PASS"`,
+  `build: "PASS"`, `pmApproval: "PLANNED"`, `commitHash: "2197d84"`,
+  and the canonical `wdrPath` and `notes` describing the Jest
+  foundation, `createPrismaMock` factory, `createServiceTestHarness`,
+  12/12 proof spec, and preserved evidence scripts.
+- Restored root summary fields to
+  `lastCompletedTask: "TOPLINE-P7-008"` /
+  `nextPlannedTask: "TOPLINE-P7-009"`.
+- Kept `wdr-058` present and consistent (PM audit `BLOCKED` per the
+  original audit; re-audit pending after R1).
+- Added `wdr-059` for the R1 corrective WDR (`pmAudit: "PLANNED"`).
+- Did NOT modify the backend testing implementation, any production
+  source file, frontend, auth/RBAC, payment, migration, infrastructure,
+  or business behavior.
+- Did NOT touch `F:\OpenCode\shop.com`.
+- Did NOT start P7-009.
 
-P7-008 backend implementation evidence passes, but PM audit is blocked because
-`src/project/projectRegistry.ts` does not contain the required
-`TOPLINE-P7-008` task entry in the task list. Root summary fields and `wdr-058`
-exist, but the canonical task entry is missing.
-
-Next planned task: `TOPLINE-P7-008-R1 — Testing Foundation Registry Reconciliation`.
-Do not execute P7-009 without PM approval.
+P7-008-R1 implementation complete, awaiting PM re-audit. Once PM re-audit
+passes, the next planned task is `TOPLINE-P7-009 — Frontend API Client
+Write Methods`. Do not execute it without PM approval.

@@ -2,66 +2,53 @@
 
 ## Current Status
 
-**TOPLINE-P7-008 blocked — registry reconciliation required**
+**TOPLINE-P7-008-R1 corrective reconciliation complete — awaiting PM re-audit**
 
 ## Last Completed Governed Task
 
-**TOPLINE-P7-007** — Product Write API
-**Status**: PASS / CLOSED
-**Date**: 2026-09-10
-**Implementation Commit**: `9b3ec1e`
-**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-007-AUDIT_2026-09-10.md`
-
-## Current Audit Result
-
 **TOPLINE-P7-008** — Testing Foundation
-**Status**: BLOCKED — governance reconciliation required
+**Status**: implementation PASS — registry reconciled by P7-008-R1
 **Date**: 2026-09-10
 **Implementation Commit**: `2197d84`
-**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-008-AUDIT_2026-09-10.md`
+**Registry Reconciliation Commit (P7-008-R1)**: `<R1_HASH>`
+**Original PM Audit (BLOCKED on missing registry entry)**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-008-AUDIT_2026-09-10.md`
+
+## Just Completed (Pending PM Re-audit)
+
+**TOPLINE-P7-008-R1** — Testing Foundation Registry Reconciliation
+**Status**: PASS — awaiting PM re-audit
+**Date**: 2026-09-10
 
 ## Next Planned Task
 
-**TOPLINE-P7-008-R1** — Testing Foundation Registry Reconciliation
+**TOPLINE-P7-009** — Frontend API Client Write Methods
 
 ## Summary
 
-P7-008 establishes the testing foundation in the planned `backend/src/testing/`
-area. Dev-dependency additions: `jest@29`, `ts-jest`, `@types/jest`,
-`@nestjs/testing`. New `npm test` script. New `backend/jest.config.js`
-(ts-jest preset, src/ root, dist/node_modules excluded, deterministic
-ordering).
+P7-008-R1 is a corrective governed task that resolves the BLOCKED state of the
+original P7-008 PM audit. The P7-008 backend testing foundation (Jest
+configuration, `createPrismaMock` factory, `createServiceTestHarness`,
+12/12 proof test) was correctly implemented in commit `2197d84`, but the
+governance evidence was internally inconsistent: `src/project/projectRegistry.ts`
+had root summary fields referencing P7-008 and a `wdr-058` entry, but it
+did not contain the `id: "TOPLINE-P7-008"` task-list entry itself.
 
-Two reusable utilities:
-1. `backend/src/testing/test.utils.ts` — `createPrismaMock()` factory with
-   call tracking for tenant/vendor/category/product, `findUnique` by id or
-   slug, `findFirst` by composite `(tenantId, slug)`, `create` with
-   auto-increment id and `createdAt`. Replaces the four duplicated
-   `createMockPrisma()` blocks in `backend/scripts/test-*-create.js`.
-2. `backend/src/testing/test.module.ts` — `createServiceTestHarness()`
-   using `@nestjs/testing`'s `Test.createTestingModule` to wire the real
-   service via real NestJS DI with a mocked `PrismaService`. Includes
-   `reset()` (clears call logs) and `close()` (releases the module).
-
-Proof test `backend/src/testing/test.utils.spec.ts` exercises both halves
-end-to-end against the real `TenantsService` — 12 Jest tests covering
-mock seed/find/create/call-tracking, NestJS DI wiring, real
-`ConflictException`/`NotFoundException` paths, and `harness.reset()`
-clearing. **12/12 Jest tests pass**.
-
-Existing `backend/scripts/test-*-create.js` evidence scripts preserved
-and still pass (30+33+57+82 = 202 tests). `npm run build` PASS,
-`git diff --check` PASS. No production source file outside
-`backend/src/testing/**` was modified.
-
-PM audit finding: the backend evidence passes, but the canonical registry is
-missing a `TOPLINE-P7-008` task entry in the task list. The WDR claims the
-entry was added, but only root summary fields and `wdr-058` exist. P7-008
-cannot be closed until the registry is reconciled.
+The P7-008-R1 correction:
+- Added the missing `TOPLINE-P7-008` task entry to `projectRegistry.ts` in
+  the correct Phase 7 task-list position after `TOPLINE-P7-007`.
+- Restored root summary fields to
+  `lastCompletedTask: "TOPLINE-P7-008"`, `nextPlannedTask: "TOPLINE-P7-009"`.
+- Kept `wdr-058` (PM audit `BLOCKED`) present and consistent.
+- Added `wdr-059` for the R1 corrective WDR (`pmAudit: "PLANNED"` pending
+  PM re-audit).
+- Did NOT modify the backend testing implementation (it already passed
+  `npm run build` and `npm test` 12/12 in the original audit).
+- Did NOT modify any frontend, auth, payment, migration, infrastructure,
+  or business behavior.
 
 ## Next PM Prompt Source
 
-`PM_OUTBOX/next-opencode-prompt.md` (TOPLINE-P7-008-R1 correction prompt)
+`PM_OUTBOX/next-opencode-prompt.md` (reset to awaiting PM re-audit)
 
 ## Last Updated
 

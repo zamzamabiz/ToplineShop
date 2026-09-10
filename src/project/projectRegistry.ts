@@ -144,8 +144,8 @@ export const projectRegistry: ProjectRegistry = {
   protocol: "#123",
   currentPhase: "Phase 7",
   currentTask: null,
-  lastCompletedTask: "TOPLINE-P7-007",
-  nextPlannedTask: "TOPLINE-P7-008-R1",
+  lastCompletedTask: "TOPLINE-P7-008",
+  nextPlannedTask: "TOPLINE-P7-009",
   overallCompletion: 83,
   lastUpdated: new Date().toISOString(),
   phases: [
@@ -1386,6 +1386,25 @@ export const projectRegistry: ProjectRegistry = {
       notes: "P7-007 approved: POST /products with CreateProductDto validation, tenant + vendor + category existence and same-tenant relationship safety, composite (tenantId, slug) duplicate check, Decimal(19,4) basePrice + ISO 4217 currency + inStock handling, real-service tests against real compiled ProductsService with call-tracking Prisma mock; 82/82 tests pass.",
       commitHash: "9b3ec1e",
     },
+    {
+      id: "TOPLINE-P7-008",
+      phase: "phase-7",
+      title: "Testing Foundation",
+      objective:
+        "Establish reusable Jest-based backend test infrastructure — Jest config, npm test script, call-tracking Prisma mock factory (test.utils.ts), NestJS service test harness (test.module.ts), and a real proof test exercising both halves against the real TenantsService",
+      status: "PASS",
+      priority: "MEDIUM",
+      dependencies: ["TOPLINE-P7-007"],
+      startedAt: new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      wdrPath: "WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-008_WDR_2026-09-10.md",
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "P7-008 backend testing foundation: jest@29 + ts-jest + @types/jest + @nestjs/testing as devDependencies; jest.config.js (ts-jest preset, src/ root, dist/node_modules excluded, deterministic); backend/src/testing/test.utils.ts (createPrismaMock with call tracking for tenant/vendor/category/product, findUnique by id/slug, findFirst by composite (tenantId, slug), create with auto-id and createdAt — replaces the four duplicated createMockPrisma blocks in backend/scripts/test-*-create.js); backend/src/testing/test.module.ts (createServiceTestHarness wiring real service via @nestjs/testing Test.createTestingModule with mocked PrismaService, includes reset() and close()); backend/src/testing/test.utils.spec.ts (12 Jest tests proving both halves of the foundation work end-to-end against the real TenantsService — 7 mock unit cases + 5 service-via-NestJS-DI cases including real @nestjs/common ConflictException/NotFoundException paths); 12/12 Jest tests pass; the four existing scripts/test-*-create.js evidence scripts preserved and still pass (30+33+57+82=202 tests); npm run build PASS; git diff --check PASS; no production source file modified. Task-list entry added by P7-008-R1 corrective reconciliation after PM audit found the entry missing despite WDR claim.",
+      commitHash: "2197d84",
+    },
   ],
   modules: [
     {
@@ -2264,6 +2283,15 @@ export const projectRegistry: ProjectRegistry = {
       date: "2026-09-10",
       commitHash: "2197d84",
       pmAudit: "BLOCKED",
+    },
+    {
+      id: "wdr-059",
+      taskId: "TOPLINE-P7-008-R1",
+      phase: "phase-7",
+      status: "PASS",
+      date: "2026-09-10",
+      commitHash: "<R1_HASH>",
+      pmAudit: "PLANNED",
     },
   ],
   git: {
