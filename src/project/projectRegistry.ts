@@ -144,8 +144,8 @@ export const projectRegistry: ProjectRegistry = {
   protocol: "#123",
   currentPhase: "Phase 7",
   currentTask: null,
-  lastCompletedTask: "TOPLINE-P7-009",
-  nextPlannedTask: "TOPLINE-P7-010",
+  lastCompletedTask: "TOPLINE-P7-010",
+  nextPlannedTask: "Phase 8 — DB/Auth/RBAC (PM to define first task)",
   overallCompletion: 83,
   lastUpdated: new Date().toISOString(),
   phases: [
@@ -1424,6 +1424,25 @@ export const projectRegistry: ProjectRegistry = {
       notes: "P7-009 approved through P7-009-R1 audit: Create*Request types added, createTenant/createVendor/createCategory/createProduct added for existing POST endpoints, all GET methods preserved, PATCH/DELETE deferred, npm run build PASS, npm run lint PASS with only pre-existing warnings, no backend files modified; missing task-list registry entry corrected by P7-009-R1.",
       commitHash: "4646688",
     },
+    {
+      id: "TOPLINE-P7-010",
+      phase: "phase-7",
+      title: "Phase 7 Freeze Gate",
+      objective:
+        "Perform the Phase 7 Freeze Gate audit — verify all Phase 7 tasks P7-001 through P7-009 (including corrective R-tasks) are complete, internally consistent, safely scoped, documented, buildable, and ready to freeze before Phase 8 (DB / Auth / RBAC)",
+      status: "PASS",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P7-009"],
+      startedAt: new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      wdrPath: "WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-010_WDR_2026-09-10.md",
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "P7-010 Phase 7 Freeze Gate audit complete, awaiting PM audit. Verified all 16 Phase 7 task entries (P7-001..P7-009 + 7 R-corrections: P7-002-R1, P7-003-R1, P7-003-R2, P7-004-R1, P7-004-R2, P7-008-R1, P7-009-R1) and 16 wdr- entries (wdr-046..wdr-061) are present in the registry with internally consistent root summary fields; the effective closing audit for every multi-iteration task chain (P7-003, P7-004) is the final R-task (R2) which is PASS; scope safety verified across all 11 governed task WDRs (no auth/RBAC, no payment/settlement, no migrations, no destructive DB ops, no infrastructure/deployment, no secrets, no shop.com, no unauthorized frontend UI changes); code health verified: npm run build (project root) PASS (all 24 routes), npm run lint PASS (0 errors, 5 pre-existing <img> warnings in files not touched by Phase 7), npm run build (backend) PASS, npm test (backend) PASS (12/12 Jest tests, all 4 existing scripts/test-*-create.js evidence scripts preserved at 30+33+57+82=202 tests); git diff --check PASS. Allowed-changes-only: governance/report/registry updates, freeze-gate WDR. No product implementation changes. No Phase 8 work. FROZEN — phase-7 is ready to hand off to Phase 8 (DB / Auth / RBAC) PM planning.",
+      commitHash: "<P7-010_HASH>",
+    },
   ],
   modules: [
     {
@@ -2330,10 +2349,19 @@ export const projectRegistry: ProjectRegistry = {
       commitHash: "64a97af",
       pmAudit: "PASS",
     },
+    {
+      id: "wdr-062",
+      taskId: "TOPLINE-P7-010",
+      phase: "phase-7",
+      status: "PASS",
+      date: "2026-09-10",
+      commitHash: "<P7-010_HASH>",
+      pmAudit: "PLANNED",
+    },
   ],
   git: {
     initialized: true,
-    lastCommit: "4646688",
+    lastCommit: "<P7-010_HASH>",
   },
   github: {
     configured: true,
