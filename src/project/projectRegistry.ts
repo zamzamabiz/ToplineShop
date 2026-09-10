@@ -2417,7 +2417,7 @@ export const projectRegistry: ProjectRegistry = {
   ],
   git: {
     initialized: true,
-    lastCommit: "<P7-010-R2_AUDIT_HASH>",
+    lastCommit: "5db00764923fc616e7229bd1abb92bb20414caff",
   },
   github: {
     configured: true,
