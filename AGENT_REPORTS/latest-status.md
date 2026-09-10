@@ -2,19 +2,20 @@
 
 ## Current Status
 
-**TOPLINE-P8-001-R6 execution: PASS — PM audit pending**
+**TOPLINE-P8-001-R6 execution: PASS — PM audit BLOCKED**
 
 ## R6 Task
 
 **TOPLINE-P8-001-R6** - Phase 8 Package Ownership and Residual State Cleanup
 
 - Execution status: PASS (planning/governance only)
-- PM audit: PLANNED (pending PM audit)
+- PM audit: BLOCKED
 - Implementation commit: `1f6c3f9f56fc6bfb91cde9564706e0e35808a0cb`
-- Evidence-fill commit: reported in #MM final handoff
+- Evidence-fill commit: `ab864dc073b244bc24415bb67f8777ceb7504662`
 - WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6_WDR_2026-09-11.md`
 - R5 WDR (immutable, with R5 overclaims recorded in R6): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5_WDR_2026-09-11.md`
 - R5 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5-AUDIT_2026-09-11.md`
+- R6 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6-AUDIT_2026-09-11.md`
 - R6 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md`
 
 R6 addressed all 6 R5 audit findings:
@@ -38,10 +39,12 @@ R6 addressed all 6 R5 audit findings:
 - R5 WDR/report overclaims recorded as historical R5
   inaccuracies in this R6 WDR and in the latest reports.
   The R5 WDR remains immutable and is not rewritten.
-- Final status evidence accurately reported: both the
-  modified governance WDR and untracked
-  `.claude/settings.local.json` are present at the end of
-  R5 (and at the end of R6).
+- R6 status evidence is BLOCKED: the modified governance WDR
+  is visible in ordinary status output, while
+  `.claude/settings.local.json` exists but is globally ignored
+  and is visible only when ignored files are requested. R6's
+  claim that it is ordinary untracked and not git-ignored is
+  inaccurate.
 - Valid R5 corrections preserved: Session belongs to
   P8-002 only; RBAC persistence and RBAC guards belong to
   P8-004 only; P8-003 is schema-free and owns
@@ -77,22 +80,21 @@ R6 addressed all 6 R5 audit findings:
 - P8-001-R5 PM audit commit: `5793f29b937197bbf1223185444e28c8b76658c5`
 - P8-001-R5 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5-AUDIT_2026-09-11.md`
 
-## Next Task (proposed, unapproved)
+## Next Task (corrective, planned)
 
-**TOPLINE-P8-002** - Auth Persistence Data Model and Migration Safety Foundation
+**TOPLINE-P8-001-R7** - Phase 8 Evidence Status Reconciliation
 
-P8-002 is **proposed but unapproved**. P8-002 has not been
-registered. PM must write a separate, PM-approved prompt for
-P8-002 only after the full P8-001 / R1 / R2 / R3 / R4 / R5
-/ R6 corrective chain has been audited and PASSED by PM.
-P8-001-R6 STOPPED BEFORE TOPLINE-P8-002 per #123.
+R7 is a documentation/governance-only correction for the
+ignored-file status evidence. It must preserve the valid R6
+plan corrections and stop before P8-002. P8-002 remains
+proposed, unregistered, and unapproved.
 
 ## Phase 8 State
 
-- Status: BLOCKED pending P8-001-R6 PM audit
+- Status: BLOCKED pending P8-001-R7 completion and PM audit
 - Progress: 20
 - Mega-prompt target/completed: 5/1 (R1, R2, R3, R4, R5, R6 are correctives and do not increment)
-- Registered tasks: 7
+- Registered tasks: 8
 - Completed implementation-agent tasks: 7
 - All implementation/owner gates remain unpassed
 - currentTask: null
@@ -100,7 +102,8 @@ P8-001-R6 STOPPED BEFORE TOPLINE-P8-002 per #123.
 ## Preserved Unrelated Changes (real, accurate)
 
 - `WDR/_All/Governance/TOPLINE-GOV-AUTO-001_WDR_2026-09-08.md` (modified, unstaged — never staged by R1, R2, R3, R4, R5, or R6)
-- `.claude/settings.local.json` (untracked, never tracked)
+- `.claude/settings.local.json` (present, globally ignored by
+  `C:\Users\a/.config/git/ignore`, never tracked)
 
 ## Last Updated
 
