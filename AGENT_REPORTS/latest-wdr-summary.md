@@ -6,7 +6,7 @@
 
 - Execution: PASS (planning/governance only)
 - PM audit: PLANNED (pending PM audit)
-- Implementation commit: `PENDING_UNTIL_COMMIT` (replaced with real hash in evidence-fill commit; see WDR + PM_OUTBOX)
+- Implementation commit: `b9bfa2bcec283815ead71d9d2fd7ce0e39943306`
 - Evidence-fill commit: reported in #MM final handoff
 - WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R7_WDR_2026-09-11.md`
 - R6 WDR (immutable, with R6 status-evidence correction recorded in R7): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6_WDR_2026-09-11.md`

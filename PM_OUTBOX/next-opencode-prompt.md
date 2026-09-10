@@ -17,7 +17,7 @@ PM-audited and PASSED).
 ## R7 Evidence
 
 - R7 WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R7_WDR_2026-09-11.md`
-- R7 implementation commit: `PENDING_UNTIL_COMMIT` (replaced with real hash in evidence-fill commit; the real full 40-character Commit A hash is reported in #MM's final handoff and resolved in Git by Commit B)
+- R7 implementation commit: `b9bfa2bcec283815ead71d9d2fd7ce0e39943306`
 - R7 evidence-fill commit (Commit B): reported in #MM's final handoff
 - R6 implementation commit: `1f6c3f9f56fc6bfb91cde9564706e0e35808a0cb`
 - R6 evidence-fill commit: `ab864dc073b244bc24415bb67f8777ceb7504662`

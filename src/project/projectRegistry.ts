@@ -1630,8 +1630,8 @@ export const projectRegistry: ProjectRegistry = {
       build: "PASS",
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
-      notes: "PENDING_UNTIL_COMMIT — R7 documentation/governance-only correction. Corrected the R6 status evidence: .claude/settings.local.json is present and gitignored globally (not 'untracked'). R6 plan corrections preserved byte-for-byte. Stopped before P8-002.",
-      commitHash: "PENDING_UNTIL_COMMIT",
+      notes: "R7 documentation/governance-only correction. Corrected the R6 status evidence: .claude/settings.local.json is present and gitignored globally (not 'untracked'). R6 plan corrections preserved byte-for-byte. Stopped before P8-002.",
+      commitHash: "b9bfa2bcec283815ead71d9d2fd7ce0e39943306",
     },
   ],
   modules: [
@@ -2635,13 +2635,13 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-8",
       status: "PASS",
       date: "2026-09-11",
-      commitHash: "PENDING_UNTIL_COMMIT",
+      commitHash: "b9bfa2bcec283815ead71d9d2fd7ce0e39943306",
       pmAudit: "PLANNED",
     },
   ],
   git: {
     initialized: true,
-    lastCommit: "PENDING_UNTIL_COMMIT",
+    lastCommit: "b9bfa2bcec283815ead71d9d2fd7ce0e39943306",
   },
   github: {
     configured: true,
