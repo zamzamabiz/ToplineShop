@@ -2,22 +2,17 @@
 
 ## Current Status
 
-**TOPLINE-P7-008-R1 corrective reconciliation complete — awaiting PM re-audit**
+**TOPLINE-P7-008 approved / closed**
 
 ## Last Completed Governed Task
 
 **TOPLINE-P7-008** — Testing Foundation
-**Status**: implementation PASS — registry reconciled by P7-008-R1
+**Status**: PASS / CLOSED
 **Date**: 2026-09-10
 **Implementation Commit**: `2197d84`
-**Registry Reconciliation Commit (P7-008-R1)**: `<R1_HASH>`
-**Original PM Audit (BLOCKED on missing registry entry)**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-008-AUDIT_2026-09-10.md`
-
-## Just Completed (Pending PM Re-audit)
-
-**TOPLINE-P7-008-R1** — Testing Foundation Registry Reconciliation
-**Status**: PASS — awaiting PM re-audit
-**Date**: 2026-09-10
+**Registry Reconciliation Commit**: `20bdaeb`
+**WDR Hash-Fill Commit**: `5e3eaa1`
+**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-008-R1-AUDIT_2026-09-10.md`
 
 ## Next Planned Task
 
@@ -25,30 +20,24 @@
 
 ## Summary
 
-P7-008-R1 is a corrective governed task that resolves the BLOCKED state of the
-original P7-008 PM audit. The P7-008 backend testing foundation (Jest
-configuration, `createPrismaMock` factory, `createServiceTestHarness`,
-12/12 proof test) was correctly implemented in commit `2197d84`, but the
-governance evidence was internally inconsistent: `src/project/projectRegistry.ts`
-had root summary fields referencing P7-008 and a `wdr-058` entry, but it
-did not contain the `id: "TOPLINE-P7-008"` task-list entry itself.
+P7-008 established the backend testing foundation: Jest config, `npm test`,
+`createPrismaMock`, `createServiceTestHarness`, and a proof spec with 12/12
+Jest tests passing.
 
-The P7-008-R1 correction:
-- Added the missing `TOPLINE-P7-008` task entry to `projectRegistry.ts` in
-  the correct Phase 7 task-list position after `TOPLINE-P7-007`.
-- Restored root summary fields to
-  `lastCompletedTask: "TOPLINE-P7-008"`, `nextPlannedTask: "TOPLINE-P7-009"`.
-- Kept `wdr-058` (PM audit `BLOCKED`) present and consistent.
-- Added `wdr-059` for the R1 corrective WDR (`pmAudit: "PLANNED"` pending
-  PM re-audit).
-- Did NOT modify the backend testing implementation (it already passed
-  `npm run build` and `npm test` 12/12 in the original audit).
-- Did NOT modify any frontend, auth, payment, migration, infrastructure,
-  or business behavior.
+The initial PM audit blocked closure because the canonical registry was
+missing the `TOPLINE-P7-008` task-list entry. P7-008-R1 added that entry,
+kept `wdr-058`, added `wdr-059`, and restored root summary fields to
+`lastCompletedTask: "TOPLINE-P7-008"` and
+`nextPlannedTask: "TOPLINE-P7-009"`.
+
+PM re-audit passed: `npm run build` PASS, `npm test` PASS 12/12,
+`git diff --check` PASS, and registry inspection PASS.
+
+P7-009 is next, but must not start without the PM-approved prompt.
 
 ## Next PM Prompt Source
 
-`PM_OUTBOX/next-opencode-prompt.md` (reset to awaiting PM re-audit)
+`PM_OUTBOX/next-opencode-prompt.md` (TOPLINE-P7-009 PM-approved prompt)
 
 ## Last Updated
 

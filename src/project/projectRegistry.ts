@@ -1401,8 +1401,8 @@ export const projectRegistry: ProjectRegistry = {
       tests: "PASS",
       build: "PASS",
       ownerApproval: "PLANNED",
-      pmApproval: "PLANNED",
-      notes: "P7-008 backend testing foundation: jest@29 + ts-jest + @types/jest + @nestjs/testing as devDependencies; jest.config.js (ts-jest preset, src/ root, dist/node_modules excluded, deterministic); backend/src/testing/test.utils.ts (createPrismaMock with call tracking for tenant/vendor/category/product, findUnique by id/slug, findFirst by composite (tenantId, slug), create with auto-id and createdAt — replaces the four duplicated createMockPrisma blocks in backend/scripts/test-*-create.js); backend/src/testing/test.module.ts (createServiceTestHarness wiring real service via @nestjs/testing Test.createTestingModule with mocked PrismaService, includes reset() and close()); backend/src/testing/test.utils.spec.ts (12 Jest tests proving both halves of the foundation work end-to-end against the real TenantsService — 7 mock unit cases + 5 service-via-NestJS-DI cases including real @nestjs/common ConflictException/NotFoundException paths); 12/12 Jest tests pass; the four existing scripts/test-*-create.js evidence scripts preserved and still pass (30+33+57+82=202 tests); npm run build PASS; git diff --check PASS; no production source file modified. Task-list entry added by P7-008-R1 corrective reconciliation after PM audit found the entry missing despite WDR claim.",
+      pmApproval: "PASS",
+      notes: "P7-008 approved through P7-008-R1 audit: Jest testing foundation, reusable Prisma mock (createPrismaMock), service test harness (createServiceTestHarness), proof spec (test.utils.spec.ts), 12/12 Jest tests pass, existing evidence scripts preserved, npm run build PASS, git diff --check PASS; missing task-list registry entry corrected by P7-008-R1.",
       commitHash: "2197d84",
     },
   ],
@@ -2282,7 +2282,7 @@ export const projectRegistry: ProjectRegistry = {
       status: "PASS",
       date: "2026-09-10",
       commitHash: "2197d84",
-      pmAudit: "BLOCKED",
+      pmAudit: "PASS",
     },
     {
       id: "wdr-059",
@@ -2291,7 +2291,7 @@ export const projectRegistry: ProjectRegistry = {
       status: "PASS",
       date: "2026-09-10",
       commitHash: "20bdaeb",
-      pmAudit: "PLANNED",
+      pmAudit: "PASS",
     },
   ],
   git: {
