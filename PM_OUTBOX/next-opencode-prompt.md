@@ -25,7 +25,7 @@ R6 PM audit is BLOCKED. Do not paste any P8-002 prompt into #MM.
 - R5 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5-AUDIT_2026-09-11.md`
 - R5 WDR (immutable, with R5 overclaims recorded in R6): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5_WDR_2026-09-11.md`
 - Revised plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md`
-- Canonical registry: `src/project/projectRegistry.ts` (R6 PASS, wdr-071 PASS, P8-001 / P8-001-R1 / P8-001-R2 / P8-001-R3 / P8-001-R4 / P8-001-R5 pmApproval BLOCKED, wdr-066 / wdr-067 / wdr-068 / wdr-069 / wdr-070 pmAudit BLOCKED, Phase 8 BLOCKED, currentTask null, lastCompletedTask `TOPLINE-P8-001-R6`, nextPlannedTask `TOPLINE-P8-002` proposed/unapproved)
+- Canonical registry: `src/project/projectRegistry.ts` (R6 execution PASS with pmApproval BLOCKED, wdr-071 BLOCKED, P8-001 / P8-001-R1 / P8-001-R2 / P8-001-R3 / P8-001-R4 / P8-001-R5 pmApproval BLOCKED, wdr-065 through wdr-070 pmAudit BLOCKED, Phase 8 BLOCKED, currentTask null, lastCompletedTask `TOPLINE-P8-001-R6`, nextPlannedTask `TOPLINE-P8-001-R7`)
 - Reports: `AGENT_REPORTS/latest-status.md`, `AGENT_REPORTS/latest-wdr-summary.md`
 
 ## Block Status
