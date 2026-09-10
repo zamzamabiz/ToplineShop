@@ -1479,7 +1479,7 @@ export const projectRegistry: ProjectRegistry = {
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
       notes: "P7-010-R2 Phase 7 Corrective Registry Source-of-Truth Completion: added TOPLINE-P7-010-R1 task entry (pmApproval BLOCKED per P7-010-R1 audit at commit 362f874), added wdr-063 (pmAudit BLOCKED, commitHash e5decfb, taskId TOPLINE-P7-010-R1), added this R2 task entry (pmApproval PLANNED, awaiting PM audit), added wdr-064 (pmAudit PLANNED), and bumped phase-7 rollup taskCount/completedTaskCount from 17 to 19 to reflect the two extra corrective task entries (megaPromptTarget/megaPromptsCompleted kept at 10/10 because correctives are not mega-prompts). Kept P7-010 task entry and wdr-062 with pmApproval/pmAudit PLANNED. Restored root summary fields to R2-completion state. No product code, backend files, frontend pages/components, packages, migrations, auth/RBAC, secrets, or shop.com involvement. Phase 8 not started.",
-      commitHash: "<P7-010-R2_HASH>",
+      commitHash: "7190755",
     },
   ],
   modules: [
@@ -2411,13 +2411,13 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-7",
       status: "PASS",
       date: "2026-09-10",
-      commitHash: "<P7-010-R2_HASH>",
+      commitHash: "7190755",
       pmAudit: "PLANNED",
     },
   ],
   git: {
     initialized: true,
-    lastCommit: "<P7-010-R2_HASH>",
+    lastCommit: "7190755",
   },
   github: {
     configured: true,
