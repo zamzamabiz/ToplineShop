@@ -10,7 +10,7 @@
 **Status**: implementation PASS — dashboard rollup reconciled by P7-010-R1
 **Date**: 2026-09-10
 **Implementation Commit**: `feea2bf`
-**Rollup Reconciliation Commit (P7-010-R1)**: `<P7-010-R1_HASH>`
+**Rollup Reconciliation Commit (P7-010-R1)**: `e5decfb`
 **Original PM Audit (BLOCKED on stale phase-7 rollup)**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-010-AUDIT_2026-09-10.md`
 
 ## Just Completed (Pending PM Re-audit)

@@ -5,7 +5,7 @@
 **TOPLINE-P7-010-R1** — Phase 7 Freeze Gate Dashboard Rollup Reconciliation
 **Status**: PASS — awaiting PM re-audit
 **Date**: 2026-09-10
-**Rollup Reconciliation Commit**: `<P7-010-R1_HASH>`
+**Rollup Reconciliation Commit**: `e5decfb`
 **PM Audit**: pending
 
 ## Previous WDR (BLOCKED — now reconciled by R1)
