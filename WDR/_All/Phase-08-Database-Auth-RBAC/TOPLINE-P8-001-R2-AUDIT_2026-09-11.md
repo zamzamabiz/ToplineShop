@@ -134,4 +134,4 @@ R3 is a narrow documentation/governance correction only. It must:
 - Phase 8: BLOCKED.
 - Next approved task: TOPLINE-P8-001-R3 only.
 
-PM audit commit: `PENDING_UNTIL_COMMIT`
+PM audit commit: `37f85ffca7186d60b992bac4d9c53c6866711ebf`
