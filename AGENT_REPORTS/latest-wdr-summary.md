@@ -1,42 +1,27 @@
 # Latest WDR Summary
 
-## Current WDR
+## Current Audit
 
 **TOPLINE-P8-001-R4** - Phase 8 Readiness Plan Canonical Contract Cleanup
 
-- Execution: PASS (planning/governance only)
-- PM audit: PLANNED (pending PM audit)
+- Execution: PASS (planning-only)
+- PM audit: BLOCKED
 - Implementation commit: `5e2b799249cccc5b6d4f1e0b8f2d05d165152ba1`
-- Evidence-fill commit: reported in #MM final handoff
+- Evidence-fill commit: `038f47a147fb61c4675646383799dccf5678de4a`
 - WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4_WDR_2026-09-11.md`
-- R3 WDR (immutable, with R3 overstatements recorded in R4): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R3_WDR_2026-09-11.md`
-- R3 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R3-AUDIT_2026-09-11.md`
-- R4 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md`
-
-## R4 Summary
-
-Scope isolation and verification passed for the R4 canonical
-contract cleanup. R4 corrected the remaining stale live
-contract text: plan header updated to R4 with date
-`2026-09-11`; every P8-002 may-install-packages statement
-removed; inventory table distinguishes Phase 8 P8-002/P8-004
-planned candidates from genuinely deferred items; ownership
-summaries in early §C bounded-scope, §D inventory status
-cells, §J gap register, §K risk register, §L task table,
-§M verification matrix, and §O all restate the same
-persistence/package/schema contract; R3 overstatements are
-recorded as historical R3 inaccuracies (R3 WDR is immutable);
-valid R1/R2/R3 corrections are preserved.
+- Audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4-AUDIT_2026-09-11.md`
 
 ## Block Summary
 
-- P8-001, P8-001-R1, P8-001-R2, P8-001-R3, wdr-065, wdr-066,
-  wdr-067, and wdr-068 remain BLOCKED.
-- Phase 8 remains BLOCKED.
-- P8-002 is **proposed but unapproved**.
+R4 is scope-safe and its primary cleanup is valid. R5 must reconcile the
+architecture decision table, staged guard ownership, planned-versus-absent
+repository state, and stale live labels before P8-002 can be authorized.
 
 ## Next WDR
 
-The next WDR will be assigned only after PM writes a separate
-PM-approved prompt for the next task. No future WDR ID is
-reserved. `TOPLINE-P8-001-R4` STOPPED BEFORE `TOPLINE-P8-002`.
+Reserved entry: `wdr-070`
+
+Expected path:
+`WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5_WDR_2026-09-11.md`
+
+R5 is the only approved next task. It must stop before P8-002.
