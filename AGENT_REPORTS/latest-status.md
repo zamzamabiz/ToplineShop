@@ -2,33 +2,54 @@
 
 ## Current Status
 
-**TOPLINE-P8-001-R5 execution: PASS — PM audit BLOCKED**
+**TOPLINE-P8-001-R6 execution: PASS — PM audit pending**
 
-## R5 Task
+## R6 Task
 
-**TOPLINE-P8-001-R5** - Phase 8 Readiness Plan Ownership and State Reconciliation
+**TOPLINE-P8-001-R6** - Phase 8 Package Ownership and Residual State Cleanup
 
 - Execution status: PASS (planning/governance only)
-- PM audit: BLOCKED
-- Implementation commit: `aaa32521d2dd36f520542666b3318486745a150e`
-- Evidence-fill commit: `9aa86e491486e192378b8ff3856126c5b0b8144b`
-- PM audit commit: `5793f29b937197bbf1223185444e28c8b76658c5`
-- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5_WDR_2026-09-11.md`
+- PM audit: PLANNED (pending PM audit)
+- Implementation commit: `PENDING_UNTIL_COMMIT` (replaced with real hash in evidence-fill commit; see WDR + PM_OUTBOX)
+- Evidence-fill commit: reported in #MM final handoff
+- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6_WDR_2026-09-11.md`
+- R5 WDR (immutable, with R5 overclaims recorded in R6): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5_WDR_2026-09-11.md`
 - R5 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5-AUDIT_2026-09-11.md`
-- R4 WDR (immutable, with R4 overclaims recorded in R5): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4_WDR_2026-09-11.md`
-- R4 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4-AUDIT_2026-09-11.md`
-- R5 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md`
+- R6 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md`
 
-R5 remains blocked because the live plan still contains residual contradictions:
+R6 addressed all 6 R5 audit findings:
 
-- GAP-20 assigns `@nestjs/throttler` to `P8-002/003`.
-- GAP-21 assigns `argon2` installation to `P8-002`, contradicting the rule that P8-002 installs no packages.
-- GAP-22 assigns `@nestjs/jwt` and `@nestjs/passport` to `P8-002/003`.
-- The Prisma/PostgreSQL connection behavior section still says PM should choose at the time of `P8-002/003`.
-- The Marked unapproved section still references only the P8-001/R1/R2/R3 chain and says R3 stopped before P8-002.
-- The R5 WDR/reports overstate cleanup by claiming no live `P8-002/003` split remains.
+- GAP-20, GAP-21, and GAP-22 corrected: every
+  package addition (`argon2`, `@nestjs/jwt`,
+  `@nestjs/passport`, optional `@nestjs/throttler`) is
+  restricted to **P8-003 only** (or a later separately
+  PM-approved task). **No package is added in P8-002.**
+  P8-003 is the sole planned owner of any future
+  PM-approved auth package installation.
+- Prisma/PostgreSQL connection behavior wording
+  corrected: the "at the time of P8-002/003" split is
+  removed and replaced with a sole future owner (the
+  future PM-approved P8-002 prompt, or a later separately
+  PM-approved task) plus an explicit "not assigned" note.
+- `### Marked unapproved` section updated: now includes
+  the full P8-001 / R1 / R2 / R3 / R4 / R5 corrective
+  chain and states that **R5 stopped before P8-002**; R6
+  is the current corrective task continuing the chain.
+- R5 WDR/report overclaims recorded as historical R5
+  inaccuracies in this R6 WDR and in the latest reports.
+  The R5 WDR remains immutable and is not rewritten.
+- Final status evidence accurately reported: both the
+  modified governance WDR and untracked
+  `.claude/settings.local.json` are present at the end of
+  R5 (and at the end of R6).
+- Valid R5 corrections preserved: Session belongs to
+  P8-002 only; RBAC persistence and RBAC guards belong to
+  P8-004 only; P8-003 is schema-free and owns
+  `AuthGuard` and write-endpoint protection only; planned
+  candidates remain absent today until future approved
+  tasks implement them.
 
-## P8-001, P8-001-R1, P8-001-R2, P8-001-R3, P8-001-R4, P8-001-R5 (all BLOCKED)
+## P8-001 through P8-001-R5 (all BLOCKED)
 
 - P8-001 implementation: PASS, PM audit BLOCKED.
 - P8-001-R1 implementation: PASS, PM audit BLOCKED.
@@ -51,36 +72,34 @@ R5 remains blocked because the live plan still contains residual contradictions:
 - P8-001-R4 implementation commit: `5e2b799249cccc5b6d4f1e0b8f2d05d165152ba1`
 - P8-001-R4 evidence-fill commit: `038f47a147fb61c4675646383799dccf5678de4a`
 - P8-001-R4 PM audit commit: `0f3ea0903943dd8489b8619f0aad1f2c315b936d`
-- P8-001-R4 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4-AUDIT_2026-09-11.md`
 - P8-001-R5 implementation commit: `aaa32521d2dd36f520542666b3318486745a150e`
 - P8-001-R5 evidence-fill commit: `9aa86e491486e192378b8ff3856126c5b0b8144b`
 - P8-001-R5 PM audit commit: `5793f29b937197bbf1223185444e28c8b76658c5`
 - P8-001-R5 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5-AUDIT_2026-09-11.md`
 
-## Next Approved Corrective
+## Next Task (proposed, unapproved)
 
-**TOPLINE-P8-001-R6** - Phase 8 Package Ownership and Residual State Cleanup
+**TOPLINE-P8-002** - Auth Persistence Data Model and Migration Safety Foundation
 
-R6 is documentation/governance only. It must remove every remaining live
-`P8-002/003` ownership reference, correct package-owner rows so P8-002
-installs no packages, update stale unapproved-chain text to include R4/R5,
-record R5 overstatements as historical R5 inaccuracies, and stop before P8-002.
-
-`TOPLINE-P8-002` remains proposed but unapproved and has not been registered.
+P8-002 is **proposed but unapproved**. P8-002 has not been
+registered. PM must write a separate, PM-approved prompt for
+P8-002 only after the full P8-001 / R1 / R2 / R3 / R4 / R5
+/ R6 corrective chain has been audited and PASSED by PM.
+P8-001-R6 STOPPED BEFORE TOPLINE-P8-002 per #123.
 
 ## Phase 8 State
 
-- Status: BLOCKED pending P8-001-R6 corrective execution and PM audit
+- Status: BLOCKED pending P8-001-R6 PM audit
 - Progress: 20
-- Mega-prompt target/completed: 5/1 (R1, R2, R3, R4, R5, and R6 are correctives and do not increment)
+- Mega-prompt target/completed: 5/1 (R1, R2, R3, R4, R5, R6 are correctives and do not increment)
 - Registered tasks: 7
-- Completed implementation-agent tasks: 6
+- Completed implementation-agent tasks: 7
 - All implementation/owner gates remain unpassed
 - currentTask: null
 
 ## Preserved Unrelated Changes (real, accurate)
 
-- `WDR/_All/Governance/TOPLINE-GOV-AUTO-001_WDR_2026-09-08.md` (modified, unstaged — never staged by R1, R2, R3, R4, or R5)
+- `WDR/_All/Governance/TOPLINE-GOV-AUTO-001_WDR_2026-09-08.md` (modified, unstaged — never staged by R1, R2, R3, R4, R5, or R6)
 - `.claude/settings.local.json` (untracked, never tracked)
 
 ## Last Updated

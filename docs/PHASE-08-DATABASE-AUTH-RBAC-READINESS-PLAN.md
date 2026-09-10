@@ -1,14 +1,15 @@
-# ToplineShop — Phase 8 Database/Auth/RBAC Readiness Plan (R5)
+# ToplineShop — Phase 8 Database/Auth/RBAC Readiness Plan (R6)
 
-> **Status**: READINESS PLAN — PLANNING ONLY (R5-revised)
+> **Status**: READINESS PLAN — PLANNING ONLY (R6-revised)
 > **Date**: 2026-09-11
-> **Current corrective task**: TOPLINE-P8-001-R5 — Phase 8 Readiness Plan Ownership and State Reconciliation
+> **Current corrective task**: TOPLINE-P8-001-R6 — Phase 8 Package Ownership and Residual State Cleanup
 > **Original task**: TOPLINE-P8-001 (PASS execution, BLOCKED PM audit)
-> **Prior correctives**: TOPLINE-P8-001-R1, R2, R3, R4 (all PASS execution, all BLOCKED PM audit)
+> **Prior correctives**: TOPLINE-P8-001-R1, R2, R3, R4, R5 (all PASS execution, all BLOCKED PM audit)
 > **Phase**: Phase 8 — Database, Authentication, RBAC & Security
 > **Author**: Implementation Agent under PM governance
 > **Approval Required**: PM before any database schema change, auth code, package install, or migration
-> **R4 PM audit commit (predecessor)**: `0f3ea0903943dd8489b8619f0aad1f2c315b936d`
+> **R5 PM audit commit (predecessor)**: `5793f29b937197bbf1223185444e28c8b76658c5`
+> **R4 PM audit commit (historical)**: `0f3ea0903943dd8489b8619f0aad1f2c315b936d`
 > **R3 PM audit commit (historical)**: `b43a5114e2f8845e55e28f64cd987b4e4e9a80ce`
 > **R2 PM audit commit (historical)**: `37f85ffca7186d60b992bac4d9c53c6866711ebf`
 > **R1 PM audit commit (historical)**: `c2282eb5c7cf2c51388e7e538f8a6e61f12bd25c`
@@ -23,24 +24,26 @@
 > **R3 evidence-fill commit (historical)**: `1c9e886529d9fba34e95bca0f84c552ebb0019f9`
 > **R4 implementation commit (historical)**: `5e2b799249cccc5b6d4f1e0b8f2d05d165152ba1`
 > **R4 evidence-fill commit (historical)**: `038f47a147fb61c4675646383799dccf5678de4a`
+> **R5 implementation commit (historical)**: `aaa32521d2dd36f520542666b3318486745a150e`
+> **R5 evidence-fill commit (historical)**: `9aa86e491486e192378b8ff3856126c5b0b8144b`
 
-This is a planning artifact only. **No database commands were executed. No auth/RBAC code, packages, or migrations were written. No implementation occurred.** This R5 revision is the final ownership-and-state reconciliation of the P8-001 readiness plan against the P8-001 / R1 / R2 / R3 / R4 PM audits; it does not authorize any Phase 8 implementation work. R5 is governed by `#123` (DISCUSS → DECIDE → EXECUTE → VERIFY/AUDIT → CLOSE → NEXT) and is the only approved corrective task. It does **not** start `TOPLINE-P8-002`.
+This is a planning artifact only. **No database commands were executed. No auth/RBAC code, packages, or migrations were written. No implementation occurred.** This R6 revision is the final package-ownership and residual-state cleanup of the P8-001 readiness plan against the P8-001 / R1 / R2 / R3 / R4 / R5 PM audits; it does not authorize any Phase 8 implementation work. R6 is governed by `#123` (DISCUSS → DECIDE → EXECUTE → VERIFY/AUDIT → CLOSE → NEXT) and is the only approved corrective task. It does **not** start `TOPLINE-P8-002`.
 
-Historical R1, R2, R3, and R4 evidence is preserved in their immutable WDRs and audits; this live plan body is the current R5 canonical contract.
+Historical R1, R2, R3, R4, and R5 evidence is preserved in their immutable WDRs and audits; this live plan body is the current R6 canonical contract.
 
 ---
 
 ## A. Governance Header (R4 canonical)
 
 - **Original task**: TOPLINE-P8-001 — Phase 8 Database/Auth/RBAC Readiness Plan
-- **Current corrective task**: TOPLINE-P8-001-R5 — Phase 8 Readiness Plan Ownership and State Reconciliation
-- **Prior correctives**: TOPLINE-P8-001-R1, R2, R3, R4 (all PASS execution, all BLOCKED PM audit; preserved in immutable WDRs/audits)
+- **Current corrective task**: TOPLINE-P8-001-R6 — Phase 8 Package Ownership and Residual State Cleanup
+- **Prior correctives**: TOPLINE-P8-001-R1, R2, R3, R4, R5 (all PASS execution, all BLOCKED PM audit; preserved in immutable WDRs/audits)
 - **Date**: 2026-09-11
 - **Phase**: Phase 8 — Database, Authentication, RBAC & Security
 - **Type**: READINESS PLAN REVISION (planning-only)
 - **Approval boundary**: PM must approve before any future TOPLINE-P8-002+ task begins.
-- **Implementation confirmation**: This R5 task did **not** modify any backend source, frontend source, package, Prisma schema, migration, env file, or deployable artifact. The only files created or modified are the six files allowed by the R5 prompt: this plan (revised), the registry update, the two agent reports, the PM_OUTBOX R5 audit hold notice, and the R5 WDR.
-- **Prompt budget correction (R5 canonical, R1 §A preserved as historical)**: Phase 8 core mega-prompt target is **5** (within the 2–5 budget of `docs/PROJECT_CONSTITUTION.md` §7), and the core sequence is exactly **P8-001, P8-002, P8-003, P8-004, P8-005**. R1, R2, R3, R4, and R5 are corrective tasks and do **not** increment `megaPromptsCompleted`. P8-006 is removed from the proposed core sequence.
+- **Implementation confirmation**: This R6 task did **not** modify any backend source, frontend source, package, Prisma schema, migration, env file, or deployable artifact. The only files created or modified are the six files allowed by the R6 prompt: this plan (revised), the registry update, the two agent reports, the PM_OUTBOX R6 audit hold notice, and the R6 WDR.
+- **Prompt budget correction (R6 canonical, R1 §A preserved as historical)**: Phase 8 core mega-prompt target is **5** (within the 2–5 budget of `docs/PROJECT_CONSTITUTION.md` §7), and the core sequence is exactly **P8-001, P8-002, P8-003, P8-004, P8-005**. R1, R2, R3, R4, R5, and R6 are corrective tasks and do **not** increment `megaPromptsCompleted`. P8-006 is removed from the proposed core sequence.
 
 ---
 
@@ -190,7 +193,7 @@ This document is a plan. It is a contract for what later PM-approved tasks will 
 ### Prisma / PostgreSQL connection behavior
 - `PrismaService.onModuleInit` is empty. Database connection is **not** established at backend startup.
 - The `health` endpoint reports `database: not_configured` because the in-handler `try/catch` catches the absence of a live connection and returns the placeholder string. Verified during P4-005 freeze gate.
-- A future P8 task that turns on real DB connectivity must decide: connect at startup (current `onModuleInit` becomes `await this.$connect()`), or connect on first query (lazy, requires re-engineering). Recommendation (PM to confirm): keep lazy until P8 proves production-safety; the existing health check is sufficient for the existing read-only smoke. **This is a question, not a decision** — PM should choose at the time of P8-002/003.
+- A future P8 task that turns on real DB connectivity must decide: connect at startup (current `onModuleInit` becomes `await this.$connect()`), or connect on first query (lazy, requires re-engineering). **Sole future owner**: the future PM-approved P8-002 prompt (or, if PM chooses to defer, a later separately PM-approved task). **This is a question, not a decision** — PM must choose at the time of that future PM-approved task. Recommendation only: keep lazy until Phase 8 proves production-safety; the existing health check is sufficient for the existing read-only smoke.
 
 ### Frozen boundaries (must not be broken by Phase 8)
 - Existing 7 models, 7 enums, 1 migration must not be deleted or DROPped. Phase 8 may **add** new models/columns/enums/migration(s), but any change to existing fields requires a new PM-approved task and a corrective WDR.
@@ -395,9 +398,9 @@ Phase 3 §4 listed the following tables that **were not** implemented in Phase 4
 | GAP-17 | `User.status: DISABLED` does not block authentication | `backend/src/` (no enforcement) | HIGH | P8-003 enforces `User.status === ACTIVE` | Yes | P8-003 |
 | GAP-18 | Frontend routes `/owner/*`, `/admin/*`, `/vendor/*` are visible to any visitor; no route guards | `src/app/` | MEDIUM (UX only, backend is the authority) | Out of scope for Phase 8 (frontend is frozen) | No | Future phase |
 | GAP-19 | `backend/.env.example` shows `JWT_ACCESS_SECRET=CHANGE_ME_DEV_ONLY` placeholder — correct for dev, but no production secret store is approved | `backend/.env.example` | HIGH in production | PM must approve secret store before any production deployment | Yes (production only) | Production |
-| GAP-20 | No `@nestjs/throttler` or other rate-limit dependency | `backend/package.json` | MEDIUM | Add in P8-002/003 if PM confirms | Yes (new package) | P8-002/003 |
-| GAP-21 | No `argon2`, `bcrypt`, or other password-hashing library | `backend/package.json` | HIGH | Add `argon2` in P8-002 (PM-confirmed) — or per F, an alternative if PM chooses | Yes (new package) | P8-002 |
-| GAP-22 | No JWT library (`@nestjs/jwt`, `jsonwebtoken`) | `backend/package.json` | HIGH | Add `@nestjs/jwt` and `@nestjs/passport` in P8-002/003 — **only if PM-confirmed** | Yes (new packages) | P8-002/003 |
+| GAP-20 | No `@nestjs/throttler` or other rate-limit dependency | `backend/package.json` | MEDIUM | Add in **P8-003 only** if PM confirms, or in a later separately PM-approved task. **Not assigned to P8-002** (P8-002 installs no packages). | Yes (new package) | P8-003 (or future PM-approved task) |
+| GAP-21 | No `argon2`, `bcrypt`, or other password-hashing library | `backend/package.json` | HIGH | Add `argon2` in **P8-003 only** if PM confirms — or per F, an alternative if PM chooses. **Not assigned to P8-002** (P8-002 installs no packages). | Yes (new package) | P8-003 |
+| GAP-22 | No JWT library (`@nestjs/jwt`, `jsonwebtoken`) | `backend/package.json` | HIGH | Add `@nestjs/jwt` and `@nestjs/passport` in **P8-003 only** — **only if PM-confirmed**. **Not assigned to P8-002** (P8-002 installs no packages). | Yes (new packages) | P8-003 |
 | GAP-23 | Phase 3 design `UserRole` and `StaffRole` tables overlap with the `Membership` model | `PHASE-03-DATABASE-SCHEMA-DESIGN.md` §5.1, P4-003 | LOW (design conflict only) | Use `Membership` + `TenantMembershipRole` (post-Phase 3 unified). Do not add `UserRole`/`StaffRole`. | Yes | P8-004 |
 | GAP-24 | `Module` and `TenantModule` (per-tenant module enablement) not present | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.8–4.9 | LOW (no current need) | Defer to a post-Phase 8 phase | Yes (defer) | Future phase |
 | GAP-25 | `ApprovalGate` (financial/AI approval) not present | `PHASE-03-AUTH-RBAC-DESIGN.md` §4.13 | LOW (no financial/AI work in Phase 8) | Defer to Phase 9+ | Yes (defer) | Phase 9+ |
@@ -483,8 +486,8 @@ P8-002 must come first because:
 
 P8-003, P8-004, P8-005 cannot be implemented safely without P8-002's schema, columns, and migration discipline in place.
 
-### Marked unapproved
-This recommendation is **unapproved**. P8-002 has not been added to the registry. The P8-001 / R1 / R2 / R3 governance reconciliation chain does not register P8-002, P8-003, P8-004, or P8-005. PM must write a separate, PM-approved prompt for P8-002 only after the full P8-001 corrective chain (P8-001, R1, R2, and R3) has been audited and PASSED by PM. P8-001 / R1 / R2 / R3 are all currently BLOCKED pending PM audit. R3 STOPPED BEFORE TOPLINE-P8-002 per #123.
+### Marked unapproved (R6 canonical)
+This recommendation is **unapproved**. P8-002 has not been added to the registry. The full P8-001 / R1 / R2 / R3 / R4 / R5 governance reconciliation chain does not register P8-002, P8-003, P8-004, or P8-005. PM must write a separate, PM-approved prompt for P8-002 only after the entire P8-001 / R1 / R2 / R3 / R4 / R5 corrective chain has been audited and PASSED by PM. P8-001, R1, R2, R3, R4, and R5 are all currently BLOCKED pending PM audit. **R5 STOPPED BEFORE TOPLINE-P8-002** per #123; **R6** is the current corrective task continuing the chain.
 
 ---
 
@@ -511,9 +514,9 @@ The items below are **not** part of the Phase 8 core sequence. They must not be 
 
 ---
 
-## End of plan (R5)
+## End of plan (R6)
 
-This document is the P8-001-R1 / R2 / R3 / R4 / R5 deliverable. The canonical registry update is `src/project/projectRegistry.ts`; the canonical WDRs are `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R1_WDR_2026-09-10.md`, `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R2_WDR_2026-09-11.md`, `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R3_WDR_2026-09-11.md`, `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4_WDR_2026-09-11.md`, and `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5_WDR_2026-09-11.md`. The PM_OUTBOX R5 audit hold notice is `PM_OUTBOX/next-opencode-prompt.md`. The two agent reports are `AGENT_REPORTS/latest-status.md` and `AGENT_REPORTS/latest-wdr-summary.md`. No other file was created or modified.
+This document is the P8-001-R1 / R2 / R3 / R4 / R5 / R6 deliverable. The canonical registry update is `src/project/projectRegistry.ts`; the canonical WDRs are `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R1_WDR_2026-09-10.md`, `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R2_WDR_2026-09-11.md`, `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R3_WDR_2026-09-11.md`, `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4_WDR_2026-09-11.md`, `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5_WDR_2026-09-11.md`, and `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6_WDR_2026-09-11.md`. The PM_OUTBOX R6 audit hold notice is `PM_OUTBOX/next-opencode-prompt.md`. The two agent reports are `AGENT_REPORTS/latest-status.md` and `AGENT_REPORTS/latest-wdr-summary.md`. No other file was created or modified.
 
 **R1 audit findings addressed** (one by one, per `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-AUDIT_2026-09-10.md`):
 1. Prompt budget contradiction — addressed in §A and §L (target 5, sequence P8-001…P8-005, P8-006 removed, R1 not a mega prompt).
@@ -598,3 +601,18 @@ This document is the P8-001-R1 / R2 / R3 / R4 / R5 deliverable. The canonical re
 - The R4 plan's "### Backend authority" section still required every write endpoint to run `RolesGuard`/`PermissionsGuard` and listed `AuthGuard → RolesGuard → PermissionsGuard` in one global order — implying P8-003 would implement RBAC guards that the R4 contract assigned to P8-004.
 - The R4 plan's "### Absent" section removed planned candidates from the inventory instead of keeping them as "absent today; planned candidate" with a planned owner, so the plan no longer reflected the actual repository state.
 - The R4 WDR and reports claimed the architecture decision matrix, authority section, and Absent section all restated the same contract, but the live plan body still contained the contradictions above.
+
+**R5 audit findings addressed** (one by one, per `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5-AUDIT_2026-09-11.md`):
+1. Live gap table splits package ownership across `P8-002/003` — corrected. GAP-20 now says `@nestjs/throttler` is added in **P8-003 only** (or a later separately PM-approved task). **No package is added in P8-002.**
+2. Live gap table assigns password-hashing package installation to P8-002 — corrected. GAP-21 now says `argon2` is added in **P8-003 only** if PM confirms (or per F, an alternative if PM chooses). **Not assigned to P8-002.**
+3. Stale live `P8-002/003` decision wording in Prisma/PostgreSQL connection behavior — corrected. The sentence "PM should choose at the time of P8-002/003" is replaced with a sole future owner (the future PM-approved P8-002 prompt, or a later separately PM-approved task) and an explicit "not assigned" disclaimer.
+4. Stale Marked unapproved section — corrected. The section now includes the full P8-001 / R1 / R2 / R3 / R4 / R5 corrective chain and states that **R5 stopped before P8-002**; R6 is the current corrective task continuing the chain.
+5. R5 evidence overstates the cleanup — recorded as historical R5 inaccuracies in this R6 plan body and in the latest reports. R5 WDR remains immutable and is not rewritten.
+6. Final status evidence internally inconsistent — recorded. The R5 WDR's `git status` verification row omitted `.claude/settings.local.json` from the "only the preserved governance WDR remains" claim; the actual final status at the end of R5 shows both the modified governance WDR and the untracked `.claude/settings.local.json`. R6 reports this accurately.
+
+**Historical R5 inaccuracies** (recorded in R6 per R5 audit finding 5; the R5 WDR is immutable and is not rewritten):
+- The R5 plan's §J gap table still assigned `argon2` to P8-002 (GAP-21) and said `@nestjs/throttler` and `@nestjs/jwt` + `@nestjs/passport` could be added in `P8-002/003` (GAP-20, GAP-22) — directly contradicting R5's own canonical rule that P8-002 installs no packages and P8-003 is the sole planned owner of any future PM-approved auth package installation.
+- The R5 plan's §E Prisma/PostgreSQL connection behavior section still said PM should choose connection timing "at the time of P8-002/003" — leaving ownership ambiguous and contradicting the canonical ownership contract.
+- The R5 plan's "### Marked unapproved" section still said the corrective chain was only P8-001 / R1 / R2 / R3, said only those items were blocked, and said R3 stopped before P8-002 — directly contradicting the live governance state which already includes R4 and R5 with R5 as the current stop.
+- The R5 WDR and reports claimed no live `P8-002/003` split remains and that R5 addressed all six R4 findings — but the GAP-20/GAP-21/GAP-22 and Prisma wording and Marked-unapproved sections all retained live R4/R5 overclaims.
+- The R5 WDR's `git status` verification row claimed only the preserved governance WDR remains, but the actual end-of-R5 working tree included both the modified governance WDR and untracked `.claude/settings.local.json`.
