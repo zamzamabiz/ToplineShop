@@ -12,6 +12,7 @@
 - R5 WDR (immutable, with R5 overclaims recorded in R6): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5_WDR_2026-09-11.md`
 - R5 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5-AUDIT_2026-09-11.md`
 - R6 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6-AUDIT_2026-09-11.md`
+- R6 PM audit commit: `cbb96c5a80424cc8da88294775685cf9ae8bd99a`
 - R6 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md`
 
 ## R6 Summary

@@ -85,4 +85,4 @@ R7 is documentation/governance only. It must:
 - Next approved task: `TOPLINE-P8-001-R7` only.
 - P8-002 remains proposed, unregistered, and unapproved.
 
-PM audit commit: to be filled after this audit commit.
+PM audit commit: `cbb96c5a80424cc8da88294775685cf9ae8bd99a`.
