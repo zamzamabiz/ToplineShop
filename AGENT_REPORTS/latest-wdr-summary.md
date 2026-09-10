@@ -1,39 +1,30 @@
 # Latest WDR Summary
 
-## Current WDR
+## Current Audit
 
-**TOPLINE-P8-001** — Phase 8 Database/Auth/RBAC Readiness Plan
-**Status**: PASS — pending PM audit
-**Date**: 2026-09-10
-**Implementation Commit**: `82361970c15181c8a19bc1249f3a525bac4ad9cd`
-**Evidence-Fill Commit**: `<P8-001_FILL_HASH>`
-**PM Audit**: pending
+**TOPLINE-P8-001** - Phase 8 Database/Auth/RBAC Readiness Plan
 
-## Previous WDR Approved
+- Execution: PASS (planning-only)
+- PM audit: BLOCKED
+- Implementation commit: `82361970c15181c8a19bc1249f3a525bac4ad9cd`
+- Evidence-fill commit: `894d2b36f52c3442650774b2371f035252d8834b`
+- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001_WDR_2026-09-10.md`
+- Audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-AUDIT_2026-09-10.md`
 
-**TOPLINE-P7-010-R2** — Phase 7 Corrective Registry Source-of-Truth
-Completion
-**Status**: PASS / CLOSED
-**Date**: 2026-09-10
-**Registry Completion Commit**: `7190755`
-**PM Audit**: approved in commit `5db0076`
+## Block Summary
 
-## Summary
+Scope isolation and verification passed. The readiness plan requires a
+planning-only correction for prompt-budget reconciliation, smaller task
+boundaries, explicit PM security decisions, safe token/link handling, strict
+local DB safety language, authorization freshness/public-route analysis, and
+accurate hashes/file/test evidence.
 
-TOPLINE-P8-001 is a planning-only governance task that produced the
-Phase 8 readiness plan. No implementation occurred. The plan documents
-the inherited Phase 3 design vs Phase 4/7 implementation state, records
-26 GAPs and 10 RISKs, proposes a 5-task sequence (P8-002..P8-006
-within the registry's `megaPromptTarget: 4` budget), and recommends
-P8-002 as the dependency-first next task.
+## Next WDR
 
-P8-001 STOPPED BEFORE `TOPLINE-P8-002`. P8-002 is proposed but
-unapproved. P8-002 has not been registered in `projectRegistry.tasks[]`
-or `projectRegistry.wdrs[]`. No P8-002 work has been started. PM must
-audit this WDR and the plan and write a separate, PM-approved prompt
-for the chosen next Phase 8 task.
+Reserved entry: `wdr-066`
 
-P8-001 implementation complete, awaiting PM audit.
+Expected path:
+`WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R1_WDR_2026-09-10.md`
 
-Next planned task: **TOPLINE-P8-002** (proposed, unapproved). Do not
-execute it without PM approval.
+`TOPLINE-P8-001-R1` is the only approved next task. It must stop before
+`TOPLINE-P8-002`.

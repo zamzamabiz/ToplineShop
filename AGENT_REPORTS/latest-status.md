@@ -2,70 +2,47 @@
 
 ## Current Status
 
-**TOPLINE-P8-001 implementation complete — awaiting PM audit**
+**TOPLINE-P8-001 BLOCKED - corrective planning task approved**
 
-## Last Completed Governed Task
+## Audited Task
 
-**TOPLINE-P8-001** — Phase 8 Database/Auth/RBAC Readiness Plan
-**Status**: PASS — pending PM audit
-**Date**: 2026-09-10
-**Implementation Commit**: `82361970c15181c8a19bc1249f3a525bac4ad9cd`
-**Evidence-Fill Commit**: `<P8-001_FILL_HASH>`
+**TOPLINE-P8-001** - Phase 8 Database/Auth/RBAC Readiness Plan
 
-## Previous Task Closed
+- Implementation status: PASS (planning-only)
+- PM audit: BLOCKED
+- Implementation commit: `82361970c15181c8a19bc1249f3a525bac4ad9cd`
+- Evidence-fill commit: `894d2b36f52c3442650774b2371f035252d8834b`
+- Audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-AUDIT_2026-09-10.md`
 
-**TOPLINE-P7-010-R2** — Phase 7 Corrective Registry Source-of-Truth
-Completion
-**Status**: PASS / CLOSED
-**Date**: 2026-09-10
-**Registry Completion Commit**: `7190755`
-**PM Audit**: approved in commit `5db0076`
+The plan stayed within its six-file governance scope and all builds/tests
+pass. Approval is blocked because the proposed sequence exceeds its declared
+prompt budget, P8-002 combines too many security-sensitive boundaries,
+several architecture options were prematurely resolved, verification-link
+logging was proposed, local DB safety wording is contradictory, and evidence
+placeholders/counts remain incorrect.
 
-## Next Planned Task
+## Next Approved Task
 
-**TOPLINE-P8-002** (proposed, unapproved)
+**TOPLINE-P8-001-R1** - Phase 8 Readiness Plan Security and Governance
+Reconciliation
 
-## Summary
+Planning/governance only. No Phase 8 implementation and no P8-002 execution.
+The corrective task and reserved `wdr-066` entry are pre-registered in the
+canonical registry.
 
-P8-001 is the Phase 8 readiness plan. It is governance-only: no
-implementation, no database commands, no auth/RBAC code, no packages
-installed, no migration, no production target, no `F:\OpenCode\shop.com`
-access.
+## Phase 8 State
 
-The plan (`docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md`) covers
-sections A-M:
-- A. Governance header
-- B. Objective and boundaries
-- C. Inherited implemented baseline (Phase 3 design vs Phase 4/7
-  implementation; 26 GAPs recorded)
-- D. Database readiness (Prisma 6.19.3, 7 models frozen, 1 migration
-  frozen, additive-only schema adds proposed for P8-002..P8-005)
-- E. Authentication readiness (Argon2id recommendation, HS256 +
-  opaque-refresh recommendation, cookie vs bearer decision, secret
-  lifecycle, 7 open questions for PM)
-- F. Tenant-aware RBAC (Role/Permission/RolePermission/
-  TenantMembershipRole/VendorMembership proposed, deny-by-default
-  cross-tenant, Phase 3 vs Phase 4 contradictions resolved)
-- G. Security and audit (auth events, denial/role-change auditing,
-  safe errors, redaction, rate-limit/brute-force recommendations,
-  CORS, validation, secure defaults)
-- H. Gap and decision register (26 GAPs)
-- I. Risk register (10 RISKs)
-- J. Proposed governed task sequence (P8-002..P8-006 within the
-  registry's `megaPromptTarget: 4` budget; P8-002 is dependency-first
-  and recommended as the next task)
-- K. Verification matrix (per-future-task)
-- L. Global stop conditions
-- M. Recommended next task (P8-002)
+- Status: BLOCKED pending P8-001-R1
+- Progress: 20
+- Mega-prompt target: 5
+- Mega prompts completed: 1
+- Registered tasks: 2
+- Completed implementation-agent tasks: 1
 
-Phase 8 rollup: `status: "IN_PROGRESS"`, `progress: 25`,
-`megaPromptTarget: 4`, `megaPromptsCompleted: 1`, `taskCount: 1`,
-`completedTaskCount: 1`. Root summary: `lastCompletedTask:
-"TOPLINE-P8-001"`, `nextPlannedTask: "TOPLINE-P8-002"`.
+## Preserved Unrelated Changes
 
-## Next PM Prompt Source
-
-`PM_OUTBOX/next-opencode-prompt.md` (reset to P8-001 hold notice)
+- `WDR/_All/Governance/TOPLINE-GOV-AUTO-001_WDR_2026-09-08.md`
+- `.claude/`
 
 ## Last Updated
 
