@@ -14,7 +14,7 @@ passes.
 ## R1 Evidence
 
 - R1 WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R1_WDR_2026-09-10.md`
-- R1 implementation commit: `PENDING_UNTIL_COMMIT` (replaced with real hash in evidence-fill commit; the real full 40-character Commit A hash is reported in #MM's final handoff and resolved in Git by Commit B)
+- R1 implementation commit: `42cc6ac63e375a1adb82f692f3885fd8b29a55ad`
 - R1 evidence-fill commit (Commit B): reported in #MM's final handoff
 - Revised plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md`
 - Canonical registry: `src/project/projectRegistry.ts` (P8-001-R1 PASS, wdr-066 PASS, Phase 8 BLOCKED, currentTask null, lastCompletedTask `TOPLINE-P8-001-R1`, nextPlannedTask `TOPLINE-P8-002` proposed/unapproved)

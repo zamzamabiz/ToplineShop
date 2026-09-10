@@ -1516,8 +1516,8 @@ export const projectRegistry: ProjectRegistry = {
       build: "PASS",
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
-      notes: "PENDING_UNTIL_COMMIT — planning correction only; stopped before P8-002. PM audit pending.",
-      commitHash: "PENDING_UNTIL_COMMIT",
+      notes: "P8-001-R1 planning correction only; stopped before P8-002. PM audit pending. R1 addressed all 10 P8-001 audit findings: prompt budget 5, P8-006 removed, P8-002 bounded to persistence/migration safety, architecture decision matrix added, token/logging safety corrected, local-DB safety wording corrected, test inventory corrected to 12 Jest + 5 evidence scripts, six-file scope recorded, starting commit and P8-001 evidence-fill hash recorded, 'passport-jwt transitive' claim removed.",
+      commitHash: "42cc6ac63e375a1adb82f692f3885fd8b29a55ad",
     },
   ],
   modules: [
@@ -2467,13 +2467,13 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-8",
       status: "PASS",
       date: "2026-09-10",
-      commitHash: "PENDING_UNTIL_COMMIT",
+      commitHash: "42cc6ac63e375a1adb82f692f3885fd8b29a55ad",
       pmAudit: "PLANNED",
     },
   ],
   git: {
     initialized: true,
-    lastCommit: "PENDING_UNTIL_COMMIT",
+    lastCommit: "42cc6ac63e375a1adb82f692f3885fd8b29a55ad",
   },
   github: {
     configured: true,
