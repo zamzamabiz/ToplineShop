@@ -3,10 +3,11 @@
 ## Current WDR
 
 **TOPLINE-P7-010-R1** — Phase 7 Freeze Gate Dashboard Rollup Reconciliation
-**Status**: PASS — awaiting PM re-audit
+**Status**: BLOCKED by PM audit
 **Date**: 2026-09-10
-**Rollup Reconciliation Commit**: `e5decfb`
-**PM Audit**: pending
+**Rollup Reconciliation Commit**: `e5decfbf10b305b8604643943b8feae1d2e81c2f`
+**Evidence-Fill Commit**: `8a073419bacf7b073cedd5e5aa87d6c94bfecd17`
+**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-010-R1-AUDIT_2026-09-10.md` (BLOCKED)
 
 ## Previous WDR (BLOCKED — now reconciled by R1)
 
@@ -14,7 +15,7 @@
 **Status**: implementation PASS — dashboard rollup reconciled by P7-010-R1
 **Date**: 2026-09-10
 **Implementation Commit**: `feea2bf`
-**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-010-AUDIT_2026-09-10.md` (BLOCKED, awaiting re-audit after R1)
+**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-010-AUDIT_2026-09-10.md` (BLOCKED, awaiting R2 correction)
 
 ## Summary
 
@@ -33,11 +34,15 @@ Root summary fields restored to:
 
 P7-010 task entry and `wdr-062` are kept present and consistent.
 
+PM audit found a remaining source-of-truth gap: the governed corrective
+task `TOPLINE-P7-010-R1` and its expected `wdr-063` entry are absent
+from `src/project/projectRegistry.ts`. Since the project constitution
+requires the registry to be canonical, R1 is BLOCKED pending R2.
+
 Did NOT modify product code, backend files, frontend pages/components,
 packages, migrations, auth/RBAC; did NOT touch `F:\OpenCode\shop.com`;
 did NOT start Phase 8.
 
-P7-010-R1 implementation complete, awaiting PM re-audit. Once PM
-re-audit passes, the registry is internally consistent and Phase 7 is
-officially frozen, ready to hand off to Phase 8 (DB / Auth / RBAC) PM
-planning.
+Next approved corrective task: `TOPLINE-P7-010-R2 — Phase 7 Corrective
+Registry Source-of-Truth Completion`. Do not start Phase 8 until R2 WDR
+is audited and approved.
