@@ -2,40 +2,57 @@
 
 ## Current Status
 
-**TOPLINE-P7-010 blocked — dashboard rollup reconciliation required**
+**TOPLINE-P7-010-R1 corrective dashboard rollup reconciliation complete — awaiting PM re-audit**
 
 ## Last Completed Governed Task
 
-**TOPLINE-P7-009** — Frontend API Client Write Methods
-**Status**: PASS / CLOSED
-**Date**: 2026-09-10
-**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-009-R1-AUDIT_2026-09-10.md`
-
-## Current Audit Result
-
 **TOPLINE-P7-010** — Phase 7 Freeze Gate
-**Status**: BLOCKED — registry phase rollup reconciliation required
+**Status**: implementation PASS — dashboard rollup reconciled by P7-010-R1
 **Date**: 2026-09-10
-**Governance Commit**: `feea2bf`
-**PM Audit**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-010-AUDIT_2026-09-10.md`
+**Implementation Commit**: `feea2bf`
+**Rollup Reconciliation Commit (P7-010-R1)**: `<P7-010-R1_HASH>`
+**Original PM Audit (BLOCKED on stale phase-7 rollup)**: `WDR/_All/Phase-07-Backend-API-Foundation/TOPLINE-P7-010-AUDIT_2026-09-10.md`
+
+## Just Completed (Pending PM Re-audit)
+
+**TOPLINE-P7-010-R1** — Phase 7 Freeze Gate Dashboard Rollup Reconciliation
+**Status**: PASS — awaiting PM re-audit
+**Date**: 2026-09-10
 
 ## Next Planned Task
 
-**TOPLINE-P7-010-R1** — Phase 7 Freeze Gate Dashboard Rollup Reconciliation
+**Phase 8 — DB / Auth / RBAC (PM to define first task)**
 
 ## Summary
 
-P7-010 freeze-gate verification evidence passes, but the Phase 7 rollup in
-`src/project/projectRegistry.ts` is stale. The `/project-management` Phase
-Timeline reads this rollup directly, so it still shows Phase 7 as in progress
-instead of frozen.
+P7-010-R1 is a corrective governed task that resolves the BLOCKED state
+of the original P7-010 PM audit. The P7-010 freeze-gate implementation
+evidence passed, but the `phase-7` rollup in
+`src/project/projectRegistry.ts` was stale and the `/project-management`
+dashboard would not auto-update to show Phase 7 as frozen.
 
-The correction must update the `phase-7` rollup only; no product
-implementation work is required.
+The P7-010-R1 correction updated only the `phase-7` rollup:
+- `status: "CLOSED"`
+- `progress: 100`
+- `megaPromptTarget: 10`
+- `megaPromptsCompleted: 10`
+- `frontendGate: "PASS"`, `backendGate: "PASS"`, `testingGate: "PASS"`
+- `taskCount: 17`, `completedTaskCount: 17`
+
+Root summary fields restored to:
+- `currentTask: null`
+- `lastCompletedTask: "TOPLINE-P7-010"`
+- `nextPlannedTask: "Phase 8 — DB/Auth/RBAC (PM to define first task)"`
+
+The P7-010 task entry and `wdr-062` are kept present and consistent.
+
+Did NOT modify any product code, backend file, frontend page/component,
+package, migration, or auth/RBAC; did NOT touch `F:\OpenCode\shop.com`;
+did NOT start Phase 8.
 
 ## Next PM Prompt Source
 
-`PM_OUTBOX/next-opencode-prompt.md` (TOPLINE-P7-010-R1 correction prompt)
+`PM_OUTBOX/next-opencode-prompt.md` (reset to awaiting PM re-audit)
 
 ## Last Updated
 
