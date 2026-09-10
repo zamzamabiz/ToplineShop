@@ -2,63 +2,39 @@
 
 ## Current Status
 
-**TOPLINE-P8-001-R5 execution: PASS — PM audit pending**
+**TOPLINE-P8-001-R5 execution: PASS — PM audit BLOCKED**
 
 ## R5 Task
 
 **TOPLINE-P8-001-R5** - Phase 8 Readiness Plan Ownership and State Reconciliation
 
 - Execution status: PASS (planning/governance only)
-- PM audit: PLANNED (pending PM audit)
+- PM audit: BLOCKED
 - Implementation commit: `aaa32521d2dd36f520542666b3318486745a150e`
-- Evidence-fill commit: reported in #MM final handoff
+- Evidence-fill commit: `9aa86e491486e192378b8ff3856126c5b0b8144b`
 - WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5_WDR_2026-09-11.md`
+- R5 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5-AUDIT_2026-09-11.md`
 - R4 WDR (immutable, with R4 overclaims recorded in R5): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4_WDR_2026-09-11.md`
 - R4 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4-AUDIT_2026-09-11.md`
 - R5 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md`
 
-R5 addressed all 6 R4 audit findings:
+R5 remains blocked because the live plan still contains residual contradictions:
 
-- Architecture table split ownership: `Session`
-  is now **P8-002 only**; `Role`, `Permission`,
-  `RolePermission`, `TenantMembershipRole`, and
-  `VendorMembership` are now **P8-004 only**;
-  `AuditLog.ipAddress`/`userAgent` are now **P8-002 only**.
-  No `P8-002/003` or `P8-003/004` splits remain.
-- Backend-authority section rewritten as a staged two-task
-  description: P8-003 establishes `AuthGuard` plus write-endpoint
-  protection; only after that does P8-004 add `RolesGuard`,
-  `PermissionsGuard`, and `TenantContextGuard`. The end-state
-  pipeline is described without authorizing either future
-  task early.
-- `### Absent (today's repository state)` inventory restored
-  with every planned candidate annotated as
-  **absent today; planned candidate** with its planned owner
-  (`User.passwordHash` → P8-002, `AuditLog.ipAddress`/`userAgent`
-  → P8-002, `Session` → P8-002, RBAC models → P8-004,
-  `AuthGuard` → P8-003, RBAC guards → P8-004).
-- Live section labels updated from `(R1 §A/B/C/D/E/G)` to
-  `(R5 canonical)`; the `P8-001 (R1)` row in the P8-002 task
-  table is now `P8-001 (R5 canonical)`; future `P8-002`,
-  `P8-003`, and `P8-004` WDR paths are no longer reserved with
-  a date — they use a `*.md` literal with a parenthetical "path
-  assigned when P8-00X is PM-approved and registered".
-- R4 overclaims recorded as historical R4 inaccuracies in
-  this R5 WDR and in the latest reports. The R4 WDR and audit
-  are immutable and are not rewritten.
-- Valid R4 corrections preserved: R4 header structure,
-  package summary, main candidate/deferred split, exact
-  Session verification, P8-003 migration stop condition,
-  five-prompt count, future-WDR rule, safety controls, and
-  R1/R2/R3 decisions. Recommendations remain unapproved.
+- GAP-20 assigns `@nestjs/throttler` to `P8-002/003`.
+- GAP-21 assigns `argon2` installation to `P8-002`, contradicting the rule that P8-002 installs no packages.
+- GAP-22 assigns `@nestjs/jwt` and `@nestjs/passport` to `P8-002/003`.
+- The Prisma/PostgreSQL connection behavior section still says PM should choose at the time of `P8-002/003`.
+- The Marked unapproved section still references only the P8-001/R1/R2/R3 chain and says R3 stopped before P8-002.
+- The R5 WDR/reports overstate cleanup by claiming no live `P8-002/003` split remains.
 
-## P8-001, P8-001-R1, P8-001-R2, P8-001-R3, P8-001-R4 (all BLOCKED)
+## P8-001, P8-001-R1, P8-001-R2, P8-001-R3, P8-001-R4, P8-001-R5 (all BLOCKED)
 
 - P8-001 implementation: PASS, PM audit BLOCKED.
 - P8-001-R1 implementation: PASS, PM audit BLOCKED.
 - P8-001-R2 implementation: PASS, PM audit BLOCKED.
 - P8-001-R3 implementation: PASS, PM audit BLOCKED.
 - P8-001-R4 implementation: PASS, PM audit BLOCKED.
+- P8-001-R5 implementation: PASS, PM audit BLOCKED.
 - P8-001 implementation commit: `82361970c15181c8a19bc1249f3a525bac4ad9cd`
 - P8-001 evidence-fill commit: `894d2b36f52c3442650774b2371f035252d8834b`
 - P8-001 PM audit commit: `c2282eb5c7cf2c51388e7e538f8a6e61f12bd25c`
@@ -75,23 +51,27 @@ R5 addressed all 6 R4 audit findings:
 - P8-001-R4 evidence-fill commit: `038f47a147fb61c4675646383799dccf5678de4a`
 - P8-001-R4 PM audit commit: `0f3ea0903943dd8489b8619f0aad1f2c315b936d`
 - P8-001-R4 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R4-AUDIT_2026-09-11.md`
+- P8-001-R5 implementation commit: `aaa32521d2dd36f520542666b3318486745a150e`
+- P8-001-R5 evidence-fill commit: `9aa86e491486e192378b8ff3856126c5b0b8144b`
+- P8-001-R5 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R5-AUDIT_2026-09-11.md`
 
-## Next Task (proposed, unapproved)
+## Next Approved Corrective
 
-**TOPLINE-P8-002** - Auth Persistence Data Model and Migration Safety Foundation
+**TOPLINE-P8-001-R6** - Phase 8 Package Ownership and Residual State Cleanup
 
-P8-002 is **proposed but unapproved**. P8-002 has not been
-registered. PM must write a separate, PM-approved prompt for
-P8-002 only after the full P8-001 / R1 / R2 / R3 / R4 / R5
-corrective chain has been audited and PASSED by PM. P8-001-R5
-STOPPED BEFORE TOPLINE-P8-002 per #123.
+R6 is documentation/governance only. It must remove every remaining live
+`P8-002/003` ownership reference, correct package-owner rows so P8-002
+installs no packages, update stale unapproved-chain text to include R4/R5,
+record R5 overstatements as historical R5 inaccuracies, and stop before P8-002.
+
+`TOPLINE-P8-002` remains proposed but unapproved and has not been registered.
 
 ## Phase 8 State
 
-- Status: BLOCKED pending P8-001-R5 PM audit
+- Status: BLOCKED pending P8-001-R6 corrective execution and PM audit
 - Progress: 20
-- Mega-prompt target/completed: 5/1 (R1, R2, R3, R4, R5 are correctives and do not increment)
-- Registered tasks: 6
+- Mega-prompt target/completed: 5/1 (R1, R2, R3, R4, R5, and R6 are correctives and do not increment)
+- Registered tasks: 7
 - Completed implementation-agent tasks: 6
 - All implementation/owner gates remain unpassed
 - currentTask: null
