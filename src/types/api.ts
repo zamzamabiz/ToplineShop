@@ -105,3 +105,64 @@ export interface ProductFilters {
   categoryId?: string;
   status?: string;
 }
+
+// ============================================================================
+// Write request contracts — Phase 7 Backend/API Foundation
+//
+// Each `Create*Request` mirrors the corresponding backend DTO 1:1. Optional
+// fields are marked with `?`. Enum-like fields use literal string unions so
+// the frontend compiler catches typos before the request reaches the API.
+//
+// Only POST /tenants, POST /vendors, POST /categories, POST /products are
+// implemented on the backend today (P7-004/-R2, P7-005, P7-006, P7-007).
+// PATCH/DELETE write methods and their request types are deferred until the
+// backend controllers expose matching endpoints.
+// ============================================================================
+
+export type TenantType = "PLATFORM" | "VENDOR";
+export type TenantStatus = "ACTIVE" | "SUSPENDED";
+
+export interface CreateTenantRequest {
+  name: string;
+  slug: string;
+  type: TenantType;
+  status: TenantStatus;
+}
+
+export type VendorStatus = "DRAFT" | "ACTIVE" | "SUSPENDED";
+
+export interface CreateVendorRequest {
+  tenantId: string;
+  name: string;
+  slug: string;
+  status: VendorStatus;
+  description?: string;
+  logo?: string;
+}
+
+export type CategoryStatus = "ACTIVE" | "HIDDEN";
+
+export interface CreateCategoryRequest {
+  tenantId: string;
+  name: string;
+  slug: string;
+  status: CategoryStatus;
+  icon?: string;
+  parentId?: string;
+  sortOrder?: number;
+}
+
+export type ProductStatus = "DRAFT" | "ACTIVE" | "ARCHIVED";
+
+export interface CreateProductRequest {
+  tenantId: string;
+  vendorId: string;
+  categoryId: string;
+  name: string;
+  slug: string;
+  basePrice: number;
+  status: ProductStatus;
+  description?: string;
+  currency?: string;
+  inStock?: boolean;
+}
