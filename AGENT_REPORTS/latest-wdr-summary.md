@@ -5,7 +5,7 @@
 **TOPLINE-P8-001** — Phase 8 Database/Auth/RBAC Readiness Plan
 **Status**: PASS — pending PM audit
 **Date**: 2026-09-10
-**Implementation Commit**: `<P8-001_IMPL_HASH>`
+**Implementation Commit**: `82361970c15181c8a19bc1249f3a525bac4ad9cd`
 **Evidence-Fill Commit**: `<P8-001_FILL_HASH>`
 **PM Audit**: pending
 

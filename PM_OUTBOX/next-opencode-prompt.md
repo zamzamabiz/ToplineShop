@@ -10,7 +10,7 @@ are recorded in the WDR:
 
 - **WDR**: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001_WDR_2026-09-10.md`
 - **Plan**: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md`
-- **Implementation commit**: `<P8-001_IMPL_HASH>` (full 40-character hash)
+- **Implementation commit**: `82361970c15181c8a19bc1249f3a525bac4ad9cd` (full 40-character hash)
 - **Evidence-fill commit**: `<P8-001_FILL_HASH>` (full 40-character hash)
 
 PM/CTO action required:

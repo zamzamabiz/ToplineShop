@@ -1498,7 +1498,7 @@ export const projectRegistry: ProjectRegistry = {
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
       notes: "P8-001 planning-only readiness plan complete, awaiting PM audit. Created docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md (sections A-M: governance header, objective/boundaries, inherited implemented baseline with Phase 3 vs Phase 4 contradictions recorded, database readiness, authentication readiness, tenant-aware RBAC, security/audit, gap register with 26 GAPs, risk register with 10 RISKs, proposed 5-task sequence P8-002..P8-006 within the registry's megaPromptTarget: 4 budget, verification matrix, global stop conditions, recommended next task P8-002 dependency-first). No implementation, no database commands, no auth/RBAC code, no packages installed, no migration, no production target, no shop.com. Verification: git rev-parse --show-toplevel E:/ToplineShop, git diff --check exit 0, npm run build (root) PASS (24 routes), npm run lint (root) PASS (0 errors), npm run build (backend) PASS, npm test (backend) PASS (12/12), targeted registry searches PASS. Allowed-only file families modified: docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md (new), src/project/projectRegistry.ts (this entry), AGENT_REPORTS/latest-status.md, AGENT_REPORTS/latest-wdr-summary.md, PM_OUTBOX/next-opencode-prompt.md, WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001_WDR_2026-09-10.md (new). STOPPED BEFORE TOPLINE-P8-002. P8-002 is proposed but unapproved.",
-      commitHash: "PENDING_UNTIL_COMMIT",
+      commitHash: "82361970c15181c8a19bc1249f3a525bac4ad9cd",
     },
   ],
   modules: [
@@ -2439,13 +2439,13 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-8",
       status: "PASS",
       date: "2026-09-10",
-      commitHash: "PENDING_UNTIL_COMMIT",
+      commitHash: "82361970c15181c8a19bc1249f3a525bac4ad9cd",
       pmAudit: "PLANNED",
     },
   ],
   git: {
     initialized: true,
-    lastCommit: "PENDING_UNTIL_COMMIT",
+    lastCommit: "82361970c15181c8a19bc1249f3a525bac4ad9cd",
   },
   github: {
     configured: true,
