@@ -1420,8 +1420,8 @@ export const projectRegistry: ProjectRegistry = {
       tests: "PASS",
       build: "PASS",
       ownerApproval: "PLANNED",
-      pmApproval: "PLANNED",
-      notes: "P7-009 frontend API client write methods: src/types/api.ts gained 5 enum-like literal union types (TenantType, TenantStatus, VendorStatus, CategoryStatus, ProductStatus) and 4 request interfaces (CreateTenantRequest, CreateVendorRequest, CreateCategoryRequest, CreateProductRequest) mirroring each backend Create*Dto field-for-field; src/lib/api-client.ts gained a generic postApi<TRequest, TResponse>(endpoint, data) helper (same ApiResponse/ApiError handling style as fetchApi) and 4 client methods (createTenant, createVendor, createCategory, createProduct) targeting the existing backend POST /tenants, POST /vendors, POST /categories, POST /products routes; all 11 existing GET methods (getRoot, getHealth, getVersion, getTenants, getTenant, getVendors, getVendor, getCategories, getCategory, getProducts, getProduct) and the fetchApi + buildQueryString helpers preserved byte-identical; PATCH/DELETE client methods explicitly deferred (no matching backend endpoints exist in any of the four controllers); zero backend files modified; zero frontend pages/components modified; npm run build PASS (all 24 routes compiled); npm run lint PASS (0 errors, 5 pre-existing <img> warnings in unrelated files); git diff --check PASS. Task-list entry added by P7-009-R1 corrective reconciliation after PM audit found the entry missing despite WDR claim.",
+      pmApproval: "PASS",
+      notes: "P7-009 approved through P7-009-R1 audit: Create*Request types added, createTenant/createVendor/createCategory/createProduct added for existing POST endpoints, all GET methods preserved, PATCH/DELETE deferred, npm run build PASS, npm run lint PASS with only pre-existing warnings, no backend files modified; missing task-list registry entry corrected by P7-009-R1.",
       commitHash: "4646688",
     },
   ],
@@ -2319,7 +2319,7 @@ export const projectRegistry: ProjectRegistry = {
       status: "PASS",
       date: "2026-09-10",
       commitHash: "4646688",
-      pmAudit: "BLOCKED",
+      pmAudit: "PASS",
     },
     {
       id: "wdr-061",
@@ -2328,7 +2328,7 @@ export const projectRegistry: ProjectRegistry = {
       status: "PASS",
       date: "2026-09-10",
       commitHash: "64a97af",
-      pmAudit: "PLANNED",
+      pmAudit: "PASS",
     },
   ],
   git: {
