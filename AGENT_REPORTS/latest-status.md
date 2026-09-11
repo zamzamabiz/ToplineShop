@@ -11,7 +11,7 @@
 - Execution status: PASS (planning/governance only)
 - PM audit: PLANNED (pending PM audit)
 - R7 PM audit: BLOCKED (R7 PM audit commit `5a7b67b331b8cfa0f4cdf44aa6256bed46b15965`)
-- Implementation commit: `PENDING_UNTIL_COMMIT` (R8 Commit A; resolved in Git by Commit B)
+- Implementation commit: `8457d2ce321722505595fcaddd09858b8a0768c4`
 - Evidence-fill commit: reported in #MM final handoff
 - R7 evidence-fill commit (Commit B): `760f61304b05cd9ce992a9e35ed21abce451e931` (now recorded in the R7 WDR Git Evidence section, this report, the latest WDR summary, and the PM outbox)
 - WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R8_WDR_2026-09-11.md`

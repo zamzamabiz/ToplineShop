@@ -17,7 +17,7 @@ chain has been PM-audited and PASSED).
 ## R8 Evidence
 
 - R8 WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R8_WDR_2026-09-11.md`
-- R8 implementation commit: `PENDING_UNTIL_COMMIT` (R8 Commit A; resolved in Git by Commit B)
+- R8 implementation commit: `8457d2ce321722505595fcaddd09858b8a0768c4`
 - R8 evidence-fill commit (Commit B): reported in #MM's final handoff
 - R7 WDR (Git Evidence section updated by R8): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R7_WDR_2026-09-11.md`
 - R7 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R7-AUDIT_2026-09-11.md`
