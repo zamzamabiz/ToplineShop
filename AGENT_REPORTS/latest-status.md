@@ -11,7 +11,7 @@
 - Execution status: PASS (planning/governance only)
 - PM audit: PLANNED
 - R10 PM audit: BLOCKED (R10 PM-audit commit `0f1401d6884d194d4d0d035167ca21c44ff26160`)
-- Implementation commit: `<R11_COMMIT_A_HASH>`
+- Implementation commit: `b8d25fe1c078267c76ed2f54a094e93fcc2a3719`
 - Evidence-fill commit (Commit B): `<R11_COMMIT_B_HASH>`
 - R10 implementation commit (R10 Commit A): `980d7513ab78fd2baf7c18065198a2e02d926ae8` (preserved — NOT replaced with R10 Commit B per the R11 instruction)
 - R10 evidence-fill commit (R10 Commit B): `90f87ede6727154e25a27ade64d93be9b80141f` (now recorded in the R10 WDR Git Evidence section, this report, the latest WDR summary, and the PM outbox)
