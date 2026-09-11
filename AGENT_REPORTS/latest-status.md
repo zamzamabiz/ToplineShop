@@ -10,8 +10,9 @@
 
 - Execution status: PASS (planning/governance only)
 - PM audit: BLOCKED
-- PM audit findings: R9 Commit B hash remains a placeholder in the WDR/reports/outbox/registry evidence fields; preflight/status claims omit the preserved TLS untracked files listed elsewhere in the R9 WDR.
+- PM audit findings: R9 Commit B hash remains a placeholder in the R9 WDR, reports, and outbox, and registry `git.lastCommit` still points to Commit A; preflight/status claims omit the preserved TLS untracked files listed elsewhere in the R9 WDR.
 - R9 PM audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R9-AUDIT_2026-09-11.md`
+- R9 PM audit commit: `55fd9bfafac684aacbc24c4eed4e94cb73c86778`
 - R8 PM audit: BLOCKED (R8 PM audit commit `0ed7d95461b84c4b54a0709d261688354efed2c0`)
 - Implementation commit: `2b1082d3058132198a605ffd8674aa46a106351f`
 - Evidence-fill commit (Commit B): `17655b7b6e168fb617ac3af3e80c46c2e0abfc2f`

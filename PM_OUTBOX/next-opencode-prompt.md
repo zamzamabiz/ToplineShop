@@ -16,9 +16,9 @@ R8 and R9 PM audits remain BLOCKED. Do not paste any P8-002 prompt into #MM.
 
 - R9 WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R9_WDR_2026-09-11.md`
 - R9 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R9-AUDIT_2026-09-11.md`
-- R9 PM audit commit: pending evidence-fill
+- R9 PM audit commit: `55fd9bfafac684aacbc24c4eed4e94cb73c86778`
 - R9 implementation commit (Commit A): `2b1082d3058132198a605ffd8674aa46a106351f`
-- R9 evidence-fill commit (Commit B): `17655b7b6e168fb617ac3af3e80c46c2e0abfc2f` (not yet filled into the R9 WDR and registry evidence fields)
+- R9 evidence-fill commit (Commit B): `17655b7b6e168fb617ac3af3e80c46c2e0abfc2f` (not yet filled into the R9 WDR, reports, outbox, or registry `git.lastCommit`)
 - R8 WDR (Git Evidence section + scope wording corrected by R9): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R8_WDR_2026-09-11.md`
 - R8 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R8-AUDIT_2026-09-11.md`
 - R8 PM audit commit: `0ed7d95461b84c4b54a0709d261688354efed2c0`

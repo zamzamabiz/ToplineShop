@@ -20,7 +20,7 @@ R9 was governance-only and did not authorize or begin P8-002. The repository rem
 
 ### 1. R9 evidence-fill hash is still missing from the claimed locations
 
-R9 Commit B is the real commit `17655b7b6e168fb617ac3af3e80c46c2e0abfc2f`, but the R9 WDR, both latest reports, and the PM outbox still contain `<R9_COMMIT_B_HASH>`. The registry `git.lastCommit`, R9 task `commitHash`, and `wdr-074.commitHash` still point to R9 Commit A `2b1082d3058132198a605ffd8674aa46a106351f` rather than recording the evidence-fill state required by the R9 WDR.
+R9 Commit B is the real commit `17655b7b6e168fb617ac3af3e80c46c2e0abfc2f`, but the R9 WDR, both latest reports, and the PM outbox still contain `<R9_COMMIT_B_HASH>`. The registry `git.lastCommit` also still points to R9 Commit A `2b1082d3058132198a605ffd8674aa46a106351f`, contrary to the R9 WDR's claim that the evidence-fill state was recorded there. The R9 task and `wdr-074` Commit A fields may remain on Commit A; they are not themselves blockers.
 
 The R9 Commit B message itself confirms that the placeholders intentionally remained for PM handoff. That is not sufficient for a closed evidence record.
 
@@ -64,4 +64,4 @@ R10 must:
 **P8-002: proposed, unregistered, and unapproved**  
 **Database/Auth/RBAC implementation: NOT AUTHORIZED**
 
-Audit commit: pending evidence-fill.
+Audit commit: `55fd9bfafac684aacbc24c4eed4e94cb73c86778`.
