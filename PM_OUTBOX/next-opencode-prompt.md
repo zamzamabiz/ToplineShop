@@ -21,7 +21,7 @@ R14 PM audit remains BLOCKED. Do not paste any P8-002 prompt into #MM.
 - R15 WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R15_WDR_2026-09-11.md`
 - R15 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R15-AUDIT_2026-09-11.md` (not yet written; PM audit pending)
 - R15 PM audit commit: PLANNED (pending)
-- R15 implementation commit (Commit A): `<R15_COMMIT_A_HASH>`
+- R15 implementation commit (Commit A): `22118accf43bcc94699e3f4d42cbfa9020d8edc9`
 - R15 evidence-fill commit (Commit B): `<R15_COMMIT_B_HASH>`
 - R14 WDR (GIT EVIDENCE section corrected by R15): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R14_WDR_2026-09-11.md`
 - R14 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R14-AUDIT_2026-09-11.md`

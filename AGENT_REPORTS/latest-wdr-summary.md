@@ -7,7 +7,7 @@
 - Execution: PASS (planning/governance only)
 - PM audit: PLANNED
 - R14 PM audit: BLOCKED (R14 PM-audit Commit A `34eaac16e94255549668cb93304ba2cccbfee97b`)
-- Implementation commit: `<R15_COMMIT_A_HASH>`
+- Implementation commit: `22118accf43bcc94699e3f4d42cbfa9020d8edc9`
 - Evidence-fill commit (Commit B): `<R15_COMMIT_B_HASH>`
 - R14 implementation commit (R14 Commit A): `fafdb0a062706fb5aa93996c7a74350706c808e0` (preserved — NOT replaced with R14 Commit B per the R15 instruction)
 - R14 evidence-fill commit (R14 Commit B): `0edb50aeb0df69bc65763daf7fb46d2b07af6344` (now recorded in the R14 WDR Git Evidence section, the latest status, this summary, and the PM outbox)
