@@ -5,7 +5,7 @@
 **TOPLINE-P8-001-R18** - Phase 8 R17 Evidence-Fill Reconciliation
 
 - Execution: PASS (planning/governance only)
-- **PM audit: BLOCKED** (R18 PM-audit commit `<R18_PM_AUDIT_COMMIT_A_HASH>`; R18 PM-audit evidence-fill Commit B `<R18_PM_AUDIT_COMMIT_B_HASH>`)
+- **PM audit: BLOCKED** (R18 PM-audit commit `c4c151f8dbbe706d253e7c5c647e31ad08097dfd`; R18 PM-audit evidence-fill Commit B `<R18_PM_AUDIT_COMMIT_B_HASH>`)
 - R18 implementation commit (R18 Commit A): `db5c49f2bbac1a00f24752a18f3881e16c7ecfa7`
 - R18 evidence-fill commit (R18 Commit B): `48cf1ddb28f401ba2cb3378a7a5152e36a670020` (not yet filled into the R18 WDR, reports, outbox, or registry `git.lastCommit`)
 - R17 implementation commit (R17 Commit A): `8c7f46d7547220e88b9a6d6dd7e0fbc5d7fed8ae` (preserved — NOT replaced with R17 Commit B per the R18 instruction)

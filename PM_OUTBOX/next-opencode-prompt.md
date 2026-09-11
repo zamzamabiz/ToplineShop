@@ -11,7 +11,7 @@ Do not paste any P8-002 prompt into #MM.
 ## R18 PM Audit Evidence
 
 - R18 PM audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R18-AUDIT_2026-09-11.md`
-- R18 PM-audit Commit A: `<R18_PM_AUDIT_COMMIT_A_HASH>` (filled by R18 PM-audit evidence-fill Commit B)
+- R18 PM-audit Commit A: `c4c151f8dbbe706d253e7c5c647e31ad08097dfd` (filled by R18 PM-audit evidence-fill Commit B)
 - R18 PM-audit evidence-fill Commit B: `<R18_PM_AUDIT_COMMIT_B_HASH>` (filled by R18 PM-audit evidence-fill Commit B; reported in final handoff)
 - R18 WDR (immutable; GIT EVIDENCE section only was corrected by R18 itself — not further edited by R18 PM audit): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R18_WDR_2026-09-11.md`
 - R18 implementation commit (Commit A): `db5c49f2bbac1a00f24752a18f3881e16c7ecfa7`
