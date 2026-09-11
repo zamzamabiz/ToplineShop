@@ -2,37 +2,43 @@
 
 ## Current WDR
 
-**TOPLINE-P8-001-R8** - Phase 8 R7 Evidence-Fill and WDR State Reconciliation
+**TOPLINE-P8-001-R9** - Phase 8 R8 Evidence-Fill and Scope Boundary Reconciliation
 
 - Execution: PASS (planning/governance only)
-- PM audit: BLOCKED
-- R7 PM audit: BLOCKED (R7 PM audit commit `5a7b67b331b8cfa0f4cdf44aa6256bed46b15965`)
-- Implementation commit: `8457d2ce321722505595fcaddd09858b8a0768c4`
-- Evidence-fill commit: `d876589d4c8691534999f3692e859325f8b77d88`
-- R7 evidence-fill commit (Commit B): `760f61304b05cd9ce992a9e35ed21abce451e931` (now recorded in the R7 WDR Git Evidence section, the latest status, this summary, and the PM outbox)
-- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R8_WDR_2026-09-11.md`
-- R7 WDR (Git Evidence section updated by R8): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R7_WDR_2026-09-11.md`
+- PM audit: PLANNED
+- R8 PM audit: BLOCKED (R8 PM audit commit `0ed7d95461b84c4b54a0709d261688354efed2c0`)
+- Implementation commit: `<R9_COMMIT_A_HASH>`
+- Evidence-fill commit (Commit B): `<R9_COMMIT_B_HASH>`
+- R8 implementation commit (R8 Commit A): `8457d2ce321722505595fcaddd09858b8a0768c4`
+- R8 evidence-fill commit (R8 Commit B): `d876589d4c8691534999f3692e859325f8b77d88` (now recorded in the R8 WDR Git Evidence section, the latest status, this summary, and the PM outbox)
+- R7 evidence-fill commit (R7 Commit B): `760f61304b05cd9ce992a9e35ed21abce451e931`
+- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R9_WDR_2026-09-11.md`
+- R8 WDR (Git Evidence + scope wording corrected by R9): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R8_WDR_2026-09-11.md`
+- R8 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R8-AUDIT_2026-09-11.md`
+- R7 WDR (immutable, Git Evidence section only was updated by R8 — not further edited by R9): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R7_WDR_2026-09-11.md`
 - R7 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R7-AUDIT_2026-09-11.md`
-- R8 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R8-AUDIT_2026-09-11.md`
-- R8 PM audit commit: `0ed7d95461b84c4b54a0709d261688354efed2c0`
 - R6 WDR (immutable, R6 status-evidence correction recorded in R7): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6_WDR_2026-09-11.md`
 - R6 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6-AUDIT_2026-09-11.md`
-- R6 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md` (preserved byte-for-byte by R7 and R8)
+- R6 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md` (preserved byte-for-byte by R7, R8, and R9)
 
-## R8 Summary
+## R9 Summary
 
-R8 corrects the two R7 PM audit findings:
+R9 corrects the two R8 PM audit findings:
 
-- The R7 WDR's Git Evidence section now records the real
-  R7 evidence-fill Commit B hash
-  `760f61304b05cd9ce992a9e35ed21abce451e931` (the
+- The R8 WDR's Git Evidence section now records the
+  real R8 evidence-fill Commit B hash
+  `d876589d4c8691534999f3692e859325f8b77d88` (the
   "reported directly in the final handoff" placeholder
   prose has been replaced).
-- The Block Summary below now explicitly includes
-  `wdr-071` in the blocked list (preserved across R8
-  re-orientation). The registry's `wdr-071.pmAudit` is
-  BLOCKED and the PM_OUTBOX block list already included
-  `wdr-071`.
+- The R8 WDR's OBJECTIVE section now explicitly names
+  the narrow exception that allowed the R7 WDR Git
+  Evidence section to be updated (only the R7 WDR, only
+  its Git Evidence section, solely to fill the real R7
+  evidence-fill Commit B hash). The R7 audit and all
+  other prior WDRs and audits remain immutable. No
+  other historical evidence was edited.
+
+The valid R8 correction that records the R7 Commit B hash `760f61304b05cd9ce992a9e35ed21abce451e931` and keeps `wdr-071` in the Block Summary below is preserved.
 
 The R7 ignored-file correction (`.claude/settings.local.json`
 is **present and gitignored globally** via
@@ -40,20 +46,17 @@ is **present and gitignored globally** via
 `**/.claude/settings.local.json`) is preserved byte-for-byte.
 R6 readiness-plan corrections (package ownership, Prisma
 ownership, corrective chain references) are preserved
-byte-for-byte; R8 did not edit the plan.
+byte-for-byte; R9 did not edit the plan.
 
 ## Block Summary
 
 - P8-001, P8-001-R1, P8-001-R2, P8-001-R3, P8-001-R4, P8-001-R5,
-  P8-001-R6, P8-001-R7, wdr-065, wdr-066, wdr-067, wdr-068, wdr-069,
-  wdr-070, **wdr-071**, and wdr-072 remain BLOCKED.
+  P8-001-R6, P8-001-R7, P8-001-R8, wdr-065, wdr-066, wdr-067,
+  wdr-068, wdr-069, wdr-070, **wdr-071**, wdr-072, and wdr-073
+  remain BLOCKED.
 - Phase 8 remains BLOCKED.
 - P8-002 is **proposed but unapproved**.
 
 ## Next WDR
 
-R8 PM audit is BLOCKED. The next corrective WDR is planned as
-`TOPLINE-P8-001-R9_WDR_2026-09-11.md`. R9 must complete the
-R8 evidence fill, clarify the narrow R7 WDR exception, preserve
-valid R8 corrections, and stop before P8-002. P8-002 remains
-proposed, unregistered, and unapproved.
+R9 PM audit is PLANNED. R9 execution PASS is awaiting PM/CTO audit. The next corrective WDR (if R9 PM audit BLOCKED) would be planned as `TOPLINE-P8-001-R10_WDR_2026-09-11.md`. If R9 PM audit PASSED, the next PM-approved implementation task is planned as `TOPLINE-P8-002` (schema/migration-only, additive, no packages, no auth behavior). R9 stops before P8-002; P8-002 remains proposed, unregistered, and unapproved.
