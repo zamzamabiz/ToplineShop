@@ -2949,7 +2949,7 @@ export const projectRegistry: ProjectRegistry = {
   ],
   git: {
     initialized: true,
-    lastCommit: "PENDING_UNTIL_R17_PM_AUDIT_COMMIT_A",
+    lastCommit: "0242a097e4933f5a63aaad1fdbda5790fdca31bd",
   },
   github: {
     configured: true,
