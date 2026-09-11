@@ -2,14 +2,15 @@
 
 ## Current WDR
 
-**TOPLINE-P8-001-R14** - Phase 8 R13 Evidence-Fill Reconciliation
+**TOPLINE-P8-001-R15** - Phase 8 R14 Evidence-Fill Reconciliation
 
 - Execution: PASS (planning/governance only)
-- **PM audit: BLOCKED** (R14 PM-audit commit `34eaac16e94255549668cb93304ba2cccbfee97b`)
-- R13 PM audit: BLOCKED (R13 PM-audit Commit A `8be6ffe33ed0331836bd8ecc154b4a23ae08adee`)
-- Implementation commit: `fafdb0a062706fb5aa93996c7a74350706c808e0`
-- Evidence-fill commit (Commit B): `0edb50aeb0df69bc65763daf7fb46d2b07af6344` (not yet filled into the R14 WDR, reports, outbox, or registry `git.lastCommit`)
-- R13 implementation commit (R13 Commit A): `a0f3318967fb931adb8463844c3165bf2d0ed778` (preserved — NOT replaced with R13 Commit B)
+- PM audit: PLANNED
+- R14 PM audit: BLOCKED (R14 PM-audit Commit A `34eaac16e94255549668cb93304ba2cccbfee97b`)
+- Implementation commit: `<R15_COMMIT_A_HASH>`
+- Evidence-fill commit (Commit B): `<R15_COMMIT_B_HASH>`
+- R14 implementation commit (R14 Commit A): `fafdb0a062706fb5aa93996c7a74350706c808e0` (preserved — NOT replaced with R14 Commit B per the R15 instruction)
+- R14 evidence-fill commit (R14 Commit B): `0edb50aeb0df69bc65763daf7fb46d2b07af6344` (now recorded in the R14 WDR Git Evidence section, the latest status, this summary, and the PM outbox)
 - R13 evidence-fill commit (R13 Commit B): `038ffb1db413a4dba8e5940dae2b5dd8cde76dbf`
 - R12 evidence-fill commit (R12 Commit B): `a92659bfe0d96930fe33878a6a178bfc016c8a10`
 - R11 evidence-fill commit (R11 Commit B): `c602d3ab030213b1894c8549ee705beaeb283979`
@@ -17,35 +18,34 @@
 - R9 evidence-fill commit (R9 Commit B): `17655b7b6e168fb617ac3af3e80c46c2e0abfc2f`
 - R8 evidence-fill commit (R8 Commit B): `d876589d4c8691534999f3692e859325f8b77d88`
 - R7 evidence-fill commit (R7 Commit B): `760f61304b05cd9ce992a9e35ed21abce451e931`
-- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R14_WDR_2026-09-11.md`
-- R14 PM audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R14-AUDIT_2026-09-11.md` (R14 PM-audit commit `34eaac16e94255549668cb93304ba2cccbfee97b`)
-- R13 WDR (immutable; GIT EVIDENCE section only was corrected by R14 — not further edited by R14 PM audit): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R13_WDR_2026-09-11.md`
+- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R15_WDR_2026-09-11.md`
+- R14 WDR (GIT EVIDENCE section corrected by R15): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R14_WDR_2026-09-11.md`
+- R14 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R14-AUDIT_2026-09-11.md`
 - R13 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R13-AUDIT_2026-09-11.md`
 - R12 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R12-AUDIT_2026-09-11.md`
 - R11 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R11-AUDIT_2026-09-11.md`
 - R10 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R10-AUDIT_2026-09-11.md`
 - R9 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R9-AUDIT_2026-09-11.md`
 - R8 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R8-AUDIT_2026-09-11.md`
-- R6 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md` (preserved byte-for-byte by R13 and R14)
+- R6 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md` (preserved byte-for-byte by R14 and R15)
 
-## R14 PM Audit Summary
+## R15 Summary
 
-R14 PM audit BLOCKED:
+R15 closes the R14 PM audit finding:
 
-- The R14 WDR's GIT EVIDENCE section still records
-  the `<R14_COMMIT_B_HASH>` placeholder instead of
-  the real R14 Commit B hash
-  `0edb50aeb0df69bc65763daf7fb46d2b07af6344`.
-- Both latest reports and the PM outbox still contain
-  the placeholder.
-- The registry `git.lastCommit` still points to R14
-  Commit A `fafdb0a062706fb5aa93996c7a74350706c808e0`,
-  contrary to the R14 WDR's claim that Commit B fills
-  the evidence state there.
+- The R14 WDR's GIT EVIDENCE section now records the
+  real R14 evidence-fill Commit B hash
+  `0edb50aeb0df69bc65763daf7fb46d2b07af6344` (the
+  `<R14_COMMIT_B_HASH>` placeholder has been replaced).
+- The registry `git.lastCommit` is updated to R15
+  Commit A (the R14 PM-audit hash is replaced); the
+  R14 task `commitHash` and `wdr-079.commitHash`
+  correctly remain on R14 Commit A `fafdb0a062706fb5aa93996c7a74350706c808e0`
+  per the "Preserve these fields exactly" instruction.
 
-The R14 task `commitHash` and `wdr-079.commitHash` correctly remain on R14 Commit A. The R14 valid correction (R13 Commit B hash `038ffb1db413a4dba8e5940dae2b5dd8cde76dbf` recorded in the R13 WDR Git Evidence section; R13 audit held on the R13 evidence-fill hash gap; R12 preflight reconciliation preserved) is preserved. The valid R13 corrections (R12 Commit B hash `a92659bfe0d96930fe33878a6a178bfc016c8a10` recorded in the R12 WDR Git Evidence section; R12 preflight and post-commit verification rows reconciled with the preserved TLS untracked files) are preserved. The valid R12 corrections (R11 Commit B hash `c602d3ab030213b1894c8549ee705beaeb283979` recorded in the R11 WDR Git Evidence section; R11 preflight and post-commit verification rows reconciled with the preserved TLS untracked files) are preserved. The valid R11 corrections (R10 Commit B hash `90f87ede6727154e25a27ade64d93be9b80141f` recorded in the R10 WDR Git Evidence section) are preserved. The valid R10 corrections (R9 Commit B hash `17655b7b6e168fb617ac3af3e80c46c2e0abfc2f` recorded in the R9 WDR Git Evidence section; R9 preflight and post-commit verification rows reconciled with the preserved TLS untracked files) are preserved. The valid R9 corrections (R8 Commit B hash `d876589d4c8691534999f3692e859325f8b77d88` recorded in the R8 WDR Git Evidence section; R8 narrow R7 WDR Git Evidence exception in the R8 WDR OBJECTIVE) are preserved.
+The valid R14 corrections (R13 Commit B hash `038ffb1db413a4dba8e5940dae2b5dd8cde76dbf` recorded in the R13 WDR Git Evidence section; R13 preflight and post-commit verification rows reconciled with the preserved TLS untracked files; R14 audit held on the R14 evidence-fill hash gap) are preserved. The valid R13 corrections (R12 Commit B hash `a92659bfe0d96930fe33878a6a178bfc016c8a10` recorded in the R12 WDR Git Evidence section; R12 preflight and post-commit verification rows reconciled with the preserved TLS untracked files) are preserved. The valid R12 corrections (R11 Commit B hash `c602d3ab030213b1894c8549ee705beaeb283979` recorded in the R11 WDR Git Evidence section; R11 preflight and post-commit verification rows reconciled with the preserved TLS untracked files) are preserved. The valid R11 corrections (R10 Commit B hash `90f87ede6727154e25a27ade64d93be9b80141f` recorded in the R10 WDR Git Evidence section) are preserved. The valid R10 corrections (R9 Commit B hash `17655b7b6e168fb617ac3af3e80c46c2e0abfc2f` recorded in the R9 WDR Git Evidence section; R9 preflight and post-commit verification rows reconciled with the preserved TLS untracked files) are preserved. The valid R9 corrections (R8 Commit B hash `d876589d4c8691534999f3692e859325f8b77d88` recorded in the R8 WDR Git Evidence section; R8 narrow R7 WDR Git Evidence exception in the R8 WDR OBJECTIVE) are preserved.
 
-The R14 task `commitHash` is preserved as R14 Commit A `fafdb0a062706fb5aa93996c7a74350706c808e0` (NOT replaced with R14 Commit B per the R14 PM audit instruction). The R13 task `commitHash` is preserved as R13 Commit A `a0f3318967fb931adb8463844c3165bf2d0ed778` (NOT replaced with R13 Commit B). The R12 task `commitHash` is preserved as R12 Commit A `330e61087ae972c2440f2ac2ea12ea4c627fad8d` (NOT replaced with R12 Commit B). The R11 task `commitHash` is preserved as R11 Commit A `b8d25fe1c078267c76ed2f54a094e93fcc2a3719` (NOT replaced with R11 Commit B). The R10 task `commitHash` is preserved as R10 Commit A `980d7513ab78fd2baf7c18065198a2e02d926ae8` (NOT replaced with R10 Commit B). The R9 task `commitHash` is preserved as R9 Commit A `2b1082d3058132198a605ffd8674aa46a106351f` (NOT replaced with R9 Commit B). The R8 task `commitHash` is preserved as R8 Commit A `8457d2ce321722505595fcaddd09858b8a0768c4` (NOT replaced with R8 Commit B).
+The R14 task `commitHash` is preserved as R14 Commit A `fafdb0a062706fb5aa93996c7a74350706c808e0` (NOT replaced with R14 Commit B per the R15 instruction). The R13 task `commitHash` is preserved as R13 Commit A `a0f3318967fb931adb8463844c3165bf2d0ed778` (NOT replaced with R13 Commit B). The R12 task `commitHash` is preserved as R12 Commit A `330e61087ae972c2440f2ac2ea12ea4c627fad8d` (NOT replaced with R12 Commit B). The R11 task `commitHash` is preserved as R11 Commit A `b8d25fe1c078267c76ed2f54a094e93fcc2a3719` (NOT replaced with R11 Commit B). The R10 task `commitHash` is preserved as R10 Commit A `980d7513ab78fd2baf7c18065198a2e02d926ae8` (NOT replaced with R10 Commit B). The R9 task `commitHash` is preserved as R9 Commit A `2b1082d3058132198a605ffd8674aa46a106351f` (NOT replaced with R9 Commit B). The R8 task `commitHash` is preserved as R8 Commit A `8457d2ce321722505595fcaddd09858b8a0768c4` (NOT replaced with R8 Commit B).
 
 The R7 ignored-file correction (`.claude/settings.local.json`
 is **present and gitignored globally** via
@@ -53,8 +53,7 @@ is **present and gitignored globally** via
 `**/.claude/settings.local.json`) is preserved byte-for-byte.
 R6 readiness-plan corrections (package ownership, Prisma
 ownership, corrective chain references) are preserved
-byte-for-byte; R14 did not edit the plan, and the R14 PM
-audit did not edit the plan either.
+byte-for-byte; R15 did not edit the plan.
 
 ## Block Summary
 
@@ -69,4 +68,4 @@ audit did not edit the plan either.
 
 ## Next WDR
 
-R14 PM audit is BLOCKED. The next corrective WDR is planned as `TOPLINE-P8-001-R15_WDR_2026-09-11.md`. R15 must complete the R14 evidence fill, preserve the R14 task and `wdr-079` Commit A fields, preserve all prior evidence, and stop before P8-002. P8-002 remains proposed, unregistered, and unapproved.
+R15 PM audit is PLANNED. R15 execution PASS is awaiting PM/CTO audit. The next corrective WDR (if R15 PM audit BLOCKED) would be planned as `TOPLINE-P8-001-R16_WDR_2026-09-11.md`. If R15 PM audit PASSED, the next PM-approved implementation task is planned as `TOPLINE-P8-002` (schema/migration-only, additive, no packages, no auth behavior). R15 stops before P8-002; P8-002 remains proposed, unregistered, and unapproved.
