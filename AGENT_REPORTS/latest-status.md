@@ -53,7 +53,7 @@ The R12 valid correction (R12 Commit B hash `a92659bfe0d96930fe33878a6a178bfc016
 - P8-001-R11 implementation: PASS, PM audit BLOCKED.
 - P8-001-R12 implementation: PASS, PM audit BLOCKED.
 - P8-001-R13 implementation: PASS, PM audit BLOCKED.
-- P8-001-R13 audit commit: PLANNED (pending — this audit is being recorded in two commits; the first commit hash is `<R13_AUDIT_COMMIT_A_HASH>`)
+- P8-001-R13 PM-audit commit: `8be6ffe33ed0331836bd8ecc154b4a23ae08adee`
 - P8-001-R13 implementation commit (R13 Commit A): `a0f3318967fb931adb8463844c3165bf2d0ed778`
 - P8-001-R13 evidence-fill commit (R13 Commit B): `038ffb1db413a4dba8e5940dae2b5dd8cde76dbf`
 - P8-001-R12 implementation commit (R12 Commit A): `330e61087ae972c2440f2ac2ea12ea4c627fad8d` (preserved — NOT replaced with R12 Commit B)
