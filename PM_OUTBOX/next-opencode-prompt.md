@@ -2,7 +2,7 @@
 
 ## PM/CTO Decision
 
-**TOPLINE-P8-001-R11 execution: PASS — PM audit PLANNED**
+**TOPLINE-P8-001-R11 execution: PASS — PM audit BLOCKED**
 
 R11 corrected the R10 PM audit finding: the R10 Commit B hash
 `90f87ede6727154e25a27ade64d93be9b80141f` is now recorded in
@@ -10,15 +10,15 @@ the R10 WDR GIT EVIDENCE section (the `<R10_COMMIT_B_HASH>`
 placeholder has been replaced). No P8-002 implementation is
 authorized.
 
-R10 PM audit remains BLOCKED. Do not paste any P8-002 prompt into #MM.
+R10 and R11 PM audits remain BLOCKED. Do not paste any P8-002 prompt into #MM.
 
 ## R11 Evidence
 
 - R11 WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R11_WDR_2026-09-11.md`
-- R11 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R11-AUDIT_2026-09-11.md` (not yet written; PM audit pending)
-- R11 PM audit commit: PLANNED (pending)
+- R11 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R11-AUDIT_2026-09-11.md`
+- R11 PM audit commit: pending evidence-fill
 - R11 implementation commit (Commit A): `b8d25fe1c078267c76ed2f54a094e93fcc2a3719`
-- R11 evidence-fill commit (Commit B): `<R11_COMMIT_B_HASH>`
+- R11 evidence-fill commit (Commit B): `c602d3ab030213b1894c8549ee705beaeb283979` (not yet filled into the R11 WDR and registry `git.lastCommit`)
 - R10 WDR (GIT EVIDENCE section corrected by R11): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R10_WDR_2026-09-11.md`
 - R10 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R10-AUDIT_2026-09-11.md`
 - R10 PM-audit commit: `0f1401d6884d194d4d0d035167ca21c44ff26160`
@@ -40,11 +40,11 @@ R10 PM audit remains BLOCKED. Do not paste any P8-002 prompt into #MM.
 - Phase 8 remains BLOCKED. P8-002 is proposed, unregistered, and unapproved.
 - P8-001-R11 STOPPED BEFORE `TOPLINE-P8-002` per #123.
 
-## Required Corrective Task (if R11 PM audit BLOCKED)
+## Required Corrective Task
 
-`TOPLINE-P8-001-R12 - Phase 8 R11 Evidence-Fill and <next-gap> Reconciliation`
+`TOPLINE-P8-001-R12 - Phase 8 R11 Evidence-Fill Reconciliation`
 
-R12 would be documentation/governance only (only if R11 PM audit BLOCKED). It would:
+R12 is documentation/governance only. It must:
 - Fill the real R11 evidence-fill hash into the R11 WDR Git Evidence section, both latest reports, the PM outbox, and the canonical registry where applicable.
 - Address any new R11 audit findings explicitly.
 - Preserve the valid R11 R10-evidence-fill correction.
