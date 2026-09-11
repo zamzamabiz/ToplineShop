@@ -2,21 +2,22 @@
 
 ## Current Status
 
-**TOPLINE-P8-001-R8 execution: PASS — PM audit pending**
+**TOPLINE-P8-001-R8 execution: PASS — PM audit BLOCKED**
 
 ## R8 Task
 
 **TOPLINE-P8-001-R8** - Phase 8 R7 Evidence-Fill and WDR State Reconciliation
 
 - Execution status: PASS (planning/governance only)
-- PM audit: PLANNED (pending PM audit)
+- PM audit: BLOCKED
 - R7 PM audit: BLOCKED (R7 PM audit commit `5a7b67b331b8cfa0f4cdf44aa6256bed46b15965`)
 - Implementation commit: `8457d2ce321722505595fcaddd09858b8a0768c4`
-- Evidence-fill commit: reported in #MM final handoff
+- Evidence-fill commit: `d876589d4c8691534999f3692e859325f8b77d88`
 - R7 evidence-fill commit (Commit B): `760f61304b05cd9ce992a9e35ed21abce451e931` (now recorded in the R7 WDR Git Evidence section, this report, the latest WDR summary, and the PM outbox)
 - WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R8_WDR_2026-09-11.md`
 - R7 WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R7_WDR_2026-09-11.md` (Git Evidence section updated by R8)
 - R7 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R7-AUDIT_2026-09-11.md`
+- R8 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R8-AUDIT_2026-09-11.md`
 - R6 WDR (immutable, R6 status-evidence correction recorded in R7): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R6_WDR_2026-09-11.md`
 
 R8 corrected the two R7 PM audit findings:
@@ -89,18 +90,18 @@ byte-for-byte; R8 did not edit the plan.
 - wdr-071 PM audit: BLOCKED
 - wdr-072 PM audit: BLOCKED
 
-## Next Task (proposed, unapproved)
+## Next Task (corrective, planned)
 
-**TOPLINE-P8-002** - Auth Persistence Data Model and Migration Safety Foundation
+**TOPLINE-P8-001-R9** - Phase 8 R8 Evidence-Fill and Scope Boundary Reconciliation
 
-P8-002 is **proposed, unregistered, and unapproved**. P8-002 has not been registered. PM must write a separate, PM-approved prompt for P8-002 only after the full P8-001 / R1 / R2 / R3 / R4 / R5 / R6 / R7 / R8 corrective chain has been audited and PASSED by PM. P8-001-R8 STOPPED BEFORE TOPLINE-P8-002 per #123.
+R9 is a documentation/governance-only correction. It must fill the real R8 evidence-fill hash in every claimed location, clarify the narrow R7 WDR Git Evidence exception, preserve all valid R8 corrections, and stop before P8-002. P8-002 remains proposed, unregistered, and unapproved.
 
 ## Phase 8 State
 
-- Status: BLOCKED pending P8-001-R8 PM audit
+- Status: BLOCKED pending P8-001-R9 completion and PM audit
 - Progress: 20
 - Mega-prompt target/completed: 5/1 (R1, R2, R3, R4, R5, R6, R7, R8 are correctives and do not increment)
-- Registered tasks: 9
+- Registered tasks: 10
 - Completed implementation-agent tasks: 9
 - All implementation/owner gates remain unpassed
 - currentTask: null
