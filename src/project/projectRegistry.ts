@@ -1669,7 +1669,7 @@ export const projectRegistry: ProjectRegistry = {
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
       notes: "Documentation/governance-only correction. Fill the real R8 evidence-fill hash, clarify that only the R7 WDR Git Evidence section may be updated, preserve all other prior WDRs/audits, and stop before P8-002.",
-      commitHash: "<R9_COMMIT_A_HASH>",
+      commitHash: "2b1082d3058132198a605ffd8674aa46a106351f",
     },
   ],
   modules: [
@@ -2691,13 +2691,13 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-8",
       status: "PASS",
       date: "2026-09-11",
-      commitHash: "<R9_COMMIT_A_HASH>",
+      commitHash: "2b1082d3058132198a605ffd8674aa46a106351f",
       pmAudit: "PLANNED",
     },
   ],
   git: {
     initialized: true,
-    lastCommit: "PENDING_UNTIL_R9_COMMIT_A",
+    lastCommit: "2b1082d3058132198a605ffd8674aa46a106351f",
   },
   github: {
     configured: true,
