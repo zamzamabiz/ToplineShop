@@ -5,10 +5,12 @@
 **TOPLINE-P8-001-R10** - Phase 8 R9 Evidence-Fill and Preflight Reconciliation
 
 - Execution: PASS (planning/governance only)
-- PM audit: PLANNED
+- PM audit: BLOCKED
+- PM audit findings: R10 Commit B hash remains a placeholder in the R10 WDR, reports, outbox, and registry `git.lastCommit`.
+- R10 PM audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R10-AUDIT_2026-09-11.md`
 - R9 PM audit: BLOCKED (R9 PM audit commit `55fd9bfafac684aacbc24c4eed4e94cb73c86778`)
 - Implementation commit: `980d7513ab78fd2baf7c18065198a2e02d926ae8`
-- Evidence-fill commit (Commit B): `<R10_COMMIT_B_HASH>`
+- Evidence-fill commit (Commit B): `90f87ede6727154e25a27ade64d93be9b80141f`
 - R9 implementation commit (R9 Commit A): `2b1082d3058132198a605ffd8674aa46a106351f` (preserved — NOT replaced with R9 Commit B per the R10 instruction)
 - R9 evidence-fill commit (R9 Commit B): `17655b7b6e168fb617ac3af3e80c46c2e0abfc2f` (now recorded in the R9 WDR Git Evidence section, the latest status, this summary, and the PM outbox)
 - R8 implementation commit (R8 Commit A): `8457d2ce321722505595fcaddd09858b8a0768c4`
@@ -60,4 +62,4 @@ byte-for-byte; R10 did not edit the plan.
 
 ## Next WDR
 
-R10 PM audit is PLANNED. R10 execution PASS is awaiting PM/CTO audit. The next corrective WDR (if R10 PM audit BLOCKED) would be planned as `TOPLINE-P8-001-R11_WDR_2026-09-11.md`. If R10 PM audit PASSED, the next PM-approved implementation task is planned as `TOPLINE-P8-002` (schema/migration-only, additive, no packages, no auth behavior). R10 stops before P8-002; P8-002 remains proposed, unregistered, and unapproved.
+R10 PM audit is BLOCKED. The next corrective WDR is planned as `TOPLINE-P8-001-R11_WDR_2026-09-11.md`. P8-002 remains proposed, unregistered, and unapproved. R10 stops before P8-002.
