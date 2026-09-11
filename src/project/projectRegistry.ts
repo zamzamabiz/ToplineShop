@@ -1764,7 +1764,7 @@ export const projectRegistry: ProjectRegistry = {
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
       notes: "Corrective governance-only task for the blocked R13 audit. Fill the real R13 evidence-fill Commit B hash, preserve all prior evidence and stop before P8-002.",
-      commitHash: "<R14_COMMIT_A_HASH>",
+      commitHash: "fafdb0a062706fb5aa93996c7a74350706c808e0",
     },
   ],
   modules: [
@@ -2831,13 +2831,13 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-8",
       status: "PASS",
       date: "2026-09-11",
-      commitHash: "<R14_COMMIT_A_HASH>",
+      commitHash: "fafdb0a062706fb5aa93996c7a74350706c808e0",
       pmAudit: "PLANNED",
     },
   ],
   git: {
     initialized: true,
-    lastCommit: "PENDING_UNTIL_R14_COMMIT_A",
+    lastCommit: "fafdb0a062706fb5aa93996c7a74350706c808e0",
   },
   github: {
     configured: true,
