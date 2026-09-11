@@ -2,17 +2,18 @@
 
 ## Current Status
 
-**TOPLINE-P8-001-R12 execution: PASS — PM audit PLANNED**
+**TOPLINE-P8-001-R12 execution: PASS — PM audit BLOCKED**
 
 ## R12 Task
 
 **TOPLINE-P8-001-R12** - Phase 8 R11 Evidence-Fill Reconciliation
 
 - Execution status: PASS (planning/governance only)
-- PM audit: PLANNED
+- PM audit: BLOCKED
+- R12 PM audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R12-AUDIT_2026-09-11.md`
 - R11 PM audit: BLOCKED (R11 PM-audit commit `992c3a4f278fc1d1725cb3fcb5c5b8a7d2aa068f`)
 - Implementation commit: `330e61087ae972c2440f2ac2ea12ea4c627fad8d`
-- Evidence-fill commit (Commit B): `<R12_COMMIT_B_HASH>`
+- Evidence-fill commit (Commit B): `a92659bfe0d96930fe33878a6a178bfc016c8a10`
 - R11 implementation commit (R11 Commit A): `b8d25fe1c078267c76ed2f54a094e93fcc2a3719` (preserved — NOT replaced with R11 Commit B per the R12 instruction)
 - R11 evidence-fill commit (R11 Commit B): `c602d3ab030213b1894c8549ee705beaeb283979` (now recorded in the R11 WDR Git Evidence section, this report, the latest WDR summary, and the PM outbox)
 - R10 evidence-fill commit (R10 Commit B): `90f87ede6727154e25a27ade64d93be9b80141f`
@@ -36,7 +37,7 @@ R12 corrects the R11 PM audit finding:
 
 The R11 valid correction (R10 Commit B hash `90f87ede6727154e25a27ade64d93be9b80141f` recorded in the R10 WDR Git Evidence section; R10 preflight and post-commit verification rows reconciled with the preserved TLS untracked files) is preserved. The R10 valid correction (R9 Commit B hash recorded in the R9 WDR Git Evidence section; R9 preflight and post-commit verification rows reconciled with the preserved TLS untracked files) is preserved. The R9 valid correction (R8 Commit B hash recorded in the R8 WDR Git Evidence section; R8 narrow R7 WDR Git Evidence exception in the R8 WDR OBJECTIVE) is preserved. The R7 ignored-file correction (`.claude/settings.local.json` is **present and gitignored globally** via `C:\Users\a\.config\git\ignore` line 1 pattern `**/.claude/settings.local.json`) is preserved byte-for-byte. The R6 readiness-plan corrections (package ownership, Prisma ownership, corrective chain references) are preserved byte-for-byte; R12 did not edit the plan.
 
-## P8-001 through P8-001-R11 (all BLOCKED)
+## P8-001 through P8-001-R12 (all BLOCKED)
 
 - P8-001 implementation: PASS, PM audit BLOCKED.
 - P8-001-R1 implementation: PASS, PM audit BLOCKED.
@@ -50,6 +51,7 @@ The R11 valid correction (R10 Commit B hash `90f87ede6727154e25a27ade64d93be9b80
 - P8-001-R9 implementation: PASS, PM audit BLOCKED.
 - P8-001-R10 implementation: PASS, PM audit BLOCKED.
 - P8-001-R11 implementation: PASS, PM audit BLOCKED.
+- P8-001-R12 implementation: PASS, PM audit BLOCKED.
 - P8-001 implementation commit: `82361970c15181c8a19bc1249f3a525bac4ad9cd`
 - P8-001 evidence-fill commit: `894d2b36f52c3442650774b2371f035252d8834b`
 - P8-001 PM audit commit: `c2282eb5c7cf2c51388e7e538f8a6e61f12bd25c`
@@ -92,6 +94,8 @@ The R11 valid correction (R10 Commit B hash `90f87ede6727154e25a27ade64d93be9b80
 - P8-001-R11 evidence-fill commit (R11 Commit B): `c602d3ab030213b1894c8549ee705beaeb283979`
 - P8-001-R11 PM-audit commit: `992c3a4f278fc1d1725cb3fcb5c5b8a7d2aa068f`
 - P8-001-R11 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R11-AUDIT_2026-09-11.md`
+- P8-001-R12 evidence-fill commit (R12 Commit B): `a92659bfe0d96930fe33878a6a178bfc016c8a10`
+- P8-001-R12 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R12-AUDIT_2026-09-11.md`
 
 ## wdr-065 through wdr-076 (all BLOCKED)
 
@@ -110,16 +114,16 @@ The R11 valid correction (R10 Commit B hash `90f87ede6727154e25a27ade64d93be9b80
 
 ## Next Task (corrective, planned)
 
-**TOPLINE-P8-002** - Phase 8 Authentication Persistence (schema/migration-only)
+**TOPLINE-P8-001-R13** - Phase 8 R12 Evidence-Fill Reconciliation
 
-P8-002 is the planned-but-unapproved next PM-approved implementation task after the entire P8-001 / R1 / R2 / R3 / R4 / R5 / R6 / R7 / R8 / R9 / R10 / R11 / R12 corrective chain has been PM-audited and PASSED. P8-002 is **proposed but unregistered and unapproved** in `src/project/projectRegistry.ts`. R12 stops before P8-002; no P8-002 implementation is started by R12.
+R13 is the only planned corrective task for the R12 PM-audit finding. It must fill the real R12 Commit B hash into the R12 WDR, reports, PM outbox, and registry evidence state, then stop before P8-002. P8-002 remains **proposed but unregistered and unapproved** in `src/project/projectRegistry.ts`.
 
 ## Phase 8 State
 
-- Status: BLOCKED pending P8-001-R12 PM audit
+- Status: BLOCKED pending P8-001-R13 corrective evidence fill
 - Progress: 20
 - Mega-prompt target/completed: 5/1 (R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12 are correctives and do not increment)
-- Registered tasks: 13
+- Registered tasks: 14
 - Completed implementation-agent tasks: 13
 - All implementation/owner gates remain unpassed
 - currentTask: null

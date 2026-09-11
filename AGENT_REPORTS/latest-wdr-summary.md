@@ -5,10 +5,11 @@
 **TOPLINE-P8-001-R12** - Phase 8 R11 Evidence-Fill Reconciliation
 
 - Execution: PASS (planning/governance only)
-- PM audit: PLANNED
+- PM audit: BLOCKED
+- R12 PM audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R12-AUDIT_2026-09-11.md`
 - R11 PM audit: BLOCKED (R11 PM-audit commit `992c3a4f278fc1d1725cb3fcb5c5b8a7d2aa068f`)
 - Implementation commit: `330e61087ae972c2440f2ac2ea12ea4c627fad8d`
-- Evidence-fill commit (Commit B): `<R12_COMMIT_B_HASH>`
+- Evidence-fill commit (Commit B): `a92659bfe0d96930fe33878a6a178bfc016c8a10`
 - R11 implementation commit (R11 Commit A): `b8d25fe1c078267c76ed2f54a094e93fcc2a3719` (preserved — NOT replaced with R11 Commit B per the R12 instruction)
 - R11 evidence-fill commit (R11 Commit B): `c602d3ab030213b1894c8549ee705beaeb283979` (now recorded in the R11 WDR Git Evidence section, the latest status, this summary, and the PM outbox)
 - R10 evidence-fill commit (R10 Commit B): `90f87ede6727154e25a27ade64d93be9b80141f`
@@ -56,4 +57,4 @@ byte-for-byte; R12 did not edit the plan.
 
 ## Next WDR
 
-R12 PM audit is PLANNED. R12 execution PASS is awaiting PM/CTO audit. The next corrective WDR (if R12 PM audit BLOCKED) would be planned as `TOPLINE-P8-001-R13_WDR_2026-09-11.md`. If R12 PM audit PASSED, the next PM-approved implementation task is planned as `TOPLINE-P8-002` (schema/migration-only, additive, no packages, no auth behavior). R12 stops before P8-002; P8-002 remains proposed, unregistered, and unapproved.
+R12 execution PASS is PM-audit BLOCKED because the real R12 Commit B hash was not filled into the R12 WDR, reports, PM outbox, or registry `git.lastCommit`. The next corrective WDR is `TOPLINE-P8-001-R13_WDR_2026-09-11.md`. R13 stops before P8-002; P8-002 remains proposed, unregistered, and unapproved.
