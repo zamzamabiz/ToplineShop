@@ -61,7 +61,7 @@ The R15 valid correction (R14 Commit B hash `0edb50aeb0df69bc65763daf7fb46d2b07a
 - P8-001-R14 PM-audit evidence-fill Commit B: `cfec359b1b7e4cd6ba529f715cfb6bac89489588`
 - P8-001-R15 implementation commit (R15 Commit A): `22118accf43bcc94699e3f4d42cbfa9020d8edc9` (preserved — NOT replaced with R15 Commit B per the R15 PM audit instruction)
 - P8-001-R15 evidence-fill commit (R15 Commit B): `91f3f56062c7e6cc6401ef52d421cbbebb99491c`
-- P8-001-R15 PM-audit commit: pending (this audit is being recorded in two commits)
+- P8-001-R15 PM-audit commit: `e7f56be7e06983c7e23ceb36915b129034c1cf97`
 - P8-001-R14 implementation commit (R14 Commit A): `fafdb0a062706fb5aa93996c7a74350706c808e0` (preserved — NOT replaced with R14 Commit B)
 - P8-001-R14 evidence-fill commit (R14 Commit B): `0edb50aeb0df69bc65763daf7fb46d2b07af6344`
 - P8-001-R13 implementation commit (R13 Commit A): `a0f3318967fb931adb8463844c3165bf2d0ed778` (preserved — NOT replaced with R13 Commit B)
