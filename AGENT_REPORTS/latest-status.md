@@ -2,17 +2,19 @@
 
 ## Current Status
 
-**TOPLINE-P8-001-R9 execution: PASS — PM audit PLANNED**
+**TOPLINE-P8-001-R9 execution: PASS — PM audit BLOCKED**
 
 ## R9 Task
 
 **TOPLINE-P8-001-R9** - Phase 8 R8 Evidence-Fill and Scope Boundary Reconciliation
 
 - Execution status: PASS (planning/governance only)
-- PM audit: PLANNED
+- PM audit: BLOCKED
+- PM audit findings: R9 Commit B hash remains a placeholder in the WDR/reports/outbox/registry evidence fields; preflight/status claims omit the preserved TLS untracked files listed elsewhere in the R9 WDR.
+- R9 PM audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R9-AUDIT_2026-09-11.md`
 - R8 PM audit: BLOCKED (R8 PM audit commit `0ed7d95461b84c4b54a0709d261688354efed2c0`)
 - Implementation commit: `2b1082d3058132198a605ffd8674aa46a106351f`
-- Evidence-fill commit (Commit B): `<R9_COMMIT_B_HASH>`
+- Evidence-fill commit (Commit B): `17655b7b6e168fb617ac3af3e80c46c2e0abfc2f`
 - R8 implementation commit (R8 Commit A): `8457d2ce321722505595fcaddd09858b8a0768c4`
 - R8 evidence-fill commit (R8 Commit B): `d876589d4c8691534999f3692e859325f8b77d88` (now recorded in the R8 WDR Git Evidence section, this report, the latest WDR summary, and the PM outbox)
 - R7 evidence-fill commit (R7 Commit B): `760f61304b05cd9ce992a9e35ed21abce451e931`
@@ -97,16 +99,16 @@ The R8 valid correction that records the R7 Commit B hash and keeps `wdr-071` in
 
 ## Next Task (corrective, planned)
 
-**TOPLINE-P8-002** - Phase 8 Authentication Persistence (schema/migration-only)
+**TOPLINE-P8-001-R10** - Phase 8 R9 Evidence-Fill and Preflight Reconciliation
 
-P8-002 is the planned-but-unapproved next PM-approved implementation task after the entire P8-001 / R1 / R2 / R3 / R4 / R5 / R6 / R7 / R8 / R9 corrective chain has been PM-audited and PASSED. P8-002 is **proposed but unregistered and unapproved** in `src/project/projectRegistry.ts`. R9 stops before P8-002; no P8-002 implementation is started by R9.
+R10 is the next planned corrective governance task after R9 was PM-audited and BLOCKED. P8-002 is **proposed but unregistered and unapproved** in `src/project/projectRegistry.ts`. R9 stops before P8-002; no P8-002 implementation is authorized.
 
 ## Phase 8 State
 
-- Status: BLOCKED pending P8-001-R9 PM audit
+- Status: BLOCKED pending P8-001-R10 correction and PM audit
 - Progress: 20
 - Mega-prompt target/completed: 5/1 (R1, R2, R3, R4, R5, R6, R7, R8, R9 are correctives and do not increment)
-- Registered tasks: 10
+- Registered tasks: 11
 - Completed implementation-agent tasks: 10
 - All implementation/owner gates remain unpassed
 - currentTask: null

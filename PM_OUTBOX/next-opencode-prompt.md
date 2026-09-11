@@ -2,7 +2,7 @@
 
 ## PM/CTO Decision
 
-**TOPLINE-P8-001-R9 execution: PASS — PM audit PLANNED**
+**TOPLINE-P8-001-R9 execution: PASS — PM audit BLOCKED**
 
 R9 corrected the two R8 PM audit findings: the R8 Commit B hash
 `d876589d4c8691534999f3692e859325f8b77d88` is now recorded in
@@ -10,15 +10,15 @@ the R8 WDR Git Evidence section, and the R8 WDR OBJECTIVE section
 now explicitly names the narrow R7 WDR Git Evidence exception.
 No P8-002 implementation is authorized.
 
-R8 PM audit remains BLOCKED. Do not paste any P8-002 prompt into #MM.
+R8 and R9 PM audits remain BLOCKED. Do not paste any P8-002 prompt into #MM.
 
 ## R9 Evidence
 
 - R9 WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R9_WDR_2026-09-11.md`
-- R9 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R9-AUDIT_2026-09-11.md` (not yet written; PM audit pending)
-- R9 PM audit commit: PLANNED (pending)
+- R9 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R9-AUDIT_2026-09-11.md`
+- R9 PM audit commit: pending evidence-fill
 - R9 implementation commit (Commit A): `2b1082d3058132198a605ffd8674aa46a106351f`
-- R9 evidence-fill commit (Commit B): `<R9_COMMIT_B_HASH>`
+- R9 evidence-fill commit (Commit B): `17655b7b6e168fb617ac3af3e80c46c2e0abfc2f` (not yet filled into the R9 WDR and registry evidence fields)
 - R8 WDR (Git Evidence section + scope wording corrected by R9): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R8_WDR_2026-09-11.md`
 - R8 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R8-AUDIT_2026-09-11.md`
 - R8 PM audit commit: `0ed7d95461b84c4b54a0709d261688354efed2c0`
@@ -44,13 +44,14 @@ R8 PM audit remains BLOCKED. Do not paste any P8-002 prompt into #MM.
 - Phase 8 remains BLOCKED. P8-002 is proposed, unregistered, and unapproved.
 - P8-001-R9 STOPPED BEFORE `TOPLINE-P8-002` per #123.
 
-## Required Corrective Task (if R9 PM audit BLOCKED)
+## Required Corrective Task
 
-`TOPLINE-P8-001-R10 - Phase 8 R9 Evidence-Fill and <next-gap> Reconciliation`
+`TOPLINE-P8-001-R10 - Phase 8 R9 Evidence-Fill and Preflight Reconciliation`
 
-R10 would be documentation/governance only (only if R9 PM audit BLOCKED). It would:
+R10 is documentation/governance only. It must:
 - Fill the real R9 evidence-fill hash into the R9 WDR Git Evidence section, both latest reports, the PM outbox, and the canonical registry where applicable.
-- Address any new R9 audit findings explicitly.
+- Correct the R9 preflight and post-commit status claims to include the preserved TLS untracked files without inspecting their contents.
+- Address the R9 audit findings explicitly.
 - Preserve the valid R9 R8-evidence-fill and R8-scope-wording corrections.
 - Preserve the Phase 8 readiness plan byte-for-byte.
 - Re-run status, diff, build, lint, backend build, and backend test checks.
