@@ -86,4 +86,4 @@ R9 is documentation/governance only. It must:
 - Next approved task: `TOPLINE-P8-001-R9` only.
 - P8-002 remains proposed, unregistered, and unapproved.
 
-PM audit commit: to be filled after this audit commit.
+PM audit commit: `0ed7d95461b84c4b54a0709d261688354efed2c0`.

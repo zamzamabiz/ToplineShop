@@ -14,6 +14,7 @@ R8 PM audit is BLOCKED. Do not paste any P8-002 prompt into #MM.
 
 - R8 WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R8_WDR_2026-09-11.md`
 - R8 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R8-AUDIT_2026-09-11.md`
+- R8 PM audit commit: `0ed7d95461b84c4b54a0709d261688354efed2c0`
 - R8 implementation commit: `8457d2ce321722505595fcaddd09858b8a0768c4`
 - R8 evidence-fill commit (Commit B): `d876589d4c8691534999f3692e859325f8b77d88`
 - R7 WDR (Git Evidence section updated by R8): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R7_WDR_2026-09-11.md`
