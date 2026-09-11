@@ -8,6 +8,7 @@
 - PM audit: BLOCKED
 - PM audit findings: R10 Commit B hash remains a placeholder in the R10 WDR, reports, outbox, and registry `git.lastCommit`.
 - R10 PM audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R10-AUDIT_2026-09-11.md`
+- R10 PM audit commit: `0f1401d6884d194d4d0d035167ca21c44ff26160`
 - R9 PM audit: BLOCKED (R9 PM audit commit `55fd9bfafac684aacbc24c4eed4e94cb73c86778`)
 - Implementation commit: `980d7513ab78fd2baf7c18065198a2e02d926ae8`
 - Evidence-fill commit (Commit B): `90f87ede6727154e25a27ade64d93be9b80141f`
