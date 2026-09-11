@@ -16,7 +16,7 @@ R10 and R11 PM audits remain BLOCKED. Do not paste any P8-002 prompt into #MM.
 
 - R11 WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R11_WDR_2026-09-11.md`
 - R11 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R11-AUDIT_2026-09-11.md`
-- R11 PM audit commit: pending evidence-fill
+- R11 PM audit commit: `992c3a4f278fc1d1725cb3fcb5c5b8a7d2aa068f`
 - R11 implementation commit (Commit A): `b8d25fe1c078267c76ed2f54a094e93fcc2a3719`
 - R11 evidence-fill commit (Commit B): `c602d3ab030213b1894c8549ee705beaeb283979` (not yet filled into the R11 WDR and registry `git.lastCommit`)
 - R10 WDR (GIT EVIDENCE section corrected by R11): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R10_WDR_2026-09-11.md`

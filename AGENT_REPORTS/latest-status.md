@@ -12,6 +12,7 @@
 - PM audit: BLOCKED
 - PM audit findings: R11 Commit B hash remains a placeholder in the R11 WDR, reports, outbox, and registry `git.lastCommit`.
 - R11 PM audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R11-AUDIT_2026-09-11.md`
+- R11 PM audit commit: `992c3a4f278fc1d1725cb3fcb5c5b8a7d2aa068f`
 - R10 PM audit: BLOCKED (R10 PM-audit commit `0f1401d6884d194d4d0d035167ca21c44ff26160`)
 - Implementation commit: `b8d25fe1c078267c76ed2f54a094e93fcc2a3719`
 - Evidence-fill commit (Commit B): `c602d3ab030213b1894c8549ee705beaeb283979`
