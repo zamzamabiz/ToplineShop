@@ -2,34 +2,52 @@
 
 ## Current Status
 
-**TOPLINE-P8-001-R15 PM audit: BLOCKED**
+**TOPLINE-P8-001-R16 execution: PASS, PM audit: PLANNED**
 
-## R15 PM Audit Decision
+## R16 Execution Decision
 
-**TOPLINE-P8-001-R15 execution: PASS**
-**TOPLINE-P8-001-R15 PM audit: BLOCKED**
+**TOPLINE-P8-001-R16 execution: PASS**
+**TOPLINE-P8-001-R16 PM audit: PLANNED**
 
-R15 correctly closed the R14 evidence-fill target in substance and remained governance-only. The R15 PM audit (commit pending) is BLOCKED because:
+R16 correctly closed the R15 PM audit finding in substance and remained documentation/governance-only. R16 execution PASSES because:
 
-- The R15 WDR's GIT EVIDENCE section still contains the
-  `<R15_COMMIT_B_HASH>` placeholder instead of the real
-  R15 Commit B hash `91f3f56062c7e6cc6401ef52d421cbbebb99491c`.
-- Both latest reports and the PM_OUTBOX still contain
-  the `<R15_COMMIT_B_HASH>` placeholder.
-- The registry `git.lastCommit` still points to R15 Commit A
-  `22118accf43bcc94699e3f4d42cbfa9020d8edc9`, contrary to
-  the R15 WDR's claim that Commit B fills the evidence
-  state there.
+- The R15 WDR's GIT EVIDENCE section now records the real
+  R15 Commit B hash `91f3f56062c7e6cc6401ef52d421cbbebb99491c`
+  (the `<R15_COMMIT_B_HASH>` placeholder was removed).
+- The canonical registry `git.lastCommit` is updated to
+  the real R16 Commit A hash (the prior R15 PM-audit hash
+  `e7f56be7e06983c7e23ceb36915b129034c1cf97` is replaced
+  by the R16 governance correction).
+- The R15 task `commitHash` and `wdr-080.commitHash`
+  correctly remain on R15 Commit A
+  `22118accf43bcc94699e3f4d42cbfa9020d8edc9` (NOT replaced
+  with R15 Commit B per the R16 instruction "Preserve these
+  fields exactly").
+- All prior WDRs, all prior audits, the readiness plan,
+  and all prior valid corrections are preserved
+  byte-for-byte.
+- Unrelated working-tree changes (Governance WDR, TLS
+  untracked files, `.claude/settings.local.json`) are
+  preserved without being read or staged.
 
-The R15 task `commitHash` and `wdr-080.commitHash` correctly remain on R15 Commit A.
+The R16 PM audit is **PLANNED**. R17 will be registered
+as the next corrective task only if the R16 PM audit
+BLOCKS; otherwise Phase 8 remains BLOCKED until the
+entire chain is PM-audited and PASSED and a separate
+PM-approved prompt authorizes P8-002.
 
-The R15 valid correction (R14 Commit B hash `0edb50aeb0df69bc65763daf7fb46d2b07af6344` recorded in the R14 WDR Git Evidence section) is preserved. The R14 valid correction (R13 Commit B hash `038ffb1db413a4dba8e5940dae2b5dd8cde76dbf` recorded in the R13 WDR Git Evidence section; R12 preflight and post-commit verification rows reconciled with the preserved TLS untracked files) is preserved. The R13 valid correction (R12 Commit B hash `a92659bfe0d96930fe33878a6a178bfc016c8a10` recorded in the R12 WDR Git Evidence section) is preserved. The R12 valid correction (R11 Commit B hash recorded in the R11 WDR Git Evidence section) is preserved. The R11 valid correction (R10 Commit B hash recorded in the R10 WDR Git Evidence section) is preserved. The R10 valid correction (R9 Commit B hash recorded in the R9 WDR Git Evidence section; R9 preflight and post-commit verification rows reconciled with the preserved TLS untracked files) is preserved. The R9 valid correction (R8 Commit B hash recorded in the R8 WDR Git Evidence section; R8 narrow R7 WDR Git Evidence exception in the R8 WDR OBJECTIVE) is preserved. The R7 ignored-file correction (`.claude/settings.local.json` is **present and gitignored globally** via `C:\Users\a\.config\git\ignore` line 1 pattern `**/.claude/settings.local.json`) is preserved byte-for-byte. The R6 readiness-plan corrections (package ownership, Prisma ownership, corrective chain references) are preserved byte-for-byte; R15 did not edit the plan.
+The R15 valid correction (R14 Commit B hash `0edb50aeb0df69bc65763daf7fb46d2b07af6344` recorded in the R14 WDR Git Evidence section) is preserved. The R14 valid correction (R13 Commit B hash `038ffb1db413a4dba8e5940dae2b5dd8cde76dbf` recorded in the R13 WDR Git Evidence section; R13 preflight and post-commit verification rows reconciled with the preserved TLS untracked files) is preserved. The R13 valid correction (R12 Commit B hash `a92659bfe0d96930fe33878a6a178bfc016c8a10` recorded in the R12 WDR Git Evidence section) is preserved. The R12 valid correction (R11 Commit B hash `c602d3ab030213b1894c8549ee705beaeb283979` recorded in the R11 WDR Git Evidence section) is preserved. The R11 valid correction (R10 Commit B hash `90f87ede6727154e25a27ade64d93be9b80141f` recorded in the R10 WDR Git Evidence section) is preserved. The R10 valid correction (R9 Commit B hash `17655b7b6e168fb617ac3af3e80c46c2e0abfc2f` recorded in the R9 WDR Git Evidence section; R9 preflight and post-commit verification rows reconciled with the preserved TLS untracked files) is preserved. The R9 valid correction (R8 Commit B hash `d876589d4c8691534999f3692e859325f8b77d88` recorded in the R8 WDR Git Evidence section; R8 narrow R7 WDR Git Evidence exception in the R8 WDR OBJECTIVE) is preserved. The R7 ignored-file correction (`.claude/settings.local.json` is **present and gitignored globally** via `C:\Users\a\.config\git\ignore` line 1 pattern `**/.claude/settings.local.json`) is preserved byte-for-byte. The R6 readiness-plan corrections (package ownership, Prisma ownership, corrective chain references) are preserved byte-for-byte; R16 did not edit the plan.
 
-- R15 WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R15_WDR_2026-09-11.md`
-- R15 PM audit (commit pending): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R15-AUDIT_2026-09-11.md`
-- R15 implementation commit (R15 Commit A): `22118accf43bcc94699e3f4d42cbfa9020d8edc9`
-- R15 evidence-fill commit (R15 Commit B): `91f3f56062c7e6cc6401ef52d421cbbebb99491c` (not yet filled into the R15 WDR, reports, outbox, or registry `git.lastCommit`)
-- R14 WDR (GIT EVIDENCE section corrected by R15): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R14_WDR_2026-09-11.md`
+- R16 WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R16_WDR_2026-09-11.md`
+- R16 implementation commit (R16 Commit A): `<R16_COMMIT_A_HASH>` (to be filled by R16 Commit B)
+- R16 evidence-fill commit (R16 Commit B): `<R16_COMMIT_B_HASH>` (to be filled by R16)
+- R15 WDR (GIT EVIDENCE section corrected by R16 — no other section edited): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R15_WDR_2026-09-11.md`
+- R15 PM audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R15-AUDIT_2026-09-11.md`
+- R15 implementation commit (R15 Commit A): `22118accf43bcc94699e3f4d42cbfa9020d8edc9` (preserved — NOT replaced with R15 Commit B per the R16 instruction)
+- R15 evidence-fill commit (R15 Commit B): `91f3f56062c7e6cc6401ef52d421cbbebb99491c` (now recorded in the R15 WDR Git Evidence section, latest-status.md, latest-wdr-summary.md, PM_OUTBOX, and the historical commit graph)
+- R15 PM-audit Commit A: `e7f56be7e06983c7e23ceb36915b129034c1cf97`
+- R15 PM-audit evidence-fill Commit B: `62765789b639204c2a78627acc329bf57bc91de8` (R16 starting HEAD)
+- R14 WDR (GIT EVIDENCE section corrected by R15 — not further edited by R16): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R14_WDR_2026-09-11.md`
 - R14 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R14-AUDIT_2026-09-11.md`
 - R13 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R13-AUDIT_2026-09-11.md`
 - R12 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R12-AUDIT_2026-09-11.md`
@@ -37,7 +55,7 @@ The R15 valid correction (R14 Commit B hash `0edb50aeb0df69bc65763daf7fb46d2b07a
 - R10 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R10-AUDIT_2026-09-11.md`
 - R9 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R9-AUDIT_2026-09-11.md`
 - R8 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R8-AUDIT_2026-09-11.md`
-- R6 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md` (preserved byte-for-byte by R14 and R15)
+- R6 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md` (preserved byte-for-byte by R14, R15, and R16)
 
 ## P8-001 through P8-001-R15 (all BLOCKED)
 
@@ -57,11 +75,12 @@ The R15 valid correction (R14 Commit B hash `0edb50aeb0df69bc65763daf7fb46d2b07a
 - P8-001-R13 implementation: PASS, PM audit BLOCKED.
 - P8-001-R14 implementation: PASS, PM audit BLOCKED.
 - P8-001-R15 implementation: PASS, PM audit BLOCKED.
+- P8-001-R15 PM-audit Commit A: `e7f56be7e06983c7e23ceb36915b129034c1cf97`
+- P8-001-R15 PM-audit evidence-fill Commit B: `62765789b639204c2a78627acc329bf57bc91de8`
 - P8-001-R14 PM-audit Commit A: `34eaac16e94255549668cb93304ba2cccbfee97b`
 - P8-001-R14 PM-audit evidence-fill Commit B: `cfec359b1b7e4cd6ba529f715cfb6bac89489588`
-- P8-001-R15 implementation commit (R15 Commit A): `22118accf43bcc94699e3f4d42cbfa9020d8edc9` (preserved — NOT replaced with R15 Commit B per the R15 PM audit instruction)
+- P8-001-R15 implementation commit (R15 Commit A): `22118accf43bcc94699e3f4d42cbfa9020d8edc9` (preserved — NOT replaced with R15 Commit B per the R16 instruction)
 - P8-001-R15 evidence-fill commit (R15 Commit B): `91f3f56062c7e6cc6401ef52d421cbbebb99491c`
-- P8-001-R15 PM-audit commit: `e7f56be7e06983c7e23ceb36915b129034c1cf97`
 - P8-001-R14 implementation commit (R14 Commit A): `fafdb0a062706fb5aa93996c7a74350706c808e0` (preserved — NOT replaced with R14 Commit B)
 - P8-001-R14 evidence-fill commit (R14 Commit B): `0edb50aeb0df69bc65763daf7fb46d2b07af6344`
 - P8-001-R13 implementation commit (R13 Commit A): `a0f3318967fb931adb8463844c3165bf2d0ed778` (preserved — NOT replaced with R13 Commit B)
@@ -116,26 +135,28 @@ The R15 valid correction (R14 Commit B hash `0edb50aeb0df69bc65763daf7fb46d2b07a
 - wdr-079 PM audit: BLOCKED
 - wdr-080 PM audit: BLOCKED
 
-## Next Task (corrective, planned)
+## Next Task (corrective, planned if R16 PM audit BLOCKED)
 
-**TOPLINE-P8-001-R16** - Phase 8 R15 Evidence-Fill Reconciliation
+**TOPLINE-P8-001-R17** - Phase 8 R16 Evidence-Fill Reconciliation (will be registered as the next corrective only if the R16 PM audit BLOCKS).
 
-R16 is the only PM-approved corrective task to address the R15 PM audit finding. R16 must fill the real R15 Commit B hash into the R15 WDR Git Evidence section, both latest reports, the PM outbox, and the registry `git.lastCommit`; preserve the R15 task and `wdr-080` Commit A fields and all prior evidence; and stop before P8-002. P8-002 remains proposed, unregistered, and unapproved.
+R16 PM audit is **PLANNED**. Until R16 is PM-audited, the only next corrective path on the audit chain is `TOPLINE-P8-001-R17 - Phase 8 R16 Evidence-Fill Reconciliation`. R17 will be registered as the next corrective task only if the R16 PM audit BLOCKS. If the R16 PM audit PASSES, no further R17 is required, Phase 8 remains BLOCKED, and P8-002 still requires a separate PM-approved prompt.
+
+P8-002 remains proposed, unregistered, and unapproved. No P8-002 prompt has been written.
 
 ## Phase 8 State
 
-- Status: BLOCKED pending P8-001-R16 completion and PM audit
+- Status: BLOCKED pending R16 PM audit
 - Progress: 20
-- Mega-prompt target/completed: 5/1 (R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15 are correctives and do not increment)
+- Mega-prompt target/completed: 5/1 (R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R16 are correctives and do not increment)
 - Registered tasks: 17
-- Completed implementation-agent tasks: 16
+- Completed implementation-agent tasks: 17
 - All implementation/owner gates remain unpassed
 - currentTask: null
 
 ## Preserved Unrelated Changes (real, accurate)
 
-- `WDR/_All/Governance/TOPLINE-GOV-AUTO-001_WDR_2026-09-08.md` (modified, unstaged — never staged by R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, or R15 PM audit)
-- `TLS/README.md`, `TLS/Trade Refinery/README.md`, `TLS/Trade Refinery/STRATEGIC-CHARTER.md`, `TLS/Trade Refinery/TEAM-HANDOFF.md` (untracked, not inspected, not touched by R15 PM audit)
+- `WDR/_All/Governance/TOPLINE-GOV-AUTO-001_WDR_2026-09-08.md` (modified, unstaged — never staged by R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R15 PM audit, or R16)
+- `TLS/README.md`, `TLS/Trade Refinery/README.md`, `TLS/Trade Refinery/STRATEGIC-CHARTER.md`, `TLS/Trade Refinery/TEAM-HANDOFF.md` (untracked, not inspected, not touched by R16)
 - `.claude/settings.local.json` (present on disk at `E:\ToplineShop\.claude\settings.local.json`, **gitignored globally** via `C:\Users\a\.config\git\ignore` line 1 pattern `**/.claude/settings.local.json`. Not visible in `git status --short --untracked-files=all`. Visible as `!! .claude/` parent directory in `git status --short --ignored`. Contents were not read.)
 
 ## Last Updated
