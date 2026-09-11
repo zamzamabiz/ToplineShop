@@ -1688,7 +1688,7 @@ export const projectRegistry: ProjectRegistry = {
       ownerApproval: "PLANNED",
       pmApproval: "PLANNED",
       notes: "Corrective governance-only task for the blocked R9 audit. Fill the real R9 Commit B hash, reconcile the TLS untracked-file status claims, preserve all prior evidence and the readiness plan, and stop before P8-002.",
-      commitHash: "<R10_COMMIT_A_HASH>",
+      commitHash: "980d7513ab78fd2baf7c18065198a2e02d926ae8",
     },
   ],
   modules: [
@@ -2719,13 +2719,13 @@ export const projectRegistry: ProjectRegistry = {
       phase: "phase-8",
       status: "PASS",
       date: "2026-09-11",
-      commitHash: "<R10_COMMIT_A_HASH>",
+      commitHash: "980d7513ab78fd2baf7c18065198a2e02d926ae8",
       pmAudit: "PLANNED",
     },
   ],
   git: {
     initialized: true,
-    lastCommit: "PENDING_UNTIL_R10_COMMIT_A",
+    lastCommit: "980d7513ab78fd2baf7c18065198a2e02d926ae8",
   },
   github: {
     configured: true,
