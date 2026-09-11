@@ -18,7 +18,7 @@ Do not paste any P8-002 prompt into #MM.
 ## R14 PM Audit Evidence
 
 - R14 PM audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R14-AUDIT_2026-09-11.md`
-- R14 PM audit commit: pending (this audit is being recorded in two commits)
+- R14 PM-audit commit: `34eaac16e94255549668cb93304ba2cccbfee97b`
 - R14 WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R14_WDR_2026-09-11.md`
 - R14 implementation commit (Commit A): `fafdb0a062706fb5aa93996c7a74350706c808e0`
 - R14 evidence-fill commit (Commit B): `0edb50aeb0df69bc65763daf7fb46d2b07af6344` (not yet filled into the R14 WDR, reports, outbox, or registry `git.lastCommit`)

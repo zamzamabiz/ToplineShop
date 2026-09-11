@@ -5,7 +5,7 @@
 **TOPLINE-P8-001-R14** - Phase 8 R13 Evidence-Fill Reconciliation
 
 - Execution: PASS (planning/governance only)
-- **PM audit: BLOCKED** (commit pending)
+- **PM audit: BLOCKED** (R14 PM-audit commit `34eaac16e94255549668cb93304ba2cccbfee97b`)
 - R13 PM audit: BLOCKED (R13 PM-audit Commit A `8be6ffe33ed0331836bd8ecc154b4a23ae08adee`)
 - Implementation commit: `fafdb0a062706fb5aa93996c7a74350706c808e0`
 - Evidence-fill commit (Commit B): `0edb50aeb0df69bc65763daf7fb46d2b07af6344` (not yet filled into the R14 WDR, reports, outbox, or registry `git.lastCommit`)
@@ -18,7 +18,7 @@
 - R8 evidence-fill commit (R8 Commit B): `d876589d4c8691534999f3692e859325f8b77d88`
 - R7 evidence-fill commit (R7 Commit B): `760f61304b05cd9ce992a9e35ed21abce451e931`
 - WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R14_WDR_2026-09-11.md`
-- R14 PM audit (commit pending): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R14-AUDIT_2026-09-11.md`
+- R14 PM audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R14-AUDIT_2026-09-11.md` (R14 PM-audit commit `34eaac16e94255549668cb93304ba2cccbfee97b`)
 - R13 WDR (immutable; GIT EVIDENCE section only was corrected by R14 — not further edited by R14 PM audit): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R13_WDR_2026-09-11.md`
 - R13 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R13-AUDIT_2026-09-11.md`
 - R12 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R12-AUDIT_2026-09-11.md`
