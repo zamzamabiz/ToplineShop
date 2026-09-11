@@ -18,6 +18,7 @@ R11 PM audit remains BLOCKED. Do not paste any P8-002 prompt into #MM.
 - R12 PM audit: BLOCKED
 - R12 implementation commit (Commit A): `330e61087ae972c2440f2ac2ea12ea4c627fad8d`
 - R12 evidence-fill commit (Commit B): `a92659bfe0d96930fe33878a6a178bfc016c8a10`
+- R12 PM-audit commit: `5d502fc7ca8a88e5a62d60c8db9824d57720c153`
 - R11 WDR (GIT EVIDENCE section corrected by R12): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R11_WDR_2026-09-11.md`
 - R11 audit (immutable): `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R11-AUDIT_2026-09-11.md`
 - R11 PM-audit commit: `992c3a4f278fc1d1725cb3fcb5c5b8a7d2aa068f`

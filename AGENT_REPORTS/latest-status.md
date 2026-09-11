@@ -96,6 +96,7 @@ The R11 valid correction (R10 Commit B hash `90f87ede6727154e25a27ade64d93be9b80
 - P8-001-R11 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R11-AUDIT_2026-09-11.md`
 - P8-001-R12 evidence-fill commit (R12 Commit B): `a92659bfe0d96930fe33878a6a178bfc016c8a10`
 - P8-001-R12 audit: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R12-AUDIT_2026-09-11.md`
+- P8-001-R12 PM-audit commit: `5d502fc7ca8a88e5a62d60c8db9824d57720c153`
 
 ## wdr-065 through wdr-076 (all BLOCKED)
 

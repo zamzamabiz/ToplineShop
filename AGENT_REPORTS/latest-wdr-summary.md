@@ -10,6 +10,7 @@
 - R11 PM audit: BLOCKED (R11 PM-audit commit `992c3a4f278fc1d1725cb3fcb5c5b8a7d2aa068f`)
 - Implementation commit: `330e61087ae972c2440f2ac2ea12ea4c627fad8d`
 - Evidence-fill commit (Commit B): `a92659bfe0d96930fe33878a6a178bfc016c8a10`
+- R12 PM-audit commit: `5d502fc7ca8a88e5a62d60c8db9824d57720c153`
 - R11 implementation commit (R11 Commit A): `b8d25fe1c078267c76ed2f54a094e93fcc2a3719` (preserved — NOT replaced with R11 Commit B per the R12 instruction)
 - R11 evidence-fill commit (R11 Commit B): `c602d3ab030213b1894c8549ee705beaeb283979` (now recorded in the R11 WDR Git Evidence section, the latest status, this summary, and the PM outbox)
 - R10 evidence-fill commit (R10 Commit B): `90f87ede6727154e25a27ade64d93be9b80141f`
