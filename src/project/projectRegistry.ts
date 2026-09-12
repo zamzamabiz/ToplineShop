@@ -3005,7 +3005,7 @@ export const projectRegistry: ProjectRegistry = {
   ],
   git: {
     initialized: true,
-    lastCommit: "PENDING_UNTIL_R19_PM_AUDIT_COMMIT_A",
+    lastCommit: "a9ec42dd660328be8031eb2f75929036c0ea2efe",
   },
   github: {
     configured: true,

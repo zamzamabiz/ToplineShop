@@ -69,7 +69,7 @@ The R18 valid correction (R17 Commit B hash `39267f0f7c74eb41108c115a046f58ff386
 - P8-001-R17 implementation: PASS, PM audit BLOCKED.
 - P8-001-R18 implementation: PASS, PM audit BLOCKED.
 - P8-001-R19 implementation: PASS, PM audit BLOCKED.
-- P8-001-R19 PM-audit commit (R19 PM-audit Commit A): `<R19_PM_AUDIT_COMMIT_A_HASH>` (filled by R19 PM-audit evidence-fill Commit B)
+- P8-001-R19 PM-audit commit (R19 PM-audit Commit A): `a9ec42dd660328be8031eb2f75929036c0ea2efe` (filled by R19 PM-audit evidence-fill Commit B)
 - P8-001-R19 PM-audit evidence-fill commit (R19 PM-audit Commit B): `<R19_PM_AUDIT_COMMIT_B_HASH>` (filled by R19 PM-audit evidence-fill Commit B; reported in final handoff)
 - P8-001-R18 PM-audit Commit A: `c4c151f8dbbe706d253e7c5c647e31ad08097dfd`
 - P8-001-R18 PM-audit evidence-fill Commit B: `e204e0ee5c6430135165cf90195b217d0f132433`
