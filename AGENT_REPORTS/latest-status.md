@@ -14,7 +14,7 @@ R21 closed the R20 PM-audit finding in substance and remained documentation/gove
 ## R21 Evidence
 
 - R21 WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R21_WDR_2026-09-11.md`
-- R21 implementation commit (R21 Commit A): `<R21_COMMIT_A_HASH>` (filled by R21 Commit B; reported in final handoff to PM)
+- R21 implementation commit (R21 Commit A): `22bf2648da97868e59e384fe22a21801c2a184f3` (filled by R21 Commit B; reported in final handoff to PM)
 - R21 evidence-fill commit (R21 Commit B): `<R21_COMMIT_B_HASH>` (filled by R21's successor PM audit or next corrective; reported in final handoff to PM; remains in R21 WDR Git Evidence section per the established self-referential evidence pattern)
 - R21 PM audit (pending): TBD by PM/CTO after R21 handoff
 
@@ -79,7 +79,7 @@ R20 correctly closed the R19 PM-audit finding in substance and remained document
 - P8-001-R19 implementation: PASS, PM audit BLOCKED.
 - P8-001-R20 implementation: PASS, PM audit BLOCKED.
 - P8-001-R21 implementation: PASS, PM audit PLANNED.
-- P8-001-R21 implementation commit (R21 Commit A): `<R21_COMMIT_A_HASH>` (filled by R21 Commit B; reported in final handoff to PM)
+- P8-001-R21 implementation commit (R21 Commit A): `22bf2648da97868e59e384fe22a21801c2a184f3` (filled by R21 Commit B; reported in final handoff to PM)
 - P8-001-R21 evidence-fill commit (R21 Commit B): `<R21_COMMIT_B_HASH>` (filled by R21's successor PM audit or next corrective; reported in final handoff to PM)
 - P8-001-R20 PM-audit Commit A: `8185fcd6308c02ced6bb0b599b4fa9298b24b67b`
 - P8-001-R20 PM-audit evidence-fill Commit B: `271e0913dc41f12ec227a41b652795086eab459b` (recorded as historical evidence by R21)

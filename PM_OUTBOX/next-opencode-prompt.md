@@ -12,7 +12,7 @@ Do not paste any P8-002 prompt into #MM until the R21 PM audit PASSES.
 ## R21 Evidence
 
 - R21 WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R21_WDR_2026-09-11.md`
-- R21 implementation commit (R21 Commit A): `<R21_COMMIT_A_HASH>` (filled by R21 Commit B; reported in final handoff to PM)
+- R21 implementation commit (R21 Commit A): `22bf2648da97868e59e384fe22a21801c2a184f3` (filled by R21 Commit B; reported in final handoff to PM)
 - R21 evidence-fill commit (R21 Commit B): `<R21_COMMIT_B_HASH>` (filled by R21's successor PM audit or next corrective; reported in final handoff to PM; remains in R21 WDR Git Evidence section per the established self-referential evidence pattern)
 
 ## R20 PM Audit Evidence
@@ -60,7 +60,7 @@ Do not paste any P8-002 prompt into #MM until the R21 PM audit PASSES.
 - R9 evidence-fill commit (R9 Commit B): `17655b7b6e168fb617ac3af3e80c46c2e0abfc2f`
 - R8 evidence-fill commit (R8 Commit B): `d876589d4c8691534999f3692e859325f8b77d88`
 - R6 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md` (preserved byte-for-byte by R15, R16, R16 PM audit, R17, R17 PM audit, R18, R18 PM audit, R19, R19 PM audit, R20, R20 PM audit, and R21)
-- Canonical registry: `src/project/projectRegistry.ts` (R21 PLANNED -> PASS, wdr-086 PLANNED -> PASS, R21 task commitHash / wdr-086 commitHash / git.lastCommit = `<R21_COMMIT_A_HASH>` to be filled by R21 Commit B, P8-001 through R20 pmApproval BLOCKED, wdr-065 through wdr-085 pmAudit BLOCKED, wdr-086 pmAudit PLANNED, Phase 8 BLOCKED, currentTask null, lastCompletedTask `TOPLINE-P8-001-R21`, nextPlannedTask `TOPLINE-P8-002` as a non-authorizing placeholder, phase-8 taskCount 22, completedTaskCount 22)
+- Canonical registry: `src/project/projectRegistry.ts` (R21 PLANNED -> PASS, wdr-086 PLANNED -> PASS, R21 task commitHash / wdr-086 commitHash / git.lastCommit = `22bf2648da97868e59e384fe22a21801c2a184f3` to be filled by R21 Commit B, P8-001 through R20 pmApproval BLOCKED, wdr-065 through wdr-085 pmAudit BLOCKED, wdr-086 pmAudit PLANNED, Phase 8 BLOCKED, currentTask null, lastCompletedTask `TOPLINE-P8-001-R21`, nextPlannedTask `TOPLINE-P8-002` as a non-authorizing placeholder, phase-8 taskCount 22, completedTaskCount 22)
 - Reports: `AGENT_REPORTS/latest-status.md`, `AGENT_REPORTS/latest-wdr-summary.md`
 
 ## Block Status
