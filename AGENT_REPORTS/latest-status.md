@@ -14,7 +14,7 @@ R20 closed the R19 PM-audit finding in substance and remained documentation/gove
 ## R20 Evidence
 
 - R20 WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R20_WDR_2026-09-11.md`
-- R20 implementation commit (R20 Commit A): `<R20_COMMIT_A_HASH>` (filled by R20 Commit B; reported in final handoff to PM)
+- R20 implementation commit (R20 Commit A): `fa79db386a4f3bb250093631e47a457e17218f34` (filled by R20 Commit B; reported in final handoff to PM)
 - R20 evidence-fill commit (R20 Commit B): `<R20_COMMIT_B_HASH>` (filled by R20's successor PM audit or next corrective; reported in final handoff to PM; remains in R20 WDR Git Evidence section per the established self-referential evidence pattern)
 - R20 PM audit (pending): TBD by PM/CTO after R20 handoff
 
@@ -74,7 +74,7 @@ R19 correctly closed the R18 PM-audit finding in substance and remained document
 - P8-001-R18 implementation: PASS, PM audit BLOCKED.
 - P8-001-R19 implementation: PASS, PM audit BLOCKED.
 - P8-001-R20 implementation: PASS, PM audit PLANNED.
-- P8-001-R20 implementation commit (R20 Commit A): `<R20_COMMIT_A_HASH>` (filled by R20 Commit B; reported in final handoff to PM)
+- P8-001-R20 implementation commit (R20 Commit A): `fa79db386a4f3bb250093631e47a457e17218f34` (filled by R20 Commit B; reported in final handoff to PM)
 - P8-001-R20 evidence-fill commit (R20 Commit B): `<R20_COMMIT_B_HASH>` (filled by R20's successor PM audit or next corrective; reported in final handoff to PM)
 - P8-001-R19 PM-audit Commit A: `a9ec42dd660328be8031eb2f75929036c0ea2efe`
 - P8-001-R19 PM-audit evidence-fill Commit B: `c398fc0e74c00885d87847b31e0640697ab262c4` (recorded as historical evidence by R20)

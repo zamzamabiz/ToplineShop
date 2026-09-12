@@ -5,8 +5,8 @@
 **TOPLINE-P8-001-R20** - Phase 8 R19 Evidence-Fill Reconciliation
 
 - Execution: PASS (planning/governance only)
-- **PM audit: PLANNED** (R20 implementation commit `<R20_COMMIT_A_HASH>`; R20 evidence-fill commit `<R20_COMMIT_B_HASH>`)
-- R20 implementation commit (R20 Commit A): `<R20_COMMIT_A_HASH>` (filled by R20 Commit B; reported in final handoff to PM)
+- **PM audit: PLANNED** (R20 implementation commit `fa79db386a4f3bb250093631e47a457e17218f34`; R20 evidence-fill commit `<R20_COMMIT_B_HASH>`)
+- R20 implementation commit (R20 Commit A): `fa79db386a4f3bb250093631e47a457e17218f34` (filled by R20 Commit B; reported in final handoff to PM)
 - R20 evidence-fill commit (R20 Commit B): `<R20_COMMIT_B_HASH>` (filled by R20's successor PM audit or next corrective; reported in final handoff to PM; remains in R20 WDR Git Evidence section per the established self-referential evidence pattern)
 - R19 implementation commit (R19 Commit A): `7d9eafaaf5b802c6778c50afd6e2d0fec8ec886e` (preserved — NOT replaced with R19 Commit B per the R19 PM audit instruction)
 - R19 evidence-fill commit (R19 Commit B): `c55c44bf79b53e8ec5779fef3fc226c714f021b5` (now recorded in R19 WDR Git Evidence section line 201 by R20; closed by R20)
