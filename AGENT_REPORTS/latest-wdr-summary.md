@@ -5,7 +5,7 @@
 **TOPLINE-P8-001-R19** - Phase 8 R18 Evidence-Fill Reconciliation
 
 - Execution: PASS (planning/governance only)
-- **PM audit: PLANNED** (R19 implementation commit `<R19_COMMIT_A_HASH>`; R19 evidence-fill commit `<R19_COMMIT_B_HASH>`)
+- **PM audit: PLANNED** (R19 implementation commit `7d9eafaaf5b802c6778c50afd6e2d0fec8ec886e`; R19 evidence-fill commit `<R19_COMMIT_B_HASH>`)
 - R18 implementation commit (R18 Commit A): `db5c49f2bbac1a00f24752a18f3881e16c7ecfa7` (preserved — NOT replaced with R18 Commit B per the R19 instruction)
 - R18 evidence-fill commit (R18 Commit B): `48cf1ddb28f401ba2cb3378a7a5152e36a670020` (now recorded in the R18 WDR Git Evidence section, latest-status.md, latest-wdr-summary.md, PM_OUTBOX, and the historical commit graph)
 - R18 PM-audit Commit A: `c4c151f8dbbe706d253e7c5c647e31ad08097dfd` (preserved as historical)
