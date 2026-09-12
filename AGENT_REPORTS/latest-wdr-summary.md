@@ -5,8 +5,8 @@
 **TOPLINE-P8-001-R22** - Phase 8 R21 Evidence-Fill Reconciliation
 
 - Execution: PASS (planning/governance only)
-- **PM audit: PLANNED** (R22 implementation commit `<R22_COMMIT_A_HASH>`; R22 evidence-fill commit `<R22_COMMIT_B_HASH>`)
-- R22 implementation commit (R22 Commit A): `<R22_COMMIT_A_HASH>` (filled by R22 Commit B; reported in final handoff to PM)
+- **PM audit: PLANNED** (R22 implementation commit `a13cb04b13a1c81877aa15e5d070fc2b39e9d82d`; R22 evidence-fill commit `<R22_COMMIT_B_HASH>`)
+- R22 implementation commit (R22 Commit A): `a13cb04b13a1c81877aa15e5d070fc2b39e9d82d` (filled by R22 Commit B; reported in final handoff to PM)
 - R22 evidence-fill commit (R22 Commit B): `<R22_COMMIT_B_HASH>` (filled by R22's successor PM audit or next corrective; reported in final handoff to PM; remains in R22 WDR Git Evidence section per the established self-referential evidence pattern)
 - R21 implementation commit (R21 Commit A): `22bf2648da97868e59e384fe22a21801c2a184f3` (preserved — NOT replaced with R21 Commit B per the R21 PM audit instruction)
 - R21 evidence-fill commit (R21 Commit B): `11f3a0fe0a00a95ad8379d9974d36931adf8f32c` (now recorded in R21 WDR Git Evidence section line 217 by R22; closed by R22)
