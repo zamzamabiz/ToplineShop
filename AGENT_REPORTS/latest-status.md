@@ -79,7 +79,7 @@ The R20 valid correction (R20 Commit B hash `e19f1472e238cfff2f3e517c2580f78df62
 - P8-001-R21 implementation: PASS, PM audit BLOCKED.
 - P8-001-R21 implementation commit (R21 Commit A): `22bf2648da97868e59e384fe22a21801c2a184f3` (preserved — NOT replaced with R21 Commit B per the R21 PM audit instruction)
 - P8-001-R21 evidence-fill commit (R21 Commit B): `11f3a0fe0a00a95ad8379d9974d36931adf8f32c` (not yet filled into the R21 WDR, reports, outbox, or registry `git.lastCommit`)
-- P8-001-R21 PM-audit commit (R21 PM-audit Commit A): `<R21_PM_AUDIT_COMMIT_A_HASH>` (filled by R21 PM-audit evidence-fill Commit B)
+- P8-001-R21 PM-audit commit (R21 PM-audit Commit A): `810df29b29bec6783e6a48fc539c82cc493916bd` (filled by R21 PM-audit evidence-fill Commit B)
 - P8-001-R21 PM-audit evidence-fill commit (R21 PM-audit Commit B): `<R21_PM_AUDIT_COMMIT_B_HASH>` (filled by R21 PM-audit evidence-fill Commit B; reported in final handoff)
 - P8-001-R20 PM-audit Commit A: `8185fcd6308c02ced6bb0b599b4fa9298b24b67b`
 - P8-001-R20 PM-audit evidence-fill Commit B: `271e0913dc41f12ec227a41b652795086eab459b`

@@ -5,7 +5,7 @@
 **TOPLINE-P8-001-R21** - Phase 8 R20 Evidence-Fill Reconciliation
 
 - Execution: PASS (planning/governance only)
-- **PM audit: BLOCKED** (R21 PM-audit commit `<R21_PM_AUDIT_COMMIT_A_HASH>`; R21 PM-audit evidence-fill Commit B `<R21_PM_AUDIT_COMMIT_B_HASH>`)
+- **PM audit: BLOCKED** (R21 PM-audit commit `810df29b29bec6783e6a48fc539c82cc493916bd`; R21 PM-audit evidence-fill Commit B `<R21_PM_AUDIT_COMMIT_B_HASH>`)
 - R21 implementation commit (R21 Commit A): `22bf2648da97868e59e384fe22a21801c2a184f3`
 - R21 evidence-fill commit (R21 Commit B): `11f3a0fe0a00a95ad8379d9974d36931adf8f32c` (not yet filled into the R21 WDR, reports, outbox, or registry `git.lastCommit`)
 - R20 implementation commit (R20 Commit A): `fa79db386a4f3bb250093631e47a457e17218f34` (preserved — NOT replaced with R20 Commit B per the R21 instruction)
