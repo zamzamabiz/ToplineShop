@@ -1995,6 +1995,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PLANNED",
       notes: "Frontend-only implementation. Synthetic mock data. No backend, no database, no auth, no RBAC. Route: /tdr. All TDR components under TDR boundary. Build PASS. Lint 0 errors. Commit hash filled by evidence-fill commit.",
     },
+    {
+      id: "TDR-P1-002",
+      phase: "tdr",
+      title: "Frontend Batch Filtering / Search / Pagination Preview",
+      objective:
+        "Add operator-friendly batch discovery controls (search, status/source filters, page-size selector, pagination) to the TDR frontend preview. Frontend-only mock data, no backend.",
+      status: "PASS",
+      priority: "HIGH",
+      dependencies: ["TDR-P1-001"],
+      startedAt: "2026-09-14T00:00:00.000Z",
+      completedAt: "2026-09-14T00:00:00.000Z",
+      wdrPath: "WDR/_All/Trade-Data-Refinery/TDR-P1-002_WDR_2026-09-14.md",
+      commitHash: null,
+      tests: "NOT_STARTED",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "Frontend-only. Mock data expanded for meaningful pagination. Search, status filter, source filter, page-size, prev/next pagination, empty-filter state, clear-filters, large-data safety note. No backend, no database, no auth, no RBAC. Build PASS. Lint 0 errors. Commit hash to be filled by evidence-fill commit.",
+    },
   ],
   modules: [
     {
@@ -3219,10 +3238,19 @@ export const projectRegistry: ProjectRegistry = {
       commitHash: "b6409f601e41492180d3234f7c394a8c3ac0c581",
       pmAudit: "PLANNED",
     },
+    {
+      id: "wdr-tdr-p1-002",
+      taskId: "TDR-P1-002",
+      phase: "tdr",
+      status: "PASS",
+      date: "2026-09-14",
+      commitHash: null,
+      pmAudit: "PLANNED",
+    },
   ],
   git: {
     initialized: true,
-    lastCommit: "b6409f601e41492180d3234f7c394a8c3ac0c581",
+    lastCommit: null,
   },
   github: {
     configured: true,

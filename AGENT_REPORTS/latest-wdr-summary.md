@@ -2,30 +2,30 @@
 
 ## Current WDR
 
-**TDR-P1-001** — Trade Data Refinery Frontend Module Shell and Overview
+**TDR-P1-002** — Frontend Batch Filtering / Search / Pagination Preview
 
 - Execution: PASS
 - **PM audit: PLANNED** (pending Owner/PM visual review at `/tdr`)
-- Commit A: `b6409f601e41492180d3234f7c394a8c3ac0c581` (to be filled by evidence-fill commit)
+- Commit A: null (to be filled by evidence-fill commit)
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-002_WDR_2026-09-14.md`
+
+## Previous WDR (TDR-P1-001-UX-CORRECTIVE-001 — now superseded)
+
+**TDR-P1-001-UX-CORRECTIVE-001** — Loading State Clarity Fix
+
+- Execution: PASS
+- Commit: `35e62bd63c39190729b6ce223cf001a6efde08a7`
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-001-UX-CORRECTIVE-001_WDR_2026-09-14.md`
+
+## Previous WDR (TDR-P1-001 — now closed)
+
+**TDR-P1-001** — Trade Data Refinery Frontend Module Shell and Overview
+
+- Execution: PASS
+- PM audit: PLANNED
+- Commit A: `b6409f601e41492180d3234f7c394a8c3ac0c581`
+- Commit B (evidence-fill): `aed1f2f...`
 - WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-001_WDR_2026-09-14.md`
-
-## Previous WDR (TDR-P0-002-CORRECTIVE-002 — now superseded)
-
-**TDR-P0-002-CORRECTIVE-001** — Evidence Finalization and Clean Closure for TDR-P0-002
-
-- Execution: PASS
-- Commit: `1e288bc94097b96423160dee85753ed487a9ce00`
-- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-002-CORRECTIVE-001_WDR_2026-09-14.md`
-
-## Previous WDR (TDR-P0-002 — now closed)
-
-**TDR-P0-002** — Trade Data Refinery Program Registration and Control Baseline
-
-- Execution: PASS
-- **PM audit: PLANNED** (pending Owner/PM)
-- Commit A: `2397678a571068576646fc4049521ea1680d8274`
-- Commit B: `930ed318170187005f8fc0ece86df61d671cfde8`
-- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-002_WDR_2026-09-14.md`
 
 ## TDR WDR Chain
 
@@ -34,41 +34,32 @@
 - TDR-P0-002 WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-002_WDR_2026-09-14.md` — PASS (2026-09-14)
 - TDR-P0-002-CORRECTIVE-001 WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-002-CORRECTIVE-001_WDR_2026-09-14.md` — PASS (2026-09-14)
 - TDR-P0-002-CORRECTIVE-002 WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-002-CORRECTIVE-002_WDR_2026-09-14.md` — PASS (2026-09-14)
+- TDR-P1-001 WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-001_WDR_2026-09-14.md` — PASS (2026-09-14)
+- TDR-P1-001-UX-CORRECTIVE-001 WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-001-UX-CORRECTIVE-001_WDR_2026-09-14.md` — PASS (2026-09-14)
+- TDR-P1-002 WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-002_WDR_2026-09-14.md` — PASS (2026-09-14)
 
-## TDR-P0-002 Summary (PASS — closed by CORRECTIVE-001)
+## TDR-P1-002 Summary
 
-TDR-P0-002 registered the Trade Data Refinery program in `src/project/projectRegistry.ts`:
+TDR-P1-002 added frontend batch filtering, search, and pagination to the TDR module at `/tdr`:
+- Rewrote `TdrBatchTable.tsx` with internal `useState`/`useMemo` filter + pagination state
+- Expanded mock batches: HEALTHY 10, WARNING 6, FAILED 5 (was 4/3/3)
+- Controls: search box, status filter, source filter, page-size (5/10/25), Prev/Next pagination
+- Empty filtered state with reset; clear-filters button in card header
+- Large-data safety note visible below filter controls
+- `key={viewState}` on TdrBatchTable resets filters on scenario switch
+- Build PASS, Lint 0 errors
 
-- Added `mod-tdr` module entry
-- Added task entries for TDR-P0-001 (PASS), TDR-GOV-START-001 (PASS), TDR-P0-002 (PASS), TDR-P1-001 (PLANNED)
-- Added TDR risks: risk-tdr-001 (G1 violation), risk-tdr-002 (G2 violation), risk-tdr-003 (browser memory)
-- Added TDR decisions: decision-tdr-001 (module authorized), decision-tdr-002 (FDD + gates)
-- Added TDR WDR entries: wdr-tdr-001, wdr-tdr-gov-001, wdr-tdr-002
-- Updated `lastUpdated` to "2026-09-14"
-- Build: PASS (`✓ Compiled successfully`)
-- `git diff --check`: CLEAN
+No product implementation created. No backend/database/auth/RBAC/package changes.
 
-No product implementation created. Phase 8 platform status preserved unchanged.
+## Previous WDR (TDR-P0-002 — now closed)
 
-## TDR-P0-002-CORRECTIVE-001 Summary
+**TDR-P0-002** — Trade Data Refinery Program Registration and Control Baseline
 
-Finalized TDR-P0-002 evidence (ChatGPT audit finding — PARTIAL):
-- Filled Commit B hash `930ed318170187005f8fc0ece86df61d671cfde8` into WDR §12
-- Corrected §7.3 task table: TDR-P0-002 IN_PROGRESS → PASS
-- Corrected §7.6 WDR table: wdr-tdr-002 IN_PROGRESS → PASS
-- Corrected §13 blockers: removed stale "untracked files will be staged" text
-- Corrected §15 verification: TDR-P0-002 IN_PROGRESS → PASS
-- Updated latest-status.md and latest-wdr-summary.md to reflect PASS
-- Created TDR-P0-002-CORRECTIVE-001 WDR
-
-## TDR-P0-002-CORRECTIVE-002 Summary
-
-Final evidence cleanup (ChatGPT audit finding — PARTIAL on CORRECTIVE-001):
-- Filled CORRECTIVE-001 commit hash `1e288bc94097b96423160dee85753ed487a9ce00` (3 occurrences in CORRECTIVE-001 WDR)
-- Corrected CORRECTIVE-001 WDR §11: "staged" → "CLEAN — committed"
-- Corrected TDR-P0-002 WDR §10: stale git status row → CLEAN after commit
-- Corrected TDR-P0-002 WDR §15: stale working-tree rows → all committed
-- Created TDR-P0-002-CORRECTIVE-002 WDR
+- Execution: PASS
+- PM audit: PLANNED
+- Commit A: `2397678a571068576646fc4049521ea1680d8274`
+- Commit B: `930ed318170187005f8fc0ece86df61d671cfde8`
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-002_WDR_2026-09-14.md`
 
 ## Previous WDR (Platform Phase 8 — PRESERVED)
 
@@ -82,8 +73,8 @@ Final evidence cleanup (ChatGPT audit finding — PARTIAL on CORRECTIVE-001):
 
 ## Next WDR
 
-TDR-P0-002-CORRECTIVE-002 PM audit — PLANNED (by Owner/PM).
-After TDR-P0-002-CORRECTIVE-002 PM audit PASS, next governed task is TDR-P1-001.
+TDR-P1-002 PM audit — PLANNED (by Owner/PM).
+After TDR-P1-002 PM audit PASS, next governed task is TDR-P1-003.
 
 ## Last Updated
 

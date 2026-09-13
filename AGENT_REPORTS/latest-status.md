@@ -2,29 +2,33 @@
 
 ## Current Program
 
-**Trade Data Refinery (TDR) — TDR-P1-001 PASS**
+**Trade Data Refinery (TDR) — TDR-P1-002 PASS**
 
 ## TDR Current Status
 
-**TDR-P1-001 execution: PASS**
-**TDR-P1-001 PM audit: PLANNED (pending Owner/PM visual review)**
+**TDR-P1-002 execution: PASS**
+**TDR-P1-002 PM audit: PLANNED (pending Owner/PM visual review)**
 
-TDR-P1-001 implemented the first frontend-only TDR experience at `/tdr`:
-- Route: `src/app/tdr/page.tsx` — client component, all visual states
-- Components: `src/components/tdr/` — 5 TDR-specific components
-- Mock data: `src/features/tdr/mockData.ts` — 4 scenarios (healthy/warning/failed/empty)
-- Types: `src/types/tdr.ts`
-- Sidebar nav entry added: "Data Refinery" → `/tdr`
-- State selector: 6 preview states switchable by Owner/PM
+TDR-P1-002 added frontend batch filtering, search, and pagination preview to `/tdr`:
+- Search: text input filtering mock batches by source name or status
+- Status filter: All / Accepted / Partial / Failed / Processing / Queued
+- Source filter: derived from current mock batches (updates per scenario)
+- Page-size selector: 5 / 10 / 25 per page
+- Pagination: Prev/Next, page indicator, result count with filtered-from note
+- Empty filtered state: "No batches match the current filters." + Reset filters
+- Clear filters: visible when any filter active; resets all to default
+- Large-data safety note: visible below filter controls
+- Filter state auto-resets on scenario switch (key={viewState})
+- Mock data expanded: HEALTHY 10 batches, WARNING 6, FAILED 5
 - Build: PASS, Lint: 0 errors, TypeScript: PASS
 
 No backend, database, auth, RBAC, package, or API work. All data synthetic.
 
 ## TDR Evidence
 
-- TDR-P0-002 WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-002_WDR_2026-09-14.md`
-- TDR-P0-002 commit hash: `2397678a571068576646fc4049521ea1680d8274` (filled after commit)
-- TDR-P0-002 PM audit: PLANNED by Owner/PM after commit
+- TDR-P1-002 WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-002_WDR_2026-09-14.md`
+- TDR-P1-002 commit hash: null (to be filled by evidence-fill commit)
+- TDR-P1-002 PM audit: PLANNED by Owner/PM after visual browser review
 
 ## TDR History
 
@@ -34,23 +38,19 @@ No backend, database, auth, RBAC, package, or API work. All data synthetic.
 - TDR-P0-002-CORRECTIVE-001: PASS (2026-09-14) — evidence finalization
 - TDR-P0-002-CORRECTIVE-002: PASS (2026-09-14) — final evidence cleanup
 - TDR-P1-001: PASS (2026-09-14) — frontend module shell and overview
+- TDR-P1-001-UX-CORRECTIVE-001: PASS (2026-09-14) — loading state clarity fix
+- TDR-P1-002: PASS (2026-09-14) — batch filtering / search / pagination preview
 
-## TDR Evidence
+## TDR Next Task (planned, after P1-002 PM audit)
 
-- TDR-P1-001 WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-001_WDR_2026-09-14.md`
-- TDR-P1-001 commit hash: `b6409f601e41492180d3234f7c394a8c3ac0c581` (filled by evidence-fill commit)
-- TDR-P1-001 PM audit: PLANNED by Owner/PM after visual browser review
+TDR-P1-003 — (to be defined by Owner/PM after TDR-P1-002 visual review)
 
-## TDR Next Task (planned, after P1-001 PM audit)
-
-TDR-P1-002 — (to be defined by Owner/PM after TDR-P1-001 visual review)
-
-## Platform Phase 8 State (PRESERVED — NOT CHANGED BY TDR-P0-002)
+## Platform Phase 8 State (PRESERVED — NOT CHANGED)
 
 **TOPLINE-P8-001-R22 execution: PASS**
 **TOPLINE-P8-001-R22 PM audit: PLANNED**
 
-R22 closed the R21 PM-audit finding in substance and remained documentation/governance-only. R22 filled the real R21 evidence-fill Commit B hash `11f3a0fe0a00a95ad8379d9974d36931adf8f32c` into the R21 WDR Git Evidence section line 217, both latest reports, the PM_OUTBOX, and the registry evidence state. R22 is itself pending PM audit. Phase 8 remains stopped before P8-002 implementation.
+R22 closed the R21 PM-audit finding in substance and remained documentation/governance-only. Phase 8 remains stopped before P8-002 implementation.
 
 ## R22 Evidence
 
@@ -68,14 +68,6 @@ R22 closed the R21 PM-audit finding in substance and remained documentation/gove
 - All implementation/owner gates remain unpassed
 - currentTask: null (platform level)
 - P8-002: proposed, unregistered, unapproved
-
-## Preserved Unrelated Changes (preserved by TDR-P0-002)
-
-- `M src/project/projectRegistry.ts` — modified by TDR-P0-002 (registry registration only)
-- `?? PM_OUTBOX/CLAUDE-CODE-TDR-P0-002-EXECUTION-PROMPT.md` — untracked, preserved
-- `?? PM_OUTBOX/CLAUDE-CODE-TDR-P1-001-FRONTEND-MODULE-SHELL-PROMPT.md` — untracked, preserved
-- `?? WDR/_All/Trade-Data-Refinery/` — untracked, preserved
-- `?? docs/TRADE-DATA-REFINERY-STRATEGIC-EXECUTION-ROADMAP.md` — untracked, preserved
 
 ## Last Updated
 
