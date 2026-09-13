@@ -22,7 +22,7 @@ No product implementation was created. Phase 8 platform status is unchanged.
 ## TDR Evidence
 
 - TDR-P0-002 WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-002_WDR_2026-09-14.md`
-- TDR-P0-002 commit hash: `<TDR-P0-002-COMMIT-HASH>` (filled after commit)
+- TDR-P0-002 commit hash: `2397678a571068576646fc4049521ea1680d8274` (filled after commit)
 - TDR-P0-002 PM audit: PLANNED by Owner/PM after commit
 
 ## TDR History
