@@ -33,6 +33,7 @@ TDR-P0-002-CORRECTIVE-001 finalized evidence: filled Commit B hash, corrected st
 - TDR-GOV-START-001: PASS (2026-09-14) — repository state recovery audit
 - TDR-P0-002: PASS (2026-09-14) — program registration
 - TDR-P0-002-CORRECTIVE-001: PASS (2026-09-14) — evidence finalization
+- TDR-P0-002-CORRECTIVE-002: PASS (2026-09-14) — final evidence cleanup
 
 ## TDR Next Task (planned, after P0-002 PM audit)
 

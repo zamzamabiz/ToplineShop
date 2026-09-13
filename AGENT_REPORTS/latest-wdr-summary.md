@@ -2,11 +2,19 @@
 
 ## Current WDR
 
-**TDR-P0-002-CORRECTIVE-001** — Evidence Finalization and Clean Closure for TDR-P0-002
+**TDR-P0-002-CORRECTIVE-002** — Final Evidence Cleanup Only
 
 - Execution: PASS
 - **PM audit: PLANNED** (pending Owner/PM)
-- Corrective commit hash: `<TDR-P0-002-CORRECTIVE-001-COMMIT-HASH>` (to be filled)
+- Commit: `6e7d92b9...` (chore(tdr): clean final p0-002 evidence)
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-002-CORRECTIVE-002_WDR_2026-09-14.md`
+
+## Previous WDR (CORRECTIVE-001 — now superseded)
+
+**TDR-P0-002-CORRECTIVE-001** — Evidence Finalization and Clean Closure for TDR-P0-002
+
+- Execution: PASS
+- Commit: `1e288bc94097b96423160dee85753ed487a9ce00`
 - WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-002-CORRECTIVE-001_WDR_2026-09-14.md`
 
 ## Previous WDR (TDR-P0-002 — now closed)
@@ -25,6 +33,7 @@
 - TDR-GOV-START-001 WDR: `WDR/_All/Trade-Data-Refinery/TDR-GOV-START-001-REPOSITORY-STATE-RECOVERY-WDR-2026-09-14.md` — PASS (2026-09-14)
 - TDR-P0-002 WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-002_WDR_2026-09-14.md` — PASS (2026-09-14)
 - TDR-P0-002-CORRECTIVE-001 WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-002-CORRECTIVE-001_WDR_2026-09-14.md` — PASS (2026-09-14)
+- TDR-P0-002-CORRECTIVE-002 WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-002-CORRECTIVE-002_WDR_2026-09-14.md` — PASS (2026-09-14)
 
 ## TDR-P0-002 Summary (PASS — closed by CORRECTIVE-001)
 
@@ -52,6 +61,15 @@ Finalized TDR-P0-002 evidence (ChatGPT audit finding — PARTIAL):
 - Updated latest-status.md and latest-wdr-summary.md to reflect PASS
 - Created TDR-P0-002-CORRECTIVE-001 WDR
 
+## TDR-P0-002-CORRECTIVE-002 Summary
+
+Final evidence cleanup (ChatGPT audit finding — PARTIAL on CORRECTIVE-001):
+- Filled CORRECTIVE-001 commit hash `1e288bc94097b96423160dee85753ed487a9ce00` (3 occurrences in CORRECTIVE-001 WDR)
+- Corrected CORRECTIVE-001 WDR §11: "staged" → "CLEAN — committed"
+- Corrected TDR-P0-002 WDR §10: stale git status row → CLEAN after commit
+- Corrected TDR-P0-002 WDR §15: stale working-tree rows → all committed
+- Created TDR-P0-002-CORRECTIVE-002 WDR
+
 ## Previous WDR (Platform Phase 8 — PRESERVED)
 
 **TOPLINE-P8-001-R22** — Phase 8 R21 Evidence-Fill Reconciliation
@@ -64,8 +82,8 @@ Finalized TDR-P0-002 evidence (ChatGPT audit finding — PARTIAL):
 
 ## Next WDR
 
-TDR-P0-002 PM audit — PLANNED (by Owner/PM after TDR-P0-002 commit).
-After TDR-P0-002 PM audit PASS, next governed task is TDR-P1-001.
+TDR-P0-002-CORRECTIVE-002 PM audit — PLANNED (by Owner/PM).
+After TDR-P0-002-CORRECTIVE-002 PM audit PASS, next governed task is TDR-P1-001.
 
 ## Last Updated
 
