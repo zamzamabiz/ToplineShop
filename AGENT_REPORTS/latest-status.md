@@ -2,22 +2,24 @@
 
 ## Current Program
 
-**Trade Data Refinery (TDR) — TDR-P0-002 IN PROGRESS**
+**Trade Data Refinery (TDR) — TDR-P0-002 PASS**
 
 ## TDR Current Status
 
-**TDR-P0-002 execution: IN PROGRESS**
-**TDR-P0-002 PM audit: PLANNED (pending Owner/PM after commit)**
+**TDR-P0-002 execution: PASS**
+**TDR-P0-002 PM audit: PLANNED (pending Owner/PM)**
 
-TDR-P0-002 registers the Trade Data Refinery as an authorized program/module in `src/project/projectRegistry.ts`. It adds:
+TDR-P0-002 registered the Trade Data Refinery as an authorized program/module in `src/project/projectRegistry.ts`. It added:
 - TDR module (`mod-tdr`) in the modules array
-- Four TDR task entries: TDR-P0-001 (PASS), TDR-GOV-START-001 (PASS), TDR-P0-002 (IN_PROGRESS), TDR-P1-001 (PLANNED)
+- Four TDR task entries: TDR-P0-001 (PASS), TDR-GOV-START-001 (PASS), TDR-P0-002 (PASS), TDR-P1-001 (PLANNED)
 - Three TDR risk entries (risk-tdr-001, risk-tdr-002, risk-tdr-003)
 - Two TDR decision entries (decision-tdr-001, decision-tdr-002)
 - Three TDR WDR entries (wdr-tdr-001, wdr-tdr-gov-001, wdr-tdr-002)
 - `lastUpdated` updated to "2026-09-14"
 
 No product implementation was created. Phase 8 platform status is unchanged.
+
+TDR-P0-002-CORRECTIVE-001 finalized evidence: filled Commit B hash, corrected stale IN_PROGRESS → PASS in WDR tables.
 
 ## TDR Evidence
 
@@ -29,7 +31,8 @@ No product implementation was created. Phase 8 platform status is unchanged.
 
 - TDR-P0-001: PASS (2026-09-13) — roadmap v2.0 authorized
 - TDR-GOV-START-001: PASS (2026-09-14) — repository state recovery audit
-- TDR-P0-002: IN PROGRESS (2026-09-14) — program registration
+- TDR-P0-002: PASS (2026-09-14) — program registration
+- TDR-P0-002-CORRECTIVE-001: PASS (2026-09-14) — evidence finalization
 
 ## TDR Next Task (planned, after P0-002 PM audit)
 
