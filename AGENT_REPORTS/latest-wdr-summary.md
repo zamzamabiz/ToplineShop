@@ -5,7 +5,7 @@
 **TOPLINE-P8-001-R22** - Phase 8 R21 Evidence-Fill Reconciliation
 
 - Execution: PASS (planning/governance only)
-- **PM audit: BLOCKED** (R22 PM-audit commit `<R22_PM_AUDIT_COMMIT_A_HASH>`; R22 PM-audit evidence-fill Commit B `<R22_PM_AUDIT_COMMIT_B_HASH>`)
+- **PM audit: BLOCKED** (R22 PM-audit commit `5a91bd7a8587aff9ceda497749760ef7efbfdbc9`; R22 PM-audit evidence-fill Commit B `<R22_PM_AUDIT_COMMIT_B_HASH>`)
 - R22 implementation commit (R22 Commit A): `a13cb04b13a1c81877aa15e5d070fc2b39e9d82d`
 - R22 evidence-fill commit (R22 Commit B): `bd398f270a781be54e40e51e2832ea46c874a84f` (not yet filled into the R22 WDR, reports, outbox, or registry `git.lastCommit`)
 - R21 implementation commit (R21 Commit A): `22bf2648da97868e59e384fe22a21801c2a184f3` (preserved — NOT replaced with R21 Commit B per the R22 instruction)

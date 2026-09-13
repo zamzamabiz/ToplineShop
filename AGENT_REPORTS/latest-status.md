@@ -81,7 +81,7 @@ The R21 valid correction (R21 Commit B hash `11f3a0fe0a00a95ad8379d9974d36931adf
 - P8-001-R22 implementation: PASS, PM audit BLOCKED.
 - P8-001-R22 implementation commit (R22 Commit A): `a13cb04b13a1c81877aa15e5d070fc2b39e9d82d` (preserved — NOT replaced with R22 Commit B per the R22 PM audit instruction)
 - P8-001-R22 evidence-fill commit (R22 Commit B): `bd398f270a781be54e40e51e2832ea46c874a84f` (not yet filled into the R22 WDR, reports, outbox, or registry `git.lastCommit`)
-- P8-001-R22 PM-audit commit (R22 PM-audit Commit A): `<R22_PM_AUDIT_COMMIT_A_HASH>` (filled by R22 PM-audit evidence-fill Commit B)
+- P8-001-R22 PM-audit commit (R22 PM-audit Commit A): `5a91bd7a8587aff9ceda497749760ef7efbfdbc9` (filled by R22 PM-audit evidence-fill Commit B)
 - P8-001-R22 PM-audit evidence-fill commit (R22 PM-audit Commit B): `<R22_PM_AUDIT_COMMIT_B_HASH>` (filled by R22 PM-audit evidence-fill Commit B; reported in final handoff)
 - P8-001-R21 PM-audit Commit A: `810df29b29bec6783e6a48fc539c82cc493916bd`
 - P8-001-R21 PM-audit evidence-fill Commit B: `15d0c19665687bd4c22676cdc23f9541056c295c`
