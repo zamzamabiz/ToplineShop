@@ -2,24 +2,23 @@
 
 ## Current Program
 
-**Trade Data Refinery (TDR) — TDR-P0-002 PASS**
+**Trade Data Refinery (TDR) — TDR-P1-001 PASS**
 
 ## TDR Current Status
 
-**TDR-P0-002 execution: PASS**
-**TDR-P0-002 PM audit: PLANNED (pending Owner/PM)**
+**TDR-P1-001 execution: PASS**
+**TDR-P1-001 PM audit: PLANNED (pending Owner/PM visual review)**
 
-TDR-P0-002 registered the Trade Data Refinery as an authorized program/module in `src/project/projectRegistry.ts`. It added:
-- TDR module (`mod-tdr`) in the modules array
-- Four TDR task entries: TDR-P0-001 (PASS), TDR-GOV-START-001 (PASS), TDR-P0-002 (PASS), TDR-P1-001 (PLANNED)
-- Three TDR risk entries (risk-tdr-001, risk-tdr-002, risk-tdr-003)
-- Two TDR decision entries (decision-tdr-001, decision-tdr-002)
-- Three TDR WDR entries (wdr-tdr-001, wdr-tdr-gov-001, wdr-tdr-002)
-- `lastUpdated` updated to "2026-09-14"
+TDR-P1-001 implemented the first frontend-only TDR experience at `/tdr`:
+- Route: `src/app/tdr/page.tsx` — client component, all visual states
+- Components: `src/components/tdr/` — 5 TDR-specific components
+- Mock data: `src/features/tdr/mockData.ts` — 4 scenarios (healthy/warning/failed/empty)
+- Types: `src/types/tdr.ts`
+- Sidebar nav entry added: "Data Refinery" → `/tdr`
+- State selector: 6 preview states switchable by Owner/PM
+- Build: PASS, Lint: 0 errors, TypeScript: PASS
 
-No product implementation was created. Phase 8 platform status is unchanged.
-
-TDR-P0-002-CORRECTIVE-001 finalized evidence: filled Commit B hash, corrected stale IN_PROGRESS → PASS in WDR tables.
+No backend, database, auth, RBAC, package, or API work. All data synthetic.
 
 ## TDR Evidence
 
@@ -34,12 +33,17 @@ TDR-P0-002-CORRECTIVE-001 finalized evidence: filled Commit B hash, corrected st
 - TDR-P0-002: PASS (2026-09-14) — program registration
 - TDR-P0-002-CORRECTIVE-001: PASS (2026-09-14) — evidence finalization
 - TDR-P0-002-CORRECTIVE-002: PASS (2026-09-14) — final evidence cleanup
+- TDR-P1-001: PASS (2026-09-14) — frontend module shell and overview
 
-## TDR Next Task (planned, after P0-002 PM audit)
+## TDR Evidence
 
-TDR-P1-001 — Frontend Module Shell and Overview
+- TDR-P1-001 WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-001_WDR_2026-09-14.md`
+- TDR-P1-001 commit hash: `<TDR-P1-001-COMMIT-A-HASH>` (filled by evidence-fill commit)
+- TDR-P1-001 PM audit: PLANNED by Owner/PM after visual browser review
 
-Prompt: `PM_OUTBOX/CLAUDE-CODE-TDR-P1-001-FRONTEND-MODULE-SHELL-PROMPT.md`
+## TDR Next Task (planned, after P1-001 PM audit)
+
+TDR-P1-002 — (to be defined by Owner/PM after TDR-P1-001 visual review)
 
 ## Platform Phase 8 State (PRESERVED — NOT CHANGED BY TDR-P0-002)
 

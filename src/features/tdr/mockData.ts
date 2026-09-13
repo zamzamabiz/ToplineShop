@@ -1,0 +1,237 @@
+import type { TdrMockScenario, TdrViewState } from "@/types/tdr";
+
+const HEALTHY: TdrMockScenario = {
+  metrics: {
+    batchesReceived: 42,
+    recordsProcessed: 184_302,
+    recordsQuarantined: 1_247,
+    recordsPublished: 183_055,
+    dataQualityScore: 99.3,
+    lastSuccessfulRun: "2026-09-14T01:45:00.000Z",
+  },
+  batches: [
+    {
+      id: "b-001",
+      sourceName: "Global Trade Registry",
+      receivedAt: "2026-09-14T01:45:00.000Z",
+      status: "ACCEPTED",
+      acceptedCount: 4_821,
+      quarantineCount: 12,
+    },
+    {
+      id: "b-002",
+      sourceName: "Asia-Pacific Customs API",
+      receivedAt: "2026-09-14T00:30:00.000Z",
+      status: "ACCEPTED",
+      acceptedCount: 11_234,
+      quarantineCount: 89,
+    },
+    {
+      id: "b-003",
+      sourceName: "EU Trade Data Feed",
+      receivedAt: "2026-09-13T22:15:00.000Z",
+      status: "PARTIAL",
+      acceptedCount: 7_650,
+      quarantineCount: 432,
+    },
+    {
+      id: "b-004",
+      sourceName: "Americas Logistics Index",
+      receivedAt: "2026-09-13T21:00:00.000Z",
+      status: "ACCEPTED",
+      acceptedCount: 3_210,
+      quarantineCount: 4,
+    },
+  ],
+  quality: {
+    accepted: 183_055,
+    warning: 981,
+    error: 254,
+    fatal: 12,
+  },
+  sources: [
+    {
+      id: "s-001",
+      name: "Global Trade Registry",
+      status: "ACTIVE",
+      lastSeen: "2 min ago",
+      batchCount: 18,
+    },
+    {
+      id: "s-002",
+      name: "Asia-Pacific Customs API",
+      status: "ACTIVE",
+      lastSeen: "33 min ago",
+      batchCount: 12,
+    },
+    {
+      id: "s-003",
+      name: "EU Trade Data Feed",
+      status: "ATTENTION",
+      lastSeen: "2h ago",
+      batchCount: 7,
+    },
+    {
+      id: "s-004",
+      name: "Americas Logistics Index",
+      status: "PAUSED",
+      lastSeen: "3h ago",
+      batchCount: 5,
+    },
+  ],
+};
+
+const WARNING: TdrMockScenario = {
+  metrics: {
+    batchesReceived: 38,
+    recordsProcessed: 91_204,
+    recordsQuarantined: 12_847,
+    recordsPublished: 78_357,
+    dataQualityScore: 86.2,
+    lastSuccessfulRun: "2026-09-14T00:15:00.000Z",
+  },
+  batches: [
+    {
+      id: "b-010",
+      sourceName: "EU Trade Data Feed",
+      receivedAt: "2026-09-14T00:15:00.000Z",
+      status: "PARTIAL",
+      acceptedCount: 4_201,
+      quarantineCount: 3_890,
+    },
+    {
+      id: "b-011",
+      sourceName: "Global Trade Registry",
+      receivedAt: "2026-09-13T23:00:00.000Z",
+      status: "PARTIAL",
+      acceptedCount: 8_000,
+      quarantineCount: 4_200,
+    },
+    {
+      id: "b-012",
+      sourceName: "Americas Logistics Index",
+      receivedAt: "2026-09-13T22:00:00.000Z",
+      status: "PROCESSING",
+      acceptedCount: 0,
+      quarantineCount: 0,
+    },
+  ],
+  quality: {
+    accepted: 78_357,
+    warning: 9_810,
+    error: 2_540,
+    fatal: 497,
+  },
+  sources: [
+    {
+      id: "s-001",
+      name: "Global Trade Registry",
+      status: "ATTENTION",
+      lastSeen: "1h ago",
+      batchCount: 14,
+    },
+    {
+      id: "s-002",
+      name: "EU Trade Data Feed",
+      status: "ATTENTION",
+      lastSeen: "45 min ago",
+      batchCount: 8,
+    },
+    {
+      id: "s-003",
+      name: "Americas Logistics Index",
+      status: "ACTIVE",
+      lastSeen: "5 min ago",
+      batchCount: 3,
+    },
+  ],
+};
+
+const FAILED: TdrMockScenario = {
+  metrics: {
+    batchesReceived: 15,
+    recordsProcessed: 34_100,
+    recordsQuarantined: 34_100,
+    recordsPublished: 0,
+    dataQualityScore: 0,
+    lastSuccessfulRun: "2026-09-13T18:00:00.000Z",
+  },
+  batches: [
+    {
+      id: "b-020",
+      sourceName: "Global Trade Registry",
+      receivedAt: "2026-09-14T02:00:00.000Z",
+      status: "FAILED",
+      acceptedCount: 0,
+      quarantineCount: 34_100,
+    },
+    {
+      id: "b-021",
+      sourceName: "Asia-Pacific Customs API",
+      receivedAt: "2026-09-13T23:45:00.000Z",
+      status: "FAILED",
+      acceptedCount: 0,
+      quarantineCount: 0,
+    },
+    {
+      id: "b-022",
+      sourceName: "EU Trade Data Feed",
+      receivedAt: "2026-09-13T18:00:00.000Z",
+      status: "ACCEPTED",
+      acceptedCount: 8_400,
+      quarantineCount: 110,
+    },
+  ],
+  quality: {
+    accepted: 0,
+    warning: 0,
+    error: 8_100,
+    fatal: 26_000,
+  },
+  sources: [
+    {
+      id: "s-001",
+      name: "Global Trade Registry",
+      status: "ATTENTION",
+      lastSeen: "8h ago",
+      batchCount: 7,
+    },
+    {
+      id: "s-002",
+      name: "Asia-Pacific Customs API",
+      status: "PAUSED",
+      lastSeen: "8h ago",
+      batchCount: 4,
+    },
+  ],
+};
+
+const EMPTY: TdrMockScenario = {
+  metrics: {
+    batchesReceived: 0,
+    recordsProcessed: 0,
+    recordsQuarantined: 0,
+    recordsPublished: 0,
+    dataQualityScore: 0,
+    lastSuccessfulRun: null,
+  },
+  batches: [],
+  quality: { accepted: 0, warning: 0, error: 0, fatal: 0 },
+  sources: [],
+};
+
+export const TDR_SCENARIOS: Record<Exclude<TdrViewState, "loading" | "disabled">, TdrMockScenario> = {
+  healthy: HEALTHY,
+  warning: WARNING,
+  failed: FAILED,
+  empty: EMPTY,
+};
+
+export const VIEW_STATE_LABELS: Record<TdrViewState, string> = {
+  healthy: "Healthy",
+  empty: "No Imports Yet",
+  loading: "Loading / Skeleton",
+  warning: "Warning — High Quarantine",
+  failed: "Failed Batch",
+  disabled: "Module Disabled",
+};

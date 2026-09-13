@@ -2,14 +2,14 @@
 
 ## Current WDR
 
-**TDR-P0-002-CORRECTIVE-002** — Final Evidence Cleanup Only
+**TDR-P1-001** — Trade Data Refinery Frontend Module Shell and Overview
 
 - Execution: PASS
-- **PM audit: PLANNED** (pending Owner/PM)
-- Commit: `6e7d92b9...` (chore(tdr): clean final p0-002 evidence)
-- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-002-CORRECTIVE-002_WDR_2026-09-14.md`
+- **PM audit: PLANNED** (pending Owner/PM visual review at `/tdr`)
+- Commit A: `<TDR-P1-001-COMMIT-A-HASH>` (to be filled by evidence-fill commit)
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-001_WDR_2026-09-14.md`
 
-## Previous WDR (CORRECTIVE-001 — now superseded)
+## Previous WDR (TDR-P0-002-CORRECTIVE-002 — now superseded)
 
 **TDR-P0-002-CORRECTIVE-001** — Evidence Finalization and Clean Closure for TDR-P0-002
 

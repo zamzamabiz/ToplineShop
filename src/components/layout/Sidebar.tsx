@@ -13,6 +13,7 @@ import {
   Shield,
   Crown,
   Settings,
+  DatabaseZap,
 } from "lucide-react";
 
 const navItems = [
@@ -26,6 +27,7 @@ const navItems = [
   { label: "Vendor SaaS", href: "/vendor", icon: Settings },
   { label: "Admin", href: "/admin", icon: Shield },
   { label: "Owner Control", href: "/owner", icon: Crown },
+  { label: "Data Refinery", href: "/tdr", icon: DatabaseZap },
 ];
 
 export function Sidebar() {
