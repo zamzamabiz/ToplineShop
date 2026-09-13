@@ -28,7 +28,27 @@ function SkeletonBox({ className = "" }: { className?: string }) {
 function LoadingSkeleton() {
   return (
     <div role="status" aria-label="Loading Trade Data Refinery">
-      <span className="sr-only">Loading…</span>
+      {/* Visible explanatory banner — clarifies this is a preview state, not a broken page */}
+      <div
+        className="rounded-xl border px-6 py-5 mb-8 flex items-start gap-4"
+        style={{ backgroundColor: "var(--surface-primary)", borderColor: "var(--border-default)" }}
+      >
+        <div
+          className="mt-0.5 h-9 w-9 shrink-0 rounded-full flex items-center justify-center"
+          style={{ backgroundColor: "var(--surface-secondary)" }}
+          aria-hidden="true"
+        >
+          <DatabaseZap className="h-5 w-5" style={{ color: "var(--brand-primary)" }} />
+        </div>
+        <div>
+          <p className="text-base font-semibold mb-1">Loading Trade Data Refinery preview…</p>
+          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+            This is a <strong style={{ color: "var(--text-secondary)" }}>frontend-only skeleton state</strong>.
+            No backend, API, or database is connected. The page is not broken — skeleton cards below show the
+            layout that will populate once data is available.
+          </p>
+        </div>
+      </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
         {Array.from({ length: 6 }).map((_, i) => (
           <div
