@@ -12,7 +12,7 @@
 | CTO / governing AI | ChatGPT Luna |
 | Owner | Mr. Chohan |
 | Trigger | ChatGPT Luna audit of TDR-P0-002 returned PARTIAL |
-| Commit hash | `<TDR-P0-002-CORRECTIVE-001-COMMIT-HASH>` (filled after commit) |
+| Commit hash | `1e288bc94097b96423160dee85753ed487a9ce00` |
 
 ---
 
@@ -143,13 +143,13 @@ The project registry `src/project/projectRegistry.ts` was NOT modified. It was a
 |---|---|
 | `npm run build` | ✓ Compiled successfully — PASS |
 | `git diff --check` | CLEAN |
-| `git status --short` | All corrected files staged; no untracked surprises |
+| `git status --short` | CLEAN — all corrected files committed; working tree clean after commit |
 
 ---
 
 ## 12. Commit
 
-- **Corrective commit:** `<TDR-P0-002-CORRECTIVE-001-COMMIT-HASH>` (filled after commit)
+- **Corrective commit:** `1e288bc94097b96423160dee85753ed487a9ce00`
 - **Message:** `chore(tdr): finalize p0-002 evidence closure`
 
 ---
@@ -197,5 +197,5 @@ The project registry `src/project/projectRegistry.ts` was NOT modified. It was a
 | No product implementation | CONFIRMED |
 | Master modified | NO |
 | Push performed | NO |
-| Corrective commit hash | `<TDR-P0-002-CORRECTIVE-001-COMMIT-HASH>` (filled after commit) |
+| Corrective commit hash | `1e288bc94097b96423160dee85753ed487a9ce00` |
 | Final result | **PASS** |
