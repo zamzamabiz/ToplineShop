@@ -6,7 +6,7 @@
 
 - Execution: PASS
 - **PM audit: PLANNED** (pending Owner/PM visual review at `/tdr`)
-- Commit A: `<TDR-P1-001-COMMIT-A-HASH>` (to be filled by evidence-fill commit)
+- Commit A: `b6409f601e41492180d3234f7c394a8c3ac0c581` (to be filled by evidence-fill commit)
 - WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-001_WDR_2026-09-14.md`
 
 ## Previous WDR (TDR-P0-002-CORRECTIVE-002 — now superseded)
