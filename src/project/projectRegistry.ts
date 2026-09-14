@@ -2014,6 +2014,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PLANNED",
       notes: "Frontend-only. Mock data expanded for meaningful pagination. Search, status filter, source filter, page-size, prev/next pagination, empty-filter state, clear-filters, large-data safety note. No backend, no database, no auth, no RBAC. Build PASS. Lint 0 errors. Commit hash to be filled by evidence-fill commit.",
     },
+    {
+      id: "TDR-P1-003",
+      phase: "tdr",
+      title: "Batch Detail Panel / Modal Preview",
+      objective:
+        "Add a frontend-only batch detail modal/panel to the TDR preview. View action in each batch row opens a detail panel with mock identity, processing summary, validation checkpoints, quality issues, and disabled future actions. No backend.",
+      status: "PASS",
+      priority: "HIGH",
+      dependencies: ["TDR-P1-002"],
+      startedAt: "2026-09-14T00:00:00.000Z",
+      completedAt: "2026-09-14T00:00:00.000Z",
+      wdrPath: "WDR/_All/Trade-Data-Refinery/TDR-P1-003_WDR_2026-09-14.md",
+      commitHash: null,
+      tests: "NOT_STARTED",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "Frontend-only. TdrBatchDetailPanel.tsx created. View button enabled in TdrBatchTable.tsx. Mock detail derived from TdrBatch fields. Filter/pagination state preserved when panel opens/closes. No backend, no database, no auth, no RBAC. Build PASS. Lint 0 errors. Commit hash to be filled by evidence-fill commit.",
+    },
   ],
   modules: [
     {
@@ -3247,10 +3266,19 @@ export const projectRegistry: ProjectRegistry = {
       commitHash: "f0930de6cd55f36e6a06d18a5b701e8795cf70f5",
       pmAudit: "PLANNED",
     },
+    {
+      id: "wdr-tdr-p1-003",
+      taskId: "TDR-P1-003",
+      phase: "tdr",
+      status: "PASS",
+      date: "2026-09-14",
+      commitHash: null,
+      pmAudit: "PLANNED",
+    },
   ],
   git: {
     initialized: true,
-    lastCommit: "f0930de6cd55f36e6a06d18a5b701e8795cf70f5",
+    lastCommit: null,
   },
   github: {
     configured: true,

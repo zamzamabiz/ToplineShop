@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Inbox, Eye, Search, ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { TdrBatch, TdrBatchStatus } from "@/types/tdr";
+import { TdrBatchDetailPanel } from "./TdrBatchDetailPanel";
 
 const STATUS_MAP: Record<TdrBatchStatus, { label: string; bg: string; text: string }> = {
   ACCEPTED:   { label: "Accepted",   bg: "#dcfce7",              text: "#16a34a" },
@@ -48,6 +49,7 @@ export function TdrBatchTable({ batches }: { batches: TdrBatch[] }) {
   const [sourceFilter, setSourceFilter] = useState("");
   const [pageSize, setPageSize]         = useState(5);
   const [page, setPage]                 = useState(1);
+  const [selectedBatch, setSelectedBatch] = useState<TdrBatch | null>(null);
 
   const sources = useMemo(
     () => Array.from(new Set(batches.map((b) => b.sourceName))).sort(),
@@ -257,12 +259,11 @@ export function TdrBatchTable({ batches }: { batches: TdrBatch[] }) {
                           </td>
                           <td className="py-3 text-right">
                             <button
-                              disabled
-                              aria-disabled="true"
-                              aria-label={`View batch from ${batch.sourceName} — not available in frontend preview`}
-                              title="Batch detail view is not available in this frontend preview"
-                              className="inline-flex items-center gap-1.5 rounded px-2 py-1 text-xs cursor-not-allowed opacity-50 focus-visible:outline-none focus-visible:ring-2"
-                              style={{ backgroundColor: "var(--surface-secondary)", color: "var(--text-secondary)" }}
+                              onClick={() => setSelectedBatch(batch)}
+                              aria-label={`View batch detail for ${batch.sourceName}`}
+                              title="Open batch detail preview"
+                              className="inline-flex items-center gap-1.5 rounded px-2 py-1 text-xs focus-visible:outline-none focus-visible:ring-2"
+                              style={{ backgroundColor: "var(--surface-secondary)", color: "var(--brand-primary)" }}
                             >
                               <Eye className="h-3.5 w-3.5" aria-hidden="true" />
                               View
@@ -320,6 +321,14 @@ export function TdrBatchTable({ batches }: { batches: TdrBatch[] }) {
           </>
         )}
       </div>
+
+      {/* Batch detail modal — rendered outside card flow so it overlays the page */}
+      {selectedBatch && (
+        <TdrBatchDetailPanel
+          batch={selectedBatch}
+          onClose={() => setSelectedBatch(null)}
+        />
+      )}
     </div>
   );
 }
