@@ -2033,6 +2033,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PLANNED",
       notes: "Frontend-only. TdrBatchDetailPanel.tsx created. View button enabled in TdrBatchTable.tsx. Mock detail derived from TdrBatch fields. Filter/pagination state preserved when panel opens/closes. No backend, no database, no auth, no RBAC. Build PASS. Lint 0 errors. Commit hash to be filled by evidence-fill commit.",
     },
+    {
+      id: "TDR-P1-003-UX-CORRECTIVE-001",
+      phase: "tdr",
+      title: "Fix Batch View Action — Portal Fix",
+      objective:
+        "Fix the View button in TdrBatchTable so clicking it opens the Batch Detail Preview panel. Root cause: AppShell overflow:hidden created a stacking context that trapped the fixed overlay inside the card tree. Fix: wrap TdrBatchDetailPanel return in createPortal(content, document.body) so the modal renders at document.body level regardless of ancestor stacking contexts.",
+      status: "PASS",
+      priority: "HIGH",
+      dependencies: ["TDR-P1-003"],
+      startedAt: "2026-09-14T00:00:00.000Z",
+      completedAt: "2026-09-14T00:00:00.000Z",
+      wdrPath: "WDR/_All/Trade-Data-Refinery/TDR-P1-003-UX-CORRECTIVE-001_WDR_2026-09-14.md",
+      commitHash: null,
+      tests: "NOT_STARTED",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "Corrective for TDR-P1-003. ChatGPT audit found View buttons appeared grey/inactive. Fix: import createPortal from react-dom and wrap modal JSX in createPortal(content, document.body) in TdrBatchDetailPanel.tsx. AppShell overflow:hidden was the stacking context offender. Build PASS. Lint 0 errors. Commit hash to be filled by evidence-fill commit.",
+    },
   ],
   modules: [
     {
@@ -3275,10 +3294,19 @@ export const projectRegistry: ProjectRegistry = {
       commitHash: "04af1da02cfe2313035e63e9c5021c1884d0dc0e",
       pmAudit: "PLANNED",
     },
+    {
+      id: "wdr-tdr-p1-003-ux-corrective-001",
+      taskId: "TDR-P1-003-UX-CORRECTIVE-001",
+      phase: "tdr",
+      status: "PASS",
+      date: "2026-09-14",
+      commitHash: null,
+      pmAudit: "PLANNED",
+    },
   ],
   git: {
     initialized: true,
-    lastCommit: "04af1da02cfe2313035e63e9c5021c1884d0dc0e",
+    lastCommit: null,
   },
   github: {
     configured: true,

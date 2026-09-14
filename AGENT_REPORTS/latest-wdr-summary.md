@@ -2,10 +2,18 @@
 
 ## Current WDR
 
-**TDR-P1-003** — Batch Detail Panel / Modal Preview
+**TDR-P1-003-UX-CORRECTIVE-001** — Fix Batch View Action (Portal Fix)
 
 - Execution: PASS
 - **PM audit: PLANNED** (pending Owner/PM visual review at `/tdr`)
+- Commit A: null (to be filled by evidence-fill commit)
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-003-UX-CORRECTIVE-001_WDR_2026-09-14.md`
+
+## Previous WDR (TDR-P1-003 — PM audit pending)
+
+**TDR-P1-003** — Batch Detail Panel / Modal Preview
+
+- Execution: PASS
 - Commit A: `04af1da02cfe2313035e63e9c5021c1884d0dc0e` (filled by evidence-fill commit)
 - WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-003_WDR_2026-09-14.md`
 
@@ -36,16 +44,15 @@
 - TDR-P1-001-UX-CORRECTIVE-001 WDR: PASS (2026-09-14)
 - TDR-P1-002 WDR: PASS (2026-09-14)
 - TDR-P1-003 WDR: PASS (2026-09-14)
+- TDR-P1-003-UX-CORRECTIVE-001 WDR: PASS (2026-09-14)
 
-## TDR-P1-003 Summary
+## TDR-P1-003-UX-CORRECTIVE-001 Summary
 
-TDR-P1-003 added a batch detail modal panel to the TDR module at `/tdr`:
-- Created `TdrBatchDetailPanel.tsx` — modal dialog with backdrop + Escape key close
-- Enabled View button in `TdrBatchTable.tsx` (was disabled; now opens detail panel)
-- Mock detail derived from TdrBatch: identity, processing summary, checkpoints, issues
-- 4 disabled future actions clearly labelled (Review Quarantine, Export, Re-run, Publish)
-- Mock-only warning banner + production note inside panel
-- Filter/pagination state preserved when panel opens and closes
+TDR-P1-003-UX-CORRECTIVE-001 fixed the non-functioning View buttons in the TDR batch table:
+- Root cause: AppShell `overflow: hidden` trapped `position: fixed` inside the card tree
+- Fix: `createPortal(content, document.body)` in `TdrBatchDetailPanel.tsx`
+- Minimal change: import + rename `return (` to `const content = (` + `return createPortal(content, document.body)`
+- All modal features (Escape, backdrop, X button, auto-focus) unchanged
 - Build PASS, Lint 0 errors
 
 No product implementation. No backend/database/auth/RBAC/package changes.
@@ -55,13 +62,13 @@ No product implementation. No backend/database/auth/RBAC/package changes.
 **TOPLINE-P8-001-R22** — Phase 8 R21 Evidence-Fill Reconciliation
 
 - Execution: PASS
-- R22 Commit A: `a13cb04b13a1c81877aa15e5d070fc2b39e9d82d`
+- R22 Commit A: `a13cb04b13a1c81877aa15e5d070bc2b39e9d82d`
 - WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R22_WDR_2026-09-11.md`
 
 ## Next WDR
 
-TDR-P1-003 PM audit — PLANNED (by Owner/PM).
-After TDR-P1-003 PM audit PASS, next governed task is TDR-P1-004.
+TDR-P1-003-UX-CORRECTIVE-001 PM audit — PLANNED (by Owner/PM).
+After TDR-P1-003-UX-CORRECTIVE-001 PM audit PASS, next governed task is TDR-P1-004.
 
 ## Last Updated
 

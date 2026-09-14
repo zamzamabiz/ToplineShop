@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import {
   X, CheckCircle2, AlertTriangle, XCircle, Clock, Ban,
   ShieldOff, Download, RefreshCw, Send,
@@ -271,7 +272,7 @@ export function TdrBatchDetailPanel({
     closeRef.current?.focus();
   }, []);
 
-  return (
+  const content = (
     // Backdrop
     <div
       className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-8 overflow-y-auto"
@@ -495,4 +496,6 @@ export function TdrBatchDetailPanel({
       </div>
     </div>
   );
+
+  return createPortal(content, document.body);
 }
