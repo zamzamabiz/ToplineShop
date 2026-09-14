@@ -151,9 +151,9 @@ export default function AdminProductsPage() {
               style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}
             >
               <AlertTriangle className="h-8 w-8 mx-auto mb-3" style={{ color: "var(--state-danger)" }} />
-              <h3 className="text-sm font-semibold">Failed to load products</h3>
+              <h3 className="text-sm font-semibold">Product data is temporarily unavailable</h3>
               <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
-                {error}
+                The product service or database is not currently available. No changes were made.
               </p>
               <Button variant="outline" className="mt-4" onClick={handleRetry}>
                 <RefreshCw className="h-4 w-4" />
