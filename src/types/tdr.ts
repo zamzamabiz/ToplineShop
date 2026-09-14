@@ -42,6 +42,31 @@ export interface TdrMockScenario {
   sources: TdrSourceHealth[];
 }
 
+export type TdrSourceConfigState = "draft" | "ready" | "needs_review" | "disabled";
+export type TdrSourceType = "CSV Import" | "XLSX Import" | "JSON Feed" | "REST API" | "SFTP Drop";
+export type TdrIngestionSchedule = "Hourly" | "Daily" | "Weekly" | "Manual";
+
+export interface TdrSourceConfig {
+  id: string;
+  name: string;
+  healthStatus: TdrSourceStatus;
+  configState: TdrSourceConfigState;
+  sourceType: TdrSourceType;
+  dataDomain: string;
+  ownerTeam: string;
+  dataFormat: string;
+  schedule: TdrIngestionSchedule;
+  expectedColumnsCount: number;
+  mappingProfile: string;
+  validationProfile: string;
+  quarantineRule: string;
+  ingestionMode: string;
+  retentionNote: string;
+  lastSeen: string;
+  batchCount: number;
+  notes: string;
+}
+
 export type TdrQuarantineSeverity = "warning" | "error" | "fatal";
 export type TdrQuarantineReviewStatus =
   | "needs_review"
