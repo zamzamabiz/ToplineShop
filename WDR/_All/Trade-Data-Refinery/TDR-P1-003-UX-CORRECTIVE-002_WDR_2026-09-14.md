@@ -13,7 +13,7 @@
 | Owner | Mr. Chohan |
 | Corrects | `TDR-P1-003` + `TDR-P1-003-UX-CORRECTIVE-001` |
 | Authorized by | Owner/PM screenshot proof showing buttons still grey/non-clickable after UX-CORRECTIVE-001 portal fix |
-| Commit hash (Commit A) | null (to be filled by evidence-fill commit) |
+| Commit hash (Commit A) | `a9c628cf1aaa8a6f741fd85f5271150fbfd42d46` (filled by evidence-fill commit) |
 
 ---
 
@@ -214,7 +214,7 @@ This WDR is included in Commit A. Hash filled by Commit B (evidence-fill).
 | Field | Value |
 |---|---|
 | Commit A message | `fix(tdr): make batch view action clickable` |
-| Commit A hash | null (to be filled by Commit B) |
+| Commit A hash | `a9c628cf1aaa8a6f741fd85f5271150fbfd42d46` (filled by Commit B) |
 | Push | NO |
 | Master modified | NO |
 
