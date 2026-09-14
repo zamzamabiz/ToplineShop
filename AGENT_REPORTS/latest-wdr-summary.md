@@ -6,7 +6,7 @@
 
 - Execution: PASS
 - **PM audit: PLANNED** (pending Owner/PM visual review at `/tdr`)
-- Commit A: null (to be filled by evidence-fill commit)
+- Commit A: `04af1da02cfe2313035e63e9c5021c1884d0dc0e` (filled by evidence-fill commit)
 - WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-003_WDR_2026-09-14.md`
 
 ## Previous WDR (TDR-P1-002 — now superseded)

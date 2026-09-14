@@ -27,7 +27,7 @@ No backend, database, auth, RBAC, package, or API work. All data synthetic.
 ## TDR Evidence
 
 - TDR-P1-003 WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-003_WDR_2026-09-14.md`
-- TDR-P1-003 commit hash: null (to be filled by evidence-fill commit)
+- TDR-P1-003 commit hash: `04af1da02cfe2313035e63e9c5021c1884d0dc0e` (filled by evidence-fill commit)
 - TDR-P1-003 PM audit: PLANNED by Owner/PM after visual browser review
 
 ## TDR History
