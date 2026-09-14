@@ -13,7 +13,7 @@
 | Owner | Mr. Chohan |
 | Corrects | `TDR-P1-003` |
 | Authorized by | ChatGPT PARTIAL audit of TDR-P1-003 + Owner/PM confirmation |
-| Commit hash (Commit A) | null (to be filled by evidence-fill commit) |
+| Commit hash (Commit A) | `f6fe9ab4e50efcba989be1e4136c3320db510240` (filled by evidence-fill commit) |
 
 ---
 
@@ -216,7 +216,7 @@ This WDR is included in Commit A. Hash filled by Commit B (evidence-fill).
 | Field | Value |
 |---|---|
 | Commit A message | `fix(tdr): enable batch detail view action` |
-| Commit A hash | null (to be filled by Commit B) |
+| Commit A hash | `f6fe9ab4e50efcba989be1e4136c3320db510240` (filled by Commit B) |
 | Push | NO |
 | Master modified | NO |
 
@@ -256,5 +256,5 @@ After audit PASS: **TDR-P1-004** — (scope to be defined by Owner/PM).
 | No package dependency changes | CONFIRMED |
 | Master modified | NO |
 | Push performed | NO |
-| Commit hash (Commit A) | null (to be filled by Commit B) |
+| Commit hash (Commit A) | `f6fe9ab4e50efcba989be1e4136c3320db510240` (filled by Commit B) |
 | Final result | **PASS** |

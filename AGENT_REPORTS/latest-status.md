@@ -21,7 +21,7 @@ No backend, database, auth, RBAC, package, or API work.
 ## TDR Evidence
 
 - TDR-P1-003-UX-CORRECTIVE-001 WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-003-UX-CORRECTIVE-001_WDR_2026-09-14.md`
-- TDR-P1-003-UX-CORRECTIVE-001 commit hash: null (to be filled by evidence-fill commit)
+- TDR-P1-003-UX-CORRECTIVE-001 commit hash: `f6fe9ab4e50efcba989be1e4136c3320db510240` (filled by evidence-fill commit)
 - TDR-P1-003-UX-CORRECTIVE-001 PM audit: PLANNED by Owner/PM after visual browser review
 
 ## TDR History
