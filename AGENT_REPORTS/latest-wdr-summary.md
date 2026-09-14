@@ -6,11 +6,11 @@
 
 - Execution: PASS (governance only)
 - PM audit: PLANNED
-- R22 implementation Commit A preserved: $r22a
-- R22 evidence-fill Commit B filled: $r22b
-- R22 PM-audit Commit A recorded: $r22pmA
-- R22 PM-audit evidence-fill Commit B recorded: $r22pmB
-- WDR: $wdr
+- R22 implementation Commit A preserved: a13cb04b13a1c81877aa15e5d070fc2b39e9d82d
+- R22 evidence-fill Commit B filled: bd398f270a781be54e40e51e2832ea46c874a84f
+- R22 PM-audit Commit A recorded: 5a91bd7a8587aff9ceda497749760ef7efbfdbc9
+- R22 PM-audit evidence-fill Commit B recorded: e0e00864e9eb2f1c20c50cc3f9395058e9517168
+- WDR: WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R23_WDR_2026-09-15.md
 
 ## What Changed
 

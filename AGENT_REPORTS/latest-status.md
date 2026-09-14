@@ -9,17 +9,17 @@ R23 is a governance-only corrective task for the blocked R22 PM audit. It fills 
 
 ## R23 Result
 
-- R22 implementation Commit A preserved: $r22a
-- R22 evidence-fill Commit B filled: $r22b
-- R22 PM-audit Commit A recorded: $r22pmA
-- R22 PM-audit evidence-fill Commit B recorded: $r22pmB
+- R22 implementation Commit A preserved: a13cb04b13a1c81877aa15e5d070fc2b39e9d82d
+- R22 evidence-fill Commit B filled: bd398f270a781be54e40e51e2832ea46c874a84f
+- R22 PM-audit Commit A recorded: 5a91bd7a8587aff9ceda497749760ef7efbfdbc9
+- R22 PM-audit evidence-fill Commit B recorded: e0e00864e9eb2f1c20c50cc3f9395058e9517168
 - R22 task commitHash and wdr-087.commitHash remain R22 Commit A and are not replaced.
 - Registry git.lastCommit now records the R22 evidence-fill Commit B hash.
 
 ## Files Updated
 
 - WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R22_WDR_2026-09-11.md
-- $wdr
+- WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R22_WDR_2026-09-11.md
 - AGENT_REPORTS/latest-status.md
 - AGENT_REPORTS/latest-wdr-summary.md
 - PM_OUTBOX/next-opencode-prompt.md
