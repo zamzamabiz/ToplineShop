@@ -2,36 +2,28 @@
 
 ## Current WDR
 
-**TDR-P1-003-UX-CORRECTIVE-001** — Fix Batch View Action (Portal Fix)
+**TDR-P1-003-UX-CORRECTIVE-002** — Fix Batch View Action (Button + Hydration)
 
 - Execution: PASS
 - **PM audit: PLANNED** (pending Owner/PM visual review at `/tdr`)
-- Commit A: `f6fe9ab4e50efcba989be1e4136c3320db510240` (filled by evidence-fill commit)
+- Commit A: null (to be filled by evidence-fill commit)
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-003-UX-CORRECTIVE-002_WDR_2026-09-14.md`
+
+## Previous WDR (TDR-P1-003-UX-CORRECTIVE-001)
+
+**TDR-P1-003-UX-CORRECTIVE-001** — Fix Batch View Action (Portal Fix)
+
+- Execution: PASS
+- Commit A: `f6fe9ab4e50efcba989be1e4136c3320db510240`
 - WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-003-UX-CORRECTIVE-001_WDR_2026-09-14.md`
 
-## Previous WDR (TDR-P1-003 — PM audit pending)
+## Previous WDR (TDR-P1-003)
 
 **TDR-P1-003** — Batch Detail Panel / Modal Preview
 
 - Execution: PASS
-- Commit A: `04af1da02cfe2313035e63e9c5021c1884d0dc0e` (filled by evidence-fill commit)
+- Commit A: `04af1da02cfe2313035e63e9c5021c1884d0dc0e`
 - WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-003_WDR_2026-09-14.md`
-
-## Previous WDR (TDR-P1-002 — now superseded)
-
-**TDR-P1-002** — Frontend Batch Filtering / Search / Pagination Preview
-
-- Execution: PASS
-- Commit A: `f0930de6cd55f36e6a06d18a5b701e8795cf70f5`
-- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-002_WDR_2026-09-14.md`
-
-## Previous WDR (TDR-P1-001 — closed)
-
-**TDR-P1-001** — Trade Data Refinery Frontend Module Shell and Overview
-
-- Execution: PASS
-- Commit A: `b6409f601e41492180d3234f7c394a8c3ac0c581`
-- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P1-001_WDR_2026-09-14.md`
 
 ## TDR WDR Chain
 
@@ -45,30 +37,24 @@
 - TDR-P1-002 WDR: PASS (2026-09-14)
 - TDR-P1-003 WDR: PASS (2026-09-14)
 - TDR-P1-003-UX-CORRECTIVE-001 WDR: PASS (2026-09-14)
+- TDR-P1-003-UX-CORRECTIVE-002 WDR: PASS (2026-09-14)
 
-## TDR-P1-003-UX-CORRECTIVE-001 Summary
+## TDR-P1-003-UX-CORRECTIVE-002 Summary
 
-TDR-P1-003-UX-CORRECTIVE-001 fixed the non-functioning View buttons in the TDR batch table:
-- Root cause: AppShell `overflow: hidden` trapped `position: fixed` inside the card tree
-- Fix: `createPortal(content, document.body)` in `TdrBatchDetailPanel.tsx`
-- Minimal change: import + rename `return (` to `const content = (` + `return createPortal(content, document.body)`
-- All modal features (Escape, backdrop, X button, auto-focus) unchanged
-- Build PASS, Lint 0 errors
+Buttons appeared grey (same colour as disabled controls) and clicks were silently dropped during React 18 hydration reconciliation caused by `Date.now()` mismatch.
 
-No product implementation. No backend/database/auth/RBAC/package changes.
+Changes to `TdrBatchTable.tsx` only:
+- Button: `--brand-primary` fill, `--text-inverse` text, `cursor-pointer`, `type="button"`, `hover:opacity-80`
+- Time `<td>`: `suppressHydrationWarning`
 
-## Previous WDR (Platform Phase 8 — PRESERVED)
+`TdrBatchDetailPanel.tsx` unchanged — `createPortal` from UX-CORRECTIVE-001 remains.
 
-**TOPLINE-P8-001-R22** — Phase 8 R21 Evidence-Fill Reconciliation
-
-- Execution: PASS
-- R22 Commit A: `a13cb04b13a1c81877aa15e5d070bc2b39e9d82d`
-- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R22_WDR_2026-09-11.md`
+Build PASS, Lint 0 errors.
 
 ## Next WDR
 
-TDR-P1-003-UX-CORRECTIVE-001 PM audit — PLANNED (by Owner/PM).
-After TDR-P1-003-UX-CORRECTIVE-001 PM audit PASS, next governed task is TDR-P1-004.
+TDR-P1-003-UX-CORRECTIVE-002 PM audit — PLANNED (by Owner/PM).
+After audit PASS, next governed task is TDR-P1-004.
 
 ## Last Updated
 

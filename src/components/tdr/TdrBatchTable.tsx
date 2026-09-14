@@ -243,7 +243,7 @@ export function TdrBatchTable({ batches }: { batches: TdrBatch[] }) {
                       {rows.map((batch) => (
                         <tr key={batch.id} style={{ borderBottom: "1px solid var(--border-default)" }}>
                           <td className="py-3 pr-4 font-medium">{batch.sourceName}</td>
-                          <td className="py-3 pr-4 text-sm" style={{ color: "var(--text-muted)" }}>
+                          <td className="py-3 pr-4 text-sm" style={{ color: "var(--text-muted)" }} suppressHydrationWarning>
                             {relativeTime(batch.receivedAt)}
                           </td>
                           <td className="py-3 pr-4">
@@ -259,11 +259,12 @@ export function TdrBatchTable({ batches }: { batches: TdrBatch[] }) {
                           </td>
                           <td className="py-3 text-right">
                             <button
+                              type="button"
                               onClick={() => setSelectedBatch(batch)}
                               aria-label={`View batch detail for ${batch.sourceName}`}
                               title="Open batch detail preview"
-                              className="inline-flex items-center gap-1.5 rounded px-2 py-1 text-xs focus-visible:outline-none focus-visible:ring-2"
-                              style={{ backgroundColor: "var(--surface-secondary)", color: "var(--brand-primary)" }}
+                              className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium cursor-pointer transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2"
+                              style={{ backgroundColor: "var(--brand-primary)", color: "var(--text-inverse)" }}
                             >
                               <Eye className="h-3.5 w-3.5" aria-hidden="true" />
                               View

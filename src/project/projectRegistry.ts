@@ -2052,6 +2052,25 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PLANNED",
       notes: "Corrective for TDR-P1-003. ChatGPT audit found View buttons appeared grey/inactive. Fix: import createPortal from react-dom and wrap modal JSX in createPortal(content, document.body) in TdrBatchDetailPanel.tsx. AppShell overflow:hidden was the stacking context offender. Build PASS. Lint 0 errors. Commit hash to be filled by evidence-fill commit.",
     },
+    {
+      id: "TDR-P1-003-UX-CORRECTIVE-002",
+      phase: "tdr",
+      title: "Fix Batch View Action — Button Visibility and Hydration",
+      objective:
+        "Fix View buttons that appear grey/disabled-looking and remain non-clickable after the portal fix. Root causes: (1) button used --surface-secondary background identical to disabled pagination buttons; (2) Date.now() in relativeTime() caused a hydration mismatch that could cause clicks to fire before React event listeners attached. Fix: button redesigned with solid --brand-primary fill + cursor-pointer; time cell marked suppressHydrationWarning.",
+      status: "PASS",
+      priority: "HIGH",
+      dependencies: ["TDR-P1-003-UX-CORRECTIVE-001"],
+      startedAt: "2026-09-14T00:00:00.000Z",
+      completedAt: "2026-09-14T00:00:00.000Z",
+      wdrPath: "WDR/_All/Trade-Data-Refinery/TDR-P1-003-UX-CORRECTIVE-002_WDR_2026-09-14.md",
+      commitHash: null,
+      tests: "NOT_STARTED",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PLANNED",
+      notes: "Corrective for UX-CORRECTIVE-001. View button changed from --surface-secondary/--brand-primary to solid --brand-primary fill with --text-inverse, plus cursor-pointer, type=button, hover:opacity-80. suppressHydrationWarning added to relativeTime td. Only TdrBatchTable.tsx changed. Build PASS. Lint 0 errors.",
+    },
   ],
   modules: [
     {
@@ -3303,10 +3322,19 @@ export const projectRegistry: ProjectRegistry = {
       commitHash: "f6fe9ab4e50efcba989be1e4136c3320db510240",
       pmAudit: "PLANNED",
     },
+    {
+      id: "wdr-tdr-p1-003-ux-corrective-002",
+      taskId: "TDR-P1-003-UX-CORRECTIVE-002",
+      phase: "tdr",
+      status: "PASS",
+      date: "2026-09-14",
+      commitHash: null,
+      pmAudit: "PLANNED",
+    },
   ],
   git: {
     initialized: true,
-    lastCommit: "f6fe9ab4e50efcba989be1e4136c3320db510240",
+    lastCommit: null,
   },
   github: {
     configured: true,
