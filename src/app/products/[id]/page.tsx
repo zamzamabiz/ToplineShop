@@ -5,6 +5,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { MarketplaceGrid } from "@/components/marketplace/MarketplaceGrid";
 import { ProductTile } from "@/components/marketplace/ProductTile";
 import { Badge } from "@/components/ui/Badge";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { productListingItems, marketplaceCategories, marketplaceVendors } from "@/data/marketplaceMockData";
 
 export default async function ProductDetailPage({
@@ -27,17 +28,20 @@ export default async function ProductDetailPage({
               <span>/</span>
               <span className="text-foreground font-medium">Not Found</span>
             </nav>
-            <div className="rounded-xl border border-border p-12 text-center" style={{ backgroundColor: "var(--surface-primary)" }}>
-              <h1 className="text-xl font-bold mb-2">Product Not Found</h1>
-              <p className="text-sm mb-4" style={{ color: "var(--text-muted)" }}>
-                The product you are looking for does not exist.
-              </p>
-              <Link
-                href="/products"
-                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-              >
-                Browse all products
-              </Link>
+            <div className="rounded-xl border border-border" style={{ backgroundColor: "var(--surface-primary)" }}>
+              <EmptyState
+                icon={<span aria-hidden="true" className="text-3xl">🔍</span>}
+                title="Product Not Found"
+                description="The product you are looking for is unavailable. It may have been removed, renamed, or the link could be incorrect."
+                action={
+                  <Link
+                    href="/products"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+                  >
+                    Browse all products
+                  </Link>
+                }
+              />
             </div>
           </div>
         </div>
@@ -81,8 +85,12 @@ export default async function ProductDetailPage({
 
             <div className="space-y-6">
               <div>
-                {category && (
+                {category ? (
                   <div className="text-sm mb-2" style={{ color: "var(--text-muted)" }}>{category.name}</div>
+                ) : (
+                  <div className="text-sm mb-2 italic" style={{ color: "var(--text-muted)" }}>
+                    Category unavailable
+                  </div>
                 )}
                 <h1 className="text-2xl font-bold">{product.name}</h1>
                 {product.vendor && (
@@ -167,9 +175,9 @@ export default async function ProductDetailPage({
             </div>
           </div>
 
-          {product.specifications && product.specifications.length > 0 && (
-            <div className="mb-12">
-              <h2 className="text-lg font-bold mb-4">Specifications</h2>
+          <div className="mb-12">
+            <h2 className="text-lg font-bold mb-4">Specifications</h2>
+            {product.specifications && product.specifications.length > 0 ? (
               <div className="rounded-xl border border-border overflow-hidden" style={{ backgroundColor: "var(--surface-primary)" }}>
                 <table className="w-full text-sm">
                   <tbody>
@@ -182,12 +190,20 @@ export default async function ProductDetailPage({
                   </tbody>
                 </table>
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="rounded-xl border border-border" style={{ backgroundColor: "var(--surface-primary)" }}>
+                <EmptyState
+                  icon={<span aria-hidden="true" className="text-3xl">📄</span>}
+                  title="Specifications unavailable"
+                  description="Detailed specifications for this product are not available yet."
+                />
+              </div>
+            )}
+          </div>
 
-          {relatedProducts.length > 0 && (
-            <div className="mb-8">
-              <h2 className="text-lg font-bold mb-4">Related Products</h2>
+          <div className="mb-8">
+            <h2 className="text-lg font-bold mb-4">Related Products</h2>
+            {relatedProducts.length > 0 ? (
               <MarketplaceGrid cols={4}>
                 {relatedProducts.map((rp) => (
                   <ProductTile
@@ -203,8 +219,24 @@ export default async function ProductDetailPage({
                   />
                 ))}
               </MarketplaceGrid>
-            </div>
-          )}
+            ) : (
+              <div className="rounded-xl border border-border" style={{ backgroundColor: "var(--surface-primary)" }}>
+                <EmptyState
+                  icon={<span aria-hidden="true" className="text-3xl">🛍️</span>}
+                  title="No related products yet"
+                  description="We couldn&rsquo;t find other items in this category right now. Try browsing the full catalogue."
+                  action={
+                    <Link
+                      href="/products"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+                    >
+                      Browse all products
+                    </Link>
+                  }
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </AppShell>
