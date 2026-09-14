@@ -12,26 +12,26 @@ export default function AppPage() {
         <div>
           <h1 className="text-2xl font-bold">Dashboard</h1>
           <p className="text-sm text-muted-foreground">
-            Welcome to ToplineShop — your marketplace control center.
+            Welcome to ToplineShop - your marketplace control center.
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <MetricCard label="Total Products" value="—" />
-          <MetricCard label="Active Vendors" value="—" />
-          <MetricCard label="Orders" value="—" />
-          <MetricCard label="Revenue" value="—" />
+          <MetricCard label="Total Products" value="Pending" />
+          <MetricCard label="Active Vendors" value="Pending" />
+          <MetricCard label="Orders" value="Pending" />
+          <MetricCard label="Revenue" value="Pending" />
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <MetricCard label="Customers" value="—" />
-          <MetricCard label="Growth" value="—" />
+          <MetricCard label="Customers" value="Pending" />
+          <MetricCard label="Growth" value="Pending" />
         </div>
 
         <EmptyState
           icon={<Store size={48} />}
           title="Marketplace Coming Soon"
-          description="This is a frontend placeholder — business logic not implemented yet. The marketplace dashboard will show real data once the backend is connected in Phase 7-9."
+          description="This is a frontend placeholder - business logic is not implemented yet. The marketplace dashboard will show real data once the backend is connected."
         />
       </div>
     </AppShell>

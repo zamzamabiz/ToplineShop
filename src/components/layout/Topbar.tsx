@@ -28,7 +28,7 @@ export function Topbar({ dashboard }: TopbarProps) {
           />
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Search..." aria-label="Search"
             className="h-9 w-64 rounded-md border pl-9 pr-3 text-sm focus:outline-none focus:ring-2"
             style={{
               backgroundColor: "var(--input-background)",
@@ -50,7 +50,7 @@ export function Topbar({ dashboard }: TopbarProps) {
         {dashboard && <DashboardThemeOverride dashboard={dashboard} />}
         <ThemeSwitcher />
         <button
-          className="relative p-2 rounded-md transition-colors"
+          className="relative p-2 rounded-md transition-colors" aria-label="Notifications" title="Notifications"
           style={{ color: "var(--text-secondary)" }}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = "var(--interactive-hover)";
@@ -61,12 +61,12 @@ export function Topbar({ dashboard }: TopbarProps) {
         >
           <Bell size={18} />
           <span
-            className="absolute top- right-1 h-2 w-2 rounded-full"
+            className="absolute top-2 right-1 h-2 w-2 rounded-full"
             style={{ backgroundColor: "var(--brand-primary)" }}
           />
         </button>
         <button
-          className="flex items-center gap-2 p-2 rounded-md transition-colors"
+          className="flex items-center gap-2 p-2 rounded-md transition-colors" aria-label="User menu" title="User menu"
           style={{ color: "var(--text-secondary)" }}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = "var(--interactive-hover)";

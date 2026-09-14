@@ -90,7 +90,7 @@ export function Sidebar() {
         style={{ borderColor: "var(--border-default)" }}
       >
         <div className="text-xs" style={{ color: "var(--text-muted)" }}>
-          Phase 3 — Theme System
+          Phase 3 - Theme System
         </div>
       </div>
     </aside>
