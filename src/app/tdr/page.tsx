@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/Button";
 import { TdrPreviewBanner } from "@/components/tdr/TdrPreviewBanner";
+import { TdrProjectManagementPanel } from "@/components/tdr/TdrProjectManagementPanel";
 import { TdrMetricsGrid } from "@/components/tdr/TdrMetricsGrid";
 import { TdrBatchTable } from "@/components/tdr/TdrBatchTable";
 import { TdrQualityPanel } from "@/components/tdr/TdrQualityPanel";
@@ -188,6 +189,9 @@ export default function TdrPage() {
               </div>
             </div>
           </div>
+
+          {/* Project Management Panel */}
+          <TdrProjectManagementPanel isModuleDisabled={viewState === "disabled"} />
 
           {/* Preview state selector */}
           <div
