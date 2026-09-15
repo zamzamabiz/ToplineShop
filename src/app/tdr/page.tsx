@@ -10,9 +10,10 @@ import { TdrBatchTable } from "@/components/tdr/TdrBatchTable";
 import { TdrQualityPanel } from "@/components/tdr/TdrQualityPanel";
 import { TdrQuarantinePanel } from "@/components/tdr/TdrQuarantinePanel";
 import { TdrSourceHealthPanel } from "@/components/tdr/TdrSourceHealthPanel";
+import { TdrImportWorkflowPanel } from "@/components/tdr/TdrImportWorkflowPanel";
 import { TDR_SCENARIOS, VIEW_STATE_LABELS } from "@/features/tdr/mockData";
 import type { TdrViewState } from "@/types/tdr";
-import { DatabaseZap, Upload, EyeOff, Settings } from "lucide-react";
+import { DatabaseZap, Upload, EyeOff, Settings, Eye } from "lucide-react";
 
 const VIEW_STATES: TdrViewState[] = ["healthy", "empty", "loading", "warning", "failed", "disabled"];
 
@@ -143,6 +144,7 @@ function ModuleDisabledState() {
 
 export default function TdrPage() {
   const [viewState, setViewState] = useState<TdrViewState>("healthy");
+  const [importWorkflowOpen, setImportWorkflowOpen] = useState(false);
 
   const scenario =
     viewState !== "loading" && viewState !== "disabled" ? TDR_SCENARIOS[viewState] : null;
@@ -177,6 +179,15 @@ export default function TdrPage() {
                 >
                   Frontend Preview
                 </span>
+                <Button
+                  variant="outline"
+                  onClick={() => setImportWorkflowOpen(true)}
+                  aria-label="Open Import Workflow Preview — frontend demonstration only, no ingestion started"
+                  title="View the planned import workflow steps — frontend preview only"
+                >
+                  <Eye className="h-4 w-4" aria-hidden="true" />
+                  Import Workflow Preview
+                </Button>
                 <Button
                   variant="default"
                   disabled
@@ -256,14 +267,26 @@ export default function TdrPage() {
                 <p className="text-sm" style={{ color: "var(--text-muted)" }}>
                   <strong style={{ color: "var(--text-secondary)" }}>New Import is disabled.</strong>{" "}
                   Ingestion, file upload, and data processing require backend and database implementation gated behind
-                  #FDD gate G1 (frontend freeze) and G2 (platform Auth/RBAC). The New Import button is intentionally
-                  inert in this frontend preview.
+                  #FDD gate G1 (frontend freeze) and G2 (platform Auth/RBAC). Use{" "}
+                  <button
+                    type="button"
+                    onClick={() => setImportWorkflowOpen(true)}
+                    className="underline font-medium focus-visible:outline-none focus-visible:ring-2 rounded"
+                    style={{ color: "var(--brand-primary)" }}
+                  >
+                    Import Workflow Preview
+                  </button>{" "}
+                  to explore the planned import workflow steps.
                 </p>
               </div>
             </>
           )}
         </div>
       </div>
+
+      {importWorkflowOpen && (
+        <TdrImportWorkflowPanel onClose={() => setImportWorkflowOpen(false)} />
+      )}
     </AppShell>
   );
 }
