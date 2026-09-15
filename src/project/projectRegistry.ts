@@ -317,8 +317,8 @@ export const projectRegistry: ProjectRegistry = {
       testingGate: "NOT_STARTED",
       ownerApproval: "PLANNED",
       currentTask: null,
-      taskCount: 24,
-      completedTaskCount: 24,
+      taskCount: 25,
+      completedTaskCount: 25,
     },
     {
       id: "phase-9",
