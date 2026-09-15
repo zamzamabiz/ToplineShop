@@ -5,6 +5,11 @@
 **TOPLINE-P8-002 execution: PASS** (schema/migration-only, additive; PM audit corrections applied)
 **TOPLINE-P8-002 PM audit: PLANNED** (awaiting independent PM/owner audit)
 
+**Implementation Commit A**: `a1ce796df4a226bb16fb556fc8ac18fad730e07c` — TOPLINE-P8-002: add auth persistence foundation
+**Evidence-fill Commit B**: hash reported in the final handoff; this report intentionally does not store Commit B's own hash inside itself.
+
+Both commits were pushed to `origin/feature/p8-002-auth-persistence`. No `git merge` was performed and no PR was opened.
+
 P8-002 implements the additive schema/migration foundation for authentication persistence: nullable `User.passwordHash`, nullable `AuditLog.ipAddress` and `AuditLog.userAgent`, a new `Session` model (HMAC-SHA256 digest of the refresh-token **secret** only, never a raw token, never a raw secret), and one forward-only additive Prisma migration. Schema/migration artifact only — no auth behavior, no JWT, no guards, no RBAC, no frontend, no packages, no live database connection, no migration application, no commit.
 
 The audit corrections applied in this turn make the forward-looking P8-003 refresh-token contract explicit (lookup hot path by `sessionId` UUID PK, not by digest), record that smoke and the four `test-*-create.js` database evidence scripts were **NOT RUN** in P8-002, and update the Phase 8 rollup counters.
@@ -34,7 +39,7 @@ The audit corrections applied in this turn make the forward-looking P8-003 refre
 - New untracked directory: `backend/prisma/migrations/20260916020000_p8_002_auth_persistence/`
 - New untracked WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md`
 - Pre-existing untracked items preserved.
-- No `git add`, `git commit`, `git push`, `git merge`, or PR was executed.
+- No `git merge` was performed and no PR was opened. `git add`, `git commit`, and `git push` were performed for the two-commit delivery (Commit A = implementation; Commit B = evidence-fill, hash reported in the final handoff).
 
 ## Schema Additions (additive only)
 

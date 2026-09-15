@@ -2,11 +2,13 @@
 
 ## PM/CTO Decision Needed
 
-**Audit TOPLINE-P8-002 (audit-corrected)**
+**Audit TOPLINE-P8-002 (audit-corrected, delivered)**
 
-P8-002 execution is complete (with audit corrections applied in this turn) and awaits **independent PM/owner audit**. P8-002 is the additive schema/migration foundation for authentication persistence — nullable `User.passwordHash`, nullable `AuditLog.ipAddress` / `AuditLog.userAgent`, and a new `Session` model with HMAC-SHA256 digest-only refresh-token persistence (digest of the **secret** only; raw token / raw secret never persisted or logged) — delivered as one forward-only additive Prisma migration artifact.
+P8-002 execution is complete (with audit corrections applied) and awaits **independent PM/owner audit**. P8-002 is the additive schema/migration foundation for authentication persistence — nullable `User.passwordHash`, nullable `AuditLog.ipAddress` / `AuditLog.userAgent`, and a new `Session` model with HMAC-SHA256 digest-only refresh-token persistence (digest of the **secret** only; raw token / raw secret never persisted or logged) — delivered as one forward-only additive Prisma migration artifact.
 
-The audit corrections in this turn explicitly clarify the forward-looking P8-003 refresh-token contract (lookup hot path is by `sessionId`, NOT by digest), record that **smoke and the four `test-*-create.js` database evidence scripts were NOT RUN in P8-002**, and update the Phase 8 rollup counters. **No migration has been applied to a live database, no commit was created, and TOPLINE-P8-003 (auth behavior), P8-004 (RBAC), and P8-005 remain unauthorized.**
+The audit corrections explicitly clarify the forward-looking P8-003 refresh-token contract (lookup hot path is by `sessionId`, NOT by digest), record that **smoke and the four `test-*-create.js` database evidence scripts were NOT RUN in P8-002**, and update the Phase 8 rollup counters.
+
+**Delivery**: Implementation Commit A `a1ce796df4a226bb16fb556fc8ac18fad730e07c` (7 files staged exactly) and evidence-fill Commit B (hash reported in the final handoff; this PM_OUTBOX intentionally does not store Commit B's own hash inside itself) were pushed to `origin/feature/p8-002-auth-persistence`. No `git merge`, no PR. **No migration has been applied to a live database, and TOPLINE-P8-003 (auth behavior), P8-004 (RBAC), and P8-005 remain unauthorized.**
 
 ## P8-002 Evidence
 
@@ -49,7 +51,7 @@ The audit corrections in this turn explicitly clarify the forward-looking P8-003
 11. Confirm the migration scripts themselves were not modified, deleted, or cleaned; they remain in `backend/scripts/`.
 12. Confirm migration application and database verification (smoke + 4 `test-*-create.js`) are documented as a separate owner-approved gate before P8-003.
 13. Confirm the Phase 8 rollup is updated to `progress: 40`, `megaPromptsCompleted: 2`, `taskCount: 26`, `completedTaskCount: 26`; `status` remains `BLOCKED`, `currentTask` remains `null`, `databaseGate` remains `PLANNED`, `nextPlannedTask` remains `TOPLINE-P8-002-PM-AUDIT`.
-14. Confirm no `git add`, `git commit`, `git push`, `git merge`, or PR was executed during P8-002; the schema change and migration directory are present as uncommitted working-tree artifacts on `feature/p8-002-auth-persistence`.
+14. Confirm `git add`, `git commit`, and `git push` were performed for P8-002 in the two-commit delivery pattern. Implementation Commit A: `a1ce796df4a226bb16fb556fc8ac18fad730e07c` (`TOPLINE-P8-002: add auth persistence foundation`, 7 files staged exactly). Evidence-fill Commit B: reported in the final handoff (intentionally not stored inside this PM_OUTBOX). Both commits were pushed to `origin/feature/p8-002-auth-persistence`. No `git merge` was performed and no PR was opened.
 15. Confirm pre-existing untracked files were preserved (18 → 20, with two new P8-002 deliverables added: this WDR and the new migration directory `backend/prisma/migrations/20260916020000_p8_002_auth_persistence/`).
 16. Confirm the R22 / R23 / R24 commit-hash ownership fields remain unchanged (R22 `a13cb04…`, R23 `bdacbcb…`, R24 `f1e0fb35…`) and `git.lastCommit` remains the R22 evidence-fill Commit B hash `bd398f27…`.
 17. Confirm no authentication behavior was added: no `AuthGuard`, no login/logout/refresh endpoint, no JWT issuance, no token rotation, no reuse-detection logic, no HMAC server-secret storage, no logging of raw tokens or secrets.

@@ -7,6 +7,9 @@
 - Execution: **PASS** (schema/migration-only, additive; PM audit corrections applied)
 - PM audit: **PLANNED** (awaiting independent PM/owner audit)
 - Migration applied to a live database: **NO**
+- Implementation Commit A: `a1ce796df4a226bb16fb556fc8ac18fad730e07c` — TOPLINE-P8-002: add auth persistence foundation
+- Evidence-fill Commit B: hash reported in the final handoff; this summary intentionally does not store Commit B's own hash inside itself.
+- Both commits pushed to `origin/feature/p8-002-auth-persistence`. No `git merge`, no PR.
 - WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md`
 
 ## P8-002 Result
@@ -93,7 +96,7 @@ The scripts themselves were not modified, deleted, or cleaned. They remain in `b
 - `currentTask` remains `null`; the audit is the gate.
 - TOPLINE-P8-003 (auth behavior), P8-004 (RBAC), and P8-005 (audit/freeze only) remain unauthorized.
 - No frontend, package, secret, environment, TLS, Trade Refinery, RBAC, or auth-behavior file was changed.
-- No `git add`, `git commit`, `git push`, `git merge`, or PR was executed.
+- No `git merge` was performed and no PR was opened. `git add`, `git commit`, and `git push` were performed for the two-commit delivery (Commit A = implementation; Commit B = evidence-fill, hash reported in the final handoff).
 - The migration artifact is on disk only; no live database has been touched.
 
 ## Next WDR / Audit
