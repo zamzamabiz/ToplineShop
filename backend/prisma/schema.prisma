@@ -49,6 +49,16 @@ enum ProductStatus {
   ARCHIVED
 }
 
+enum SessionRevocationReason {
+  USER_LOGOUT
+  USER_INITIATED
+  ADMIN_REVOKED
+  REFRESH_ROTATION
+  REFRESH_REUSE_DETECTED
+  EXPIRED
+  REPLACED
+}
+
 // ============================================================
 // MODELS
 // ============================================================
@@ -68,24 +78,29 @@ model Tenant {
   categories  Category[]
   products    Product[]
   auditLogs   AuditLog[]
+  sessions    Session[]
 
   @@map("tenants")
 }
 
 model User {
-  id        String     @id @default(uuid())
-  email     String     @unique @db.VarChar(255)
-  name      String     @db.VarChar(255)
-  phone     String?    @db.VarChar(50)
-  avatar    String?
-  status    UserStatus
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  deletedAt DateTime?  @map("deleted_at")
+  id           String     @id @default(uuid())
+  email        String     @unique @db.VarChar(255)
+  name         String     @db.VarChar(255)
+  phone        String?    @db.VarChar(50)
+  avatar       String?
+  status       UserStatus
+  // P8-002: nullable credential storage. Hash algorithm (Argon2id) and
+  // password-hashing behavior are deferred to TOPLINE-P8-003.
+  passwordHash String?    @map("password_hash") @db.VarChar(255)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  deletedAt    DateTime?  @map("deleted_at")
 
   memberships Membership[]
   vendors     Vendor[]      @relation("VendorOwner")
   auditLogs   AuditLog[]
+  sessions    Session[]
 
   @@map("users")
 }
@@ -182,6 +197,10 @@ model AuditLog {
   entityId   String   @map("entity_id")
   summary    String?
   metadata   Json?
+  // P8-002: nullable request-context columns. Both are filled by callers
+  // (P8-003 audit redaction/events) when source IP / user-agent are known.
+  ipAddress  String?  @map("ip_address") @db.VarChar(45)
+  userAgent  String?  @map("user_agent") @db.Text
   createdAt  DateTime @default(now())
 
   tenant     Tenant? @relation(fields: [tenantId], references: [id])
@@ -191,4 +210,53 @@ model AuditLog {
   @@index([entityType, entityId])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+// P8-002: revocable authentication session for refresh-token persistence.
+// Stores ONLY the HMAC-SHA256 digest of the refresh token (never the raw
+// token). Token creation, rotation, and reuse-detection behavior are owned
+// by TOPLINE-P8-003. Tenant context is required at the model level so a
+// session always pins an active tenant boundary.
+model Session {
+  id                 String                @id @default(uuid())
+  userId             String                @map("user_id")
+  tenantId           String                @map("tenant_id")
+  deviceId           String                @map("device_id") @db.VarChar(128)
+  // HMAC-SHA256 digest of the refresh-token SECRET (never the raw token).
+  //
+  // P8-003 contract (forward-looking, NOT implemented in P8-002):
+  //   - Refresh token format: `<sessionId>.<randomSecret>`.
+  //   - Lookup path: by `sessionId` (not by digest).
+  //   - Verification: HMAC-SHA256(serverSecret, secret) compared to this
+  //     column using timing-safe equality.
+  //   - Reuse detection: a secret mismatch on a known ACTIVE session is
+  //     treated as replay; the session is revoked with reason
+  //     `REFRESH_REUSE_DETECTED`.
+  //   - The raw token and raw secret are NEVER persisted or logged.
+  //
+  // The column length (VARCHAR(128)) covers hex (64) and base64 (44)
+  // encodings with headroom. The unique index below is a defense-in-depth
+  // uniqueness invariant; it is NOT the hot lookup path.
+  refreshTokenDigest String                @map("refresh_token_digest") @db.VarChar(128)
+  expiresAt          DateTime              @map("expires_at")
+  revokedAt          DateTime?             @map("revoked_at")
+  revokedReason      SessionRevocationReason? @map("revoked_reason")
+  ipAddress          String?               @map("ip_address") @db.VarChar(45)
+  userAgent          String?               @map("user_agent") @db.Text
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  // PM policy: multiple devices, one revocable session per user/device.
+  // A new login on the same device replaces this row after revocation.
+  @@unique([userId, deviceId])
+  // Defense-in-depth uniqueness invariant. The refresh-token HOT PATH in
+  // P8-003 is by `sessionId` (a UUID PK lookup), not by digest.
+  @@unique([refreshTokenDigest])
+  @@index([userId])
+  @@index([tenantId])
+  @@index([expiresAt])
+  @@map("sessions")
 }
