@@ -90,12 +90,12 @@ The R22 PM audit has passed. `TOPLINE-P8-002` is now `PARTIAL` after its schema/
 
 **`prisma validate` exits code 1** — pre-existing Prisma CLI 7.10.0 breaking change: `datasource.url` no longer supported in schema files; must move to `prisma.config.ts`. This is NOT a P8-002 defect but is a blocker for tool-based validation. Requires a separate PM-approved corrective task.
 
-**Registry**: P8-002 status PARTIAL, commitHash 37f49e3, completedAt null. `lastCompletedTask` is `TOPLINE-P8-001-R23`, `nextPlannedTask` is `TOPLINE-P8-002`.
+**Registry**: P8-002 status PARTIAL, commitHash 37f49e3, completedAt null. `lastCompletedTask` is `TOPLINE-P8-001-R23`, `nextPlannedTask` is `TOPLINE-P8-002-R1`.
 
 **WDR**: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md` (corrected to PARTIAL).
 
 **Outstanding blockers before P8-002 can be marked PASS:**
-1. `prisma validate` blocker — separate PM-approved corrective task needed (add `prisma.config.ts`, update datasource for Prisma 7.x).
+1. `TOPLINE-P8-002-R1` — registered READY to correct the Prisma 7 configuration compatibility blocker.
 2. Migration application authorization — PM must separately authorize `prisma migrate dev` (local `toplineshop_dev` only).
 3. No DB tests run — `tests: "NOT_STARTED"`.
 

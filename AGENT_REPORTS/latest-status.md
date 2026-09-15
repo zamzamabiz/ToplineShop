@@ -44,7 +44,7 @@ P1-011 found that the frontend was broad and buildable, but G1 was blocked by st
 
 ## Phase 8 — P8-002 Implementation Status
 
-**TOPLINE-P8-002: PARTIAL — Schema implementation complete; evidence-fill commit and migration authorization outstanding**
+**TOPLINE-P8-002: PARTIAL — Schema implementation complete; Prisma configuration, migration authorization, and database evidence outstanding**
 
 - `User.passwordHash` (nullable), `AuditLog.ipAddress` (nullable), `AuditLog.userAgent` (nullable) added to `backend/prisma/schema.prisma`.
 - `Session` model added (tokenHash unique, userId/tenantId FKs, ipAddress, userAgent, expiresAt, revokedAt, createdAt, indexes).
@@ -52,5 +52,6 @@ P1-011 found that the frontend was broad and buildable, but G1 was blocked by st
 - `prisma validate` exits code 1: pre-existing Prisma CLI 7.10.0 vs 6.x datasource format incompatibility (not a P8-002 defect; requires separate PM-approved corrective task).
 - Registry: P8-002 status PARTIAL, commitHash 37f49e3, completedAt null. `lastCompletedTask` remains `TOPLINE-P8-001-R23`; the P8-002 implementation checkpoint is recorded.
 - WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md`.
-- Outstanding blockers: (1) prisma validate blocker (separate task); (2) migration application authorization; (3) no DB tests run.
+- Registered next corrective task: `TOPLINE-P8-002-R1` `READY`, Prisma 7 configuration compatibility only.
+- Outstanding blockers: (1) P8-002-R1 validation correction; (2) migration application authorization; (3) no DB tests run.
 - P8-003 must not begin until P8-002 blockers are resolved and a separate PM-issued P8-003 prompt is received.

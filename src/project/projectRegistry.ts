@@ -145,7 +145,7 @@ export const projectRegistry: ProjectRegistry = {
   currentPhase: "Phase 8",
   currentTask: null,
   lastCompletedTask: "TOPLINE-P8-001-R23",
-  nextPlannedTask: "TOPLINE-P8-002",
+  nextPlannedTask: "TOPLINE-P8-002-R1",
   overallCompletion: 83,
   lastUpdated: "2026-09-16",
   phases: [
@@ -317,7 +317,7 @@ export const projectRegistry: ProjectRegistry = {
       testingGate: "NOT_STARTED",
       ownerApproval: "PLANNED",
       currentTask: null,
-      taskCount: 25,
+      taskCount: 26,
       completedTaskCount: 24,
     },
     {
@@ -1955,6 +1955,25 @@ export const projectRegistry: ProjectRegistry = {
       ownerApproval: "PLANNED",
       pmApproval: "PASS",
       notes: "Implementation PARTIAL 2026-09-16. Schema additions complete: User.passwordHash (nullable), AuditLog.ipAddress (nullable), AuditLog.userAgent (nullable), Session model. Additive migration artifact prepared (NOT applied). Evidence-fill implementation commit recorded as 37f49e3. Outstanding: (1) prisma validate exits code 1 due to pre-existing Prisma CLI 7.10.0 vs 6.x datasource schema format incompatibility — not a P8-002 defect; (2) migration application requires separate PM authorization; (3) no DB tests run. Task not fully closed until PM confirms migration review and remaining validation gates are resolved.",
+    },
+    {
+      id: "TOPLINE-P8-002-R1",
+      phase: "phase-8",
+      title: "Prisma 7 Configuration Compatibility Correction",
+      objective:
+        "Resolve the pre-existing Prisma 7 datasource configuration incompatibility so the approved P8-002 schema can be validated without changing P8-002 scope or applying any migration.",
+      status: "READY",
+      priority: "HIGH",
+      dependencies: ["TOPLINE-P8-002"],
+      startedAt: null,
+      completedAt: null,
+      wdrPath: "WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002-R1_WDR_2026-09-16.md",
+      commitHash: null,
+      tests: "NOT_STARTED",
+      build: "NOT_STARTED",
+      ownerApproval: "PLANNED",
+      pmApproval: "PASS",
+      notes: "Registration only. Scope is limited to Prisma 7 configuration compatibility: review/add prisma.config.ts as required, update datasource configuration, and run safe validation. No schema redesign, migration application, database access, authentication, RBAC, frontend, ingestion, packages, or production work.",
     },
     // ─── Trade Data Refinery (TDR) — Separate governed program on codex/trade-data-refinery ───
     {

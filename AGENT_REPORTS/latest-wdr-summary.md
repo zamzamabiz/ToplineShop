@@ -44,4 +44,5 @@ The task was frontend/governance reconciliation only. It does not authorize back
 - Migration artifact: `backend/prisma/migrations/20260916000000_p8_002_auth_persistence/migration.sql` — **NOT applied**. Additive only.
 - `prisma validate` exits code 1 — pre-existing Prisma 7.10.0 datasource issue; not a P8-002 defect; separate corrective task required.
 - commitHash `37f49e3` — P8-002 implementation checkpoint recorded. `lastCompletedTask` remains `TOPLINE-P8-001-R23` while the task is `PARTIAL`.
+- Registered next corrective task: `TOPLINE-P8-002-R1` `READY`, limited to Prisma 7 configuration compatibility.
 - P8-003 blocked until P8-002 remaining validation/migration gates are resolved and a separate PM-issued P8-003 prompt is issued.
