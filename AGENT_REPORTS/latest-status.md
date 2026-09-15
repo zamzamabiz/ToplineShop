@@ -50,7 +50,7 @@ P1-011 found that the frontend was broad and buildable, but G1 was blocked by st
 - `Session` model added (tokenHash unique, userId/tenantId FKs, ipAddress, userAgent, expiresAt, revokedAt, createdAt, indexes).
 - Additive migration artifact prepared: `backend/prisma/migrations/20260916000000_p8_002_auth_persistence/migration.sql` — **NOT applied**.
 - `prisma validate` exits code 1: pre-existing Prisma CLI 7.10.0 vs 6.x datasource format incompatibility (not a P8-002 defect; requires separate PM-approved corrective task).
-- Registry: P8-002 `status: "PARTIAL"`, `commitHash: null`, `completedAt: null`. `lastCompletedTask` remains `TOPLINE-P8-001-R23` until evidence-fill commit is recorded.
+- Registry: P8-002 status PARTIAL, commitHash 37f49e3, completedAt null. `lastCompletedTask` remains `TOPLINE-P8-001-R23`; the P8-002 implementation checkpoint is recorded.
 - WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md`.
-- Outstanding blockers: (1) evidence-fill commit; (2) prisma validate blocker (separate task); (3) migration application authorization; (4) no DB tests run.
+- Outstanding blockers: (1) prisma validate blocker (separate task); (2) migration application authorization; (3) no DB tests run.
 - P8-003 must not begin until P8-002 blockers are resolved and a separate PM-issued P8-003 prompt is received.

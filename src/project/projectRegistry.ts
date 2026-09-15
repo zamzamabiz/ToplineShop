@@ -1949,12 +1949,12 @@ export const projectRegistry: ProjectRegistry = {
       startedAt: "2026-09-16T00:00:00.000Z",
       completedAt: null,
       wdrPath: "WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md",
-      commitHash: null,
+      commitHash: "37f49e3",
       tests: "NOT_STARTED",
       build: "NOT_STARTED",
       ownerApproval: "PLANNED",
       pmApproval: "PASS",
-      notes: "Implementation PARTIAL 2026-09-16. Schema additions complete: User.passwordHash (nullable), AuditLog.ipAddress (nullable), AuditLog.userAgent (nullable), Session model. Additive migration artifact prepared (NOT applied). Outstanding: (1) evidence-fill commit required before commitHash can be recorded; (2) prisma validate exits code 1 due to pre-existing Prisma CLI 7.10.0 vs 6.x datasource schema format incompatibility — not a P8-002 defect; (3) migration application requires separate PM authorization; (4) no DB tests run. Task not fully closed until commit hash recorded and PM confirms migration review.",
+      notes: "Implementation PARTIAL 2026-09-16. Schema additions complete: User.passwordHash (nullable), AuditLog.ipAddress (nullable), AuditLog.userAgent (nullable), Session model. Additive migration artifact prepared (NOT applied). Evidence-fill implementation commit recorded as 37f49e3. Outstanding: (1) prisma validate exits code 1 due to pre-existing Prisma CLI 7.10.0 vs 6.x datasource schema format incompatibility — not a P8-002 defect; (2) migration application requires separate PM authorization; (3) no DB tests run. Task not fully closed until PM confirms migration review and remaining validation gates are resolved.",
     },
     // ─── Trade Data Refinery (TDR) — Separate governed program on codex/trade-data-refinery ───
     {
