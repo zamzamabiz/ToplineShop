@@ -1916,7 +1916,7 @@ export const projectRegistry: ProjectRegistry = {
       build: "PASS",
       ownerApproval: "PLANNED",
       pmApproval: "PASS",
-      notes: "Corrective governance-only task for the blocked R21 PM audit. Filled the real R21 evidence-fill Commit B hash 11f3a0fe0a00a95ad8379d9974d36931adf8f32c into the R21 WDR Git Evidence section, both latest reports, the PM_OUTBOX, and the registry git.lastCommit state; preserved all prior evidence and stopped before P8-002. The R21 task and wdr-086 Commit A fields remain as R21 Commit A 22bf2648da97868e59e384fe22a21801c2a184f3 (NOT replaced with R21 Commit B). The R21 PM-audit Commit B hash 15d0c19665687bd4c22676cdc23f9541056c295c is recorded as historical evidence. R22 PM audit completed and passed through TOPLINE-P8-001-R23; R22 Commit B evidence is bd398f270a781be54e40e51e2832ea46c874a84f. P8-002 remains unregistered and unapproved.",
+      notes: "Corrective governance-only task for the blocked R21 PM audit. Filled the real R21 evidence-fill Commit B hash 11f3a0fe0a00a95ad8379d9974d36931adf8f32c into the R21 WDR Git Evidence section, both latest reports, the PM_OUTBOX, and the registry git.lastCommit state; preserved all prior evidence and stopped before P8-002. The R21 task and wdr-086 Commit A fields remain as R21 Commit A 22bf2648da97868e59e384fe22a21801c2a184f3 (NOT replaced with R21 Commit B). The R21 PM-audit Commit B hash 15d0c19665687bd4c22676cdc23f9541056c295c is recorded as historical evidence. R22 PM audit completed and passed through TOPLINE-P8-001-R23; R22 Commit B evidence is bd398f270a781be54e40e51e2832ea46c874a84f. P8-002 was subsequently registered as READY with PM approval PASS and remains unstarted.",
     },
     {
       id: "TOPLINE-P8-001-R23",
@@ -1935,7 +1935,7 @@ export const projectRegistry: ProjectRegistry = {
       build: "NOT_STARTED",
       ownerApproval: "PASS",
       pmApproval: "PASS",
-      notes: "Governance-only PM audit PASS. Verified real R22 Commit B bd398f270a781be54e40e51e2832ea46c874a84f on origin/master, reconciled the R22 WDR, registry, reports, and PM_OUTBOX, and preserved R22 Commit A ownership. P8-002 remains unregistered and unapproved; Phase 8 implementation remains blocked pending separate PM authorization. No product code, backend, database, auth, RBAC, migrations, packages, secrets, or master changes.",
+      notes: "Governance-only PM audit PASS. Verified real R22 Commit B bd398f270a781be54e40e51e2832ea46c874a84f on origin/master, reconciled the R22 WDR, registry, reports, and PM_OUTBOX, and preserved R22 Commit A ownership. At R23 closeout, P8-002 was unregistered and unapproved; it was subsequently registered as READY with PM approval PASS and remains unstarted. Phase 8 implementation remains separately gated. No product code, backend, database, auth, RBAC, migrations, packages, secrets, or master changes.",
     },
     {
       id: "TOPLINE-P8-002",
