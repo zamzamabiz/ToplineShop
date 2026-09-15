@@ -1,6 +1,10 @@
 export type TdrBatchStatus = "ACCEPTED" | "PARTIAL" | "FAILED" | "PROCESSING" | "QUEUED";
 export type TdrSourceStatus = "ACTIVE" | "PAUSED" | "ATTENTION";
 export type TdrViewState = "healthy" | "empty" | "loading" | "warning" | "failed" | "disabled";
+export type TdrEvidenceState = "available" | "stale" | "missing" | "unavailable";
+export type TdrLineageStatus = "accepted" | "warning" | "review" | "blocked";
+export type TdrQualitySeverity = "warning" | "error" | "fatal";
+export type TdrQualityDisposition = "accepted" | "corrected" | "quarantined" | "rejected";
 
 export interface TdrMetrics {
   batchesReceived: number;
@@ -35,11 +39,55 @@ export interface TdrSourceHealth {
   batchCount: number;
 }
 
+export interface TdrLineageStage {
+  id: string;
+  label: string;
+  source: string;
+  status: TdrLineageStatus;
+  evidenceState: TdrEvidenceState;
+  note: string;
+}
+
+export interface TdrQualityFinding {
+  id: string;
+  rule: string;
+  severity: TdrQualitySeverity;
+  disposition: TdrQualityDisposition;
+  affectedCount: number;
+  stage: string;
+  evidenceId: string;
+}
+
+export interface TdrEvidenceItem {
+  id: string;
+  label: string;
+  state: TdrEvidenceState;
+  note: string;
+}
+
+export interface TdrLineageSummary {
+  accepted: number;
+  rejected: number;
+  quarantined: number;
+  corrected: number;
+  qualityScore: number;
+  lastUpdated: string | null;
+  sourcesSynced: number;
+}
+
+export interface TdrLineageReport {
+  summary: TdrLineageSummary;
+  stages: TdrLineageStage[];
+  findings: TdrQualityFinding[];
+  evidence: TdrEvidenceItem[];
+}
+
 export interface TdrMockScenario {
   metrics: TdrMetrics;
   batches: TdrBatch[];
   quality: TdrQualitySummary;
   sources: TdrSourceHealth[];
+  lineage: TdrLineageReport;
 }
 
 export type TdrSourceConfigState = "draft" | "ready" | "needs_review" | "disabled";

@@ -3,17 +3,17 @@
 ## PM/CTO Decision
 
 **TOPLINE-P8-001-R22 execution: PASS**
-**TOPLINE-P8-001-R22 PM audit: PLANNED**
+**TOPLINE-P8-001-R22 PM audit: PASS — closed by TOPLINE-P8-001-R23**
 
-R22 closed the R21 PM-audit finding in substance and remained documentation/governance-only. R22 filled the real R21 evidence-fill Commit B hash `11f3a0fe0a00a95ad8379d9974d36931adf8f32c` into the R21 WDR Git Evidence section line 217, re-oriented both latest reports and this PM outbox to R22, recorded the R21 PM-audit Commit B hash `15d0c19665687bd4c22676cdc23f9541056c295c` as historical evidence, and updated the registry `git.lastCommit` to the new R22 Commit A hash. R22 itself is pending PM audit. Phase 8 remains stopped before P8-002 implementation.
+R22 closed the R21 PM-audit finding in substance and remained documentation/governance-only. R22 filled the real R21 evidence-fill Commit B hash `11f3a0fe0a00a95ad8379d9974d36931adf8f32c` into the R21 WDR Git Evidence section line 217, re-oriented both latest reports and this PM outbox to R22, recorded the R21 PM-audit Commit B hash `15d0c19665687bd4c22676cdc23f9541056c295c` as historical evidence, and updated the registry `git.lastCommit` to the new R22 Commit A hash. R22 was subsequently PM-audited and closed by R23. Phase 8 remains stopped before P8-002 implementation.
 
-Do not paste any P8-002 prompt into #MM until the R22 PM audit PASSES.
+The R22 PM audit has passed. `TOPLINE-P8-002` was subsequently registered as `READY` with PM approval `PASS` and dependency `TOPLINE-P8-001-R23`. Implementation remains gated and has not started.
 
 ## R22 Evidence
 
 - R22 WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-001-R22_WDR_2026-09-11.md`
 - R22 implementation commit (R22 Commit A): `a13cb04b13a1c81877aa15e5d070fc2b39e9d82d` (filled by R22 Commit B; reported in final handoff to PM)
-- R22 evidence-fill commit (R22 Commit B): `<R22_COMMIT_B_HASH>` (filled by R22's successor PM audit or next corrective; reported in final handoff to PM; remains in R22 WDR Git Evidence section per the established self-referential evidence pattern)
+- R22 evidence-fill commit (R22 Commit B): `bd398f270a781be54e40e51e2832ea46c874a84f` (verified from `origin/master` and recorded by R23)
 
 ## R21 PM Audit Evidence
 
@@ -66,16 +66,18 @@ Do not paste any P8-002 prompt into #MM until the R22 PM audit PASSES.
 - R9 evidence-fill commit (R9 Commit B): `17655b7b6e168fb617ac3af3e80c46c2e0abfc2f`
 - R8 evidence-fill commit (R8 Commit B): `d876589d4c8691534999f3692e859325f8b77d88`
 - R6 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md` (preserved byte-for-byte by R15, R16, R16 PM audit, R17, R17 PM audit, R18, R18 PM audit, R19, R19 PM audit, R20, R20 PM audit, R21, R21 PM audit, and R22)
-- Canonical registry: `src/project/projectRegistry.ts` (R22 PLANNED -> PASS, wdr-087 PLANNED -> PASS, R22 task commitHash / wdr-087 commitHash / git.lastCommit = `a13cb04b13a1c81877aa15e5d070fc2b39e9d82d` to be filled by R22 Commit B, P8-001 through R21 pmApproval BLOCKED, wdr-065 through wdr-086 pmAudit BLOCKED, wdr-087 pmAudit PLANNED, Phase 8 BLOCKED, currentTask null, lastCompletedTask `TOPLINE-P8-001-R22`, nextPlannedTask `TOPLINE-P8-002` as a non-authorizing placeholder, phase-8 taskCount 23, completedTaskCount 23)
+- Canonical registry: `src/project/projectRegistry.ts` records R22 execution/PM audit PASS, R23 PASS, wdr-087/wdr-088 PASS, Phase 8 BLOCKED, currentTask null, lastCompletedTask `TOPLINE-P8-001-R23`, and P8-002 registered as `READY` with dependency `TOPLINE-P8-001-R23` and PM approval `PASS`. No P8-002 execution WDR has been created.
 - Reports: `AGENT_REPORTS/latest-status.md`, `AGENT_REPORTS/latest-wdr-summary.md`
 
 ## Block Status
 
 - `TOPLINE-P8-001`, `TOPLINE-P8-001-R1`, `TOPLINE-P8-001-R2`, `TOPLINE-P8-001-R3`, `TOPLINE-P8-001-R4`, `TOPLINE-P8-001-R5`, `TOPLINE-P8-001-R6`, `TOPLINE-P8-001-R7`, `TOPLINE-P8-001-R8`, `TOPLINE-P8-001-R9`, `TOPLINE-P8-001-R10`, `TOPLINE-P8-001-R11`, `TOPLINE-P8-001-R12`, `TOPLINE-P8-001-R13`, `TOPLINE-P8-001-R14`, `TOPLINE-P8-001-R15`, `TOPLINE-P8-001-R16`, `TOPLINE-P8-001-R17`, `TOPLINE-P8-001-R18`, `TOPLINE-P8-001-R19`, `TOPLINE-P8-001-R20`, `TOPLINE-P8-001-R21` and `wdr-065`, `wdr-066`, `wdr-067`, `wdr-068`, `wdr-069`, `wdr-070`, **`wdr-071`**, `wdr-072`, `wdr-073`, `wdr-074`, `wdr-075`, `wdr-076`, `wdr-077`, `wdr-078`, `wdr-079`, `wdr-080`, `wdr-081`, `wdr-082`, `wdr-083`, `wdr-084`, `wdr-085`, `wdr-086` remain BLOCKED.
-- `wdr-087` PM audit is PLANNED (R22 PM audit pending).
-- Phase 8 remains BLOCKED. P8-002 is proposed, unregistered, and unapproved.
-- Until R22 is PM-audited and PASSED, no P8-002 prompt or implementation is authorized.
+- `wdr-087` PM audit is PASS; R23 closed the R22 audit.
+- Phase 8 remains BLOCKED. P8-002 is registered `READY` but implementation is not approved to start by this reconciliation.
+- R22 is PM-audited and PASSED. P8-002 implementation remains gated; no schema, migration, authentication, database, backend, RBAC, frontend, or ingestion work is authorized by this outbox.
 
-## Required Corrective Task (after R22 PM audit)
+## P8-002 Registration Status and Implementation Gate
 
-The next corrective task will be determined by the R22 PM audit decision. P8-002 remains proposed, unregistered, and unapproved. No P8-002 prompt is written by R22. Until R22 is PM-audited and PASSED, no P8-002 prompt or implementation is authorized.
+The R22 PM audit passed. P8-002 is registered `READY` with PM approval `PASS`, but implementation remains separately gated. No authentication, database, Prisma, migration, backend, RBAC, frontend, or ingestion work is authorized by this reconciliation.
+
+Historical hold language above that stated the R22 PM audit was pending is retained only as historical context and is superseded by the PASS decision recorded by `TOPLINE-P8-001-R23`.

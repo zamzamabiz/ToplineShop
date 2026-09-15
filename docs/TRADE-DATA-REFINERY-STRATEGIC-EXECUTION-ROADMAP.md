@@ -742,6 +742,26 @@ These decisions may not be silently assumed.
 | ADR-TDR-011 | Performance and file limits | TDR-P4-003/P7-001 | Set from benchmark evidence |
 | ADR-TDR-012 | Deployment and recovery objectives | TDR-P7-003 | Align with platform operations policy |
 
+## 20A. CTO/PM leadership policy
+
+The CTO/PM governing agent is authorized to make technical sequencing, architecture, scope-control, and execution-readiness decisions on behalf of the non-technical owner when the decision is required to protect the approved roadmap. The governing agent must choose the option that best preserves data integrity, tenant safety, maintainability, delivery evidence, and the dependency order defined by this roadmap.
+
+This delegation does not authorize changes to business objectives, legal/compliance obligations, budgets, production data policy, or release ownership. Those remain owner decisions. When a decision is technical and its safe choice is clear from the roadmap, constitution, registry, WDR evidence, or hard gates, the governing agent must decide rather than repeatedly return the decision to the owner.
+
+All decisions follow `#123`: DISCUSS → DECIDE → EXECUTE → VERIFY/AUDIT → CLOSE → NEXT. The decision record must state the rationale, alternatives rejected, scope boundary, affected task ID, and evidence required. No agent may infer approval for a later task from completion of an earlier task.
+
+For the current TDR sequence, the governing decision is: **TDR-P1-008 is the frontend freeze audit**. It must audit P1-001 through P1-007 before any TDR backend, database, persistence, authentication, RBAC, or external-ingestion implementation. If the audit finds missing lineage or quality-reporting UI, the gap becomes a separately registered bounded corrective task; it must not be silently added to the audit.
+
+## 20B. Resume and continuity policy
+
+The repository is the continuity source of truth, not the last chat window. Every restart begins at `TDR-START-HERE.md`, then reads the canonical registry, the newest TDR WDR, the latest status report, and the current Git state. The newest authoritative WDR controls task status when summaries or chat history disagree; contradictions are blockers until reconciled.
+
+Each governed task must leave a resumable checkpoint containing: task ID, status, last verified commit, changed files, validation evidence, unresolved blockers, exact next action, and the next approved prompt path. A task is not closed until this checkpoint and its WDR are complete.
+
+Claude Code must never select work from memory, an old chat, an old prompt, or an inferred roadmap step. On every restart it must report the checkpoint it found, verify that the working branch is `codex/trade-data-refinery`, confirm the tree is safe, and stop if the registry and WDR disagree. Only the single task named as approved in the checkpoint may be executed.
+
+The owner may resume by opening `TDR-START-HERE.md` in VS Code and giving Claude Code the current prompt path named there. This makes resumption deterministic while preserving the `#123` approval boundary.
+
 ## 21. Risk register
 
 | Risk | Severity | Early indicator | Control | Owner |

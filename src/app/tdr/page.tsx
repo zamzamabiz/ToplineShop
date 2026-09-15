@@ -11,6 +11,7 @@ import { TdrQualityPanel } from "@/components/tdr/TdrQualityPanel";
 import { TdrQuarantinePanel } from "@/components/tdr/TdrQuarantinePanel";
 import { TdrSourceHealthPanel } from "@/components/tdr/TdrSourceHealthPanel";
 import { TdrImportWorkflowPanel } from "@/components/tdr/TdrImportWorkflowPanel";
+import { TdrLineageQualityPanel } from "@/components/tdr/TdrLineageQualityPanel";
 import { TDR_SCENARIOS, VIEW_STATE_LABELS } from "@/features/tdr/mockData";
 import type { TdrViewState } from "@/types/tdr";
 import { DatabaseZap, Upload, EyeOff, Settings, Eye } from "lucide-react";
@@ -245,6 +246,9 @@ export default function TdrPage() {
           {scenario && (
             <>
               <TdrMetricsGrid metrics={scenario.metrics} />
+              <div className="mb-8">
+                <TdrLineageQualityPanel lineage={scenario.lineage} />
+              </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 space-y-6">

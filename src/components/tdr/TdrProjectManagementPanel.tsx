@@ -2,90 +2,37 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronRight, ClipboardList, ShieldAlert, AlertTriangle, FileText, Lightbulb, BarChart3, X } from "lucide-react";
+import { projectRegistry } from "@/project/projectRegistry";
 
-// Static governance preview data — does not read live Git, WDR files, database, or backend.
-// Future live metrics require approved backend/API integration.
+const TDR_TASKS = projectRegistry.tasks.filter((task) => task.id.startsWith("TDR-"));
+const TDR_WDRS = projectRegistry.wdrs.filter((wdr) => wdr.taskId.startsWith("TDR-"));
+const TDR_GATES = projectRegistry.qualityGates.filter((gate) =>
+  ["qg-fdd", "qg-123", "qg-frontend-freeze", "qg-backend-gate", "qg-database-gate", "qg-wdr", "qg-pm-approval"].includes(gate.id),
+);
+const TDR_RISKS = projectRegistry.risks.filter((risk) => risk.id.startsWith("risk-tdr-"));
 
-const TASK_PROGRESS = [
-  { id: "TDR-P0-001", title: "Project & Governance Bootstrap", status: "PASS" },
-  { id: "TDR-GOV-START-001", title: "Governing AI Briefing", status: "PASS" },
-  { id: "TDR-P0-002", title: "Strategic Execution Roadmap", status: "PASS" },
-  { id: "TDR-P1-001", title: "TDR Dashboard Shell + Mock Data", status: "PASS" },
-  { id: "TDR-P1-002", title: "Search / Filter / Pagination", status: "PASS" },
-  { id: "TDR-P1-003", title: "Batch Detail Preview Modal", status: "PASS" },
-  { id: "TDR-P1-004", title: "Project Management Dashboard Panel", status: "IN PROGRESS" },
-];
+function taskProgress(status: string) {
+  if (status === "PASS" || status === "CLOSED") return 100;
+  if (status === "PARTIAL") return 75;
+  if (status === "IN_PROGRESS") return 50;
+  return 0;
+}
 
-const GOVERNANCE_GATES = [
-  {
-    id: "G1",
-    name: "G1 — Frontend Proof / Freeze",
-    description: "All required TDR frontend screens visually approved by Owner/PM before any backend work starts.",
-    status: "IN_PROGRESS",
-  },
-  {
-    id: "G2",
-    name: "G2 — Auth / RBAC / Platform Readiness",
-    description: "Platform Auth and RBAC must be implemented and approved before backend/refinery work begins.",
-    status: "BLOCKED",
-  },
-  {
-    id: "G3",
-    name: "Backend / Refinery Implementation",
-    description: "NestJS services, Prisma, ingestion workers, and queue logic. Not authorized until G1 and G2 pass.",
-    status: "NOT_STARTED",
-  },
-  {
-    id: "G4",
-    name: "Large Data Safety Rule",
-    description: "Browser must never load millions of trade rows. Server-side pagination and streaming required.",
-    status: "ENFORCED",
-  },
-];
+const TASK_PROGRESS = TDR_TASKS.map((task) => ({
+  ...task,
+  progress: taskProgress(task.status),
+}));
 
-const RISKS = [
-  {
-    id: "R1",
-    title: "Backend work before frontend freeze",
-    detail: "Starting backend before #FDD G1 is approved wastes effort if UX changes post-freeze.",
-    severity: "HIGH",
-  },
-  {
-    id: "R2",
-    title: "Backend work before Auth/RBAC readiness",
-    detail: "Backend trade data without Auth/RBAC exposes sensitive commercial data to unauthorized access.",
-    severity: "CRITICAL",
-  },
-  {
-    id: "R3",
-    title: "Large trade data loaded into browser",
-    detail: "Millions of trade rows in browser memory will cause crashes and data exposure.",
-    severity: "HIGH",
-  },
-  {
-    id: "R4",
-    title: "Mock UI mistaken for live system",
-    detail: "Preview banners must remain visible so stakeholders do not act on synthetic data.",
-    severity: "MEDIUM",
-  },
-];
-
-const WDR_ENTRIES = [
-  { id: "TDR-P1-001", path: "WDR/_All/Trade-Data-Refinery/TDR-P1-001_WDR_2026-09-14.md", status: "PASS" },
-  { id: "TDR-P1-002", path: "WDR/_All/Trade-Data-Refinery/TDR-P1-002_WDR_2026-09-14.md", status: "PASS" },
-  { id: "TDR-P1-003", path: "WDR/_All/Trade-Data-Refinery/TDR-P1-003_WDR_2026-09-14.md", status: "PASS" },
-  {
-    id: "TDR-P1-003-UX-CORRECTIVE-001",
-    path: "WDR/_All/Trade-Data-Refinery/TDR-P1-003-UX-CORRECTIVE-001_WDR_2026-09-14.md",
-    status: "PASS",
-  },
-  {
-    id: "TDR-P1-003-UX-CORRECTIVE-002",
-    path: "WDR/_All/Trade-Data-Refinery/TDR-P1-003-UX-CORRECTIVE-002_WDR_2026-09-14.md",
-    status: "PASS",
-  },
-  { id: "TDR-P1-004", path: "WDR/_All/Trade-Data-Refinery/TDR-P1-004_WDR_2026-09-14.md", status: "IN PROGRESS" },
-];
+const GOVERNANCE_GATES = TDR_GATES;
+const RISKS = TDR_RISKS;
+const frontendFreezeGate = projectRegistry.qualityGates.find((gate) => gate.id === "qg-frontend-freeze");
+const frontendFreezeAudit = projectRegistry.tasks.find((task) => task.id === "TDR-P1-008");
+const WDR_ENTRIES = TDR_WDRS.map((wdr) => {
+  const task = projectRegistry.tasks.find((candidate) => candidate.id === wdr.taskId);
+  const hasCommit = Boolean(wdr.commitHash ?? task?.commitHash);
+  const evidenceStatus = !task?.wdrPath ? "MISSING" : !hasCommit ? "STALE" : wdr.status;
+  return { ...wdr, task, evidenceStatus };
+});
 
 type SectionId = "tasks" | "gates" | "risks" | "wdrs" | "next";
 
@@ -94,8 +41,13 @@ function statusBadge(status: string) {
     PASS:           { bg: "#d1fae5", text: "#065f46" },
     "IN PROGRESS":  { bg: "#fef3c7", text: "#92400e" },
     BLOCKED:        { bg: "#fee2e2", text: "#991b1b" },
+    PARTIAL:        { bg: "#fef3c7", text: "#92400e" },
+    READY:          { bg: "#dbeafe", text: "#1e40af" },
+    CLOSED:         { bg: "#d1fae5", text: "#065f46" },
     NOT_STARTED:    { bg: "#f3f4f6", text: "#374151" },
     IN_PROGRESS:    { bg: "#fef3c7", text: "#92400e" },
+    MISSING:        { bg: "#fee2e2", text: "#991b1b" },
+    STALE:          { bg: "#ffedd5", text: "#9a3412" },
     ENFORCED:       { bg: "#dbeafe", text: "#1e40af" },
     CRITICAL:       { bg: "#fee2e2", text: "#991b1b" },
     HIGH:           { bg: "#ffedd5", text: "#9a3412" },
@@ -171,6 +123,12 @@ interface TdrProjectManagementPanelProps {
 export function TdrProjectManagementPanel({ isModuleDisabled = false }: TdrProjectManagementPanelProps) {
   const [panelOpen, setPanelOpen] = useState(false);
   const [openSections, setOpenSections] = useState<Set<SectionId>>(new Set());
+  const currentTask = TDR_TASKS.find((task) => task.status === "IN_PROGRESS") ?? TDR_TASKS[0];
+  const completedTaskCount = TDR_TASKS.filter((task) => task.status === "PASS" || task.status === "CLOSED").length;
+  const latestEvidenceDate = TDR_WDRS.reduce((latest, wdr) => (wdr.date > latest ? wdr.date : latest), "");
+  const missingEvidenceCount = TDR_TASKS.filter((task) => !TDR_WDRS.some((wdr) => wdr.taskId === task.id)).length;
+  const staleEvidenceCount = WDR_ENTRIES.filter((wdr) => wdr.evidenceStatus === "STALE").length;
+  const approvedNextAction = currentTask?.objective ?? projectRegistry.nextPlannedTask;
 
   const toggleSection = (id: SectionId) => {
     setOpenSections((prev) => {
@@ -226,7 +184,7 @@ export function TdrProjectManagementPanel({ isModuleDisabled = false }: TdrProje
                 TDR Project Management
               </h2>
               <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
-                Phase P1 — Frontend Proof &nbsp;·&nbsp; Governance preview only
+                {frontendFreezeGate?.name ?? "Frontend Freeze Gate"} &nbsp;·&nbsp; Governance preview only
               </p>
             </div>
             <button
@@ -249,25 +207,28 @@ export function TdrProjectManagementPanel({ isModuleDisabled = false }: TdrProje
           >
             <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" style={{ color: "#b45309" }} aria-hidden="true" />
             <p className="text-xs" style={{ color: "#92400e" }}>
-              <strong>Frontend/static preview only.</strong> This panel does not read live Git, WDR files, database, or
-              backend status. All data is static governance reference. Future live project metrics require approved
-              backend/API integration.
+              <strong>Frontend/static preview only.</strong> This panel reads the canonical project registry snapshot
+              only. It does not read live Git, WDR files, database, or backend status. Future live project metrics
+              require approved backend/API integration.
             </p>
           </div>
 
           {/* Summary key metrics */}
           <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {[
-              { label: "Current TDR Phase", value: "P1 — Frontend Proof" },
-              { label: "Completed TDR Tasks", value: "6 of 7" },
-              { label: "Current Task", value: "TDR-P1-004" },
-              { label: "Next Planned Task", value: "TDR-P1-005 (Owner/PM to decide)" },
-              { label: "Frontend Gate G1", value: "In progress — not frozen" },
-              { label: "Backend Gate G2", value: "Blocked — not started" },
-              { label: "Backend Status", value: "Not started" },
-              { label: "Data Mode", value: "Mock / synthetic only" },
-              { label: "Last Accepted WDR", value: "TDR-P1-003" },
-              { label: "Open Blockers", value: "0" },
+              { label: "Registry Phase", value: projectRegistry.currentPhase },
+              { label: "Completed TDR Tasks", value: `${completedTaskCount} of ${TDR_TASKS.length}` },
+              { label: "Current Task", value: currentTask?.id ?? "None" },
+              { label: "Current Progress", value: currentTask ? `${taskProgress(currentTask.status)}%` : "0%" },
+              {
+                label: frontendFreezeGate?.name ?? "Frontend Freeze Gate",
+                value: frontendFreezeAudit?.status ?? frontendFreezeGate?.status ?? "MISSING",
+              },
+              { label: "Latest Evidence", value: latestEvidenceDate || "Missing" },
+              { label: "Commit References", value: `${TDR_TASKS.filter((task) => task.commitHash).length} recorded` },
+              { label: "Stale Evidence", value: String(staleEvidenceCount) },
+              { label: "Missing Evidence", value: String(missingEvidenceCount) },
+              { label: "Data Mode", value: "Registry snapshot / preview only" },
             ].map(({ label, value }) => (
               <div
                 key={label}
@@ -295,15 +256,17 @@ export function TdrProjectManagementPanel({ isModuleDisabled = false }: TdrProje
                   <tr>
                     <th className="text-left pb-2 font-medium text-xs" style={{ color: "var(--text-muted)" }}>Task</th>
                     <th className="text-left pb-2 font-medium text-xs" style={{ color: "var(--text-muted)" }}>Title</th>
+                    <th className="text-right pb-2 font-medium text-xs" style={{ color: "var(--text-muted)" }}>Progress</th>
                     <th className="text-right pb-2 font-medium text-xs" style={{ color: "var(--text-muted)" }}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {TASK_PROGRESS.map((t) => (
-                    <tr key={t.id} className="border-t" style={{ borderColor: "var(--border-default)" }}>
-                      <td className="py-2 pr-3 font-mono text-xs" style={{ color: "var(--text-secondary)" }}>{t.id}</td>
-                      <td className="py-2 pr-3 text-xs" style={{ color: "var(--text-primary)" }}>{t.title}</td>
-                      <td className="py-2 text-right">{statusBadge(t.status)}</td>
+                  {TASK_PROGRESS.map((task) => (
+                    <tr key={task.id} className="border-t" style={{ borderColor: "var(--border-default)" }}>
+                      <td className="py-2 pr-3 font-mono text-xs" style={{ color: "var(--text-secondary)" }}>{task.id}</td>
+                      <td className="py-2 pr-3 text-xs" style={{ color: "var(--text-primary)" }}>{task.title}</td>
+                      <td className="py-2 text-right text-xs" style={{ color: "var(--text-secondary)" }}>{task.progress}%</td>
+                      <td className="py-2 text-right">{statusBadge(task.status)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -344,17 +307,18 @@ export function TdrProjectManagementPanel({ isModuleDisabled = false }: TdrProje
               title="Risk Register"
             >
               <div className="space-y-3">
-                {RISKS.map((r) => (
+                {RISKS.map((risk) => (
                   <div
-                    key={r.id}
+                    key={risk.id}
                     className="rounded-lg border p-3"
                     style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-secondary)" }}
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <p className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>{r.title}</p>
-                      {statusBadge(r.severity)}
+                      <p className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>{risk.title}</p>
+                      {statusBadge(risk.severity)}
                     </div>
-                    <p className="mt-1 text-xs" style={{ color: "var(--text-muted)" }}>{r.detail}</p>
+                    <p className="mt-1 text-xs" style={{ color: "var(--text-muted)" }}>{risk.description}</p>
+                    <p className="mt-1 text-xs" style={{ color: "var(--text-secondary)" }}>Mitigation: {risk.mitigation}</p>
                   </div>
                 ))}
               </div>
@@ -373,15 +337,19 @@ export function TdrProjectManagementPanel({ isModuleDisabled = false }: TdrProje
                   <tr>
                     <th className="text-left pb-2 font-medium" style={{ color: "var(--text-muted)" }}>Task</th>
                     <th className="text-left pb-2 font-medium" style={{ color: "var(--text-muted)" }}>Path</th>
+                    <th className="text-left pb-2 font-medium" style={{ color: "var(--text-muted)" }}>Commit</th>
+                    <th className="text-left pb-2 font-medium" style={{ color: "var(--text-muted)" }}>Evidence</th>
                     <th className="text-right pb-2 font-medium" style={{ color: "var(--text-muted)" }}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {WDR_ENTRIES.map((w) => (
-                    <tr key={w.id} className="border-t" style={{ borderColor: "var(--border-default)" }}>
-                      <td className="py-2 pr-3 font-mono" style={{ color: "var(--text-secondary)" }}>{w.id}</td>
-                      <td className="py-2 pr-3 font-mono break-all" style={{ color: "var(--text-muted)" }}>{w.path}</td>
-                      <td className="py-2 text-right">{statusBadge(w.status)}</td>
+                  {WDR_ENTRIES.map((wdr) => (
+                    <tr key={wdr.id} className="border-t" style={{ borderColor: "var(--border-default)" }}>
+                      <td className="py-2 pr-3 font-mono" style={{ color: "var(--text-secondary)" }}>{wdr.taskId}</td>
+                      <td className="py-2 pr-3 font-mono break-all" style={{ color: "var(--text-muted)" }}>{wdr.task?.wdrPath ?? "Missing WDR reference"}</td>
+                      <td className="py-2 pr-3 font-mono" style={{ color: "var(--text-muted)" }}>{wdr.commitHash ?? wdr.task?.commitHash ?? "Missing"}</td>
+                      <td className="py-2 pr-3">{statusBadge(wdr.evidenceStatus)}</td>
+                      <td className="py-2 text-right">{statusBadge(wdr.status)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -401,12 +369,10 @@ export function TdrProjectManagementPanel({ isModuleDisabled = false }: TdrProje
                 style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-secondary)" }}
               >
                 <p className="text-sm font-semibold mb-2" style={{ color: "var(--text-primary)" }}>
-                  TDR-P1-005 — Candidate
+                  {currentTask?.id ?? projectRegistry.nextPlannedTask}
                 </p>
                 <p className="text-xs mb-3" style={{ color: "var(--text-muted)" }}>
-                  Next task will be decided by Owner/PM after visual audit of TDR-P1-004.
-                  Candidates include: additional frontend screens, accessibility hardening, or frontend freeze gate
-                  review.
+                  {approvedNextAction}
                 </p>
                 <div
                   className="rounded border px-3 py-2"
