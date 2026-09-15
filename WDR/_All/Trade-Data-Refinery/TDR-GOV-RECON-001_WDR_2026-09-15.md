@@ -12,7 +12,7 @@
 | CTO / governing AI | ChatGPT Luna |
 | Owner | Mr. Chohan |
 | Authorized by | TDR-P1-007 PASS / CLOSED + Owner/PM browser verification |
-| Commit hash | (to be filled by evidence-fill commit) |
+| Commit hash | `b8bea81` |
 
 ---
 
@@ -215,7 +215,9 @@ No backend TDR work may begin until G1 and G2 are both declared passed.
 
 ## 11. Commit Hash
 
-(To be filled by evidence-fill commit after this governance commit is created.)
+**Commit A**: `b8bea81`
+
+`chore(tdr): governance reconciliation - GOV-RECON-001 stale status fixes and conflict report`
 
 ---
 
