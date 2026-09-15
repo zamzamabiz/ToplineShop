@@ -40,14 +40,17 @@ P1-011 found that the frontend was broad and buildable, but G1 was blocked by st
 
 ## Last Updated
 
-2026-09-15
+2026-09-16
 
-## Phase 8 Hold Status
+## Phase 8 — P8-002 Implementation Status
 
-**TOPLINE-P8-001-R23: PASS — R22 PM audit and evidence-fill reconciliation complete**
+**TOPLINE-P8-002: PARTIAL — Schema implementation complete; evidence-fill commit and migration authorization outstanding**
 
-- Verified R22 Commit B: `bd398f270a781be54e40e51e2832ea46c874a84f` from `origin/master`.
-- R22 WDR, registry, PM outbox, and Phase 8 evidence are reconciled.
-- The `<R22_COMMIT_B_HASH>` placeholder is resolved.
-- Phase 8 remains blocked for implementation. *(Historical — accurate at R23 audit closeout 2026-09-15: `TOPLINE-P8-002` was unregistered and unapproved at that time.)* `TOPLINE-P8-002` is now registered: status `READY`, PM approval `PASS`, dependency `TOPLINE-P8-001-R23`, implementation not started, implementation separately gated.
-- No authentication, database, Prisma, migration, backend, package, or master work was started.
+- `User.passwordHash` (nullable), `AuditLog.ipAddress` (nullable), `AuditLog.userAgent` (nullable) added to `backend/prisma/schema.prisma`.
+- `Session` model added (tokenHash unique, userId/tenantId FKs, ipAddress, userAgent, expiresAt, revokedAt, createdAt, indexes).
+- Additive migration artifact prepared: `backend/prisma/migrations/20260916000000_p8_002_auth_persistence/migration.sql` — **NOT applied**.
+- `prisma validate` exits code 1: pre-existing Prisma CLI 7.10.0 vs 6.x datasource format incompatibility (not a P8-002 defect; requires separate PM-approved corrective task).
+- Registry: P8-002 `status: "PARTIAL"`, `commitHash: null`, `completedAt: null`. `lastCompletedTask` remains `TOPLINE-P8-001-R23` until evidence-fill commit is recorded.
+- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md`.
+- Outstanding blockers: (1) evidence-fill commit; (2) prisma validate blocker (separate task); (3) migration application authorization; (4) no DB tests run.
+- P8-003 must not begin until P8-002 blockers are resolved and a separate PM-issued P8-003 prompt is received.

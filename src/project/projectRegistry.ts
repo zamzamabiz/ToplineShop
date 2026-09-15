@@ -147,7 +147,7 @@ export const projectRegistry: ProjectRegistry = {
   lastCompletedTask: "TOPLINE-P8-001-R23",
   nextPlannedTask: "TOPLINE-P8-002",
   overallCompletion: 83,
-  lastUpdated: "2026-09-14",
+  lastUpdated: "2026-09-16",
   phases: [
     {
       id: "phase-0",
@@ -1943,10 +1943,10 @@ export const projectRegistry: ProjectRegistry = {
       title: "Auth Persistence Data Model and Migration Safety Foundation",
       objective:
         "Review and prepare the approved authentication persistence data model and additive migration safety foundation without implementing authentication behavior or backend enforcement.",
-      status: "READY",
+      status: "PARTIAL",
       priority: "HIGH",
       dependencies: ["TOPLINE-P8-001-R23"],
-      startedAt: null,
+      startedAt: "2026-09-16T00:00:00.000Z",
       completedAt: null,
       wdrPath: "WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md",
       commitHash: null,
@@ -1954,7 +1954,7 @@ export const projectRegistry: ProjectRegistry = {
       build: "NOT_STARTED",
       ownerApproval: "PLANNED",
       pmApproval: "PASS",
-      notes: "Registration only; implementation is not started. Schema/migration safety foundation only: review the planned persistence model, User.passwordHash, AuditLog.ipAddress, AuditLog.userAgent, Session, required enums/indexes/constraints, additive migration design, and rollback documentation. No package installation, authentication behavior, AuthGuard, JWT, login/logout/refresh, RBAC, frontend, ingestion, backend behavior, production/non-local database, or destructive migration work. Execution WDR is reserved at the assigned path and must be created only during PM-approved execution closeout.",
+      notes: "Implementation PARTIAL 2026-09-16. Schema additions complete: User.passwordHash (nullable), AuditLog.ipAddress (nullable), AuditLog.userAgent (nullable), Session model. Additive migration artifact prepared (NOT applied). Outstanding: (1) evidence-fill commit required before commitHash can be recorded; (2) prisma validate exits code 1 due to pre-existing Prisma CLI 7.10.0 vs 6.x datasource schema format incompatibility — not a P8-002 defect; (3) migration application requires separate PM authorization; (4) no DB tests run. Task not fully closed until commit hash recorded and PM confirms migration review.",
     },
     // ─── Trade Data Refinery (TDR) — Separate governed program on codex/trade-data-refinery ───
     {

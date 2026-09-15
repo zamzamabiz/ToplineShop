@@ -76,8 +76,28 @@ The R22 PM audit has passed. `TOPLINE-P8-002` was subsequently registered as `RE
 - Phase 8 remains BLOCKED. P8-002 is registered `READY` but implementation is not approved to start by this reconciliation.
 - R22 is PM-audited and PASSED. P8-002 implementation remains gated; no schema, migration, authentication, database, backend, RBAC, frontend, or ingestion work is authorized by this outbox.
 
-## P8-002 Registration Status and Implementation Gate
+## P8-002 Execution: PARTIAL (corrected 2026-09-16)
 
-The R22 PM audit passed. P8-002 is registered `READY` with PM approval `PASS`, but implementation remains separately gated. No authentication, database, Prisma, migration, backend, RBAC, frontend, or ingestion work is authorized by this reconciliation.
+`TOPLINE-P8-002` schema implementation is done but the task is **not fully closed**. The earlier PASS recording was incorrect.
 
-Historical hold language above that stated the R22 PM audit was pending is retained only as historical context and is superseded by the PASS decision recorded by `TOPLINE-P8-001-R23`.
+**Schema additions complete** (`backend/prisma/schema.prisma`):
+- `User.passwordHash String? @map("password_hash")`
+- `AuditLog.ipAddress String? @map("ip_address")`
+- `AuditLog.userAgent String? @map("user_agent")`
+- `Session` model (id, userId, tenantId, tokenHash unique, ipAddress, userAgent, expiresAt, revokedAt, createdAt; FKs to users/tenants; indexes on userId/tenantId/expiresAt)
+
+**Migration artifact prepared** (`backend/prisma/migrations/20260916000000_p8_002_auth_persistence/migration.sql`) — **NOT applied**.
+
+**`prisma validate` exits code 1** — pre-existing Prisma CLI 7.10.0 breaking change: `datasource.url` no longer supported in schema files; must move to `prisma.config.ts`. This is NOT a P8-002 defect but is a blocker for tool-based validation. Requires a separate PM-approved corrective task.
+
+**Registry**: P8-002 `status: "PARTIAL"`, `commitHash: null`, `completedAt: null`. `lastCompletedTask` is `TOPLINE-P8-001-R23`, `nextPlannedTask` is `TOPLINE-P8-002`.
+
+**WDR**: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md` (corrected to PARTIAL).
+
+**Outstanding blockers before P8-002 can be marked PASS:**
+1. Evidence-fill commit — all P8-002 files uncommitted; `commitHash` must remain null until a real commit exists.
+2. `prisma validate` blocker — separate PM-approved corrective task needed (add `prisma.config.ts`, update datasource for Prisma 7.x).
+3. Migration application authorization — PM must separately authorize `prisma migrate dev` (local `toplineshop_dev` only).
+4. No DB tests run — `tests: "NOT_STARTED"`.
+
+**P8-003 must not begin** until all P8-002 blockers are resolved and a separate PM/CTO-issued P8-003 execution prompt is received.

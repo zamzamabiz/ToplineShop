@@ -31,15 +31,17 @@ The task was frontend/governance reconciliation only. It does not authorize back
 
 ## Last Updated
 
-2026-09-15
+2026-09-16
 
-## Phase 8 PM Audit
+## Phase 8 — Latest WDR
 
-**TOPLINE-P8-001-R23** — Phase 8 R22 PM Audit and Evidence-Fill Governance Reconciliation
+**TOPLINE-P8-002** — Auth Persistence Data Model and Migration Safety Foundation
 
-- Execution: `PASS`
-- R22 PM audit: `PASS`
-- Verified R22 Commit B: `bd398f270a781be54e40e51e2832ea46c874a84f`
-- R22 WDR placeholder resolved and evidence reconciled.
-- *(Historical — accurate at R23 audit closeout 2026-09-15: `TOPLINE-P8-002` was unregistered, unapproved, and unstarted at that time.)* `TOPLINE-P8-002` is now registered: status `READY`, PM approval `PASS`, dependency `TOPLINE-P8-001-R23`, implementation not started, Phase 8 implementation separately gated.
-- Phase 8 implementation remains blocked pending separate PM authorization.
+- Execution: `PARTIAL` (corrected from incorrect PASS — 2026-09-16)
+- Dependency: `TOPLINE-P8-001-R23` `PASS`
+- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md`
+- Schema additions complete: `User.passwordHash` (nullable), `AuditLog.ipAddress` (nullable), `AuditLog.userAgent` (nullable), `Session` model.
+- Migration artifact: `backend/prisma/migrations/20260916000000_p8_002_auth_persistence/migration.sql` — **NOT applied**. Additive only.
+- `prisma validate` exits code 1 — pre-existing Prisma 7.10.0 datasource issue; not a P8-002 defect; separate corrective task required.
+- commitHash null — evidence-fill commit outstanding. `lastCompletedTask` remains `TOPLINE-P8-001-R23`.
+- P8-003 blocked until P8-002 evidence-fill commit, prisma validate blocker resolution, and separate PM-issued P8-003 prompt.
