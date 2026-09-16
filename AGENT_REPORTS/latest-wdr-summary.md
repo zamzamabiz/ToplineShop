@@ -76,17 +76,17 @@ The scripts themselves were not modified, deleted, or cleaned. They remain in `b
 
 ## R22 / R23 / R24 Commit A Ownership (preserved)
 
-- R22 task `commitHash` and `wdr-087.commitHash` remain R22 Commit A `a13cb04b13a1c81877aa15e5d070fc2b39e9d82d`.
-- R23 task `commitHash` and `wdr-088.commitHash` remain R23 Commit A `bdacbcb16951951982edf8ef0afd3615a59d619b`.
-- R24 task `commitHash` and `wdr-089.commitHash` remain R24 Commit A `f1e0fb3578dd33f0aab01da7a2b838d4a8d3c7d8`.
-- Registry `git.lastCommit` remains the R22 evidence-fill Commit B hash `bd398f270a781be54e40e51e2832ea46c874a84f` (not replaced).
+- R22 task `commitHash` and `wdr-087.commitHash` remain R22 Commit A `a13cb04b13a1c81877aa15e5d070fc2b39e9d82d` (preserved unchanged).
+- R23 task `commitHash` and `wdr-088.commitHash` remain R23 Commit A `bdacbcb16951951982edf8ef0afd3615a59d619b` (preserved unchanged).
+- R24 task `commitHash` and `wdr-089.commitHash` remain R24 Commit A `f1e0fb3578dd33f0aab01da7a2b838d4a8d3c7d8` (preserved unchanged).
+- Registry `git.lastCommit` was deliberately updated by P8-002 Commit B to `a1ce796df4a226bb16fb556fc8ac18fad730e07c` (P8-002 Commit A), replacing the prior R22 evidence-fill Commit B hash `bd398f270a781be54e40e51e2832ea46c874a84f`. This is a documented and authorized change distinct from the per-task ownership preservation above.
 
 ## What P8-002 Changed
 
 - `backend/prisma/schema.prisma` — additive only (one new enum, two new nullable columns on existing tables, three reverse relations on existing models, one new `Session` model). Field and `@@unique` comments corrected to reflect sessionId hot path.
 - `backend/prisma/migrations/20260916020000_p8_002_auth_persistence/migration.sql` — new forward-only additive migration. Digest-index comment corrected.
 - `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md` — new WDR with full schema, migration SQL, Forward-Looking P8-003 Refresh-Token Contract, Smoke and DB Evidence Scripts — Not Run, Migration Application — Separate Gate, verification, rollback, safety, and deferred-items record.
-- `src/project/projectRegistry.ts` — P8-002 task registered (status PASS, commitHash null until owner-approved commit), wdr-090 registered; Phase 8 rollup updated (`progress: 40`, `megaPromptsCompleted: 2`, `taskCount: 26`, `completedTaskCount: 26`); `lastUpdated` 2026-09-16, `lastCompletedTask` = TOPLINE-P8-002, `nextPlannedTask` = TOPLINE-P8-002-PM-AUDIT.
+- `src/project/projectRegistry.ts` — P8-002 task registered (status PASS, commitHash = `a1ce796df4a226bb16fb556fc8ac18fad730e07c` filled by Commit B), wdr-090 registered (commitHash = `a1ce796df4a226bb16fb556fc8ac18fad730e07c`), git.lastCommit = `a1ce796df4a226bb16fb556fc8ac18fad730e07c` (set by Commit B); Phase 8 rollup updated (`progress: 40`, `megaPromptsCompleted: 2`, `taskCount: 26`, `completedTaskCount: 26`); `lastUpdated` 2026-09-16, `lastCompletedTask` = TOPLINE-P8-002, `nextPlannedTask` = TOPLINE-P8-002-PM-AUDIT.
 - `AGENT_REPORTS/latest-status.md` and `AGENT_REPORTS/latest-wdr-summary.md` re-oriented to P8-002 (audit-corrected).
 - `PM_OUTBOX/next-opencode-prompt.md` re-oriented to P8-002 PM-AUDIT (audit-corrected).
 
@@ -97,7 +97,7 @@ The scripts themselves were not modified, deleted, or cleaned. They remain in `b
 - TOPLINE-P8-003 (auth behavior), P8-004 (RBAC), and P8-005 (audit/freeze only) remain unauthorized.
 - No frontend, package, secret, environment, TLS, Trade Refinery, RBAC, or auth-behavior file was changed.
 - No `git merge` was performed and no PR was opened. `git add`, `git commit`, and `git push` were performed for the two-commit delivery (Commit A = implementation; Commit B = evidence-fill, hash reported in the final handoff).
-- The migration artifact is on disk only; no live database has been touched.
+- The migration artifact is committed in Commit A and pushed to `origin/feature/p8-002-auth-persistence`; no live database has been touched (the migration has not been applied).
 
 ## Next WDR / Audit
 

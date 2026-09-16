@@ -10,7 +10,7 @@
 
 Both commits were pushed to `origin/feature/p8-002-auth-persistence`. No `git merge` was performed and no PR was opened.
 
-P8-002 implements the additive schema/migration foundation for authentication persistence: nullable `User.passwordHash`, nullable `AuditLog.ipAddress` and `AuditLog.userAgent`, a new `Session` model (HMAC-SHA256 digest of the refresh-token **secret** only, never a raw token, never a raw secret), and one forward-only additive Prisma migration. Schema/migration artifact only — no auth behavior, no JWT, no guards, no RBAC, no frontend, no packages, no live database connection, no migration application, no commit.
+P8-002 implements the additive schema/migration foundation for authentication persistence: nullable `User.passwordHash`, nullable `AuditLog.ipAddress` and `AuditLog.userAgent`, a new `Session` model (HMAC-SHA256 digest of the refresh-token **secret** only, never a raw token, never a raw secret), and one forward-only additive Prisma migration. Schema/migration artifact only — no auth behavior, no JWT, no guards, no RBAC, no frontend, no packages, no live database connection, no migration application to any database. Implementation Commit A `a1ce796df4a226bb16fb556fc8ac18fad730e07c` and evidence-fill Commit B (hash in final handoff) were created and pushed to `origin/feature/p8-002-auth-persistence`; no merge and no PR.
 
 The audit corrections applied in this turn make the forward-looking P8-003 refresh-token contract explicit (lookup hot path by `sessionId` UUID PK, not by digest), record that smoke and the four `test-*-create.js` database evidence scripts were **NOT RUN** in P8-002, and update the Phase 8 rollup counters.
 
@@ -36,9 +36,9 @@ The audit corrections applied in this turn make the forward-looking P8-003 refre
 - Base HEAD: `5d680f85c458d553c9ab43c06df2c1bb5554d3a8`
 - Branch HEAD: `5d680f85c458d553c9ab43c06df2c1bb5554d3a8`
 - Tracked changes: 5 files (`backend/prisma/schema.prisma`, `src/project/projectRegistry.ts`, this file, `latest-wdr-summary.md`, `PM_OUTBOX/next-opencode-prompt.md`)
-- New untracked directory: `backend/prisma/migrations/20260916020000_p8_002_auth_persistence/`
-- New untracked WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md`
-- Pre-existing untracked items preserved.
+- New untracked items added during the two-commit delivery: `PM_OUTBOX/.p8-002-commit-a-msg.txt` and `PM_OUTBOX/.p8-002-commit-b-msg.txt` (temporary scratch files; never staged, committed, or pushed; workspace policy blocks hard deletion).
+- Pre-existing untracked items preserved (logs, `.review.ps1`, `.worktrees/`, `WDR/_All/Phase-02-Public-Marketplace/TOPLINE-P2-009_WDR_2026-09-15.md`, etc.).
+- **The P8-002 WDR and migration directory are TRACKED in Commit A (and pushed), not untracked.**
 - No `git merge` was performed and no PR was opened. `git add`, `git commit`, and `git push` were performed for the two-commit delivery (Commit A = implementation; Commit B = evidence-fill, hash reported in the final handoff).
 
 ## Schema Additions (additive only)
@@ -97,13 +97,13 @@ The scripts themselves were **not modified, deleted, or cleaned** — they remai
 
 ## Migration Application and Database Verification — Separate Gate
 
-P8-002 ends with the migration artifact on disk only. Applying the migration, running `node backend/scripts/smoke-health.js`, or running any of the four `node backend/scripts/test-*-create.js` evidence scripts is **NOT** part of P8-002. These require an owner-approved task, a reachable database, the migration to be applied, and database-write authorization — none of which apply to P8-002.
+P8-002 ends with the migration artifact committed in Commit A and pushed to `origin/feature/p8-002-auth-persistence` — but **not applied to any database**. Applying the migration, running `node backend/scripts/smoke-health.js`, or running any of the four `node backend/scripts/test-*-create.js` evidence scripts is **NOT** part of P8-002. These require an owner-approved task, a reachable database, the migration to be applied, and database-write authorization — none of which apply to P8-002.
 
 ## Files Updated by P8-002 (with audit corrections)
 
 - `backend/prisma/schema.prisma` (tracked, additive; `refreshTokenDigest` field comment + `@@unique` comment corrected to reflect sessionId hot path)
-- `backend/prisma/migrations/20260916020000_p8_002_auth_persistence/migration.sql` (untracked; comment on `sessions_refresh_token_digest_key` corrected)
-- `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md` (untracked; new sections: Forward-Looking P8-003 Refresh-Token Contract, Smoke and Database Evidence Scripts — Not Run, Migration Application and Database Verification — Separate Gate; all hot-path statements corrected; audit checks expanded)
+- `backend/prisma/migrations/20260916020000_p8_002_auth_persistence/migration.sql` (TRACKED — committed in Commit A; comment on `sessions_refresh_token_digest_key` corrected)
+- `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md` (TRACKED — committed in Commit A; new sections: Forward-Looking P8-003 Refresh-Token Contract, Smoke and Database Evidence Scripts — Not Run, Migration Application and Database Verification — Separate Gate; all hot-path statements corrected; audit checks expanded)
 - `src/project/projectRegistry.ts` (tracked; P8-002 task + `wdr-090` registered; Phase 8 rollup updated to `progress: 40`, `megaPromptsCompleted: 2`, `taskCount: 26`, `completedTaskCount: 26`; `lastUpdated` 2026-09-16; `lastCompletedTask` = TOPLINE-P8-002; `nextPlannedTask` = TOPLINE-P8-002-PM-AUDIT)
 - `AGENT_REPORTS/latest-status.md` (this file)
 - `AGENT_REPORTS/latest-wdr-summary.md`

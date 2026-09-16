@@ -31,10 +31,10 @@ The audit corrections explicitly clarify the forward-looking P8-003 refresh-toke
 - R23 Commit B: `c704ea647689b8f0fcbc019f6e828d7116aa2b62` — TOPLINE-P8-001-R23: finalize clean evidence
 - R23 Commit C: `c5fde66d19780f3c31371bb85b27b512e8e63aa3` — TOPLINE-P8-001-R23: correct final evidence references
 - R24 Commit A: `f1e0fb3578dd33f0aab01da7a2b838d4a8d3c7d8` — TOPLINE-P8-001-R24: correct R23 evidence integrity
-- R22 task `commitHash` and `wdr-087.commitHash` remain R22 Commit A `a13cb04b13a1c81877aa15e5d070fc2b39e9d82d`
-- R23 task `commitHash` and `wdr-088.commitHash` remain R23 Commit A `bdacbcb16951951982edf8ef0afd3615a59d619b`
-- R24 task `commitHash` and `wdr-089.commitHash` remain R24 Commit A `f1e0fb3578dd33f0aab01da7a2b838d4a8d3c7d8`
-- Registry `git.lastCommit` remains the R22 evidence-fill Commit B hash `bd398f270a781be54e40e51e2832ea46c874a84f` (not replaced)
+- R22 task `commitHash` and `wdr-087.commitHash` remain R22 Commit A `a13cb04b13a1c81877aa15e5d070fc2b39e9d82d` (preserved unchanged)
+- R23 task `commitHash` and `wdr-088.commitHash` remain R23 Commit A `bdacbcb16951951982edf8ef0afd3615a59d619b` (preserved unchanged)
+- R24 task `commitHash` and `wdr-089.commitHash` remain R24 Commit A `f1e0fb3578dd33f0aab01da7a2b838d4a8d3c7d8` (preserved unchanged)
+- Registry `git.lastCommit` was deliberately updated by P8-002 Commit B to `a1ce796df4a226bb16fb556fc8ac18fad730e07c` (P8-002 Commit A), replacing the prior R22 evidence-fill Commit B hash `bd398f270a781be54e40e51e2832ea46c874a84f`. This is a documented and authorized change distinct from the per-task ownership preservation above.
 
 ## Required Audit Checks
 
@@ -52,8 +52,8 @@ The audit corrections explicitly clarify the forward-looking P8-003 refresh-toke
 12. Confirm migration application and database verification (smoke + 4 `test-*-create.js`) are documented as a separate owner-approved gate before P8-003.
 13. Confirm the Phase 8 rollup is updated to `progress: 40`, `megaPromptsCompleted: 2`, `taskCount: 26`, `completedTaskCount: 26`; `status` remains `BLOCKED`, `currentTask` remains `null`, `databaseGate` remains `PLANNED`, `nextPlannedTask` remains `TOPLINE-P8-002-PM-AUDIT`.
 14. Confirm `git add`, `git commit`, and `git push` were performed for P8-002 in the two-commit delivery pattern. Implementation Commit A: `a1ce796df4a226bb16fb556fc8ac18fad730e07c` (`TOPLINE-P8-002: add auth persistence foundation`, 7 files staged exactly). Evidence-fill Commit B: reported in the final handoff (intentionally not stored inside this PM_OUTBOX). Both commits were pushed to `origin/feature/p8-002-auth-persistence`. No `git merge` was performed and no PR was opened.
-15. Confirm pre-existing untracked files were preserved (18 → 20, with two new P8-002 deliverables added: this WDR and the new migration directory `backend/prisma/migrations/20260916020000_p8_002_auth_persistence/`).
-16. Confirm the R22 / R23 / R24 commit-hash ownership fields remain unchanged (R22 `a13cb04…`, R23 `bdacbcb…`, R24 `f1e0fb35…`) and `git.lastCommit` remains the R22 evidence-fill Commit B hash `bd398f27…`.
+15. Confirm pre-existing untracked files were preserved (18 pre-existing untracked items preserved; two new untracked items added during the P8-002 two-commit delivery are scratch files `PM_OUTBOX/.p8-002-commit-a-msg.txt` and `PM_OUTBOX/.p8-002-commit-b-msg.txt`. **The P8-002 WDR and migration directory are NOT untracked — they are tracked in Commit A and pushed.**)
+16. Confirm the R22 / R23 / R24 task `commitHash` fields and `wdr-087/088/089.commitHash` fields remain unchanged (R22 `a13cb04b13a1c81877aa15e5d070fc2b39e9d82d`, R23 `bdacbcb16951951982edf8ef0afd3615a59d619b`, R24 `f1e0fb3578dd33f0aab01da7a2b838d4a8d3c7d8`). The registry `git.lastCommit` was deliberately updated by P8-002 Commit B to `a1ce796df4a226bb16fb556fc8ac18fad730e07c` (P8-002 Commit A), replacing the prior R22 evidence-fill Commit B hash `bd398f270a781be54e40e51e2832ea46c874a84f`. This is a documented and authorized change distinct from the per-task ownership preservation above.
 17. Confirm no authentication behavior was added: no `AuthGuard`, no login/logout/refresh endpoint, no JWT issuance, no token rotation, no reuse-detection logic, no HMAC server-secret storage, no logging of raw tokens or secrets.
 18. Confirm Core UI PRs #2 (`feature/core-application-ui-resume`), #3 (`feature/core-admin-products-ui`), and #4 (`feature/core-product-detail-ui`) and Trade Refinery were not touched; `F:\OpenCode\shop.com` was not read or modified.
 
