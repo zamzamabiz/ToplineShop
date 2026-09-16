@@ -88,18 +88,20 @@ The R22 PM audit has passed. `TOPLINE-P8-002` is now `PARTIAL` after its schema/
 
 **Migration artifact prepared** (`backend/prisma/migrations/20260916000000_p8_002_auth_persistence/migration.sql`) — **NOT applied**.
 
-**`prisma validate` finding (corrected assessment):** The exit code 1 came from the **global npx CLI (7.10.0)**, not the project's Prisma. `backend/package.json` declares `"prisma": "^6.19.3"`. The `url = env("DATABASE_URL")` datasource syntax is valid Prisma 6.x. `backend/node_modules/prisma` does not exist (backend `npm install` not run). The earlier P8-002 corrective WDR incorrectly attributed this to a project-level Prisma 7 incompatibility.
+**`prisma validate` finding (corrected assessment):** The exit code 1 came from the **global npx CLI (7.10.0)**, not the project's Prisma. `backend/package.json` declares `"prisma": "^6.19.3"`. The `url = env("DATABASE_URL")` datasource syntax is valid Prisma 6.x. `backend/node_modules/prisma` exists (`npm ci` ran 2026-09-17; `package.json` and `package-lock.json` unchanged; `backend/node_modules/.bin/prisma.cmd` confirmed present). The earlier P8-002 corrective WDR incorrectly attributed this to a project-level Prisma 7 incompatibility.
 
 **`TOPLINE-P8-002-R1` — now BLOCKED (premise incorrect):** R1's objective was "Prisma 7 datasource compatibility correction" — adding `prisma.config.ts` and removing `url` from the datasource. This objective is false for a Prisma 6.x project. R1 must not proceed under its current premise. It is recorded as BLOCKED in the registry.
 
-**PM reassessment required:** Before R1 can proceed or close, PM must separately authorize deterministic dependency restoration with `npm ci` in `backend`, confirm `backend/node_modules/.bin/prisma` reports version 6.19.3, and run schema-only validation through that explicit local executable. Do not use unrestricted `npx prisma`. A passing result closes R1 as a no-op; a failing result must be recorded before any corrective scope is approved.
+**Local Prisma 6.19.3 validation: PASS (2026-09-17)** — `npm ci` restored dependencies (package.json and package-lock.json unchanged). `backend/node_modules/.bin/prisma --version` reported `6.19.3`. `backend/node_modules/.bin/prisma.cmd validate --schema prisma\schema.prisma` exited with **code 0**: "The schema at prisma\schema.prisma is valid." No `prisma.config.ts` was required or created. **P8-002 PARTIAL blocker #1 is cleared.**
 
-**Registry**: P8-002 status PARTIAL, commitHash 37f49e3, completedAt null. `lastCompletedTask` is `TOPLINE-P8-001-R23`. P8-002-R1 is `BLOCKED`.
+**R1 eligible for PM closeout as no-op:** R1's original premise (Prisma 7 datasource incompatibility) was false. Local Prisma 6.19.3 validated the schema without any configuration change. PM should formally close R1 as a no-op.
+
+**Registry**: P8-002 status PARTIAL, commitHash 37f49e3, completedAt null. `lastCompletedTask` is `TOPLINE-P8-001-R23`. P8-002-R1 is `BLOCKED` (pending PM no-op closeout).
 
 **WDR**: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md` (PARTIAL).
 
 **Outstanding blockers before P8-002 can be marked PASS:**
-1. Separately authorize `npm ci` in `backend`, verify the explicit local Prisma executable is version 6.19.3, and run schema-only validation through that executable. If PASS, clear the validation blocker and close R1 as a no-op. If FAIL, record the actual Prisma 6 error before changing R1 scope.
+1. ~~Prisma validate~~ **CLEARED** — local Prisma 6.19.3 validated EXIT CODE 0 on 2026-09-17.
 2. Migration application authorization — PM must separately authorize `prisma migrate dev` (local `toplineshop_dev` only).
 3. No DB tests run — `tests: "NOT_STARTED"`.
 
