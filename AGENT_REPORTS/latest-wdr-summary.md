@@ -42,7 +42,7 @@ The task was frontend/governance reconciliation only. It does not authorize back
 - WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md`
 - Schema additions complete: `User.passwordHash` (nullable), `AuditLog.ipAddress` (nullable), `AuditLog.userAgent` (nullable), `Session` model.
 - Migration artifact: `backend/prisma/migrations/20260916000000_p8_002_auth_persistence/migration.sql` — **NOT applied**. Additive only.
-- `prisma validate` exits code 1 — pre-existing Prisma 7.10.0 datasource issue; not a P8-002 defect; separate corrective task required.
-- commitHash `37f49e3` — P8-002 implementation checkpoint recorded. `lastCompletedTask` remains `TOPLINE-P8-001-R23` while the task is `PARTIAL`.
-- Registered next corrective task: `TOPLINE-P8-002-R1` `READY`, limited to Prisma 7 configuration compatibility.
-- P8-003 blocked until P8-002 remaining validation/migration gates are resolved and a separate PM-issued P8-003 prompt is issued.
+- `prisma validate` exit code 1 was from global npx CLI 7.10.0 — **not** the project's Prisma 6.19.3. The `url = env("DATABASE_URL")` syntax is valid for Prisma 6.x. `backend/node_modules/prisma` not installed.
+- commitHash `37f49e3` — P8-002 implementation checkpoint. `lastCompletedTask` remains `TOPLINE-P8-001-R23` while PARTIAL.
+- `TOPLINE-P8-002-R1` registered but now **BLOCKED** — its Prisma 7 premise is false for this repository. The next separately authorized gate is `npm ci`, confirmation of local Prisma 6.19.3, and schema-only validation through the explicit local executable; unrestricted `npx prisma` must not be used.
+- P8-003 blocked until P8-002 blockers resolved and separate PM-issued P8-003 prompt received.

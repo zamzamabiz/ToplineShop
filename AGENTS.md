@@ -1,7 +1,7 @@
 # ToplineShop — Agent Rules
 
 ## Project Root
-`F:\OpenCode\ToplineShop`
+`E:\ToplineShop`
 
 ## Greenfield Rule
 ToplineShop is 100% greenfield. Start from zero. Do not migrate from `F:\OpenCode\shop.com`.

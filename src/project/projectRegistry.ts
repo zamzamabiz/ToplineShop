@@ -1962,7 +1962,7 @@ export const projectRegistry: ProjectRegistry = {
       title: "Prisma 7 Configuration Compatibility Correction",
       objective:
         "Resolve the pre-existing Prisma 7 datasource configuration incompatibility so the approved P8-002 schema can be validated without changing P8-002 scope or applying any migration.",
-      status: "READY",
+      status: "BLOCKED",
       priority: "HIGH",
       dependencies: ["TOPLINE-P8-002"],
       startedAt: null,
@@ -1973,7 +1973,7 @@ export const projectRegistry: ProjectRegistry = {
       build: "NOT_STARTED",
       ownerApproval: "PLANNED",
       pmApproval: "PASS",
-      notes: "Registration only. Scope is limited to Prisma 7 configuration compatibility: review/add prisma.config.ts as required, update datasource configuration, and run safe validation. No schema redesign, migration application, database access, authentication, RBAC, frontend, ingestion, packages, or production work.",
+      notes: "BLOCKED before implementation — premise is incorrect. The project declares and locks Prisma 6.19.3. The datasource url = env('DATABASE_URL') syntax is valid Prisma 6.x; it is not a Prisma 7 incompatibility. The recorded validation failure came from an uncontrolled npx fallback to Prisma CLI 7.10.0 because backend dependencies were absent. No prisma.config.ts or datasource change is authorized. R1 remains blocked pending a separate dependency-restoration gate using npm ci, confirmation that backend/node_modules/.bin/prisma resolves to 6.19.3, and validation through that explicit local executable. If local Prisma 6 validation passes, R1 closes as a no-op; if it fails, the actual error must be recorded before R1 scope is reconsidered.",
     },
     // ─── Trade Data Refinery (TDR) — Separate governed program on codex/trade-data-refinery ───
     {

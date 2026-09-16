@@ -49,9 +49,9 @@ P1-011 found that the frontend was broad and buildable, but G1 was blocked by st
 - `User.passwordHash` (nullable), `AuditLog.ipAddress` (nullable), `AuditLog.userAgent` (nullable) added to `backend/prisma/schema.prisma`.
 - `Session` model added (tokenHash unique, userId/tenantId FKs, ipAddress, userAgent, expiresAt, revokedAt, createdAt, indexes).
 - Additive migration artifact prepared: `backend/prisma/migrations/20260916000000_p8_002_auth_persistence/migration.sql` — **NOT applied**.
-- `prisma validate` exits code 1: pre-existing Prisma CLI 7.10.0 vs 6.x datasource format incompatibility (not a P8-002 defect; requires separate PM-approved corrective task).
-- Registry: P8-002 status PARTIAL, commitHash 37f49e3, completedAt null. `lastCompletedTask` remains `TOPLINE-P8-001-R23`; the P8-002 implementation checkpoint is recorded.
+- `prisma validate` exit code 1 came from the global npx CLI (7.10.0), **not** the project's local Prisma (6.19.3 per `backend/package.json`). The `url = env("DATABASE_URL")` datasource syntax is valid Prisma 6.x — no configuration change is required. `backend/node_modules/prisma` does not exist (deps not installed).
+- Registry: P8-002 status PARTIAL, commitHash 37f49e3, completedAt null. `lastCompletedTask` remains `TOPLINE-P8-001-R23`.
 - WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md`.
-- Registered next corrective task: `TOPLINE-P8-002-R1` `READY`, Prisma 7 configuration compatibility only.
-- Outstanding blockers: (1) P8-002-R1 validation correction; (2) migration application authorization; (3) no DB tests run.
+- Registered corrective task: `TOPLINE-P8-002-R1` — now **BLOCKED** (premise incorrect — R1's Prisma 7 assumption does not apply to this repository's Prisma 6.19.3 toolchain; requires PM reassessment).
+- Outstanding blockers: (1) separately authorize deterministic dependency restoration with `npm ci`, confirm the explicit local Prisma executable is version 6.19.3, and run schema-only validation through that executable; (2) migration application authorization; (3) no DB tests run.
 - P8-003 must not begin until P8-002 blockers are resolved and a separate PM-issued P8-003 prompt is received.

@@ -66,7 +66,7 @@ The R22 PM audit has passed. `TOPLINE-P8-002` is now `PARTIAL` after its schema/
 - R9 evidence-fill commit (R9 Commit B): `17655b7b6e168fb617ac3af3e80c46c2e0abfc2f`
 - R8 evidence-fill commit (R8 Commit B): `d876589d4c8691534999f3692e859325f8b77d88`
 - R6 plan: `docs/PHASE-08-DATABASE-AUTH-RBAC-READINESS-PLAN.md` (preserved byte-for-byte by R15, R16, R16 PM audit, R17, R17 PM audit, R18, R18 PM audit, R19, R19 PM audit, R20, R20 PM audit, R21, R21 PM audit, and R22)
-- Canonical registry: `src/project/projectRegistry.ts` records R22 execution/PM audit PASS, R23 PASS, wdr-087/wdr-088 PASS, Phase 8 BLOCKED, currentTask null, lastCompletedTask `TOPLINE-P8-001-R23`, and P8-002 `PARTIAL` with commit `37f49e3`, dependency `TOPLINE-P8-001-R23`, and PM approval `PASS`. The P8-002 execution WDR exists at the reserved path.
+- Canonical registry: `src/project/projectRegistry.ts` records R22 execution/PM audit PASS, R23 PASS, wdr-087/wdr-088 PASS, Phase 8 BLOCKED, currentTask null, lastCompletedTask `TOPLINE-P8-001-R23`, P8-002 `PARTIAL` with commit `37f49e3`, and P8-002-R1 now `BLOCKED` (Prisma 7 premise is false — see P8-002-R1 section below). The P8-002 execution WDR exists at the reserved path.
 - Reports: `AGENT_REPORTS/latest-status.md`, `AGENT_REPORTS/latest-wdr-summary.md`
 
 ## Block Status
@@ -88,14 +88,18 @@ The R22 PM audit has passed. `TOPLINE-P8-002` is now `PARTIAL` after its schema/
 
 **Migration artifact prepared** (`backend/prisma/migrations/20260916000000_p8_002_auth_persistence/migration.sql`) — **NOT applied**.
 
-**`prisma validate` exits code 1** — pre-existing Prisma CLI 7.10.0 breaking change: `datasource.url` no longer supported in schema files; must move to `prisma.config.ts`. This is NOT a P8-002 defect but is a blocker for tool-based validation. Requires a separate PM-approved corrective task.
+**`prisma validate` finding (corrected assessment):** The exit code 1 came from the **global npx CLI (7.10.0)**, not the project's Prisma. `backend/package.json` declares `"prisma": "^6.19.3"`. The `url = env("DATABASE_URL")` datasource syntax is valid Prisma 6.x. `backend/node_modules/prisma` does not exist (backend `npm install` not run). The earlier P8-002 corrective WDR incorrectly attributed this to a project-level Prisma 7 incompatibility.
 
-**Registry**: P8-002 status PARTIAL, commitHash 37f49e3, completedAt null. `lastCompletedTask` is `TOPLINE-P8-001-R23`, `nextPlannedTask` is `TOPLINE-P8-002-R1`.
+**`TOPLINE-P8-002-R1` — now BLOCKED (premise incorrect):** R1's objective was "Prisma 7 datasource compatibility correction" — adding `prisma.config.ts` and removing `url` from the datasource. This objective is false for a Prisma 6.x project. R1 must not proceed under its current premise. It is recorded as BLOCKED in the registry.
 
-**WDR**: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md` (corrected to PARTIAL).
+**PM reassessment required:** Before R1 can proceed or close, PM must separately authorize deterministic dependency restoration with `npm ci` in `backend`, confirm `backend/node_modules/.bin/prisma` reports version 6.19.3, and run schema-only validation through that explicit local executable. Do not use unrestricted `npx prisma`. A passing result closes R1 as a no-op; a failing result must be recorded before any corrective scope is approved.
+
+**Registry**: P8-002 status PARTIAL, commitHash 37f49e3, completedAt null. `lastCompletedTask` is `TOPLINE-P8-001-R23`. P8-002-R1 is `BLOCKED`.
+
+**WDR**: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md` (PARTIAL).
 
 **Outstanding blockers before P8-002 can be marked PASS:**
-1. `TOPLINE-P8-002-R1` — registered READY to correct the Prisma 7 configuration compatibility blocker.
+1. Separately authorize `npm ci` in `backend`, verify the explicit local Prisma executable is version 6.19.3, and run schema-only validation through that executable. If PASS, clear the validation blocker and close R1 as a no-op. If FAIL, record the actual Prisma 6 error before changing R1 scope.
 2. Migration application authorization — PM must separately authorize `prisma migrate dev` (local `toplineshop_dev` only).
 3. No DB tests run — `tests: "NOT_STARTED"`.
 
