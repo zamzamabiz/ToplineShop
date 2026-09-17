@@ -9,11 +9,13 @@ This is the mandatory restart checkpoint for ChatGPT Luna, Claude Code, and huma
 - Stable branch: `master` — do not modify directly
 - Governance: `#123` — DISCUSS → DECIDE → EXECUTE → VERIFY/AUDIT → CLOSE → NEXT
 - Product status: frontend work is complete; TDR-P1-011 was the historical blocked audit — TDR-P1-012 resolved it; G1 (frontend freeze) is `PASS`
-- Last completed task: `TDR-P0-004 — Architecture and Security Decision Register`
+- Last completed task: `TDR-P8-002-GOVERNED-CLOSEOUT-RECON-001 — P8-002 Closeout Reconciliation and Next Task Handoff`
 - Current task status: `PASS`
-- Latest authoritative WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-004_WDR_2026-09-17_04-21.md` — `PASS`
+- Latest authoritative WDR: `WDR/_All/Trade-Data-Refinery/TDR-P8-002-GOVERNED-CLOSEOUT-RECON-001_WDR_2026-09-18_10-00.md` — `PASS`
 - G1 frontend freeze: `PASS`
-- Backend, database, persistence, authentication, RBAC, and external ingestion remain unauthorized until the required gates pass
+- **TOPLINE-P8-002: PASS** (2026-09-18) — schema, migration, and DB tests all complete
+- G2 platform readiness: `BLOCKED` — P8-003, P8-004, and TDR-P2-001 through TDR-P2-005 outstanding
+- Backend/database work for P8-002 complete locally; P8-003 and P8-004 require separate PM-authorized tasks; no commit created yet
 
 ## Authoritative reading order
 
@@ -39,6 +41,18 @@ Before any change, the agent must report:
 - the exact prompt file to execute, if one exists.
 
 If no valid prompt exists for the authorized task, the agent must prepare the prompt and stop for governance review. It must not reuse an older prompt merely because it has a similar name.
+
+## TDR-P8-002-GOVERNED-CLOSEOUT-RECON-001 closeout (2026-09-18)
+
+P8-002 formally advanced from PARTIAL to PASS. Read-only reconciliation confirmed: all registry entries accurate, backend/.env gitignored and untracked, no forbidden files modified. G2 remains BLOCKED — P8-003, P8-004, and TDR-P2-001 through TDR-P2-005 still required. PM-authorized GOV commit task is recommended before P8-003 begins, to record all P8-002 session evidence on disk. `git.lastCommit` in registry remains stale at `29deff2` (actual HEAD: `cea1101`) — the GOV commit will update it. Untracked ERP64 files (`WDR/_All/ERP64-Governance/`, `docs/ERP64_GOVERNANCE/`, `scripts/`) remain a pending PM assessment item.
+
+## P8-002-R1 closeout (2026-09-17)
+
+TOPLINE-P8-002-R1 formally closed as no-op. PM-authorized via P8-002-R1 closure prompt (2026-09-17). The validation failure that triggered R1 was a false positive from global npx CLI 7.10.0 — not the project's local Prisma 6.19.3. After `npm ci`, local `backend/node_modules/.bin/prisma validate` returned exit code 0. No schema, config, or migration change was made. `lastCompletedTask` updated to `TOPLINE-P8-002-R1`; `nextPlannedTask` set to null pending PM direction. P8-002 remains PARTIAL. Migration and DB tests each require separate PM-authorized tasks. G1 PASS. G2 BLOCKED. No commit created.
+
+## TDR-G2-AUDIT-001 closeout (2026-09-17)
+
+TDR-G2-AUDIT-001 completed a read-only G2 Platform Readiness Prerequisite Evidence Audit. **Conclusion: G2 REMAINS BLOCKED — EVIDENCE OR APPROVALS MISSING.** Blockers: (1) P8-002 PARTIAL — migration not applied, DB tests not started; (2) ~~P8-002-R1 BLOCKED~~ **P8-002-R1 CLOSED as no-op (2026-09-17)**; (3) P8-003 and P8-004 not started or registered; (4) TDR-P2-001 through TDR-P2-005 not registered. G1 PASS preserved. No product, backend, database, auth, RBAC, ingestion, or implementation work performed. No commit created. Post-task: 25 tasks (22 PASS, 1 PARTIAL, 2 BLOCKED), 30 WDR files on disk, 29 registry entries. Note: `git.lastCommit` in registry remains stale at `29deff2` (actual HEAD: `cea1101`); evidence-fill needed.
 
 ## TDR-P0-004 closeout (2026-09-17)
 
