@@ -2,19 +2,21 @@
 
 ## Current WDR
 
-**TDR-P0-003** — Source and Use-Case Discovery (Synthetic Examples)
+**TDR-P0-004** — Architecture and Security Decision Register
 
 - Execution: `PASS`
 - G1 frontend freeze: `PASS`
-- G2 platform readiness: `BLOCKED` (not required for this task)
-- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-003_WDR_2026-09-17_03-41.md`
+- G2 platform readiness: `BLOCKED`
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-004_WDR_2026-09-17_04-21.md`
+- ADR-TDR-003 to ADR-TDR-012 recorded: 6 CLOSED, 4 PENDING PM
+- Post-task: 24 tasks (21 PASS, 1 PARTIAL, 2 BLOCKED), 28 WDR files
 
 ## Latest Prior WDR
 
-**TDR-GOV-RECON-004** — Final TDR Count and Report Synchronization
+**TDR-GOV-RECON-005** — Final Git Evidence and WDR Path Reconciliation
 
 - Execution: `PASS`
-- WDR: `WDR/_All/Trade-Data-Refinery/TDR-GOV-RECON-004_WDR_2026-09-17_03-27.md`
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-GOV-RECON-005_WDR_2026-09-17_04-01.md`
 
 ## Registry Chain (TDR)
 
@@ -28,10 +30,12 @@
 - TDR-GOV-RECON-003: `PASS`
 - TDR-GOV-RECON-004: `PASS`
 - TDR-P0-003: `PASS`
+- TDR-GOV-RECON-005: `PASS`
+- TDR-P0-004: `PASS`
 
-## TDR-P0-003 Evidence Boundary
+## TDR-P0-004 Evidence Boundary
 
-Governance/documentation only. ADR-TDR-001 CLOSED (MVP user: authorized operations reviewer with tdr.view + tdr.quarantine.review; primary journey: inspect source → review batch → quarantine queue → lineage). ADR-TDR-002 CLOSED (UTF-8 CSV SUPPLIER_TRADE_LINES_V1 v1.0, 13 fixed synthetic headers; 7 sub-decisions PENDING PM). No product, backend, database, migration, auth, RBAC, ingestion, or package work. G2 remains blocked.
+Governance/documentation only. ADR-TDR-003 through ADR-TDR-012 registered. 6 CLOSED (ADR-TDR-003/005/006/007/008/010). 4 PENDING PM (ADR-TDR-004/009/011/012). No product, backend, database, migration, auth, RBAC, ingestion, or package work. No commit created. G1 PASS. G2 BLOCKED.
 
 ## Last Updated
 

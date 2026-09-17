@@ -9,9 +9,9 @@ This is the mandatory restart checkpoint for ChatGPT Luna, Claude Code, and huma
 - Stable branch: `master` — do not modify directly
 - Governance: `#123` — DISCUSS → DECIDE → EXECUTE → VERIFY/AUDIT → CLOSE → NEXT
 - Product status: frontend work is complete; TDR-P1-011 was the historical blocked audit — TDR-P1-012 resolved it; G1 (frontend freeze) is `PASS`
-- Last completed task: `TDR-P0-003 — Source and Use-Case Discovery (Synthetic Examples)`
+- Last completed task: `TDR-P0-004 — Architecture and Security Decision Register`
 - Current task status: `PASS`
-- Latest authoritative WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-003_WDR_2026-09-17_03-41.md` — `PASS`
+- Latest authoritative WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-004_WDR_2026-09-17_04-21.md` — `PASS`
 - G1 frontend freeze: `PASS`
 - Backend, database, persistence, authentication, RBAC, and external ingestion remain unauthorized until the required gates pass
 
@@ -39,6 +39,14 @@ Before any change, the agent must report:
 - the exact prompt file to execute, if one exists.
 
 If no valid prompt exists for the authorized task, the agent must prepare the prompt and stop for governance review. It must not reuse an older prompt merely because it has a similar name.
+
+## TDR-P0-004 closeout (2026-09-17)
+
+TDR-P0-004 recorded ADR-TDR-003 through ADR-TDR-012 in the canonical registry from roadmap Section 20. **6 CLOSED** (ADR-TDR-003 product-linked trade line; ADR-TDR-005 synchronous in-process MVP; ADR-TDR-006 exact duplicate suppressed/conflict quarantined; ADR-TDR-007 deterministic non-material normalization only; ADR-TDR-008 material corrections require distinct approver; ADR-TDR-010 marketplace/ERP contract-only disabled by default). **4 PENDING PM** (ADR-TDR-004 raw artifact storage; ADR-TDR-009 retention/deletion; ADR-TDR-011 performance/file limits; ADR-TDR-012 deployment/recovery objectives). No product, backend, database, auth, RBAC, ingestion, or implementation work performed. No commit created. G1 PASS. G2 BLOCKED. Post-task: 24 tasks (21 PASS, 1 PARTIAL, 2 BLOCKED), 28 WDR files.
+
+## GOV-RECON-005 closeout (2026-09-17)
+
+GOV-RECON-005 corrected the single outstanding registry discrepancy: `git.lastCommit` was stale at commit A (`4a783c528e652ec837c754b3fd71966906870b97`) while actual HEAD was commit B (`29deff2bb742bd3e101b18b307a85d6d72c96a0d`, the evidence-fill commit from the prior session). Field updated. TDR-GOV-RECON-005 task and `wdr-tdr-gov-recon-005` registered. Final verified state: **23 tasks (20 PASS, 1 PARTIAL, 2 BLOCKED)**, **27 WDR files on disk**, **27 wdrs[] entries**. G1 PASS preserved. G2 BLOCKED. No product, backend, database, auth, RBAC, ingestion, or implementation work performed. No commit created by this task.
 
 ## TDR-P0-003 closeout (2026-09-17)
 

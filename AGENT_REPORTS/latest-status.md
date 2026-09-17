@@ -2,17 +2,18 @@
 
 ## Current Program
 
-**Trade Data Refinery (TDR) — TDR-P0-003 Source and Use-Case Discovery (2026-09-17)**
+**Trade Data Refinery (TDR) — TDR-P0-004 Architecture and Security Decision Register (2026-09-17)**
 
 ## TDR Current Status
 
-**TDR-P0-003: PASS — ADR-TDR-001 and ADR-TDR-002 recorded; MVP user and first source schema documented**
-**TDR-GOV-RECON-004: PASS — final count and report synchronization (prior task)**
+**TDR-P0-004: PASS — ADR-TDR-003 through ADR-TDR-012 recorded (6 CLOSED, 4 PENDING PM)**
+**TDR-GOV-RECON-005: PASS — git.lastCommit corrected (prior task)**
+**TDR-P0-003: PASS — ADR-TDR-001 and ADR-TDR-002 recorded**
 **TDR-P1-012: PASS — dashboard governance reconciliation complete**
 **G1 — TDR Frontend Freeze: PASS**
 **G2 — Platform Readiness: BLOCKED** (Phase 8 P8-002 PARTIAL)
 
-TDR-P0-003 recorded the MVP user profile (ADR-TDR-001) and first source format/schema (ADR-TDR-002) in the canonical registry using synthetic examples only. No product implementation performed.
+TDR-P0-004 recorded all mandatory pre-implementation architecture and security decisions from roadmap Section 20. No product implementation performed.
 
 ## Canonical Evidence
 
@@ -25,10 +26,37 @@ TDR-P0-003 recorded the MVP user profile (ADR-TDR-001) and first source format/s
 - GOV-RECON-003: `PASS` — WDR: `WDR/_All/Trade-Data-Refinery/TDR-GOV-RECON-003_WDR_2026-09-17_03-15.md`
 - GOV-RECON-004: `PASS` — WDR: `WDR/_All/Trade-Data-Refinery/TDR-GOV-RECON-004_WDR_2026-09-17_03-27.md`
 - TDR-P0-003: `PASS` — WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-003_WDR_2026-09-17_03-41.md`
+- GOV-RECON-005: `PASS` — WDR: `WDR/_All/Trade-Data-Refinery/TDR-GOV-RECON-005_WDR_2026-09-17_04-01.md`
+- TDR-P0-004: `PASS` — WDR: `WDR/_All/Trade-Data-Refinery/TDR-P0-004_WDR_2026-09-17_04-21.md`
 - G1 frontend freeze: `PASS`
 - G2 platform readiness: `BLOCKED`
 
-## TDR-P0-003 Closeout (2026-09-17)
+## TDR-P0-004 Closeout (2026-09-17)
+
+- ADR-TDR-003 CLOSED: canonical MVP record = product-linked trade line (not full document suite)
+- ADR-TDR-004 PENDING PM: raw artifact storage (needs limits, infrastructure, security, budget approval)
+- ADR-TDR-005 CLOSED: synchronous in-process processing for MVP; queues deferred pending load evidence
+- ADR-TDR-006 CLOSED: exact duplicate suppressed; cross-batch conflict quarantined for human review
+- ADR-TDR-007 CLOSED: automatic normalization limited to deterministic non-material formatting only
+- ADR-TDR-008 CLOSED: material corrections require distinct approver; SINGLE_REVIEWER_EXCEPTION for small tenants
+- ADR-TDR-009 PENDING PM+Owner: retention and deletion policy (legal/compliance/budget decision)
+- ADR-TDR-010 CLOSED: marketplace/ERP integration contract-only and disabled by default
+- ADR-TDR-011 PENDING PM: performance and file limits (pending load evidence from TDR-P4-003)
+- ADR-TDR-012 PENDING PM+Owner: deployment and recovery objectives (pending G2 PASS + operations policy)
+- TDR-P0-004 task and wdr-tdr-p0-004 registered in registry
+- Post-task: 24 tasks (21 PASS, 1 PARTIAL, 2 BLOCKED), 28 WDR files, 28 registry entries
+- No product, backend, database, Auth/RBAC, ingestion, or frontend implementation performed
+- No commit created by this task
+
+## GOV-RECON-005 Closeout (2026-09-17) — preserved
+
+- git.lastCommit corrected: `4a783c528e652ec837c754b3fd71966906870b97` → `29deff2bb742bd3e101b18b307a85d6d72c96a0d`
+- TDR-GOV-RECON-005 task and wdr-tdr-gov-recon-005 registered in registry
+- Final verified state: 23 tasks (20 PASS, 1 PARTIAL, 2 BLOCKED), 27 WDR files, 27 registry entries
+- No product, backend, database, Auth/RBAC, ingestion, or frontend implementation performed
+- No commit created by this task
+
+## TDR-P0-003 Closeout (2026-09-17) — preserved
 
 - ADR-TDR-001 CLOSED: MVP user = authorized operations reviewer (tdr.view + tdr.quarantine.review); primary journey: inspect source → review batch → work quarantine queue → confirm lineage
 - ADR-TDR-002 CLOSED: UTF-8 CSV SUPPLIER_TRADE_LINES_V1 v1.0, 13 fixed headers; all examples synthetic
