@@ -2,13 +2,17 @@
 
 ## Current Status
 
-**TOPLINE-P8-002 execution: PASS** (schema/migration-only, additive; PM audit corrections applied)
-**TOPLINE-P8-002 PM audit: PLANNED** (awaiting independent PM/owner audit)
+**TOPLINE-P8-002 execution: PASS** (CLOSED)
+**TOPLINE-P8-002 PM audit: PASS** (re-confirmed unconditional)
+**TOPLINE-P8-002 migration gate: PASS** (applied to authorized local PostgreSQL `toplineshop`)
+**Phase 8 databaseGate: PASS** (transitioned from PLANNED via TOPLINE-P8-003-AUTH-BEHAVIOR-OWNER-DECISION)
+**P8-003 implementation: NOT AUTHORIZED** (separate explicit implementation authorization required)
 
 **Implementation Commit A**: `a1ce796df4a226bb16fb556fc8ac18fad730e07c` — TOPLINE-P8-002: add auth persistence foundation
-**Evidence-fill Commit B**: hash reported in the final handoff; this report intentionally does not store Commit B's own hash inside itself.
+**Evidence-fill Commit B**: hash reported in the final handoff of the prior turn.
+**Smoke correction commit**: hash reported in the final handoff of this turn.
 
-Both commits were pushed to `origin/feature/p8-002-auth-persistence`. No `git merge` was performed and no PR was opened.
+All commits were pushed to `origin/feature/p8-002-auth-persistence`. No `git merge` was performed and no PR was opened.
 
 P8-002 implements the additive schema/migration foundation for authentication persistence: nullable `User.passwordHash`, nullable `AuditLog.ipAddress` and `AuditLog.userAgent`, a new `Session` model (HMAC-SHA256 digest of the refresh-token **secret** only, never a raw token, never a raw secret), and one forward-only additive Prisma migration. Schema/migration artifact only — no auth behavior, no JWT, no guards, no RBAC, no frontend, no packages, no live database connection, no migration application to any database. Implementation Commit A `a1ce796df4a226bb16fb556fc8ac18fad730e07c` and evidence-fill Commit B (hash in final handoff) were created and pushed to `origin/feature/p8-002-auth-persistence`; no merge and no PR.
 
@@ -85,19 +89,19 @@ P8-002 implements none of the verification, rotation, or reuse-detection logic. 
 
 Per PM scope, no live database was reachable, no migration was applied, and database writes were not authorized. The canonical Node evidence scripts under `backend/scripts/` were therefore **NOT RUN** in P8-002:
 
-| Script | Status |
-|---|---|
-| `backend/scripts/smoke-health.js` | NOT RUN |
-| `backend/scripts/test-tenant-create.js` | NOT RUN |
-| `backend/scripts/test-vendor-create.js` | NOT RUN |
-| `backend/scripts/test-category-create.js` | NOT RUN |
-| `backend/scripts/test-product-create.js` | NOT RUN |
+| Script | P8-002 task status | Migration-gate run |
+|---|---|---|
+| `backend/scripts/smoke-health.js` | NOT RUN in P8-002 (no DB available) | **PASS 11/11** during migration-gate |
+| `backend/scripts/test-tenant-create.js` | NOT RUN in P8-002 (no DB available) | **PASS 30/30** during migration-gate |
+| `backend/scripts/test-vendor-create.js` | NOT RUN in P8-002 (no DB available) | **PASS 33/33** during migration-gate |
+| `backend/scripts/test-category-create.js` | NOT RUN in P8-002 (no DB available) | **PASS 57/57** during migration-gate |
+| `backend/scripts/test-product-create.js` | NOT RUN in P8-002 (no DB available) | **PASS 82/82** during migration-gate |
 
 The scripts themselves were **not modified, deleted, or cleaned** — they remain in `backend/scripts/`. Running them is part of the separate owner-approved migration-application gate before P8-003 (see below).
 
 ## Migration Application and Database Verification — Separate Gate
 
-P8-002 ends with the migration artifact committed in Commit A and pushed to `origin/feature/p8-002-auth-persistence` — but **not applied to any database**. Applying the migration, running `node backend/scripts/smoke-health.js`, or running any of the four `node backend/scripts/test-*-create.js` evidence scripts is **NOT** part of P8-002. These require an owner-approved task, a reachable database, the migration to be applied, and database-write authorization — none of which apply to P8-002.
+P8-002 ended with the migration artifact committed in Commit A and pushed to `origin/feature/p8-002-auth-persistence`. The owner-approved migration-application gate subsequently applied the migration to the authorized local PostgreSQL `toplineshop` database. Smoke and all four evidence scripts PASSED in the migration-gate run (see table above). No destructive operation was performed. Pre/post row counts for `users`, `audit_logs`, and `sessions` were all `0 → 0` (additive-only migration, no data write).
 
 ## Files Updated by P8-002 (with audit corrections)
 
@@ -118,13 +122,23 @@ P8-002 ends with the migration artifact committed in Commit A and pushed to `ori
 
 ## Phase 8 State
 
-- Phase 8 remains **BLOCKED** pending P8-002 PM audit and the separate owner-approved migration-application gate.
-- `currentTask` remains `null` (P8-002 execution is complete; the audit is the gate).
-- TOPLINE-P8-003 (auth behavior), P8-004 (RBAC), and P8-005 (audit/freeze only) remain unauthorized and unregistered as tasks.
+- Phase 8 status: **BLOCKED** for P8-003 implementation. (P8-002 schema/migration work is complete; the BLOCKED status now reflects the P8-003 implementation gate, which is owner-gated.)
+- `phase-8.databaseGate`: **PASS** (transitioned from PLANNED via TOPLINE-P8-003-AUTH-BEHAVIOR-OWNER-DECISION).
+- `phase-8.currentTask`: `null` (no in-flight P8 implementation task).
+- `phase-8.nextPlannedTask`: `TOPLINE-P8-003-AUTH-BEHAVIOR-OWNER-DECISION`.
+- `phase-8.lastCompletedTask`: `TOPLINE-P8-002`.
+- TOPLINE-P8-003 (auth behavior), P8-004 (RBAC), and P8-005 (audit/freeze only) remain **unauthorized** and unregistered as tasks. P8-003 implementation requires a separate explicit implementation authorization.
 
 ## Next Required Action
 
-Independent PM/owner audit of TOPLINE-P8-002 (including the audit corrections in this turn), and a separate owner-approved gate to apply the migration, run the smoke test, and run the four `test-*-create.js` evidence scripts against an authorized database before any P8-003 preparation.
+Independent PM/owner review of the migration-gate evidence has now recorded a verdict: **PASS — migration gate accepted**.
+
+The next governed step is `TOPLINE-P8-003-AUTH-BEHAVIOR-IMPLEMENTATION`, which:
+- begins with a fresh `#123` cycle and explicit implementation authorization;
+- implements only the recorded P8-003 governance scope (login/session, password hashing/verification, access-token issuance, refresh-token rotation, session revocation/reuse detection, AuthGuard / request identity propagation);
+- does NOT implement deferred or out-of-scope items (RBAC, OAuth, password reset, email verification, LoginAttempt unless separately approved, payments, Trade Refinery, `shop.com`, unrelated frontend).
+
+Until that task is authorized, P8-003 implementation must NOT start.
 
 ## Last Updated
 

@@ -145,9 +145,9 @@ export const projectRegistry: ProjectRegistry = {
   currentPhase: "Phase 8",
   currentTask: null,
   lastCompletedTask: "TOPLINE-P8-002",
-  nextPlannedTask: "TOPLINE-P8-002-PM-AUDIT",
+  nextPlannedTask: "TOPLINE-P8-003-AUTH-BEHAVIOR-OWNER-DECISION",
   overallCompletion: 83,
-  lastUpdated: "2026-09-16",
+  lastUpdated: "2026-09-17",
   phases: [
     {
       id: "phase-0",
@@ -313,7 +313,7 @@ export const projectRegistry: ProjectRegistry = {
       dependencies: ["phase-7"],
       frontendGate: "PLANNED",
       backendGate: "PLANNED",
-      databaseGate: "PLANNED",
+      databaseGate: "PASS",
       testingGate: "NOT_STARTED",
       ownerApproval: "PLANNED",
       currentTask: null,

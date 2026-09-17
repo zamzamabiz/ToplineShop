@@ -4,12 +4,13 @@
 
 **TOPLINE-P8-002** — Auth Persistence Data Model Foundation
 
-- Execution: **PASS** (schema/migration-only, additive; PM audit corrections applied)
-- PM audit: **PLANNED** (awaiting independent PM/owner audit)
-- Migration applied to a live database: **NO**
+- Execution: **PASS — CLOSED**
+- PM audit: **PASS — re-confirmed unconditional**
+- Migration gate: **PASS — migration applied to authorized local PostgreSQL `toplineshop`; schema up to date**
 - Implementation Commit A: `a1ce796df4a226bb16fb556fc8ac18fad730e07c` — TOPLINE-P8-002: add auth persistence foundation
-- Evidence-fill Commit B: hash reported in the final handoff; this summary intentionally does not store Commit B's own hash inside itself.
-- Both commits pushed to `origin/feature/p8-002-auth-persistence`. No `git merge`, no PR.
+- Evidence-fill Commit B: hash reported in the final handoff of the prior turn.
+- Smoke correction commit: hash reported in the final handoff of this turn.
+- All commits pushed to `origin/feature/p8-002-auth-persistence`. No `git merge`, no PR.
 - WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-002_WDR_2026-09-16.md`
 
 ## P8-002 Result
@@ -50,29 +51,29 @@ P8-002 implements none of this — verification, rotation, reuse-detection, HMAC
 
 ## Smoke and Database Evidence Scripts — Not Run
 
-Per PM scope, no live database was reachable, no migration was applied, and database writes were not authorized. The five canonical Node evidence scripts were therefore **NOT RUN** in P8-002:
+Per PM scope, no live database was reachable during P8-002; the five canonical Node evidence scripts were therefore **NOT RUN in P8-002**:
 
-- `backend/scripts/smoke-health.js` — NOT RUN
-- `backend/scripts/test-tenant-create.js` — NOT RUN
-- `backend/scripts/test-vendor-create.js` — NOT RUN
-- `backend/scripts/test-category-create.js` — NOT RUN
-- `backend/scripts/test-product-create.js` — NOT RUN
+- `backend/scripts/smoke-health.js` — NOT RUN in P8-002; **PASS 11/11** during migration-gate run
+- `backend/scripts/test-tenant-create.js` — NOT RUN in P8-002; **PASS 30/30** during migration-gate run
+- `backend/scripts/test-vendor-create.js` — NOT RUN in P8-002; **PASS 33/33** during migration-gate run
+- `backend/scripts/test-category-create.js` — NOT RUN in P8-002; **PASS 57/57** during migration-gate run
+- `backend/scripts/test-product-create.js` — NOT RUN in P8-002; **PASS 82/82** during migration-gate run
 
 The scripts themselves were not modified, deleted, or cleaned. They remain in `backend/scripts/`.
 
-## Phase 8 Rollup (after audit corrections)
+## Phase 8 Rollup (after migration gate + governance transition)
 
 | Field | Value |
 |---|---|
-| `phase-8.status` | BLOCKED |
+| `phase-8.status` | BLOCKED (P8-003 implementation gate) |
 | `phase-8.progress` | 40 |
 | `phase-8.megaPromptsCompleted` | 2 |
 | `phase-8.taskCount` | 26 |
 | `phase-8.completedTaskCount` | 26 |
 | `phase-8.currentTask` | null |
-| `phase-8.databaseGate` | PLANNED |
+| `phase-8.databaseGate` | **PASS** (transitioned from PLANNED) |
 | `lastCompletedTask` | TOPLINE-P8-002 |
-| `nextPlannedTask` | TOPLINE-P8-002-PM-AUDIT |
+| `nextPlannedTask` | **TOPLINE-P8-003-AUTH-BEHAVIOR-OWNER-DECISION** |
 
 ## R22 / R23 / R24 Commit A Ownership (preserved)
 
@@ -97,8 +98,10 @@ The scripts themselves were not modified, deleted, or cleaned. They remain in `b
 - TOPLINE-P8-003 (auth behavior), P8-004 (RBAC), and P8-005 (audit/freeze only) remain unauthorized.
 - No frontend, package, secret, environment, TLS, Trade Refinery, RBAC, or auth-behavior file was changed.
 - No `git merge` was performed and no PR was opened. `git add`, `git commit`, and `git push` were performed for the two-commit delivery (Commit A = implementation; Commit B = evidence-fill, hash reported in the final handoff).
-- The migration artifact is committed in Commit A and pushed to `origin/feature/p8-002-auth-persistence`; no live database has been touched (the migration has not been applied).
+- The migration artifact is committed in Commit A and pushed to `origin/feature/p8-002-auth-persistence`; the migration was applied to the authorized local PostgreSQL `toplineshop` database during the migration-gate run. Prisma reports the schema as up to date.
 
 ## Next WDR / Audit
 
-**Independent PM/owner audit of TOPLINE-P8-002 is required**, including the audit corrections (sessionId hot path, smoke + 4 `test-*-create.js` NOT RUN with reasons, migration-application gate). Before any P8-003 preparation, a separate owner-approved task must apply the migration to an authorized database, run `node backend/scripts/smoke-health.js`, and run the four `node backend/scripts/test-*-create.js` evidence scripts, recording pre/post row counts and assertion totals.
+Independent PM/owner audit of TOPLINE-P8-002 (re-confirmed unconditional PASS) and the migration-application gate (PASS) are both complete. The governance transition (`phase-8.databaseGate` → `PASS`) is recorded in the registry as part of `TOPLINE-P8-003-AUTH-BEHAVIOR-OWNER-DECISION`.
+
+The next governed step is `TOPLINE-P8-003-AUTH-BEHAVIOR-IMPLEMENTATION`, which begins with a fresh `#123` cycle and explicit implementation authorization, implements only the recorded P8-003 governance scope, and does NOT start until authorized.

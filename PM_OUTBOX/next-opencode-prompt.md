@@ -2,13 +2,36 @@
 
 ## PM/CTO Decision Needed
 
-**Audit TOPLINE-P8-002 (audit-corrected, delivered)**
+**Owner decision on `TOPLINE-P8-003-AUTH-BEHAVIOR-OWNER-DECISION` and governance transition recorded.**
 
-P8-002 execution is complete (with audit corrections applied) and awaits **independent PM/owner audit**. P8-002 is the additive schema/migration foundation for authentication persistence — nullable `User.passwordHash`, nullable `AuditLog.ipAddress` / `AuditLog.userAgent`, and a new `Session` model with HMAC-SHA256 digest-only refresh-token persistence (digest of the **secret** only; raw token / raw secret never persisted or logged) — delivered as one forward-only additive Prisma migration artifact.
+P8-002 implementation is **CLOSED**, P8-002 PM audit is **PASS**, and P8-002 migration gate is **PASS**. The migration was applied to the authorized local PostgreSQL `toplineshop` database; Prisma reports the schema as up to date. Smoke (11/11) and all four database evidence scripts (30+33+57+82 = 202/202 assertions) PASSED. Pre/post row counts for `users`, `audit_logs`, and `sessions` were all `0 → 0` (additive-only migration, no data write).
 
-The audit corrections explicitly clarify the forward-looking P8-003 refresh-token contract (lookup hot path is by `sessionId`, NOT by digest), record that **smoke and the four `test-*-create.js` database evidence scripts were NOT RUN in P8-002**, and update the Phase 8 rollup counters.
+**Phase 8 `databaseGate` is now `PASS`** (transitioned from PLANNED via this owner-decision task). `phase-8.nextPlannedTask` is `TOPLINE-P8-003-AUTH-BEHAVIOR-OWNER-DECISION`.
 
-**Delivery**: Implementation Commit A `a1ce796df4a226bb16fb556fc8ac18fad730e07c` (7 files staged exactly) and evidence-fill Commit B (hash reported in the final handoff; this PM_OUTBOX intentionally does not store Commit B's own hash inside itself) were pushed to `origin/feature/p8-002-auth-persistence`. No `git merge`, no PR. **No migration has been applied to a live database, and TOPLINE-P8-003 (auth behavior), P8-004 (RBAC), and P8-005 remain unauthorized.**
+**P8-003 implementation is NOT authorized by this task.** A separate explicit implementation authorization is required.
+
+P8-003 governance scope (record only — no design, no implementation):
+
+- Login/session behavior
+- Password hashing and verification
+- Access-token issuance
+- Refresh-token rotation
+- Session revocation and reuse detection
+- Auth guards and request identity propagation
+
+Deferred / out-of-scope (record):
+
+- RBAC (P8-004)
+- OAuth
+- Password reset
+- Email verification
+- LoginAttempt (unless separately approved)
+- Payments
+- Trade Refinery
+- `shop.com`
+- Unrelated frontend work
+
+The implementation task `TOPLINE-P8-003-AUTH-BEHAVIOR-IMPLEMENTATION` requires a fresh `#123` cycle and explicit implementation authorization. It must NOT start until authorized.
 
 ## P8-002 Evidence
 
@@ -47,10 +70,10 @@ The audit corrections explicitly clarify the forward-looking P8-003 refresh-toke
 7. Confirm `LoginAttempt` is **not** present anywhere in the P8-002 schema or migration, and is reported as deferred for PM resolution per the canonical plan.
 8. Confirm `package.json` / `package-lock.json` (root and backend) are unchanged; no package was installed; `.env` and `.env.example` are unchanged.
 9. Confirm `prisma:validate`, `prisma:generate`, backend `build`, backend `test` (12/12), root `build` (25/25 static pages), and `git diff --check` all pass.
-10. Confirm `backend/scripts/smoke-health.js` and the four `backend/scripts/test-*-create.js` evidence scripts are explicitly recorded as **NOT RUN** in this task, with reasons (database unavailable, migration not applied, database writes not authorized).
+10. Confirm `backend/scripts/smoke-health.js` and the four `backend/scripts/test-*-create.js` evidence scripts are explicitly recorded as **NOT RUN in P8-002** (database unavailable, migration not applied, database writes not authorized) AND **PASSED in the migration-gate run** (smoke 11/11, tenant 30/30, vendor 33/33, category 57/57, product 82/82).
 11. Confirm the migration scripts themselves were not modified, deleted, or cleaned; they remain in `backend/scripts/`.
-12. Confirm migration application and database verification (smoke + 4 `test-*-create.js`) are documented as a separate owner-approved gate before P8-003.
-13. Confirm the Phase 8 rollup is updated to `progress: 40`, `megaPromptsCompleted: 2`, `taskCount: 26`, `completedTaskCount: 26`; `status` remains `BLOCKED`, `currentTask` remains `null`, `databaseGate` remains `PLANNED`, `nextPlannedTask` remains `TOPLINE-P8-002-PM-AUDIT`.
+12. Confirm the migration-application gate (smoke + 4 `test-*-create.js`) has been **completed and recorded**. Phase 8 `databaseGate` has transitioned `PLANNED` → `PASS`.
+13. Confirm the Phase 8 rollup: `progress: 40`, `megaPromptsCompleted: 2`, `taskCount: 26`, `completedTaskCount: 26`; `status` remains `BLOCKED` (P8-003 implementation gate), `currentTask` remains `null`, `databaseGate` is now `PASS`, `nextPlannedTask` is now `TOPLINE-P8-003-AUTH-BEHAVIOR-OWNER-DECISION`.
 14. Confirm `git add`, `git commit`, and `git push` were performed for P8-002 in the two-commit delivery pattern. Implementation Commit A: `a1ce796df4a226bb16fb556fc8ac18fad730e07c` (`TOPLINE-P8-002: add auth persistence foundation`, 7 files staged exactly). Evidence-fill Commit B: reported in the final handoff (intentionally not stored inside this PM_OUTBOX). Both commits were pushed to `origin/feature/p8-002-auth-persistence`. No `git merge` was performed and no PR was opened.
 15. Confirm pre-existing untracked files were preserved (18 pre-existing untracked items preserved; two new untracked items added during the P8-002 two-commit delivery are scratch files `PM_OUTBOX/.p8-002-commit-a-msg.txt` and `PM_OUTBOX/.p8-002-commit-b-msg.txt`. **The P8-002 WDR and migration directory are NOT untracked — they are tracked in Commit A and pushed.**)
 16. Confirm the R22 / R23 / R24 task `commitHash` fields and `wdr-087/088/089.commitHash` fields remain unchanged (R22 `a13cb04b13a1c81877aa15e5d070fc2b39e9d82d`, R23 `bdacbcb16951951982edf8ef0afd3615a59d619b`, R24 `f1e0fb3578dd33f0aab01da7a2b838d4a8d3c7d8`). The registry `git.lastCommit` was deliberately updated by P8-002 Commit B to `a1ce796df4a226bb16fb556fc8ac18fad730e07c` (P8-002 Commit A), replacing the prior R22 evidence-fill Commit B hash `bd398f270a781be54e40e51e2832ea46c874a84f`. This is a documented and authorized change distinct from the per-task ownership preservation above.
@@ -59,6 +82,6 @@ The audit corrections explicitly clarify the forward-looking P8-003 refresh-toke
 
 ## Stop Before P8-003
 
-**Do not prepare, paste, or execute any TOPLINE-P8-003 implementation prompt until the P8-002 PM audit is complete, the owner has granted explicit approval, AND the migration-application gate (apply migration to an authorized database + run `node backend/scripts/smoke-health.js` + run the four `node backend/scripts/test-*-create.js` evidence scripts) has been completed and recorded.** P8-003 (auth behavior, `AuthGuard`, login/logout/refresh, audit redaction/events, write-endpoint protection) and P8-004 (RBAC persistence and enforcement) both remain unauthorized. P8-002 does not authorize either of them.
+**Do not prepare, paste, or execute any TOPLINE-P8-003 implementation prompt until the owner has granted explicit implementation authorization.** P8-003 (auth behavior, `AuthGuard`, login/logout/refresh, audit redaction/events, write-endpoint protection) and P8-004 (RBAC persistence and enforcement) both remain unauthorized. P8-002 and the migration-application gate do NOT authorize either of them.
 
-The P8-002 migration artifact must not be applied to any database (local or otherwise) without an explicit owner-approved task. The migration is forward-only additive and a local-only rollback script is documented in the WDR, but rollback is also gated by owner approval.
+The P8-002 migration has now been applied to the authorized local PostgreSQL `toplineshop` database. A local-only rollback script is documented in the WDR, but any rollback is also gated by owner approval.

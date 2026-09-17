@@ -55,8 +55,9 @@ async function main() {
     !JSON.stringify(b).includes('password')
   );
   await checkEndpoint('/tenants/non-existent-id', 404, (b) =>
-    b.statusCode === 404 &&
-    b.message === 'Tenant not found' &&
+    b.ok === false &&
+    b.error.code === 'NOT_FOUND' &&
+    b.error.message === 'Tenant not found' &&
     !JSON.stringify(b).includes('DATABASE_URL') &&
     !JSON.stringify(b).includes('password')
   );
@@ -69,8 +70,9 @@ async function main() {
     !JSON.stringify(b).includes('password')
   );
   await checkEndpoint('/vendors/non-existent-id', 404, (b) =>
-    b.statusCode === 404 &&
-    b.message === 'Vendor not found' &&
+    b.ok === false &&
+    b.error.code === 'NOT_FOUND' &&
+    b.error.message === 'Vendor not found' &&
     !JSON.stringify(b).includes('DATABASE_URL') &&
     !JSON.stringify(b).includes('password')
   );
@@ -83,8 +85,9 @@ async function main() {
     !JSON.stringify(b).includes('password')
   );
   await checkEndpoint('/categories/non-existent-id', 404, (b) =>
-    b.statusCode === 404 &&
-    b.message === 'Category not found' &&
+    b.ok === false &&
+    b.error.code === 'NOT_FOUND' &&
+    b.error.message === 'Category not found' &&
     !JSON.stringify(b).includes('DATABASE_URL') &&
     !JSON.stringify(b).includes('password')
   );
@@ -97,8 +100,9 @@ async function main() {
     !JSON.stringify(b).includes('password')
   );
   await checkEndpoint('/products/non-existent-id', 404, (b) =>
-    b.statusCode === 404 &&
-    b.message === 'Product not found' &&
+    b.ok === false &&
+    b.error.code === 'NOT_FOUND' &&
+    b.error.message === 'Product not found' &&
     !JSON.stringify(b).includes('DATABASE_URL') &&
     !JSON.stringify(b).includes('password')
   );
