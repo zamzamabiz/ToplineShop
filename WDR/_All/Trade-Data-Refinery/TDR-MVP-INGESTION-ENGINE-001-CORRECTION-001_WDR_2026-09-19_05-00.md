@@ -17,7 +17,9 @@ TDR-MVP-INGESTION-ENGINE-001-CORRECTION-001 — Mega 3 Ingestion Safety / Stream
 | | Hash |
 |---|---|
 | Baseline HEAD (Mega 3) | `caa90fcc2f4853e30cf8a05790e2e7ffc151c32f` |
-| Correction HEAD (after commit) | `17a6a3d` |
+| Correction commit | `17a6a3d7f883d15a770270fb618e682d8f82abdf` |
+| Gov commit (WDR hash fill) | `3229072d2056e7789349dc3f107abe4cde39035b` |
+| HEAD at CHECKPOINT-001 start | `3229072d2056e7789349dc3f107abe4cde39035b` |
 
 ---
 
@@ -146,6 +148,8 @@ Tests: 5 tests in `file content-signature validation` section — all PASS.
 
 ## Files Changed
 
+> The CORRECTION-001 WDR itself was committed inside the correction commit (`17a6a3d`) as an `A` (added) file. Commit `3229072` subsequently filled in the hash references.
+
 | File | Change |
 |---|---|
 | `backend/src/trade-data-refinery/ingestion/parsers/xlsx.parser.ts` | Correction A: for-await-of streaming; readXlsxHeaders; streamXlsxRows(path, headers) |
@@ -228,7 +232,7 @@ Created 200-row XLSX, streamed via `for await...of` with `XlsxWorkbookIterable` 
 
 | Field | Value |
 |---|---|
-| Hash | `17a6a3d` |
+| Hash | `17a6a3d7f883d15a770270fb618e682d8f82abdf` |
 | Subject | `fix(tdr): harden Mega 3 streaming and storage safety` |
 | Branch | `codex/trade-data-refinery` |
 | Files staged | 8 exact files (7 modified + 1 deleted) |
