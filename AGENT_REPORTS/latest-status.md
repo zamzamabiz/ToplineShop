@@ -2,10 +2,11 @@
 
 ## Current Program
 
-**Trade Data Refinery (TDR) — TDR-P2-004 PASS (2026-09-19) — Audit Contract and Sensitive-Data Policy Verified for TDR**
+**Trade Data Refinery (TDR) — TDR-P2-005 PASS (2026-09-19) — G2 Platform Readiness DECLARED PASS**
 
 ## TDR Current Status
 
+**TDR-P2-005: PASS — G2 PLATFORM READINESS DECLARED PASS. All four gates confirmed: TDR-P2-001 scope/registry, TDR-P2-002 RBAC guard, TDR-P2-003 module-registry, TDR-P2-004 audit/PII policy. No BLOCKER_FOR_G2. 109/109 tests PASS. G1 PASS. G2 PASS. TDR-P3 planning authorized after governed commit. (2026-09-19)**
 **TDR-P2-004: PASS — AuditLog model confirmed sufficient for sanitized TDR events; 16-event TDR taxonomy defined; PII sanitization policy defined (no raw file/row/NTN/CNIC/tax data); safe metadata contract defined; sanitizeMetadata() active; 11-item testability contract defined; 6 gaps all FUTURE_TASK_REQUIRED; no BLOCKER_FOR_G2; 109/109 tests PASS; G1 PASS, G2 BLOCKED (2026-09-19)**
 **TDR-P2-003: PASS — platform architecture verified sufficient for TDR module enablement; module registration point defined; disabled-tenant isolation contract defined (403); route/API exclusion contract defined; no BLOCKER_FOR_G2; 109/109 tests PASS; G1 PASS, G2 BLOCKED (2026-09-19)**
 **TDR-P2-002: PASS — RBAC guard contract verified for TDR; 10 Role constants, 5 Permission constants, 3 decorators, JwtAuthGuard+RolesGuard APP_GUARD chain verified; TDR role matrix produced; 109/109 tests PASS; G1 PASS, G2 BLOCKED (2026-09-18)**
