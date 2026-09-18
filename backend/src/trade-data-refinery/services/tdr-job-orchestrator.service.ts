@@ -112,4 +112,51 @@ export class TdrJobOrchestratorService {
     }
     return result.count;
   }
+
+  /** Completes a job and transitions batch to the given status (e.g. QUALITY_PENDING). */
+  async completeJobWithStatus(jobId: string, batchStatus: string): Promise<void> {
+    const job = await this.prisma.tdrProcessingJob.update({
+      where: { id: jobId },
+      data: { status: 'COMPLETED', completedAt: new Date() },
+      select: { batchId: true },
+    });
+    await this.prisma.tdrBatch.update({
+      where: { id: job.batchId },
+      data: { status: batchStatus as never, completedAt: new Date() },
+    });
+  }
+
+  /**
+   * Resets a job to PENDING for retry (attemptCount < maxAttempts).
+   * Preserves lastCheckpointRow so the handler can skip already-committed rows.
+   */
+  async retryJob(
+    jobId: string,
+    workerInstanceId: string,
+    errorMessage: string,
+    errorCode?: string,
+  ): Promise<void> {
+    await this.prisma.tdrProcessingJob.updateMany({
+      where: { id: jobId, workerInstanceId, status: 'LEASED' },
+      data: {
+        status: 'PENDING',
+        leasedAt: null,
+        leaseExpiresAt: null,
+        workerInstanceId: null,
+        lastHeartbeatAt: null,
+        errorMessage,
+        ...(errorCode ? { errorCode } : {}),
+      },
+    });
+    this.logger.warn(`Job ${jobId} reset to PENDING for retry. Last error: ${errorMessage}`);
+  }
+
+  /** Returns true if the job is still leased by this worker instance. */
+  async isLeaseOwned(jobId: string, workerInstanceId: string): Promise<boolean> {
+    const job = await this.prisma.tdrProcessingJob.findFirst({
+      where: { id: jobId, workerInstanceId, status: 'LEASED' },
+      select: { id: true },
+    });
+    return job !== null;
+  }
 }

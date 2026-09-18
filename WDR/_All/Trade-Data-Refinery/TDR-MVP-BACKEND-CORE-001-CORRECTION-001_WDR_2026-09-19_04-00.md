@@ -201,7 +201,7 @@ npx tsc --noEmit → exit code 0 (0 errors)
 
 | Field | Value |
 |---|---|
-| Hash | (to be filled after commit) |
+| Hash | `39e02911afb596a0592b4eb2fec847c2012831c1` |
 | Subject | `fix(tdr): align Mega 2 replay and cancel authorization contract` |
 | Files staged | 5: 4 runtime corrections + this WDR |
 | Push performed | NO |

@@ -1,0 +1,5 @@
+-- AlterEnum
+ALTER TYPE "BatchStatus" ADD VALUE 'QUALITY_PENDING';
+
+-- AlterEnum
+ALTER TYPE "RowDisposition" ADD VALUE 'PENDING_QUALITY';

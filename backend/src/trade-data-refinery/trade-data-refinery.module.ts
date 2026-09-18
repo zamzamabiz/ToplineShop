@@ -5,15 +5,24 @@ import { TenantModuleService } from './services/tenant-module.service';
 import { TdrJobOrchestratorService } from './services/tdr-job-orchestrator.service';
 import { TdrProcessorService } from './services/tdr-processor.service';
 import { TenantModuleGuard } from './guards/tenant-module.guard';
+import { StorageService } from './ingestion/storage/storage.service';
+import { MappingResolverService } from './ingestion/mapping/mapping-resolver.service';
+import { UploadService } from './ingestion/upload/upload.service';
+import { UploadController } from './ingestion/upload/upload.controller';
+import { TdrIngestionHandlerService } from './ingestion/handler/tdr-ingestion-handler.service';
 
 @Module({
-  controllers: [TdrController],
+  controllers: [TdrController, UploadController],
   providers: [
     TdrService,
     TenantModuleService,
     TdrJobOrchestratorService,
     TdrProcessorService,
     TenantModuleGuard,
+    StorageService,
+    MappingResolverService,
+    UploadService,
+    TdrIngestionHandlerService,
   ],
   exports: [TdrJobOrchestratorService, TdrProcessorService],
 })

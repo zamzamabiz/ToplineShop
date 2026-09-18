@@ -253,6 +253,7 @@ enum BatchStatus {
   CANCELLED
   EXPORTING
   EXPORTED
+  QUALITY_PENDING
 }
 
 enum JobStatus {
@@ -267,6 +268,7 @@ enum RowDisposition {
   ACCEPTED
   QUARANTINED
   REJECTED
+  PENDING_QUALITY
 }
 
 enum IssueSeverity {
