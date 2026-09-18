@@ -9,6 +9,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
 import { AuditModule } from './audit/audit.module';
 import { AuthModule } from './auth/auth.module';
+import { TradeDataRefineryModule } from './trade-data-refinery/trade-data-refinery.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AuthModule } from './auth/auth.module';
     ProductsModule,
     AuditModule,
     AuthModule,
+    TradeDataRefineryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

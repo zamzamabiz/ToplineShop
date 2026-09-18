@@ -147,7 +147,7 @@ All verified from committed files in `ace7f35662cf2f8e3b2cf589be36a336527e260e`:
 |---|---|
 | Files staged | 2: corrected Mega 1 WDR + this checkpoint WDR |
 | Subject | `chore(gov): TDR-MVP-DATA-FOUNDATION-001-CHECKPOINT-001 Mega 1 WDR correction` |
-| Final HEAD | (recorded below after commit) |
+| Final HEAD | `40549d28a3a5ecb72ce0f5d1640b6261789ac899` |
 | Push | NOT PERFORMED |
 
 ## Runtime Safety
