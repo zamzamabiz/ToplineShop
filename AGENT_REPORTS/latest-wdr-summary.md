@@ -2,6 +2,18 @@
 
 ## Current WDR
 
+**TDR-P2-004** — Verify Audit Contract and Sensitive-Data Policy for TDR
+
+- Execution: `PASS`
+- #FDD applied: `YES`
+- Tests: `109/109 PASS`
+- G1 frontend freeze: `PASS`
+- G2 platform readiness: `BLOCKED` (TDR-P2-005 remaining)
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P2-004_WDR_2026-09-19_20-39.md`
+- Conclusion: **AuditLog model (action VarChar(100), entityType VarChar(50), entityId, tenantId, actorUserId, metadata JSON, ipAddress, userAgent, createdAt) confirmed sufficient for sanitized TDR events. AuditModule @Global + AuditService.recordEvent() + sanitizeMetadata() confirmed active in auth flows. 16-event TDR taxonomy defined. PII policy defined: no raw file contents, no raw row payloads, no NTN/CNIC/tax IDs/addresses/emails/bank data. Safe metadata contract defined. 11-item testability contract. 6 gaps all FUTURE_TASK_REQUIRED. No BLOCKER_FOR_G2. 109/109 tests PASS. No runtime code changed. G2 BLOCKED — TDR-P2-005 remaining.**
+
+## Prior WDR
+
 **TDR-P2-003** — Verify TDR Module-Registry Enablement
 
 - Execution: `PASS`
@@ -12,7 +24,7 @@
 - WDR: `WDR/_All/Trade-Data-Refinery/TDR-P2-003_WDR_2026-09-19_00-45.md`
 - Conclusion: **Platform architecture verified sufficient for TDR module enablement. Module registration point: app.module.ts imports array. Per-tenant enablement field absent — FUTURE_TASK_REQUIRED (TDR-P3-001 migration). Disabled-tenant policy: 403. Route/API exclusion contract defined. No BLOCKER_FOR_G2. 109/109 tests PASS. No runtime code changed. G2 BLOCKED — TDR-P2-004, TDR-P2-005 remaining.**
 
-## Prior WDR
+## Prior WDR (2)
 
 **TDR-P2-002** — Verify RBAC Permission and Guard Contract for TDR
 

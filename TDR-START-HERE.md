@@ -9,9 +9,9 @@ This is the mandatory restart checkpoint for ChatGPT Luna, Claude Code, and huma
 - Stable branch: `master` — do not modify directly
 - Governance: `#123` — DISCUSS → DECIDE → EXECUTE → VERIFY/AUDIT → CLOSE → NEXT
 - Product status: frontend work is complete; TDR-P1-011 was the historical blocked audit — TDR-P1-012 resolved it; G1 (frontend freeze) is `PASS`
-- Last completed task: `TDR-P2-003 — Verify TDR Module-Registry Enablement`
+- Last completed task: `TDR-P2-004 — Verify Audit Contract and Sensitive-Data Policy for TDR`
 - Current task status: `PASS`
-- Latest authoritative WDR: `WDR/_All/Trade-Data-Refinery/TDR-P2-003_WDR_2026-09-19_00-45.md` — `PASS`
+- Latest authoritative WDR: `WDR/_All/Trade-Data-Refinery/TDR-P2-004_WDR_2026-09-19_20-39.md` — `PASS`
 - Governed P8-003 commit: `dd540a873766fc2d472e27a72ada404438ed0dc5` — `feat(p8-003): auth session lifecycle and write endpoint protection` — not pushed
 - Universal AI Agent Execution Policy: `docs/UNIVERSAL-AI-AGENT-EXECUTION-POLICY.md` — ACTIVE (2026-09-18)
 - G1 frontend freeze: `PASS`
@@ -23,8 +23,9 @@ This is the mandatory restart checkpoint for ChatGPT Luna, Claude Code, and huma
 - **TDR-P2-001: PASS** (2026-09-18) — TDR Phase 2 scope registered under #FDD. TDR-P2-002 through TDR-P2-005 registered as platform readiness verification tasks per roadmap stricter sequence. G2 remains BLOCKED until all five pass.
 - **TDR-P2-002: PASS** (2026-09-18) — RBAC guard contract verified for TDR. All 10 Role constants, all 5 Permission constants, all 3 decorators (@Roles/@Permissions/@RequiresTenantContext), JwtAuthGuard + RolesGuard APP_GUARD chain verified. TDR role/operation matrix produced (8 operations × 10 roles). PermissionsGuard unregistered — FUTURE_TASK_REQUIRED (not G2 blocker). 109/109 tests PASS. No runtime code changed. G2 remains BLOCKED.
 - **TDR-P2-003: PASS** (2026-09-19) — Module-registry enablement contract verified for TDR. Platform architecture sufficient. Module registration point: app.module.ts imports array. No per-tenant enablement field in Tenant schema — FUTURE_TASK_REQUIRED (TDR-P3-001 migration). Disabled-tenant isolation contract defined (403 policy). Route/API exclusion contract defined. Testability contract defined. No BLOCKER_FOR_G2 found. 109/109 tests PASS. No runtime code changed. G2 remains BLOCKED.
+- **TDR-P2-004: PASS** (2026-09-19) — Audit contract and sensitive-data policy verified for TDR. AuditLog model (action, entityType, entityId, tenantId, actorUserId, metadata JSON, ipAddress, userAgent, createdAt) confirmed sufficient for sanitized TDR events. AuditModule @Global + AuditService.recordEvent() with sanitizeMetadata() confirmed active. 16-event TDR audit taxonomy defined. PII sanitization policy defined (no raw file/row contents, no NTN/CNIC/tax IDs). Safe metadata contract defined. 11-item testability contract defined. 6-gap analysis: all FUTURE_TASK_REQUIRED — no BLOCKER_FOR_G2. 109/109 tests PASS. No runtime code changed. G2 remains BLOCKED — TDR-P2-005 remaining.
 - P8-004 commit: `df56379e83b0624260af8d07c957db961eaa63e3` — `feat(p8-004): RBAC role-based access control on auth foundation` — not pushed
-- G2 platform readiness: `BLOCKED` — TDR-P2-001 through TDR-P2-005 outstanding
+- G2 platform readiness: `BLOCKED` — TDR-P2-005 remaining
 - P8-003 GOV commit created: `dd540a873766fc2d472e27a72ada404438ed0dc5` (TDR-GOV-COMMIT-P8-003-001 PASS); registry git.lastCommit updated (TDR-GOV-COMMIT-HASH-CHECKPOINT-001 PASS); not pushed
 
 ## Authoritative reading order
