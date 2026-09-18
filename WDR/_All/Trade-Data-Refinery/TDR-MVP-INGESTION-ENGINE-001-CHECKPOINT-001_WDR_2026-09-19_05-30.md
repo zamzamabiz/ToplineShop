@@ -19,7 +19,7 @@ TDR-MVP-INGESTION-ENGINE-001-CHECKPOINT-001 — Mega 3 Final Governance Checkpoi
 | Label | Full Hash |
 |---|---|
 | Starting HEAD (at checkpoint start) | `3229072d2056e7789349dc3f107abe4cde39035b` |
-| Final HEAD (after checkpoint gov commit) | `TBD — filled after conditional commit` |
+| Final HEAD (after checkpoint gov commit) | `45b251dbb87c28b64528acfc283d5175b4c67999` |
 
 ---
 
