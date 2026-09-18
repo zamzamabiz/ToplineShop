@@ -2,15 +2,14 @@
 
 ## Current WDR
 
-**TOPLINE-P8-005** — Phase 8 Freeze / Readiness Gate
+**TDR-P2-001** — Trade Data Refinery Registry/Roadmap Registration and Scope Freeze
 
 - Execution: `PASS`
-- Build: `PASS`
-- Tests: `109/109 PASS` (P8-002 + P8-003 + P8-004 regression + RBAC)
+- #FDD applied: `YES`
 - G1 frontend freeze: `PASS`
-- G2 platform readiness: `BLOCKED` (TDR-P2-001–P2-005 outstanding)
-- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-005_WDR_2026-09-18_22-00.md`
-- Conclusion: **Phase 8 is frozen. P8-002/P8-003/P8-004 verified PASS. All safety checks PASS. TDR-P2 preparation authorized after PM approval of TDR-GOV-COMMIT-P8-005-001 and TDR-P2-001.**
+- G2 platform readiness: `BLOCKED` (TDR-P2-002 through TDR-P2-005 remaining)
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P2-001_WDR_2026-09-18_23-00.md`
+- Conclusion: **TDR Phase 2 scope frozen. TDR-P2-002 through TDR-P2-005 registered as RBAC guard, module enablement, audit contract, and platform readiness audit tasks per roadmap stricter sequence. G2 BLOCKED until all pass.**
 
 ## Prior WDR
 

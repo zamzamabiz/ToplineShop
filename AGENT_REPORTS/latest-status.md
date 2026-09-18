@@ -2,10 +2,11 @@
 
 ## Current Program
 
-**Trade Data Refinery (TDR) — TOPLINE-P8-005 PASS (2026-09-18) — Phase 8 Freeze Complete**
+**Trade Data Refinery (TDR) — TDR-P2-001 PASS (2026-09-18) — TDR Phase 2 Scope Registered**
 
 ## TDR Current Status
 
+**TDR-P2-001: PASS — TDR Phase 2 scope registered under #FDD; TDR-P2-002 through TDR-P2-005 registered as platform readiness verification tasks; G1 PASS, G2 BLOCKED (2026-09-18)**
 **TOPLINE-P8-005: PASS — Phase 8 freeze/readiness gate complete; 109/109 tests, build PASS, G1 PASS, G2 BLOCKED (2026-09-18)**
 **TDR-GLOBAL-5-R1-POLICY-RESOLUTION-001: PASS — PM Option C: UNIVERSAL-AI-AGENT-EXECUTION-POLICY.md confirmed as active canonical ERP64/TDR policy; P8-005 unblocked (2026-09-18)**
 **TDR-GLOBAL-5-R1-POLICY-RECON-001: BLOCKED (resolved by Option C) — docs/TOPLINESHOP-AGENT-EXECUTION-POLICY.md and commit f7272f6d not applicable to this branch**
