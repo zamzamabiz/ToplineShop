@@ -17,9 +17,13 @@ TDR-MVP-COMPRESS-PLAN-001 — ERP64 Trade Data Refinery: Repository-Aware Archit
 | | Hash |
 |---|---|
 | Starting HEAD | `aecd2c220d5ca31f511c8a0378d98acf42c8313e` |
-| Final HEAD (after commit) | see Commit section below |
+| Final HEAD (after commit) | `0a57000ba4bbd4878d2977b557d33cd77c8d3a33` |
 
 Starting HEAD subject: `chore(gov): TDR-P2-005 platform readiness audit and G2 gate PASS declaration` ✅
+
+Final HEAD subject: `chore(gov): TDR-MVP-COMPRESS-PLAN-001 Mega 0 architecture freeze and 7-mega execution map`
+
+Git commit timestamp: `2026-09-19 02:37:14 +0500 (PKT)`
 
 ## Prompt Archive
 
@@ -176,9 +180,35 @@ NOT changed:
 
 | Field | Value |
 |---|---|
+| Hash | `0a57000ba4bbd4878d2977b557d33cd77c8d3a33` |
 | Subject | `chore(gov): TDR-MVP-COMPRESS-PLAN-001 Mega 0 architecture freeze and 7-mega execution map` |
+| Timestamp | `2026-09-19 02:37:14 +0500 (PKT)` |
 | Files committed | 3 (planning artifact + WDR + prior WDR) |
+| Exact file list | `docs/TDR-MVP-COMPRESS-PLAN-001.md`, `WDR/_All/Trade-Data-Refinery/TDR-MVP-COMPRESS-PLAN-001_WDR_2026-09-19_02-35.md`, `WDR/_All/Trade-Data-Refinery/TDR-GOV-COMMIT-P2-005-001_WDR_2026-09-20_00-22.md` |
+| Stat | 3 files changed, 1511 insertions(+) |
 | Push performed | NO |
+
+## Chronology Reconciliation Note
+
+**Issue identified:** `TDR-GOV-COMMIT-P2-005-001_WDR_2026-09-20_00-22.md` contains the date `2026-09-20` in its filename, but git evidence shows the actual creation time was `2026-09-19 00:22:13 +0500`.
+
+**Root cause:** The PM's prompt for TDR-GOV-COMMIT-P2-005-001 included the suggested WDR filename as `TDR-GOV-COMMIT-P2-005-001_WDR_2026-09-20_<HH-MM>.md` — the date `2026-09-20` was hardcoded in the PM's suggestion, anticipating the session would run into the next calendar day. The time portion `00-22` was correctly obtained from `Get-Date -Format "HH-mm"` at execution time.
+
+**Evidence:**
+- Git commit `aecd2c2` (TDR-GOV-COMMIT-P2-005-001): timestamp `2026-09-19 00:22:13 +0500` ← actual creation time
+- WDR filename date component: `2026-09-20` ← erroneous (from PM's suggested filename)
+- WDR filename time component: `00-22` ← correct (matches commit timestamp)
+- Mega 0 commit `0a57000`: timestamp `2026-09-19 02:37:14 +0500`
+
+**Correction decision:**
+- The WDR file is already committed under filename `TDR-GOV-COMMIT-P2-005-001_WDR_2026-09-20_00-22.md`
+- The **file content** is accurate — all evidence, hashes, and records within are correct
+- Renaming the committed file would require amending committed history — NOT DONE
+- The filename date error is documented here as a known correction
+- All references to this file in subsequent WDRs should note the filename date discrepancy
+- Actual creation date of TDR-GOV-COMMIT-P2-005-001 evidence: **2026-09-19** (not 2026-09-20)
+
+**All other dates and timestamps are consistent and correct.**
 
 ## Next Safe Task
 
