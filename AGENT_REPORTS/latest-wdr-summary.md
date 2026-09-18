@@ -2,13 +2,21 @@
 
 ## Current WDR
 
-**TDR-P8-004-GOVERNED-CLOSEOUT-RECON-001** — P8-004 Closeout Reconciliation and Pre-Commit Handoff
+**TDR-GLOBAL-5-R1-POLICY-RESOLUTION-001** — Global #5-R1 Policy Reference Resolved (PM Option C)
 
 - Execution: `PASS`
 - G1 frontend freeze: `PASS`
 - G2 platform readiness: `BLOCKED` (TDR-P2-001–P2-005 outstanding)
-- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P8-004-GOVERNED-CLOSEOUT-RECON-001_WDR_2026-09-18_19-30.md`
-- Conclusion: **P8-004 implementation verified PASS. 109/109 tests. Build clean. PermissionsGuard created but not registered as APP_GUARD (documented, not a blocker). 20-file commit list confirmed. Next safe task: TDR-GOV-COMMIT-P8-004-001.**
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-GLOBAL-5-R1-POLICY-RESOLUTION-001_WDR_2026-09-18_21-00.md`
+- Conclusion: **PM Option C recorded. `docs/UNIVERSAL-AI-AGENT-EXECUTION-POLICY.md` is the active canonical ERP64/TDR policy. `docs/TOPLINESHOP-AGENT-EXECUTION-POLICY.md` and commit `f7272f6d` are non-applicable to this branch. P8-005 preparation is unblocked pending PM authorization.**
+
+## Prior WDR
+
+**TDR-GOV-COMMIT-P8-004-001** — Governed Commit of P8-004 RBAC Implementation
+
+- Execution: `PASS`
+- Commit: `df56379e83b0624260af8d07c957db961eaa63e3`
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-GOV-COMMIT-P8-004-001_WDR_2026-09-18_20-00.md`
 
 ## Latest P8-004 WDR
 

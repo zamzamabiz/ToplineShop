@@ -2,10 +2,13 @@
 
 ## Current Program
 
-**Trade Data Refinery (TDR) — TOPLINE-P8-004 RBAC Implementation PASS (2026-09-18)**
+**Trade Data Refinery (TDR) — TDR-GLOBAL-5-R1-POLICY-RESOLUTION-001 PASS (2026-09-18)**
 
 ## TDR Current Status
 
+**TDR-GLOBAL-5-R1-POLICY-RESOLUTION-001: PASS — PM Option C: UNIVERSAL-AI-AGENT-EXECUTION-POLICY.md confirmed as active canonical ERP64/TDR policy; P8-005 unblocked (2026-09-18)**
+**TDR-GLOBAL-5-R1-POLICY-RECON-001: BLOCKED (resolved by Option C) — docs/TOPLINESHOP-AGENT-EXECUTION-POLICY.md and commit f7272f6d not applicable to this branch**
+**TDR-GOV-COMMIT-P8-004-001: PASS — P8-004 GOV commit df56379e83b0624260af8d07c957db961eaa63e3 (2026-09-18)**
 **TDR-P8-004-GOVERNED-CLOSEOUT-RECON-001: PASS — P8-004 closeout reconciliation complete (2026-09-18)**
 **TOPLINE-P8-004: PASS — RBAC RolesGuard, @Roles/@RequiresTenantContext decorators, 109/109 tests (2026-09-18)**
 **ERP64-UNIVERSAL-AI-POLICY-ADOPTION-001: PASS — Universal AI Agent Execution Policy adopted; docs/UNIVERSAL-AI-AGENT-EXECUTION-POLICY.md created**
