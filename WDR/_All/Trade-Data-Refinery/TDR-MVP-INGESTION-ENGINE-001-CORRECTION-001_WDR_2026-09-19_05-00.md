@@ -17,7 +17,7 @@ TDR-MVP-INGESTION-ENGINE-001-CORRECTION-001 — Mega 3 Ingestion Safety / Stream
 | | Hash |
 |---|---|
 | Baseline HEAD (Mega 3) | `caa90fcc2f4853e30cf8a05790e2e7ffc151c32f` |
-| Correction HEAD (after commit) | `TBD — filled after conditional commit` |
+| Correction HEAD (after commit) | `17a6a3d` |
 
 ---
 
@@ -228,7 +228,7 @@ Created 200-row XLSX, streamed via `for await...of` with `XlsxWorkbookIterable` 
 
 | Field | Value |
 |---|---|
-| Hash | `TBD — filled after commit` |
+| Hash | `17a6a3d` |
 | Subject | `fix(tdr): harden Mega 3 streaming and storage safety` |
 | Branch | `codex/trade-data-refinery` |
 | Files staged | 8 exact files (7 modified + 1 deleted) |
