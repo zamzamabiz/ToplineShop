@@ -17,7 +17,7 @@ TDR-MVP-DATA-FOUNDATION-001 — MEGA 1: TDR PostgreSQL/Prisma Data Foundation
 | | Hash |
 |---|---|
 | Starting HEAD | `19658d72268c408b5522b04fcdac92c83d9c2700` |
-| Final HEAD (after commit) | see Commit section |
+| Final HEAD (after commit) | `ace7f35662cf2f8e3b2cf589be36a336527e260e` |
 
 Starting HEAD subject: `chore(gov): TDR-MVP-COMPRESS-PLAN-001-CHECKPOINT-001 Mega 0 WDR correction and chronology reconciliation` ✅
 
@@ -139,10 +139,11 @@ Current: 0 errors. The prior errors were non-blocking and have been resolved in 
 | File | Type | Change |
 |---|---|---|
 | `backend/prisma/schema.prisma` | Modified | +365 lines: 7 enums, 9 models, back-relations on Tenant/User |
-| `backend/prisma/migrations/migration_lock.toml` | Modified | Updated checksum for new migration |
 | `backend/prisma/migrations/20260918215807_tdr_mvp_data_foundation/migration.sql` | New | 387-line migration SQL |
 | `backend/src/testing/tdr-mega1-db-integration.spec.ts` | New | 33 DB integration assertions |
 | `WDR/_All/Trade-Data-Refinery/TDR-MVP-DATA-FOUNDATION-001_WDR_2026-09-19_03-02.md` | New | This WDR |
+
+**NOTE — migration_lock.toml:** This file was listed as "Modified" in the original WDR — that was incorrect. Git evidence confirms `migration_lock.toml` was NOT modified and NOT part of commit `ace7f35662cf2f8e3b2cf589be36a336527e260e`. Its content (`provider = "postgresql"`) has been unchanged since its original commit `53a52dd`. The appearance of `M migration_lock.toml` in git status during session execution was a display artefact; `git diff HEAD -- migration_lock.toml` produces no output. Corrected by TDR-MVP-DATA-FOUNDATION-001-CHECKPOINT-001.
 
 NOT changed (runtime zero — Mega 2 scope):
 - No NestJS modules, services, controllers, or routes created
@@ -167,22 +168,39 @@ NOT changed (runtime zero — Mega 2 scope):
 | Push to remote | NOT PERFORMED |
 | TDR-MVP-BACKEND-CORE-001 started | NO |
 
-## Open PM Decisions (carried forward from Mega 0)
+## Open PM Decisions
 
-| Decision | Status |
-|---|---|
-| PM-001: File size limit (default 50MB) | Open — safe default exists |
-| PM-002: TdrSourceRow storage opt-in policy | Open — default=false is safe |
-| PM-003: Replay policy for operators | Open — infrastructure ready |
-| PM-004: Export format (CSV/XLSX/JSON) | Open — Mega 4 scope |
-| PM-005: Soft-delete for TdrRecord | Open — Mega 6 audit scope |
+### Canonical Mega 0 Decisions (unchanged — carried forward)
+
+| # | Decision | Mega 0 Default | Status |
+|---|---|---|---|
+| PM-001 | Maximum upload file size (bytes) | 500 MB | Open |
+| PM-002 | Retention policy for TdrRecord data | No auto-deletion in MVP | Open |
+| PM-003 | TdrSourceRow storage: opt-in (default OFF) or always-on? | Opt-in (default OFF) | Open — schema default=false implements safe default |
+| PM-004 | Quarantine corrections: stored as-entered (PII risk) or hash-referenced (audit-only)? | Hash-referenced (RECOMMENDED) | Open — `correctionPayload Json?` permits either approach; policy not yet enforced by schema |
+| PM-005 | Mega 5 frontend auth: in-memory JWT or localStorage? | In-memory (RECOMMENDED) | Open — Mega 5 scope |
+
+**NOTE — PM-001 correction:** Original Mega 1 WDR incorrectly recorded default as "50MB". Canonical Mega 0 default is **500MB**. Corrected here.
+
+### Additional Decisions Surfaced During Mega 1 Design
+
+These are ADDITIONAL decisions not present in the Mega 0 list. They do not replace PM-001 through PM-005.
+
+| # | Decision | Safe default | Status |
+|---|---|---|---|
+| PM-006 | Replay policy: who can initiate explicit same-version replay? | Operators only (IMPORT_MANAGER or higher) | Open — Mega 2 guard scope |
+| PM-007 | Export output format (CSV / XLSX / JSON) | CSV for MVP | Open — Mega 4 scope |
+| PM-008 | Soft-delete for TdrRecord (vs. hard-delete or archive) | No delete (retain all) | Open — Mega 6 audit scope |
 
 ## Commit
 
 | Field | Value |
 |---|---|
-| Hash | (recorded below after commit) |
+| Hash | `ace7f35662cf2f8e3b2cf589be36a336527e260e` |
 | Subject | `feat(tdr): TDR-MVP-DATA-FOUNDATION-001 Mega 1 Prisma schema, migration, 33 DB tests` |
+| Timestamp | `2026-09-19 03:04:48 +0500` (git) — WDR filename `03-02` is pre-commit creation time, not commit time |
+| Files committed | 4 (schema, migration SQL, DB test, WDR) |
+| Stat | 4 files changed, 1655 insertions(+) |
 | Push performed | NO |
 
 ---
