@@ -9,15 +9,16 @@ This is the mandatory restart checkpoint for ChatGPT Luna, Claude Code, and huma
 - Stable branch: `master` — do not modify directly
 - Governance: `#123` — DISCUSS → DECIDE → EXECUTE → VERIFY/AUDIT → CLOSE → NEXT
 - Product status: frontend work is complete; TDR-P1-011 was the historical blocked audit — TDR-P1-012 resolved it; G1 (frontend freeze) is `PASS`
-- Last completed task: `ERP64-UNIVERSAL-AI-POLICY-ADOPTION-001 — Universal AI Agent Execution Policy adopted for ERP64/TDR and all future modules`
+- Last completed task: `TOPLINE-P8-004 — RBAC Role-Based Access Control on Auth Foundation`
 - Current task status: `PASS`
-- Latest authoritative WDR: `WDR/_All/Trade-Data-Refinery/ERP64-UNIVERSAL-AI-POLICY-ADOPTION-001_WDR_2026-09-18_16-30.md` — `PASS`
+- Latest authoritative WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-004_WDR_2026-09-18_19-00.md` — `PASS`
 - Governed P8-003 commit: `dd540a873766fc2d472e27a72ada404438ed0dc5` — `feat(p8-003): auth session lifecycle and write endpoint protection` — not pushed
 - Universal AI Agent Execution Policy: `docs/UNIVERSAL-AI-AGENT-EXECUTION-POLICY.md` — ACTIVE (2026-09-18)
 - G1 frontend freeze: `PASS`
 - **TOPLINE-P8-002: PASS** (2026-09-18) — schema, migration, and DB tests all complete
 - **TOPLINE-P8-003: PASS** (2026-09-18) — auth lifecycle, global AuthGuard, write endpoint protection, 67/67 tests
-- G2 platform readiness: `BLOCKED` — P8-004 and TDR-P2-001 through TDR-P2-005 outstanding
+- **TOPLINE-P8-004: PASS** (2026-09-18) — RBAC, RolesGuard, PermissionsGuard, @Roles/@RequiresTenantContext decorators, 109/109 tests
+- G2 platform readiness: `BLOCKED` — TDR-P2-001 through TDR-P2-005 outstanding
 - P8-003 GOV commit created: `dd540a873766fc2d472e27a72ada404438ed0dc5` (TDR-GOV-COMMIT-P8-003-001 PASS); registry git.lastCommit updated (TDR-GOV-COMMIT-HASH-CHECKPOINT-001 PASS); not pushed
 
 ## Authoritative reading order

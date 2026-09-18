@@ -2,24 +2,26 @@
 
 ## Current WDR
 
-**ERP64-UNIVERSAL-AI-POLICY-ADOPTION-001** — Universal AI Agent Execution Policy Adoption
+**TDR-P8-004-GOVERNED-CLOSEOUT-RECON-001** — P8-004 Closeout Reconciliation and Pre-Commit Handoff
 
 - Execution: `PASS`
 - G1 frontend freeze: `PASS`
-- G2 platform readiness: `BLOCKED` (P8-004, TDR-P2-001–P2-005 outstanding)
-- WDR: `WDR/_All/Trade-Data-Refinery/ERP64-UNIVERSAL-AI-POLICY-ADOPTION-001_WDR_2026-09-18_16-30.md`
-- Conclusion: **Policy file created at `docs/UNIVERSAL-AI-AGENT-EXECUTION-POLICY.md`. Applies to all ERP64 modules and all AI agents. P8-004 remains BLOCKED pending PM authorization.**
+- G2 platform readiness: `BLOCKED` (TDR-P2-001–P2-005 outstanding)
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P8-004-GOVERNED-CLOSEOUT-RECON-001_WDR_2026-09-18_19-30.md`
+- Conclusion: **P8-004 implementation verified PASS. 109/109 tests. Build clean. PermissionsGuard created but not registered as APP_GUARD (documented, not a blocker). 20-file commit list confirmed. Next safe task: TDR-GOV-COMMIT-P8-004-001.**
 
-## Latest Prior WDR
+## Latest P8-004 WDR
 
-**TDR-GOV-COMMIT-HASH-CHECKPOINT-001** — Registry Commit Evidence Checkpoint
+**TOPLINE-P8-004** — RBAC Role-Based Access Control on Auth Foundation
 
 - Execution: `PASS`
-- WDR: `WDR/_All/Trade-Data-Refinery/TDR-GOV-COMMIT-HASH-CHECKPOINT-001_WDR_2026-09-18_16-00.md`
+- Tests: `109/109 PASS` (67 P8-003 + 42 P8-004)
+- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-004_WDR_2026-09-18_19-00.md`
 
 ## Registry Chain (Phase 8 + TDR)
 
-- TOPLINE-P8-003: `PASS` — auth lifecycle complete, no commit yet (2026-09-18)
+- TOPLINE-P8-004: `PASS` — RBAC complete, no commit yet (2026-09-18)
+- TOPLINE-P8-003: `PASS` — auth lifecycle complete, GOV commit created (2026-09-18)
 - TOPLINE-P8-002: `PASS` — schema, migration, DB tests all complete (2026-09-18)
 - TOPLINE-P8-002-R1: `PASS` — closed as no-op (2026-09-17)
 - TOPLINE-P8-002-ENV-READINESS-001: `PASS` (2026-09-18)
@@ -36,9 +38,9 @@
 - TDR-P0-004: `PASS`
 - TDR-G2-AUDIT-001: `PASS`
 
-## P8-003 Evidence Boundary (2026-09-18)
+## P8-004 Evidence Boundary (2026-09-18)
 
-P8-003 PASS. AuthModule, JwtAuthGuard (global APP_GUARD), @Public() allowlist, POST /auth/login + /auth/refresh + /auth/logout, HMAC-SHA256 refresh rotation, replay revocation, write endpoint protection (POST /tenants /vendors /categories /products → 401 without auth). 7 approved packages installed at exact versions. 67/67 tests PASS (46 new + 21 regression). Build PASS. No schema/migration changes. No commit created — GOV commit task required before P8-004. Registry syntax error (duplicate `{`) fixed by this closeout task. G1 PASS. G2 BLOCKED — P8-004 and TDR-P2-001 through TDR-P2-005 remaining.
+P8-004 PASS. RolesGuard registered as APP_GUARD #2 after JwtAuthGuard. PermissionsGuard created (file exists) but NOT registered as APP_GUARD. @Roles/@RequiresTenantContext/@Permissions decorators. POST /tenants requires SUPER_ADMIN. POST /vendors /categories /products require SUPER_ADMIN, TENANT_ADMIN, or PROCUREMENT_MANAGER + tenant context. 10 Role constants, 5 Permission constants. 109/109 tests PASS (67 regression + 42 new). Build PASS. No schema/migration changes. No packages installed. No commit created — GOV commit task TDR-GOV-COMMIT-P8-004-001 required next.
 
 ## GOV Commit Evidence
 
@@ -47,13 +49,6 @@ P8-003 PASS. AuthModule, JwtAuthGuard (global APP_GUARD), @Public() allowlist, P
 - 30 files, 3244 insertions(+), 145 deletions(-)
 - WDR: `WDR/_All/Trade-Data-Refinery/TDR-GOV-COMMIT-P8-003-001_WDR_2026-09-18_15-30.md`
 - Not pushed
-
-## Registry Commit Evidence Checkpoint
-
-- TDR-GOV-COMMIT-HASH-CHECKPOINT-001: PASS (2026-09-18)
-- git.lastCommit updated: `29deff2bb742bd3e101b18b307a85d6d72c96a0d` → `dd540a873766fc2d472e27a72ada404438ed0dc5`
-- WDR: `WDR/_All/Trade-Data-Refinery/TDR-GOV-COMMIT-HASH-CHECKPOINT-001_WDR_2026-09-18_<HH-MM>.md`
-- No commit created
 
 ## Last Updated
 

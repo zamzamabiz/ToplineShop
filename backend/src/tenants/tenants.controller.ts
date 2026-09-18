@@ -2,6 +2,8 @@ import { Controller, Get, Post, Param, Body, HttpCode, HttpStatus } from '@nestj
 import { TenantsService } from './tenants.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { Public } from '../auth/decorators/public.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../auth/types/role.type';
 
 @Controller('tenants')
 export class TenantsController {
@@ -20,6 +22,7 @@ export class TenantsController {
     return this.tenantsService.findOne(id);
   }
 
+  @Roles(Role.SUPER_ADMIN)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: CreateTenantDto) {
