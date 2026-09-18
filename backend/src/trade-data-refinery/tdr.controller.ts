@@ -46,13 +46,13 @@ export class TdrController {
   }
 
   @Post('batches/:id/cancel')
-  @Roles(Role.SUPER_ADMIN, Role.TENANT_ADMIN, Role.IMPORT_MANAGER)
+  @Roles(Role.SUPER_ADMIN, Role.TENANT_ADMIN)
   cancelBatch(@Param('id') id: string, @Req() req: TdrRequest) {
     return this.tdrService.cancelBatch(id, req.user.tenantId, req.user.userId);
   }
 
   @Post('batches/:id/replay')
-  @Roles(Role.SUPER_ADMIN, Role.TENANT_ADMIN, Role.IMPORT_MANAGER)
+  @Roles(Role.SUPER_ADMIN, Role.TENANT_ADMIN)
   replayBatch(
     @Param('id') id: string,
     @Req() req: TdrRequest,

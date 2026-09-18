@@ -1,6 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ForbiddenException, NotFoundException, UnprocessableEntityException, UnauthorizedException } from '@nestjs/common';
 import { ExecutionContext } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { ROLES_KEY } from '../auth/decorators/roles.decorator';
+import { Role } from '../auth/types/role.type';
+import { TdrController } from './tdr.controller';
+import { ReplayBatchDto } from './dto/replay-batch.dto';
 import { computeFingerprintHash } from './utils/fingerprint.util';
 import { isValidTransition, CANCELLABLE_STATUSES, REPLAYABLE_STATUSES } from './types/batch-transition';
 import { TenantModuleService } from './services/tenant-module.service';
@@ -135,8 +143,8 @@ describe('TenantModuleGuard', () => {
     await expect(guard.canActivate(makeContext(undefined))).rejects.toBeInstanceOf(UnauthorizedException);
   });
 
-  it('throws UnauthorizedException when tenantId is missing', async () => {
-    await expect(guard.canActivate(makeContext({ userId: 'u1' }))).rejects.toBeInstanceOf(UnauthorizedException);
+  it('authenticated user without tenantId throws ForbiddenException (not 401)', async () => {
+    await expect(guard.canActivate(makeContext({ userId: 'u1' }))).rejects.toBeInstanceOf(ForbiddenException);
   });
 
   it('throws ForbiddenException when module not enabled', async () => {
@@ -359,12 +367,12 @@ describe('TdrService', () => {
 
   it('replayBatch throws NotFoundException for unknown batch', async () => {
     mockPrisma.tdrBatch.findFirst.mockResolvedValue(null);
-    await expect(service.replayBatch('x', 't1', 'u1', {})).rejects.toBeInstanceOf(NotFoundException);
+    await expect(service.replayBatch('x', 't1', 'u1', { reason: 'retry' })).rejects.toBeInstanceOf(NotFoundException);
   });
 
   it('replayBatch throws UnprocessableEntityException for RECEIVED status', async () => {
     mockPrisma.tdrBatch.findFirst.mockResolvedValue({ id: 'b1', status: 'RECEIVED' });
-    await expect(service.replayBatch('b1', 't1', 'u1', {})).rejects.toBeInstanceOf(UnprocessableEntityException);
+    await expect(service.replayBatch('b1', 't1', 'u1', { reason: 'retry' })).rejects.toBeInstanceOf(UnprocessableEntityException);
   });
 
   it('replayBatch creates new batch + job and fires audit event', async () => {
@@ -392,5 +400,118 @@ describe('TdrService', () => {
     expect(mockAuditService.recordEvent).toHaveBeenCalledWith(
       expect.objectContaining({ action: 'tdr.batch.replayed', entityId: 'b2' }),
     );
+  });
+});
+
+// ─────────────────────────────────────────────
+// 7. RBAC contracts — cancel and replay
+// ─────────────────────────────────────────────
+describe('RolesGuard — cancel/replay RBAC enforcement', () => {
+  let rolesGuard: RolesGuard;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [RolesGuard, Reflector],
+    }).compile();
+    rolesGuard = module.get(RolesGuard);
+  });
+
+  function makeCtxForMethod(
+    methodFn: (...args: unknown[]) => unknown,
+    roles: string[],
+    tenantId = 't1',
+  ): ExecutionContext {
+    return {
+      switchToHttp: () => ({ getRequest: () => ({ user: { roles, tenantId } }) }),
+      getHandler: () => methodFn,
+      getClass: () => TdrController,
+    } as unknown as ExecutionContext;
+  }
+
+  // cancel
+  it('cancel: TENANT_ADMIN is allowed', () => {
+    expect(rolesGuard.canActivate(makeCtxForMethod(TdrController.prototype.cancelBatch, [Role.TENANT_ADMIN]))).toBe(true);
+  });
+
+  it('cancel: SUPER_ADMIN is allowed', () => {
+    expect(rolesGuard.canActivate(makeCtxForMethod(TdrController.prototype.cancelBatch, [Role.SUPER_ADMIN]))).toBe(true);
+  });
+
+  it('cancel: IMPORT_MANAGER receives 403', () => {
+    expect(() =>
+      rolesGuard.canActivate(makeCtxForMethod(TdrController.prototype.cancelBatch, [Role.IMPORT_MANAGER])),
+    ).toThrow(ForbiddenException);
+  });
+
+  it('cancel: VIEWER receives 403', () => {
+    expect(() =>
+      rolesGuard.canActivate(makeCtxForMethod(TdrController.prototype.cancelBatch, [Role.VIEWER])),
+    ).toThrow(ForbiddenException);
+  });
+
+  // replay
+  it('replay: SUPER_ADMIN is allowed', () => {
+    expect(rolesGuard.canActivate(makeCtxForMethod(TdrController.prototype.replayBatch, [Role.SUPER_ADMIN]))).toBe(true);
+  });
+
+  it('replay: TENANT_ADMIN is allowed', () => {
+    expect(rolesGuard.canActivate(makeCtxForMethod(TdrController.prototype.replayBatch, [Role.TENANT_ADMIN]))).toBe(true);
+  });
+
+  it('replay: IMPORT_MANAGER receives 403 (PM-006 remains OPEN)', () => {
+    expect(() =>
+      rolesGuard.canActivate(makeCtxForMethod(TdrController.prototype.replayBatch, [Role.IMPORT_MANAGER])),
+    ).toThrow(ForbiddenException);
+  });
+
+  it('replay: ANALYST receives 403', () => {
+    expect(() =>
+      rolesGuard.canActivate(makeCtxForMethod(TdrController.prototype.replayBatch, [Role.ANALYST])),
+    ).toThrow(ForbiddenException);
+  });
+
+  it('cancel and replay metadata does not include IMPORT_MANAGER', () => {
+    const cancelRoles: string[] = Reflect.getMetadata(ROLES_KEY, TdrController.prototype.cancelBatch);
+    const replayRoles: string[] = Reflect.getMetadata(ROLES_KEY, TdrController.prototype.replayBatch);
+    expect(cancelRoles).not.toContain(Role.IMPORT_MANAGER);
+    expect(replayRoles).not.toContain(Role.IMPORT_MANAGER);
+    expect(cancelRoles).toEqual([Role.SUPER_ADMIN, Role.TENANT_ADMIN]);
+    expect(replayRoles).toEqual([Role.SUPER_ADMIN, Role.TENANT_ADMIN]);
+  });
+});
+
+// ─────────────────────────────────────────────
+// 8. ReplayBatchDto validation
+// ─────────────────────────────────────────────
+describe('ReplayBatchDto validation', () => {
+  it('missing reason fails validation', async () => {
+    const dto = plainToInstance(ReplayBatchDto, {});
+    const errors = await validate(dto);
+    expect(errors.length).toBeGreaterThan(0);
+    expect(errors.some((e) => e.property === 'reason')).toBe(true);
+  });
+
+  it('empty string reason fails validation', async () => {
+    const dto = plainToInstance(ReplayBatchDto, { reason: '' });
+    const errors = await validate(dto);
+    expect(errors.some((e) => e.property === 'reason')).toBe(true);
+  });
+
+  it('reason over 500 characters fails validation', async () => {
+    const dto = plainToInstance(ReplayBatchDto, { reason: 'x'.repeat(501) });
+    const errors = await validate(dto);
+    expect(errors.some((e) => e.property === 'reason')).toBe(true);
+  });
+
+  it('valid bounded reason passes validation', async () => {
+    const dto = plainToInstance(ReplayBatchDto, { reason: 'Fix import mapping for Q3 customs data' });
+    const errors = await validate(dto);
+    expect(errors).toHaveLength(0);
+  });
+
+  it('reason of exactly 500 characters passes validation', async () => {
+    const dto = plainToInstance(ReplayBatchDto, { reason: 'x'.repeat(500) });
+    const errors = await validate(dto);
+    expect(errors).toHaveLength(0);
   });
 });

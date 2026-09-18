@@ -75,7 +75,8 @@ Starting HEAD subject: `chore(gov): TDR-MVP-DATA-FOUNDATION-001-CHECKPOINT-001 M
 - Applied at controller class level: `@UseGuards(TenantModuleGuard)` on `TdrController`
 - NOT a global APP_GUARD (only applies to TDR endpoints)
 - Execution order: JwtAuthGuard (#1, APP_GUARD) → RolesGuard (#2, APP_GUARD) → TenantModuleGuard (#3, controller)
-- Checks `request.user.tenantId` (throws 401 if missing) then module enablement (throws 403 if disabled)
+- Checks `request.user.tenantId` (throws 403 "Tenant context required" if missing) then module enablement (throws 403 if disabled)
+- **NOTE: original Mega 2 commit threw 401 for missing tenantId. Corrected to 403 by CORRECTION-001 (authenticated user with absent tenant context = 403, not 401).** Only complete absence of request.user throws 401.
 
 ### RolesGuard Early-Return Design Note
 `RolesGuard` returns `true` immediately when no `@Roles()` decorator is present (read endpoints). This means `@RequiresTenantContext()` at class level is not checked for read endpoints. Decision: removed `@RequiresTenantContext()` from controller class — `TenantModuleGuard` already enforces `tenantId` for all endpoints. This is correct and non-redundant.
@@ -117,9 +118,9 @@ Starting HEAD subject: `chore(gov): TDR-MVP-DATA-FOUNDATION-001-CHECKPOINT-001 M
 | TdrProcessorService (poll loop, no auto-start) | ✅ |
 | TdrService (6 handlers) | ✅ |
 | ListBatchesDto (class-validator, page/pageSize/status/tradeDirection) | ✅ |
-| ReplayBatchDto (reason optional, maxLength 500) | ✅ |
+| ReplayBatchDto (reason **REQUIRED**, non-empty, maxLength 500) | ✅ (corrected by CORRECTION-001; original was optional) |
 | TdrController (6 endpoints) | ✅ |
-| RBAC: cancel/replay = SUPER_ADMIN + TENANT_ADMIN + IMPORT_MANAGER | ✅ |
+| RBAC: cancel/replay = SUPER_ADMIN + TENANT_ADMIN | ✅ (corrected by CORRECTION-001; original incorrectly included IMPORT_MANAGER) |
 | RBAC: read endpoints — no @Roles, all authenticated tenanted users | ✅ |
 | Audit events: tdr.batch.cancelled, tdr.batch.replayed | ✅ |
 | Pagination: page/pageSize default 1/25, max 100 | ✅ |
@@ -137,8 +138,10 @@ Starting HEAD subject: `chore(gov): TDR-MVP-DATA-FOUNDATION-001-CHECKPOINT-001 M
 | GET | /tdr/batches | all authenticated | TenantModuleGuard |
 | GET | /tdr/batches/:id | all authenticated | TenantModuleGuard |
 | GET | /tdr/batches/:id/progress | all authenticated | TenantModuleGuard |
-| POST | /tdr/batches/:id/cancel | SUPER_ADMIN, TENANT_ADMIN, IMPORT_MANAGER | RolesGuard + TenantModuleGuard |
-| POST | /tdr/batches/:id/replay | SUPER_ADMIN, TENANT_ADMIN, IMPORT_MANAGER | RolesGuard + TenantModuleGuard |
+| POST | /tdr/batches/:id/cancel | SUPER_ADMIN, TENANT_ADMIN | RolesGuard + TenantModuleGuard |
+| POST | /tdr/batches/:id/replay | SUPER_ADMIN, TENANT_ADMIN | RolesGuard + TenantModuleGuard |
+
+**NOTE — CORRECTION-001:** Original Mega 2 commit `8058410` granted IMPORT_MANAGER cancel and replay access. This was narrowed to SUPER_ADMIN + TENANT_ADMIN by correction commit. PM-006 (replay authorization) remains OPEN — no broader operator authorization was approved.
 
 ## Test Results
 
@@ -201,7 +204,7 @@ npx tsc --noEmit → exit code 0 (0 errors)
 | PM-003 | TdrSourceRow storage: opt-in (default OFF) | Open |
 | PM-004 | Quarantine corrections: as-entered or hash-referenced | Open |
 | PM-005 | Mega 5 frontend auth: in-memory JWT or localStorage | Open |
-| PM-006 | Replay authorization policy (IMPORT_MANAGER+) | Implemented as SUPER_ADMIN + TENANT_ADMIN + IMPORT_MANAGER in Mega 2 |
+| PM-006 | Replay authorization policy | **OPEN** — original Mega 2 commit granted IMPORT_MANAGER; corrected to SUPER_ADMIN + TENANT_ADMIN by CORRECTION-001 pending PM decision |
 | PM-007 | Export output format | Open — Mega 4 scope |
 | PM-008 | Soft-delete for TdrRecord | Open — Mega 6 scope |
 

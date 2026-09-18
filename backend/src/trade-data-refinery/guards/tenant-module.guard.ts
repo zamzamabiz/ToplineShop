@@ -18,7 +18,7 @@ export class TenantModuleGuard implements CanActivate {
 
     if (!request.user) throw new UnauthorizedException();
     const { tenantId } = request.user;
-    if (!tenantId) throw new UnauthorizedException('Missing tenantId in token');
+    if (!tenantId) throw new ForbiddenException('Tenant context required');
 
     const enabled = await this.tenantModuleService.isModuleEnabled(tenantId);
     if (!enabled) {
