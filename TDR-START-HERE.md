@@ -9,9 +9,9 @@ This is the mandatory restart checkpoint for ChatGPT Luna, Claude Code, and huma
 - Stable branch: `master` — do not modify directly
 - Governance: `#123` — DISCUSS → DECIDE → EXECUTE → VERIFY/AUDIT → CLOSE → NEXT
 - Product status: frontend work is complete; TDR-P1-011 was the historical blocked audit — TDR-P1-012 resolved it; G1 (frontend freeze) is `PASS`
-- Last completed task: `TDR-P2-001 — Trade Data Refinery Registry/Roadmap Registration and Scope Freeze`
+- Last completed task: `TDR-P2-002 — Verify RBAC Permission and Guard Contract for TDR`
 - Current task status: `PASS`
-- Latest authoritative WDR: `WDR/_All/Trade-Data-Refinery/TDR-P2-001_WDR_2026-09-18_23-00.md` — `PASS`
+- Latest authoritative WDR: `WDR/_All/Trade-Data-Refinery/TDR-P2-002_WDR_2026-09-19_00-15.md` — `PASS`
 - Governed P8-003 commit: `dd540a873766fc2d472e27a72ada404438ed0dc5` — `feat(p8-003): auth session lifecycle and write endpoint protection` — not pushed
 - Universal AI Agent Execution Policy: `docs/UNIVERSAL-AI-AGENT-EXECUTION-POLICY.md` — ACTIVE (2026-09-18)
 - G1 frontend freeze: `PASS`
@@ -21,6 +21,7 @@ This is the mandatory restart checkpoint for ChatGPT Luna, Claude Code, and huma
 - **TDR-GLOBAL-5-R1-POLICY-RESOLUTION-001: PASS** (2026-09-18) — PM Option C: docs/UNIVERSAL-AI-AGENT-EXECUTION-POLICY.md confirmed as active canonical ERP64/TDR policy; P8-005 unblocked for preparation
 - **TOPLINE-P8-005: PASS** (2026-09-18) — Phase 8 freeze/readiness gate complete; 109/109 tests, build PASS, registry/WDR consistent, G1 PASS, G2 BLOCKED (TDR-P2-001 through TDR-P2-005 outstanding)
 - **TDR-P2-001: PASS** (2026-09-18) — TDR Phase 2 scope registered under #FDD. TDR-P2-002 through TDR-P2-005 registered as platform readiness verification tasks per roadmap stricter sequence. G2 remains BLOCKED until all five pass.
+- **TDR-P2-002: PASS** (2026-09-18) — RBAC guard contract verified for TDR. All 10 Role constants, all 5 Permission constants, all 3 decorators (@Roles/@Permissions/@RequiresTenantContext), JwtAuthGuard + RolesGuard APP_GUARD chain verified. TDR role/operation matrix produced (8 operations × 10 roles). PermissionsGuard unregistered — FUTURE_TASK_REQUIRED (not G2 blocker). 109/109 tests PASS. No runtime code changed. G2 remains BLOCKED.
 - P8-004 commit: `df56379e83b0624260af8d07c957db961eaa63e3` — `feat(p8-004): RBAC role-based access control on auth foundation` — not pushed
 - G2 platform readiness: `BLOCKED` — TDR-P2-001 through TDR-P2-005 outstanding
 - P8-003 GOV commit created: `dd540a873766fc2d472e27a72ada404438ed0dc5` (TDR-GOV-COMMIT-P8-003-001 PASS); registry git.lastCommit updated (TDR-GOV-COMMIT-HASH-CHECKPOINT-001 PASS); not pushed
