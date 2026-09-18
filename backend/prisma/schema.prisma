@@ -70,6 +70,16 @@ model Tenant {
   auditLogs   AuditLog[]
   sessions    Session[]
 
+  tenantModules     TenantModule[]
+  schemaMappings    TdrSchemaMapping[]
+  sourceFiles       TdrSourceFile[]
+  tdrBatches        TdrBatch[]
+  processingJobs    TdrProcessingJob[]
+  tdrRecords        TdrRecord[]
+  tdrSourceRows     TdrSourceRow[]
+  validationIssues  TdrValidationIssue[]
+  quarantineReviews TdrQuarantineReview[]
+
   @@map("tenants")
 }
 
@@ -89,6 +99,11 @@ model User {
   vendors     Vendor[]      @relation("VendorOwner")
   auditLogs   AuditLog[]
   sessions    Session[]
+
+  enabledModules      TenantModule[]        @relation("TenantModuleEnabledBy")
+  uploadedSourceFiles TdrSourceFile[]       @relation("TdrSourceFileUploadedBy")
+  createdBatches      TdrBatch[]            @relation("TdrBatchCreatedBy")
+  quarantineReviews   TdrQuarantineReview[] @relation("TdrQuarantineReviewedBy")
 
   @@map("users")
 }
@@ -216,4 +231,354 @@ model Session {
   @@index([tenantId])
   @@index([expiresAt])
   @@map("sessions")
+}
+
+// ============================================================
+// TDR ENUMS
+// ============================================================
+
+enum TradeDirection {
+  IMPORT
+  EXPORT
+}
+
+enum BatchStatus {
+  RECEIVED
+  QUEUED
+  PROCESSING
+  REVIEW_REQUIRED
+  READY
+  PARTIAL
+  FAILED
+  CANCELLED
+  EXPORTING
+  EXPORTED
+}
+
+enum JobStatus {
+  PENDING
+  LEASED
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum RowDisposition {
+  ACCEPTED
+  QUARANTINED
+  REJECTED
+}
+
+enum IssueSeverity {
+  WARNING
+  ERROR
+  BLOCKING
+}
+
+enum IssueStatus {
+  OPEN
+  REVIEWED
+  SUPPRESSED
+}
+
+enum ReviewAction {
+  APPROVE
+  REJECT
+  CORRECT
+}
+
+// ============================================================
+// TDR MODELS
+// ============================================================
+
+model TenantModule {
+  id            String    @id @default(uuid())
+  tenantId      String    @map("tenant_id")
+  moduleKey     String    @map("module_key") @db.VarChar(50)
+  enabled       Boolean   @default(false)
+  enabledAt     DateTime? @map("enabled_at")
+  enabledById   String?   @map("enabled_by_id")
+  configuration Json?
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  tenant    Tenant @relation(fields: [tenantId], references: [id])
+  enabledBy User?  @relation("TenantModuleEnabledBy", fields: [enabledById], references: [id])
+
+  @@unique([tenantId, moduleKey])
+  @@index([tenantId, moduleKey, enabled])
+  @@map("tenant_modules")
+}
+
+// scopeKey encodes uniqueness scope: tenantId for tenant-specific mappings,
+// 'PLATFORM' for platform-level mappings. Avoids NULL-equality anomaly in
+// a three-column unique constraint when tenantId is NULL.
+model TdrSchemaMapping {
+  id                      String         @id @default(uuid())
+  tenantId                String?        @map("tenant_id")
+  scopeKey                String         @map("scope_key") @db.VarChar(36)
+  profileId               String         @map("profile_id") @db.VarChar(100)
+  version                 Int
+  tradeDirection          TradeDirection @map("trade_direction")
+  sourceSchemaFingerprint String?        @map("source_schema_fingerprint") @db.Char(64)
+  mappingConfig           Json           @map("mapping_config")
+  active                  Boolean        @default(false)
+  createdAt               DateTime       @default(now()) @map("created_at")
+
+  tenant  Tenant?    @relation(fields: [tenantId], references: [id])
+  batches TdrBatch[]
+
+  @@unique([scopeKey, profileId, version])
+  @@index([sourceSchemaFingerprint])
+  @@index([tenantId, tradeDirection, active])
+  @@map("tdr_schema_mappings")
+}
+
+model TdrSourceFile {
+  id               String         @id @default(uuid())
+  tenantId         String         @map("tenant_id")
+  originalFilename String         @map("original_filename")
+  mimeType         String?        @map("mime_type") @db.VarChar(100)
+  fileSizeBytes    BigInt         @map("file_size_bytes")
+  storageKey       String         @map("storage_key")
+  contentHash      String         @map("content_hash") @db.Char(64)
+  tradeDirection   TradeDirection @map("trade_direction")
+  uploadedById     String         @map("uploaded_by_id")
+  uploadedAt       DateTime       @map("uploaded_at")
+  createdAt        DateTime       @default(now()) @map("created_at")
+
+  tenant     Tenant       @relation(fields: [tenantId], references: [id])
+  uploadedBy User         @relation("TdrSourceFileUploadedBy", fields: [uploadedById], references: [id])
+  batches    TdrBatch[]
+  records    TdrRecord[]
+
+  @@unique([tenantId, contentHash])
+  @@index([tenantId, uploadedAt])
+  @@map("tdr_source_files")
+}
+
+model TdrBatch {
+  id                        String         @id @default(uuid())
+  tenantId                  String         @map("tenant_id")
+  sourceFileId              String         @map("source_file_id")
+  mappingId                 String?        @map("mapping_id")
+  status                    BatchStatus    @default(RECEIVED)
+  tradeDirection            TradeDirection @map("trade_direction")
+  mappingVersion            String         @map("mapping_version") @db.VarChar(100)
+  parserVersion             String         @map("parser_version") @db.VarChar(100)
+  normalizationVersion      String         @map("normalization_version") @db.VarChar(100)
+  validationVersion         String         @map("validation_version") @db.VarChar(100)
+  processingFingerprintHash String         @map("processing_fingerprint_hash") @db.Char(64)
+  replayOfBatchId           String?        @map("replay_of_batch_id")
+  replayReason              String?        @map("replay_reason")
+  processingConfig          Json?          @map("processing_config")
+  storeSourceRows           Boolean        @default(false) @map("store_source_rows")
+  totalSourceRows           Int?           @map("total_source_rows")
+  processedRows             Int            @default(0) @map("processed_rows")
+  acceptedRows              Int            @default(0) @map("accepted_rows")
+  quarantinedRows           Int            @default(0) @map("quarantined_rows")
+  rejectedRows              Int            @default(0) @map("rejected_rows")
+  failedChunks              Int            @default(0) @map("failed_chunks")
+  lastCheckpointAt          DateTime?      @map("last_checkpoint_at")
+  startedAt                 DateTime?      @map("started_at")
+  completedAt               DateTime?      @map("completed_at")
+  createdById               String         @map("created_by_id")
+  createdAt                 DateTime       @default(now()) @map("created_at")
+  updatedAt                 DateTime       @updatedAt @map("updated_at")
+
+  tenant        Tenant            @relation(fields: [tenantId], references: [id])
+  sourceFile    TdrSourceFile     @relation(fields: [sourceFileId], references: [id])
+  mapping       TdrSchemaMapping? @relation(fields: [mappingId], references: [id])
+  createdBy     User              @relation("TdrBatchCreatedBy", fields: [createdById], references: [id])
+  replayOf      TdrBatch?         @relation("BatchReplay", fields: [replayOfBatchId], references: [id])
+  replays       TdrBatch[]        @relation("BatchReplay")
+  processingJob    TdrProcessingJob?
+  records          TdrRecord[]
+  sourceRows       TdrSourceRow[]
+  validationIssues TdrValidationIssue[]
+  quarantineReviews TdrQuarantineReview[]
+
+  // processingFingerprintHash is indexed but NOT UNIQUE — replay creates a new
+  // batch with the same fingerprint intentionally; duplicate detection is
+  // enforced in the service layer, not the DB constraint.
+  @@index([processingFingerprintHash])
+  @@index([tenantId, status])
+  @@index([tenantId, createdAt])
+  @@index([sourceFileId])
+  @@index([tenantId, tradeDirection, status])
+  @@map("tdr_batches")
+}
+
+model TdrProcessingJob {
+  id               String    @id @default(uuid())
+  batchId          String    @unique @map("batch_id")
+  tenantId         String    @map("tenant_id")
+  status           JobStatus @default(PENDING)
+  attemptCount     Int       @default(0) @map("attempt_count")
+  maxAttempts      Int       @default(3) @map("max_attempts")
+  leasedAt         DateTime? @map("leased_at")
+  leaseExpiresAt   DateTime? @map("lease_expires_at")
+  leaseDurationMs  Int       @default(300000) @map("lease_duration_ms")
+  lastHeartbeatAt  DateTime? @map("last_heartbeat_at")
+  lastCheckpointRow Int      @default(0) @map("last_checkpoint_row")
+  workerInstanceId String?   @map("worker_instance_id")
+  errorCode        String?   @map("error_code") @db.VarChar(50)
+  errorMessage     String?   @map("error_message")
+  errorStack       String?   @map("error_stack")
+  completedAt      DateTime? @map("completed_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  batch  TdrBatch @relation(fields: [batchId], references: [id])
+  tenant Tenant   @relation(fields: [tenantId], references: [id])
+
+  @@index([status, leaseExpiresAt])
+  @@index([tenantId, status])
+  @@map("tdr_processing_jobs")
+}
+
+model TdrRecord {
+  id                           String         @id @default(uuid())
+  tenantId                     String         @map("tenant_id")
+  sourceFileId                 String         @map("source_file_id")
+  batchId                      String         @map("batch_id")
+  sourceRowNumber              Int            @map("source_row_number")
+  rowHash                      String         @map("row_hash") @db.Char(64)
+
+  tradeDirection               TradeDirection @map("trade_direction")
+  tradeDate                    DateTime?      @map("trade_date") @db.Date
+
+  hsCodeRaw                    String?        @map("hs_code_raw")
+  hsCodeNormalized             String?        @map("hs_code_normalized")
+  hsChapter                    String?        @map("hs_chapter") @db.Char(2)
+
+  productDescriptionRaw        String?        @map("product_description_raw")
+  productDescriptionNormalized String?        @map("product_description_normalized")
+
+  localPartyTaxIdRaw           String?        @map("local_party_tax_id_raw")
+  localPartyTaxIdNormalized    String?        @map("local_party_tax_id_normalized")
+  localPartyNameRaw            String?        @map("local_party_name_raw")
+  localPartyNameNormalized     String?        @map("local_party_name_normalized")
+  localPartyAddressRaw         String?        @map("local_party_address_raw")
+  localPartyCountryCode        String?        @map("local_party_country_code") @db.Char(2)
+
+  foreignPartyNameRaw          String?        @map("foreign_party_name_raw")
+  foreignPartyNameNormalized   String?        @map("foreign_party_name_normalized")
+  foreignPartyAddressRaw       String?        @map("foreign_party_address_raw")
+  foreignPartyCountryRaw       String?        @map("foreign_party_country_raw")
+  foreignPartyCountryCode      String?        @map("foreign_party_country_code") @db.Char(2)
+
+  originPortRaw                String?        @map("origin_port_raw")
+  originPortNormalized         String?        @map("origin_port_normalized")
+
+  quantityRaw                  String?        @map("quantity_raw")
+  quantityNormalized           Decimal?       @map("quantity_normalized") @db.Decimal(24, 6)
+  quantityUnitRaw              String?        @map("quantity_unit_raw")
+  quantityUnitCode             String?        @map("quantity_unit_code") @db.VarChar(20)
+
+  unitPriceRaw                 String?        @map("unit_price_raw")
+  unitPriceNormalized          Decimal?       @map("unit_price_normalized") @db.Decimal(24, 6)
+  currencyRaw                  String?        @map("currency_raw")
+  currencyCode                 String?        @map("currency_code") @db.Char(3)
+
+  sourceSchemaSignature        String         @map("source_schema_signature")
+  mappingVersion               String         @map("mapping_version") @db.VarChar(100)
+  parserVersion                String         @map("parser_version") @db.VarChar(100)
+  normalizationVersion         String         @map("normalization_version") @db.VarChar(100)
+  validationVersion            String         @map("validation_version") @db.VarChar(100)
+
+  rowDisposition               RowDisposition @map("row_disposition")
+  quarantineReviewRequired     Boolean        @default(false) @map("quarantine_review_required")
+  exportEligible               Boolean        @default(false) @map("export_eligible")
+  exportedAt                   DateTime?      @map("exported_at")
+
+  // Nullable — population is opt-in; see TdrSourceRow for full raw row storage.
+  sourceRowEvidence            Json?          @map("source_row_evidence")
+  valueTreatmentMeta           Json?          @map("value_treatment_meta")
+
+  createdAt                    DateTime       @default(now()) @map("created_at")
+  updatedAt                    DateTime       @updatedAt @map("updated_at")
+
+  tenant           Tenant               @relation(fields: [tenantId], references: [id])
+  sourceFile       TdrSourceFile        @relation(fields: [sourceFileId], references: [id])
+  batch            TdrBatch             @relation(fields: [batchId], references: [id])
+  validationIssues TdrValidationIssue[]
+  quarantineReviews TdrQuarantineReview[]
+
+  @@unique([batchId, sourceRowNumber])
+  @@index([tenantId, batchId, rowDisposition])
+  @@index([tenantId, tradeDate])
+  @@index([tenantId, hsCodeNormalized, tradeDate])
+  @@index([tenantId, localPartyTaxIdNormalized])
+  @@index([tenantId, exportEligible])
+  @@map("tdr_records")
+}
+
+model TdrSourceRow {
+  id              String   @id @default(uuid())
+  batchId         String   @map("batch_id")
+  tenantId        String   @map("tenant_id")
+  sourceRowNumber Int      @map("source_row_number")
+  rawContent      Json     @map("raw_content")
+  rowHash         String   @map("row_hash") @db.Char(64)
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  batch  TdrBatch @relation(fields: [batchId], references: [id])
+  tenant Tenant   @relation(fields: [tenantId], references: [id])
+
+  @@unique([batchId, sourceRowNumber])
+  // rowHash index is non-unique — the same raw row content may legitimately
+  // appear in multiple batches (e.g., repeated shipment entries).
+  @@index([tenantId, rowHash])
+  @@map("tdr_source_rows")
+}
+
+model TdrValidationIssue {
+  id        String        @id @default(uuid())
+  recordId  String        @map("record_id")
+  batchId   String        @map("batch_id")
+  tenantId  String        @map("tenant_id")
+  fieldName String?       @map("field_name") @db.VarChar(100)
+  ruleCode  String        @map("rule_code") @db.VarChar(50)
+  severity  IssueSeverity
+  message   String
+  rawValue  String?       @map("raw_value")
+  status    IssueStatus   @default(OPEN)
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+
+  record TdrRecord @relation(fields: [recordId], references: [id])
+  batch  TdrBatch  @relation(fields: [batchId], references: [id])
+  tenant Tenant    @relation(fields: [tenantId], references: [id])
+
+  @@index([batchId, severity, status])
+  @@index([recordId])
+  @@index([tenantId, ruleCode])
+  @@map("tdr_validation_issues")
+}
+
+model TdrQuarantineReview {
+  id                  String       @id @default(uuid())
+  recordId            String       @map("record_id")
+  tenantId            String       @map("tenant_id")
+  batchId             String       @map("batch_id")
+  reviewedById        String?      @map("reviewed_by_id")
+  action              ReviewAction
+  correctionFieldName String?      @map("correction_field_name") @db.VarChar(100)
+  // Bounded JSON: { fieldName, before, after } for reconstruction lineage.
+  correctionPayload   Json?        @map("correction_payload")
+  correctionValueHash String?      @map("correction_value_hash") @db.Char(64)
+  correctionNote      String?      @map("correction_note")
+  appliedAt           DateTime?    @map("applied_at")
+  createdAt           DateTime     @default(now()) @map("created_at")
+
+  record     TdrRecord @relation(fields: [recordId], references: [id])
+  tenant     Tenant    @relation(fields: [tenantId], references: [id])
+  batch      TdrBatch  @relation(fields: [batchId], references: [id])
+  reviewedBy User?     @relation("TdrQuarantineReviewedBy", fields: [reviewedById], references: [id])
+
+  @@index([recordId])
+  @@index([batchId, action])
+  @@index([tenantId, appliedAt])
+  @@map("tdr_quarantine_reviews")
 }
