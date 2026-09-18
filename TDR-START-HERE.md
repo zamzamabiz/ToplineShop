@@ -9,13 +9,14 @@ This is the mandatory restart checkpoint for ChatGPT Luna, Claude Code, and huma
 - Stable branch: `master` — do not modify directly
 - Governance: `#123` — DISCUSS → DECIDE → EXECUTE → VERIFY/AUDIT → CLOSE → NEXT
 - Product status: frontend work is complete; TDR-P1-011 was the historical blocked audit — TDR-P1-012 resolved it; G1 (frontend freeze) is `PASS`
-- Last completed task: `TDR-P8-002-GOVERNED-CLOSEOUT-RECON-001 — P8-002 Closeout Reconciliation and Next Task Handoff`
+- Last completed task: `TDR-P8-003-GOVERNED-CLOSEOUT-RECON-001 — P8-003 Closeout Reconciliation and Pre-P8-004 Handoff`
 - Current task status: `PASS`
-- Latest authoritative WDR: `WDR/_All/Trade-Data-Refinery/TDR-P8-002-GOVERNED-CLOSEOUT-RECON-001_WDR_2026-09-18_10-00.md` — `PASS`
+- Latest authoritative WDR: `WDR/_All/Trade-Data-Refinery/TDR-P8-003-GOVERNED-CLOSEOUT-RECON-001_WDR_2026-09-18_15-00.md` — `PASS`
 - G1 frontend freeze: `PASS`
 - **TOPLINE-P8-002: PASS** (2026-09-18) — schema, migration, and DB tests all complete
-- G2 platform readiness: `BLOCKED` — P8-003, P8-004, and TDR-P2-001 through TDR-P2-005 outstanding
-- Backend/database work for P8-002 complete locally; P8-003 and P8-004 require separate PM-authorized tasks; no commit created yet
+- **TOPLINE-P8-003: PASS** (2026-09-18) — auth lifecycle, global AuthGuard, write endpoint protection, 67/67 tests
+- G2 platform readiness: `BLOCKED` — P8-004 and TDR-P2-001 through TDR-P2-005 outstanding
+- No commit created — GOV commit task required before P8-004; registry syntax error (duplicate `{` near line 2016) fixed in this closeout
 
 ## Authoritative reading order
 
@@ -41,6 +42,10 @@ Before any change, the agent must report:
 - the exact prompt file to execute, if one exists.
 
 If no valid prompt exists for the authorized task, the agent must prepare the prompt and stop for governance review. It must not reuse an older prompt merely because it has a similar name.
+
+## TDR-P8-003-GOVERNED-CLOSEOUT-RECON-001 closeout (2026-09-18)
+
+P8-003 formally verified as PASS. Auth lifecycle implemented: global JwtAuthGuard with @Public() allowlist, POST /auth/login + /auth/refresh + /auth/logout, HMAC-SHA256 refresh rotation, replay revocation, write endpoint protection on POST /tenants /vendors /categories /products. 7 approved packages at exact versions. 67/67 tests pass (46 new + 21 regression). Build PASS. No schema/migration changes. No commit created — GOV commit task required before P8-004. Registry syntax error (duplicate `{` near TOPLINE-P8-002-DB-TESTS-WRITE-001 entry) detected and fixed. ESM workaround for @nestjs/jwt + @nestjs/passport in Jest via jest.mock() factories documented in WDR. G1 PASS. G2 BLOCKED — P8-004 and TDR-P2-001 through TDR-P2-005 remaining.
 
 ## TDR-P8-002-GOVERNED-CLOSEOUT-RECON-001 closeout (2026-09-18)
 

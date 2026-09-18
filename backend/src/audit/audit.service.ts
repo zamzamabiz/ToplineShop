@@ -20,6 +20,8 @@ export class AuditService {
           entityId: event.entityId,
           tenantId: event.tenantId,
           actorUserId: event.actorUserId,
+          ipAddress: event.ipAddress,
+          userAgent: event.userAgent,
           metadata: sanitized
             ? (sanitized as Prisma.InputJsonValue)
             : undefined,

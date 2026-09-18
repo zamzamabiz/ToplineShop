@@ -14,11 +14,6 @@ module.exports = {
   testRegex: '.*\\.spec\\.ts$',
   // Exclude the dist/ build output and the node_modules tree.
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
-  // Modules can import compiled CommonJS from node_modules (Prisma client,
-  // NestJS packages) directly; the default ts-jest transform is enough.
-  transform: {
-    '^.+\\.ts$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.json' }],
-  },
   moduleFileExtensions: ['ts', 'js', 'json'],
   // Keep test runs deterministic.
   randomize: false,

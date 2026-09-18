@@ -2,11 +2,12 @@
 
 ## Current Program
 
-**Trade Data Refinery (TDR) — TDR-P8-002-GOVERNED-CLOSEOUT-RECON-001 P8-002 Closeout Reconciliation (2026-09-18)**
+**Trade Data Refinery (TDR) — TDR-P8-003-GOVERNED-CLOSEOUT-RECON-001 P8-003 Closeout Reconciliation (2026-09-18)**
 
 ## TDR Current Status
 
-**TDR-P8-002-GOVERNED-CLOSEOUT-RECON-001: PASS — P8-002 closeout reconciled; G2 remains BLOCKED**
+**TDR-P8-003-GOVERNED-CLOSEOUT-RECON-001: PASS — P8-003 implementation reconciled; G2 still BLOCKED**
+**TOPLINE-P8-003: PASS — global AuthGuard, login/logout/refresh, write-endpoint protection, 67/67 tests (2026-09-18)**
 **TOPLINE-P8-002-DB-TESTS-001: PASS — 9/9 DB integration tests pass (2026-09-18)**
 **TOPLINE-P8-002-DB-TESTS-WRITE-001: PASS — test file created (2026-09-18)**
 **TOPLINE-P8-002-MIGRATION-001: PASS — toplineshop_dev created, both migrations applied (2026-09-18)**
@@ -14,9 +15,11 @@
 **TOPLINE-P8-002: PASS — all three gates closed (schema, migration, DB tests) (2026-09-18)**
 **TDR-G2-AUDIT-001: PASS — Audit complete; G2 REMAINS BLOCKED — EVIDENCE OR APPROVALS MISSING**
 **G1 — TDR Frontend Freeze: PASS**
-**G2 — Platform Readiness: BLOCKED** (P8-003, P8-004 not started; TDR-P2-xxx not registered)
+**G2 — Platform Readiness: BLOCKED** (P8-004 not started; TDR-P2-xxx not registered)
 
-P8-002 advanced from PARTIAL to PASS on 2026-09-18. Three gates closed: schema + migration artifact (2026-09-16), migration applied to local toplineshop_dev (2026-09-18), 9/9 DB integration tests pass (2026-09-18). G2 remains BLOCKED — P8-003, P8-004, and TDR-P2-001 through TDR-P2-005 remain outstanding.
+P8-003 completed on 2026-09-18. Global JwtAuthGuard with @Public() allowlist, POST /auth/login + /auth/refresh + /auth/logout, HMAC-SHA256 refresh rotation, replay revocation, write endpoint protection on POST /tenants /vendors /categories /products. 67/67 tests pass (46 new + 21 regression). Build PASS. No schema/migration changes. G2 remains BLOCKED — P8-004 and TDR-P2-001 through TDR-P2-005 still outstanding. No commit created.
+
+**Registry syntax fix**: Pre-existing duplicate `{` at line 2016 of projectRegistry.ts (near TOPLINE-P8-002-DB-TESTS-WRITE-001 entry) has been corrected. TypeScript syntax error TS1136 is now resolved. Pre-existing TS2322 errors on `"PENDING PM"` Status values remain (introduced before P8-003, out of scope).
 
 ## Canonical Evidence
 
@@ -35,7 +38,23 @@ P8-002 advanced from PARTIAL to PASS on 2026-09-18. Three gates closed: schema +
 - G1 frontend freeze: `PASS`
 - G2 platform readiness: `BLOCKED`
 
-## P8-002 PASS Closeout (2026-09-18)
+## P8-003 PASS Evidence (2026-09-18)
+
+- **TOPLINE-P8-003: PASS**
+- AuthModule, AuthService, AuthController, JwtStrategy, JwtAuthGuard, @Public() decorator, LoginDto, RefreshDto
+- Global APP_GUARD via JwtAuthGuard — @Public() allowlist
+- POST /auth/login (public, throttled 5/min), POST /auth/refresh (public, throttled 30/min), POST /auth/logout (auth required)
+- HMAC-SHA256 refresh token rotation; raw token never stored; replay detection → revoke all user sessions
+- POST /tenants, /vendors, /categories, /products protected; GET routes @Public()
+- Packages installed: argon2@0.45.1, @nestjs/jwt@12.0.2, @nestjs/passport@12.0.0, passport@0.7.0, passport-jwt@4.0.1, @types/passport-jwt@4.0.1, @nestjs/throttler@6.5.0
+- Tests: 67/67 PASS (46 new + 21 regression)
+- Build: PASS (nest build — 0 errors)
+- No schema/migration changes
+- No commit created — GOV commit task required before P8-004
+- `lastCompletedTask`: `TOPLINE-P8-003`
+- G2 remaining blockers: P8-004 (not started), TDR-P2-001 through TDR-P2-005 (not registered)
+
+## P8-002 PASS Closeout (2026-09-18) — preserved
 
 - **TOPLINE-P8-002: PASS** — all three gates closed
 - Gate 1: Schema + migration artifact (TOPLINE-P8-002, 2026-09-16, commit `37f49e3`)
@@ -45,102 +64,18 @@ P8-002 advanced from PARTIAL to PASS on 2026-09-18. Three gates closed: schema +
 - ENV-READINESS-001: PASS (8 attempts, final WDR: `TOPLINE-P8-002-ENV-READINESS-001_WDR_2026-09-18_02-30.md`)
 - DB test file: `backend/src/testing/p8-002-db-integration.spec.ts` (created by DB-TESTS-WRITE-001)
 - P7-008 regression: 12/12 PASS — no regression from new test file
-- `lastCompletedTask`: `TOPLINE-P8-002-DB-TESTS-001`
-- G2 remaining blockers: P8-003 (not started), P8-004 (not started), TDR-P2-001 through TDR-P2-005 (not registered)
-- No commit created — commit task required before P8-003
 - `git.lastCommit` in registry stale at `29deff2` (actual HEAD: `cea1101`) — GOV commit will update
-
-## TDR-G2-AUDIT-001 Closeout (2026-09-17) — preserved
-
-- Audit conclusion: **G2 REMAINS BLOCKED — EVIDENCE OR APPROVALS MISSING**
-- P8-002: ~~PARTIAL~~ **PASS (2026-09-18)**
-- P8-002-R1: **PASS — CLOSED AS NO-OP** (2026-09-17) — false positive from global npx CLI 7.10.0; local Prisma 6.19.3 EXIT CODE 0 confirmed; no implementation needed
-- P8-003, P8-004: not started, not registered
-- TDR-P2-001 through TDR-P2-005: not registered, not started
-- TDR-G2-AUDIT-001 task and wdr-tdr-g2-audit-001 registered in registry
-- Post-task: 25 tasks (22 PASS, 1 PARTIAL, 2 BLOCKED), 30 WDR files on disk, 29 registry entries
-- `git.lastCommit` in registry remains stale at `29deff2` (actual HEAD: `cea1101`); evidence-fill needed
-- No product, backend, database, Auth/RBAC, ingestion, or frontend implementation performed
-- No commit created by this task
-
-## TDR-P0-004 Closeout (2026-09-17)
-
-- ADR-TDR-003 CLOSED: canonical MVP record = product-linked trade line (not full document suite)
-- ADR-TDR-004 PENDING PM: raw artifact storage (needs limits, infrastructure, security, budget approval)
-- ADR-TDR-005 CLOSED: synchronous in-process processing for MVP; queues deferred pending load evidence
-- ADR-TDR-006 CLOSED: exact duplicate suppressed; cross-batch conflict quarantined for human review
-- ADR-TDR-007 CLOSED: automatic normalization limited to deterministic non-material formatting only
-- ADR-TDR-008 CLOSED: material corrections require distinct approver; SINGLE_REVIEWER_EXCEPTION for small tenants
-- ADR-TDR-009 PENDING PM+Owner: retention and deletion policy (legal/compliance/budget decision)
-- ADR-TDR-010 CLOSED: marketplace/ERP integration contract-only and disabled by default
-- ADR-TDR-011 PENDING PM: performance and file limits (pending load evidence from TDR-P4-003)
-- ADR-TDR-012 PENDING PM+Owner: deployment and recovery objectives (pending G2 PASS + operations policy)
-- TDR-P0-004 task and wdr-tdr-p0-004 registered in registry
-- Post-task: 24 tasks (21 PASS, 1 PARTIAL, 2 BLOCKED), 28 WDR files, 28 registry entries
-- No product, backend, database, Auth/RBAC, ingestion, or frontend implementation performed
-- No commit created by this task
-
-## GOV-RECON-005 Closeout (2026-09-17) — preserved
-
-- git.lastCommit corrected: `4a783c528e652ec837c754b3fd71966906870b97` → `29deff2bb742bd3e101b18b307a85d6d72c96a0d`
-- TDR-GOV-RECON-005 task and wdr-tdr-gov-recon-005 registered in registry
-- Final verified state: 23 tasks (20 PASS, 1 PARTIAL, 2 BLOCKED), 27 WDR files, 27 registry entries
-- No product, backend, database, Auth/RBAC, ingestion, or frontend implementation performed
-- No commit created by this task
-
-## TDR-P0-003 Closeout (2026-09-17) — preserved
-
-- ADR-TDR-001 CLOSED: MVP user = authorized operations reviewer (tdr.view + tdr.quarantine.review); primary journey: inspect source → review batch → work quarantine queue → confirm lineage
-- ADR-TDR-002 CLOSED: UTF-8 CSV SUPPLIER_TRADE_LINES_V1 v1.0, 13 fixed headers; all examples synthetic
-- 7 sub-decisions PENDING PM (envelope limits, BOM, CRLF, null/empty, precision, storage backend)
-- TDR-P0-003 task and WDR registered in registry
-- No product, backend, database, Auth/RBAC, ingestion, or frontend implementation performed
-
-## GOV-RECON-004 Closeout (2026-09-17) — preserved
-
-- Stale GOV-RECON-003 count notes corrected: task count (18→20 final), WDR count (22→24 final), 17 PASS (not 16)
-- TDR-GOV-RECON-004 task and WDR registered in registry
-- No product, backend, database, Auth/RBAC, ingestion, or frontend implementation performed
-
-## GOV-RECON-003 Closeout (2026-09-17) — preserved
-
-- Task count corrected: 20 TDR tasks (17 PASS, 1 PARTIAL, 2 BLOCKED)
-- WDR count corrected: 24 files on disk, 24 registry entries
-- TDR-START-HERE.md G1 contradiction resolved (P1-011 historical, P1-012 resolved, G1 PASS)
-- Stale `backend/node_modules/prisma` wording corrected across 3 files (npm ci ran 2026-09-17)
-- TDR-GOV-RECON-003 task and WDR registered in registry
-- TDR-P0-003 PM-review prompt prepared (not authorized for execution)
-- No product, backend, database, Auth/RBAC, ingestion, or frontend implementation performed
-
-## GOV-RECON-002 Closeout (2026-09-17) — preserved
-
-- git.lastCommit updated: `e0e77f36a69d5f5d6e67d80b6e5b40e3c83ab251`
-- 4 missing WDR index entries added (TDR-P0-002-CORRECTIVE-001/002, TDR-P1-001-UX-CORRECTIVE-001, TDR-P1-005-VISUAL-CLOSURE-CHECK-001)
-- TDR-GOV-RECON-002 task registered in registry
-- Phase 8 P8-002 blocker #1 cleared (local Prisma 6.19.3 validated EXIT CODE 0)
-- ERP64 untracked files found in working tree — flagged for PM attention
-- No product, backend, database, Auth/RBAC, ingestion, or frontend implementation performed
-- TDR-P1-013, TDR-P2-001, and all backend TDR tasks remain unauthorized
+- G2 remaining blockers (at P8-002 closeout): P8-003 (now PASS), P8-004 (not started), TDR-P2-001 through TDR-P2-005 (not registered)
 
 ## Validation Baseline
 
 - Branch: `codex/trade-data-refinery`
-- HEAD: `cea1101d1039e77a1ed7e7ad2198cba81f2040be`
-- Build: PASS (from P1-012 evidence)
+- HEAD: `3836e65cff154bae6d250e7c48149b296271e9dc` (unchanged — no commit created in P8-003)
+- Backend build: PASS (P8-003 evidence)
+- Backend tests: 67/67 PASS (P8-003 evidence)
 - Lint: 0 errors, 5 unrelated marketplace image warnings
-- Backend/database/auth/RBAC/API work: P8-002 PASS; P8-003/P8-004 not started
+- Backend/database/auth work: P8-002 PASS; P8-003 PASS; P8-004 not started
 
 ## Last Updated
 
 2026-09-18
-
-## Phase 8 — P8-002 Implementation Status
-
-**TOPLINE-P8-002: PASS — All three gates closed (2026-09-18)**
-
-- Schema additions (2026-09-16, commit `37f49e3`): `User.passwordHash` (nullable), `AuditLog.ipAddress` (nullable), `AuditLog.userAgent` (nullable), `Session` model (tokenHash unique, userId/tenantId FKs, 5 indexes).
-- Migration applied (2026-09-18): `prisma migrate dev` created `toplineshop_dev` and applied both migrations.
-- DB integration tests (2026-09-18): `backend/src/testing/p8-002-db-integration.spec.ts` — 9/9 PASS. Test file created by TOPLINE-P8-002-DB-TESTS-WRITE-001.
-- P8-002-R1: PASS — closed as no-op (2026-09-17).
-- `lastCompletedTask`: `TOPLINE-P8-002-DB-TESTS-001`.
-- P8-003 requires separate PM-issued prompt and governance commit before starting.

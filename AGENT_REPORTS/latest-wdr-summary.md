@@ -2,23 +2,24 @@
 
 ## Current WDR
 
-**TDR-P8-002-GOVERNED-CLOSEOUT-RECON-001** — P8-002 Closeout Reconciliation and Next Task Handoff
+**TDR-P8-003-GOVERNED-CLOSEOUT-RECON-001** — P8-003 Closeout Reconciliation and Pre-P8-004 Handoff
 
 - Execution: `PASS`
 - G1 frontend freeze: `PASS`
-- G2 platform readiness: `BLOCKED` (P8-003, P8-004, TDR-P2-001–P2-005 outstanding)
-- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P8-002-GOVERNED-CLOSEOUT-RECON-001_WDR_2026-09-18_10-00.md`
-- Conclusion: **P8-002 PASS — all gates closed. G2 REMAINS BLOCKED.**
+- G2 platform readiness: `BLOCKED` (P8-004, TDR-P2-001–P2-005 outstanding)
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P8-003-GOVERNED-CLOSEOUT-RECON-001_WDR_2026-09-18_15-00.md`
+- Conclusion: **P8-003 PASS — auth lifecycle, write endpoint protection, 67/67 tests. G2 REMAINS BLOCKED.**
 
 ## Latest Prior WDR
 
-**TOPLINE-P8-002-DB-TESTS-001** — Run P8-002 Database Integration Tests (Formal Closeout)
+**TOPLINE-P8-003** — Authentication Session Lifecycle and Write Endpoint Protection
 
-- Execution: `PASS` — 9/9 DB integration tests pass
-- WDR: `WDR/_All/Trade-Data-Refinery/TOPLINE-P8-002-DB-TESTS-001_WDR_2026-09-18_09-00.md`
+- Execution: `PASS` — 67/67 tests, build PASS
+- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-003_WDR_2026-09-18_14-30.md`
 
 ## Registry Chain (Phase 8 + TDR)
 
+- TOPLINE-P8-003: `PASS` — auth lifecycle complete, no commit yet (2026-09-18)
 - TOPLINE-P8-002: `PASS` — schema, migration, DB tests all complete (2026-09-18)
 - TOPLINE-P8-002-R1: `PASS` — closed as no-op (2026-09-17)
 - TOPLINE-P8-002-ENV-READINESS-001: `PASS` (2026-09-18)
@@ -35,26 +36,10 @@
 - TDR-P0-004: `PASS`
 - TDR-G2-AUDIT-001: `PASS`
 
-## P8-002 Closeout Evidence Boundary (2026-09-18)
+## P8-003 Evidence Boundary (2026-09-18)
 
-All three P8-002 gates closed. Schema + migration artifact (2026-09-16, commit `37f49e3`); migration applied to local `toplineshop_dev` (MIGRATION-001 PASS); 9/9 DB integration tests pass using `backend/src/testing/p8-002-db-integration.spec.ts` (DB-TESTS-001 PASS). P7-008 regression: 12/12 PASS. G1 PASS. G2 BLOCKED — P8-003, P8-004, TDR-P2-001 through TDR-P2-005 outstanding. No commit created — GOV commit task required before P8-003.
-
-## TDR-G2-AUDIT-001 Evidence Boundary (2026-09-17) — preserved
-
-Read-only audit only. No product, backend, database, migration, auth, RBAC, ingestion, or package work. No commit created. G1 PASS. G2 BLOCKED. Blockers at time of audit: P8-002 PARTIAL (now PASS); ~~P8-002-R1 BLOCKED~~ **P8-002-R1 CLOSED as no-op (2026-09-17)**; P8-003/P8-004 not started; TDR-P2-001 through TDR-P2-005 not registered.
+P8-003 PASS. AuthModule, JwtAuthGuard (global APP_GUARD), @Public() allowlist, POST /auth/login + /auth/refresh + /auth/logout, HMAC-SHA256 refresh rotation, replay revocation, write endpoint protection (POST /tenants /vendors /categories /products → 401 without auth). 7 approved packages installed at exact versions. 67/67 tests PASS (46 new + 21 regression). Build PASS. No schema/migration changes. No commit created — GOV commit task required before P8-004. Registry syntax error (duplicate `{`) fixed by this closeout task. G1 PASS. G2 BLOCKED — P8-004 and TDR-P2-001 through TDR-P2-005 remaining.
 
 ## Last Updated
 
 2026-09-18
-
-## Phase 8 — Latest WDR
-
-**TOPLINE-P8-002-DB-TESTS-001** — Run P8-002 Database Integration Tests (Formal Closeout)
-
-- Execution: `PASS`
-- WDR: `WDR/_All/Trade-Data-Refinery/TOPLINE-P8-002-DB-TESTS-001_WDR_2026-09-18_09-00.md`
-- Test results: 9/9 PASS — users.password_hash (2), audit_logs.ip_address/user_agent (1), sessions (6)
-- P7-008 regression: 12/12 PASS
-- P8-002 advanced: PARTIAL → **PASS**
-- `lastCompletedTask`: `TOPLINE-P8-002-DB-TESTS-001`
-- Next required task: GOV commit (PM authorization required), then P8-003

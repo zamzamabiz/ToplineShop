@@ -5,6 +5,8 @@ export interface AuditEvent {
   tenantId?: string;
   actorUserId?: string;
   metadata?: Record<string, unknown>;
+  ipAddress?: string;
+  userAgent?: string;
   createdAt?: Date;
 }
 
