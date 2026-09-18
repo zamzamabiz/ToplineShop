@@ -26,11 +26,37 @@ export class StorageService {
     return path.join(this.storageRoot, storageKey);
   }
 
-  /** Move a temp file to permanent storage. Creates parent directories. */
+  /**
+   * Moves a temp file to permanent storage.
+   * Tries fs.renameSync first (atomic, same-volume).
+   * On EXDEV (cross-volume rename), falls back to a streaming copy + verify + delete source.
+   * No full-file buffer is allocated during the copy.
+   */
   async persist(tempPath: string, storageKey: string): Promise<void> {
     const dest = this.resolvePath(storageKey);
     fs.mkdirSync(path.dirname(dest), { recursive: true });
-    fs.renameSync(tempPath, dest);
+
+    try {
+      fs.renameSync(tempPath, dest);
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code !== 'EXDEV') throw err;
+
+      // Cross-volume: stream copy → verify → remove source
+      await this.streamCopy(tempPath, dest);
+
+      const srcSize = fs.statSync(tempPath).size;
+      const dstSize = fs.statSync(dest).size;
+      if (srcSize !== dstSize) {
+        await fs.promises.unlink(dest).catch(() => {});
+        throw new Error(
+          `Cross-volume copy verification failed for ${storageKey}: ` +
+          `src=${srcSize} dst=${dstSize}`,
+        );
+      }
+
+      await fs.promises.unlink(tempPath);
+      this.logger.warn(`Cross-volume copy used for ${storageKey} (EXDEV fallback)`);
+    }
   }
 
   /** Returns a readable stream for the stored file. */
@@ -60,5 +86,18 @@ export class StorageService {
     } catch (err) {
       this.logger.warn(`removeTempSafe failed for ${tempPath}: ${String(err)}`);
     }
+  }
+
+  private streamCopy(src: string, dest: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const readable = fs.createReadStream(src);
+      const writable = fs.createWriteStream(dest);
+
+      writable.on('finish', resolve);
+      writable.on('error', (e) => { readable.destroy(); reject(e); });
+      readable.on('error', (e) => { writable.destroy(); reject(e); });
+
+      readable.pipe(writable);
+    });
   }
 }

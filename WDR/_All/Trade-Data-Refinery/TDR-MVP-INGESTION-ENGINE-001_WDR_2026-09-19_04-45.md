@@ -4,7 +4,10 @@
 TDR-MVP-INGESTION-ENGINE-001 — MEGA 3: File Upload + Storage + SHA-256 Hashing + CSV/XLSX Parsers + Chunked Ingestion + Checkpoint/Retry/Recovery
 
 ## Status
-**PASS — READY FOR TDR-MVP-QUALITY-EXPORT-001 (Mega 4)**
+**PASS + CORRECTION-001 APPLIED — READY FOR TDR-MVP-QUALITY-EXPORT-001 (Mega 4)**
+
+> CORRECTION-001 applied: see `TDR-MVP-INGESTION-ENGINE-001-CORRECTION-001_WDR_2026-09-19_05-00.md`
+> Commit: `TBD — see CORRECTION-001 WDR`
 
 ## Repository
 `E:\ToplineShop`
@@ -17,7 +20,7 @@ TDR-MVP-INGESTION-ENGINE-001 — MEGA 3: File Upload + Storage + SHA-256 Hashing
 | | Hash |
 |---|---|
 | Starting HEAD | `39e02911afb596a0592b4eb2fec847c2012831c1` |
-| Final HEAD (after commit) | (to be filled after commit) |
+| Final HEAD (after commit) | `caa90fc` |
 
 Starting HEAD subject: `fix(tdr): align Mega 2 replay and cancel authorization contract` ✅
 
@@ -263,7 +266,7 @@ Time:        17.6 s
 |---|---|---|
 | computeFileHash | 5 | determinism, 64-char hex, content diff, reference match, missing file error |
 | computeRowHash | 6 | hex, determinism, column-order independence, value diff, undefined=empty, unicode |
-| computeSchemaFingerprint | 5 | hex, column-order independence, case-insensitive, diff headers, determinism |
+| computeSchemaFingerprint | 5 | hex, column-order independence, **case-PRESERVING** (CORRECTION-001), diff headers, determinism |
 | generateStorageKey | 1 | key format |
 | isStorageKeySafe | 5 | safe, path traversal, absolute, null byte, empty |
 | validateHeaders | 4 | valid, NO_HEADERS, DUPLICATE_HEADER, MALFORMED_HEADER |
@@ -363,7 +366,7 @@ Note: `xlsx.parser.ts` requires `EventEmitter` cast because `ExcelJS.stream.xlsx
 
 | Field | Value |
 |---|---|
-| Hash | (to be filled after commit) |
+| Hash | `caa90fc` |
 | Subject | `feat(tdr): TDR-MVP-INGESTION-ENGINE-001 Mega 3 upload + ingestion engine + 71 tests` |
 | Branch | `codex/trade-data-refinery` |
 | Files staged | 25 exact files |

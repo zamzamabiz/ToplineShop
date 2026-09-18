@@ -114,7 +114,7 @@ export class TdrIngestionHandlerService implements TdrJobHandler, OnModuleInit {
       const resumeFromRow = job.lastCheckpointRow ?? 0;
 
       const rowGenerator: AsyncGenerator<ParsedRow> = isXlsx
-        ? streamXlsxRows(filePath)
+        ? streamXlsxRows(filePath, headers)
         : streamCsvRows(filePath, headers);
 
       let chunk: ParsedRow[] = [];

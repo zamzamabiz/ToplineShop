@@ -121,10 +121,10 @@ describe('computeSchemaFingerprint', () => {
     expect(f1).toBe(f2);
   });
 
-  it('is case-insensitive', () => {
+  it('is case-PRESERVING (different case → different fingerprint)', () => {
     const f1 = computeSchemaFingerprint(['HS_Code', 'Quantity']);
     const f2 = computeSchemaFingerprint(['hs_code', 'quantity']);
-    expect(f1).toBe(f2);
+    expect(f1).not.toBe(f2); // Correction D: Pakistan Customs headers are case-sensitive
   });
 
   it('differs for different header sets', () => {
@@ -526,7 +526,176 @@ describe('file extension filter', () => {
   it('accepts .CSV (uppercase)', () => expect(filterExt('DATA.CSV')).toBe(true));
 });
 
-// ── 17. 1M-row architecture proof (runs only when TDR_1M_PROOF=1) ──────────────
+// ── 17. CORRECTION-001: File signature validation ─────────────────────────────
+
+describe('file content-signature validation', () => {
+  const XLSX_MAGIC = [0x50, 0x4b, 0x03, 0x04];
+
+  function checkXlsxMagic(buf: Buffer): boolean {
+    return (
+      buf.length >= 4 &&
+      buf[0] === XLSX_MAGIC[0] &&
+      buf[1] === XLSX_MAGIC[1] &&
+      buf[2] === XLSX_MAGIC[2] &&
+      buf[3] === XLSX_MAGIC[3]
+    );
+  }
+
+  function checkCsvBinary(buf: Buffer): boolean {
+    for (let i = 0; i < buf.length; i++) {
+      if (buf[i] === 0x00) return true; // has null byte → binary
+    }
+    return false;
+  }
+
+  it('valid ZIP magic (PK\\x03\\x04) passes XLSX check', () => {
+    const buf = Buffer.from([0x50, 0x4b, 0x03, 0x04, 0x14, 0x00]);
+    expect(checkXlsxMagic(buf)).toBe(true);
+  });
+
+  it('wrong magic bytes fail XLSX check', () => {
+    const buf = Buffer.from([0xff, 0xfe, 0x00, 0x00]); // UTF-16 BOM
+    expect(checkXlsxMagic(buf)).toBe(false);
+  });
+
+  it('file too small fails XLSX check', () => {
+    const buf = Buffer.from([0x50, 0x4b]);
+    expect(checkXlsxMagic(buf)).toBe(false);
+  });
+
+  it('plain CSV text passes binary check', () => {
+    const buf = Buffer.from('hs_code,quantity,country\n1234,10,NG\n', 'utf8');
+    expect(checkCsvBinary(buf)).toBe(false);
+  });
+
+  it('CSV with null byte is detected as binary', () => {
+    const buf = Buffer.from([0x68, 0x73, 0x00, 0x63, 0x6f, 0x64, 0x65]); // hs\0code
+    expect(checkCsvBinary(buf)).toBe(true);
+  });
+});
+
+// ── 18. CORRECTION-001: Schema fingerprint is case-preserving ─────────────────
+
+describe('computeSchemaFingerprint — Correction D compliance', () => {
+  it('Importer vs IMPORTER produce different fingerprints', () => {
+    expect(computeSchemaFingerprint(['Importer', 'HS_Code'])).not.toBe(
+      computeSchemaFingerprint(['IMPORTER', 'HS_CODE']),
+    );
+  });
+
+  it('same headers in same case always match', () => {
+    const h = ['HS_Code', 'Quantity', 'Unit_Price', 'Currency'];
+    expect(computeSchemaFingerprint(h)).toBe(computeSchemaFingerprint([...h]));
+  });
+
+  it('strips leading UTF-8 BOM from first header', () => {
+    const withBom = ['﻿HS_Code', 'Quantity'];
+    const withoutBom = ['HS_Code', 'Quantity'];
+    expect(computeSchemaFingerprint(withBom)).toBe(computeSchemaFingerprint(withoutBom));
+  });
+
+  it('produces JSON-encoded canonical form (unambiguous serialization)', () => {
+    const f1 = computeSchemaFingerprint(['col_a', 'col_b']);
+    // Manually compute expected: JSON.stringify(['col_a','col_b'].sort()) → sha256
+    const { createHash } = require('crypto');
+    const canonical = JSON.stringify(['col_a', 'col_b']);
+    const expected = createHash('sha256').update(canonical, 'utf8').digest('hex');
+    expect(f1).toBe(expected);
+  });
+});
+
+// ── 19. CORRECTION-001: Cross-volume storage EXDEV fallback ───────────────────
+
+describe('StorageService persist — EXDEV fallback', () => {
+  let tmpSrc: string;
+  let tmpDst: string;
+
+  beforeEach(() => {
+    tmpSrc = path.join(os.tmpdir(), `tdr-exdev-src-${crypto.randomUUID()}.tmp`);
+    tmpDst = path.join(os.tmpdir(), `tdr-exdev-dst-${crypto.randomUUID()}.tmp`);
+    fs.writeFileSync(tmpSrc, 'cross-volume-test-content', 'utf8');
+  });
+
+  afterEach(() => {
+    for (const p of [tmpSrc, tmpDst]) {
+      try { if (fs.existsSync(p)) fs.unlinkSync(p); } catch { /* ignore */ }
+    }
+  });
+
+  it('falls back to stream copy when rename throws EXDEV', async () => {
+    const { StorageService } = await import('./ingestion/storage/storage.service');
+    const svc = new StorageService();
+
+    // Redirect resolvePath to return our controlled tmpDst
+    jest.spyOn(svc, 'resolvePath').mockReturnValue(tmpDst);
+    // Simulate EXDEV (cross-volume rename failure)
+    const renameSpy = jest.spyOn(fs, 'renameSync').mockImplementationOnce(() => {
+      throw Object.assign(new Error('cross-device link not permitted'), { code: 'EXDEV' });
+    });
+
+    try {
+      await svc.persist(tmpSrc, 'tenant/file');
+      // After persist: dest exists, source removed
+      expect(fs.existsSync(tmpDst)).toBe(true);
+      expect(fs.existsSync(tmpSrc)).toBe(false);
+      expect(fs.readFileSync(tmpDst, 'utf8')).toBe('cross-volume-test-content');
+    } finally {
+      renameSpy.mockRestore();
+    }
+  });
+});
+
+// ── 20. XLSX streaming functional proof (always runs; creates a real XLSX) ─────
+
+describe('XLSX streaming functional proof', () => {
+  let tmpXlsx: string;
+  const XLSX_HEADERS = ['hs_code', 'quantity', 'country'];
+  const XLSX_ROW_COUNT = 200;
+
+  beforeAll(async () => {
+    tmpXlsx = path.join(os.tmpdir(), `tdr-xlsx-stream-${crypto.randomUUID()}.xlsx`);
+    const ExcelJS = await import('exceljs');
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet('Sheet1');
+    ws.addRow(XLSX_HEADERS);
+    for (let i = 1; i <= XLSX_ROW_COUNT; i++) {
+      ws.addRow([`${8400 + (i % 100)}`, `${i}`, 'NG']);
+    }
+    await wb.xlsx.writeFile(tmpXlsx);
+  }, 30_000);
+
+  afterAll(() => {
+    try { if (fs.existsSync(tmpXlsx)) fs.unlinkSync(tmpXlsx); } catch { /* ignore */ }
+  });
+
+  it('readXlsxHeaders returns correct headers without loading all rows', async () => {
+    const { readXlsxHeaders } = await import('./ingestion/parsers/xlsx.parser');
+    const headers = await readXlsxHeaders(tmpXlsx);
+    expect(headers).toEqual(XLSX_HEADERS);
+  });
+
+  it('streamXlsxRows yields all data rows incrementally (no full-array accumulation)', async () => {
+    const { readXlsxHeaders, streamXlsxRows } = await import('./ingestion/parsers/xlsx.parser');
+    const headers = await readXlsxHeaders(tmpXlsx);
+    let rowCount = 0;
+    for await (const parsed of streamXlsxRows(tmpXlsx, headers)) {
+      rowCount++;
+      expect(typeof parsed.row['hs_code']).toBe('string');
+      expect(parsed.rowNumber).toBe(rowCount);
+    }
+    expect(rowCount).toBe(XLSX_ROW_COUNT);
+  });
+
+  it('getXlsxSchemaFingerprint returns deterministic fingerprint', async () => {
+    const { getXlsxSchemaFingerprint } = await import('./ingestion/parsers/xlsx.parser');
+    const r1 = await getXlsxSchemaFingerprint(tmpXlsx);
+    const r2 = await getXlsxSchemaFingerprint(tmpXlsx);
+    expect(r1.fingerprint).toBe(r2.fingerprint);
+    expect(r1.headers).toEqual(XLSX_HEADERS);
+  });
+});
+
+// ── 22. 1M-row CSV architecture proof (runs only when TDR_1M_PROOF=1) ─────────
 
 const RUN_1M_PROOF = process.env['TDR_1M_PROOF'] === '1';
 

@@ -1,4 +1,11 @@
-import { ConflictException, ForbiddenException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
+import * as fs from 'fs';
 import * as path from 'path';
 import { randomUUID } from 'crypto';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -10,10 +17,12 @@ import { TDR_PROCESSING_VERSIONS } from '../../config/processing-version.config'
 import { StorageService } from '../storage/storage.service';
 import { MappingResolverService } from '../mapping/mapping-resolver.service';
 import { computeFileHash } from '../utils/file-hash.util';
-import { getCsvSchemaFingerprint } from '../parsers/csv.parser';
-import { getXlsxSchemaFingerprint } from '../parsers/xlsx.parser';
 import { INGESTION_ERROR } from '../constants/ingestion-error.codes';
 import { UploadBatchDto } from './upload.dto';
+
+// ZIP/OpenXML magic bytes: PK\x03\x04
+const XLSX_MAGIC = [0x50, 0x4b, 0x03, 0x04] as const;
+const FILE_SIGNATURE_SAMPLE = 1024;
 
 export interface UploadResult {
   sourceFileId: string;
@@ -44,6 +53,12 @@ export class UploadService {
     try {
       // Direction RBAC check (before any disk I/O beyond what multer already did)
       this.checkDirectionAuthorization(user.roles, dto.tradeDirection);
+
+      const ext = path.extname(file.originalname).toLowerCase();
+
+      // Content-signature sanity: reject binary masquerading as CSV; reject
+      // non-ZIP masquerading as XLSX. Runs before SHA-256 so we fail fast.
+      await this.validateFileContent(tempPath, ext);
 
       // Compute SHA-256 content hash
       const contentHash = await computeFileHash(tempPath);
@@ -94,31 +109,15 @@ export class UploadService {
         );
       }
 
-      // Get schema fingerprint (headers) for recording in batch
-      const ext = path.extname(file.originalname).toLowerCase();
-      const { fingerprint: schemaFingerprint } =
-        ext === '.xlsx'
-          ? await getXlsxSchemaFingerprint(tempPath)
-          : await getCsvSchemaFingerprint(tempPath);
-
-      // Schema fingerprint mismatch check (if mapping specifies expected fingerprint)
-      if (
-        mapping.sourceSchemaFingerprint &&
-        mapping.sourceSchemaFingerprint !== schemaFingerprint
-      ) {
-        throw Object.assign(
-          new ConflictException(
-            `File headers do not match mapping "${dto.mappingProfileId}" expected schema`,
-          ),
-          { code: INGESTION_ERROR.SCHEMA_FINGERPRINT_MISMATCH },
-        );
-      }
+      // Schema fingerprint validation is deferred to the ingestion worker, where it runs
+      // asynchronously alongside row parsing. The HTTP upload path remains bounded to
+      // O(1) file I/O (SHA-256 stream pass + 1 KB content-signature sample).
 
       // Pre-generate IDs so storage key is determined before DB insert
       const sourceFileId = randomUUID();
       const storageKey = this.storage.generateKey(user.tenantId, sourceFileId);
 
-      // Move temp → permanent storage
+      // Move temp → permanent storage (EXDEV-safe: falls back to stream copy)
       await this.storage.persist(tempPath, storageKey);
       permanentKey = storageKey;
 
@@ -133,7 +132,6 @@ export class UploadService {
         mappingId: mapping.id,
         mappingVersion,
         fingerprintHash,
-        schemaFingerprint,
       });
 
       await this.audit.recordEvent({
@@ -159,6 +157,43 @@ export class UploadService {
         await this.storage.removeTempSafe(tempPath);
       }
       throw err;
+    }
+  }
+
+  /**
+   * Validates file content signature before any heavy processing.
+   * XLSX must begin with ZIP magic bytes PK\x03\x04.
+   * CSV must not contain null bytes in the first 1 KB (binary rejection).
+   */
+  private async validateFileContent(tempPath: string, ext: string): Promise<void> {
+    const handle = await fs.promises.open(tempPath, 'r');
+    try {
+      const buf = Buffer.alloc(FILE_SIGNATURE_SAMPLE);
+      const { bytesRead } = await handle.read(buf, 0, FILE_SIGNATURE_SAMPLE, 0);
+
+      if (ext === '.xlsx') {
+        if (
+          bytesRead < 4 ||
+          buf[0] !== XLSX_MAGIC[0] ||
+          buf[1] !== XLSX_MAGIC[1] ||
+          buf[2] !== XLSX_MAGIC[2] ||
+          buf[3] !== XLSX_MAGIC[3]
+        ) {
+          throw new BadRequestException(
+            'File does not have a valid XLSX (ZIP/OpenXML) signature',
+          );
+        }
+      } else if (ext === '.csv') {
+        for (let i = 0; i < bytesRead; i++) {
+          if (buf[i] === 0x00) {
+            throw new BadRequestException(
+              'File claims to be CSV but appears to contain binary data',
+            );
+          }
+        }
+      }
+    } finally {
+      await handle.close();
     }
   }
 
@@ -194,7 +229,6 @@ export class UploadService {
     mappingId: string;
     mappingVersion: string;
     fingerprintHash: string;
-    schemaFingerprint: string;
   }): Promise<{ batchId: string; jobId: string }> {
     const { user, dto, file, contentHash, sourceFileId, storageKey, mappingId, mappingVersion, fingerprintHash } =
       params;
