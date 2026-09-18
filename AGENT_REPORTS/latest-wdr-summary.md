@@ -2,13 +2,15 @@
 
 ## Current WDR
 
-**TDR-GLOBAL-5-R1-POLICY-RESOLUTION-001** — Global #5-R1 Policy Reference Resolved (PM Option C)
+**TOPLINE-P8-005** — Phase 8 Freeze / Readiness Gate
 
 - Execution: `PASS`
+- Build: `PASS`
+- Tests: `109/109 PASS` (P8-002 + P8-003 + P8-004 regression + RBAC)
 - G1 frontend freeze: `PASS`
 - G2 platform readiness: `BLOCKED` (TDR-P2-001–P2-005 outstanding)
-- WDR: `WDR/_All/Trade-Data-Refinery/TDR-GLOBAL-5-R1-POLICY-RESOLUTION-001_WDR_2026-09-18_21-00.md`
-- Conclusion: **PM Option C recorded. `docs/UNIVERSAL-AI-AGENT-EXECUTION-POLICY.md` is the active canonical ERP64/TDR policy. `docs/TOPLINESHOP-AGENT-EXECUTION-POLICY.md` and commit `f7272f6d` are non-applicable to this branch. P8-005 preparation is unblocked pending PM authorization.**
+- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-005_WDR_2026-09-18_22-00.md`
+- Conclusion: **Phase 8 is frozen. P8-002/P8-003/P8-004 verified PASS. All safety checks PASS. TDR-P2 preparation authorized after PM approval of TDR-GOV-COMMIT-P8-005-001 and TDR-P2-001.**
 
 ## Prior WDR
 

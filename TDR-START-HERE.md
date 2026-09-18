@@ -9,9 +9,9 @@ This is the mandatory restart checkpoint for ChatGPT Luna, Claude Code, and huma
 - Stable branch: `master` — do not modify directly
 - Governance: `#123` — DISCUSS → DECIDE → EXECUTE → VERIFY/AUDIT → CLOSE → NEXT
 - Product status: frontend work is complete; TDR-P1-011 was the historical blocked audit — TDR-P1-012 resolved it; G1 (frontend freeze) is `PASS`
-- Last completed task: `TDR-GLOBAL-5-R1-POLICY-RESOLUTION-001 — Global #5-R1 Policy Reference Resolved (PM Option C)`
+- Last completed task: `TOPLINE-P8-005 — Phase 8 Freeze / Readiness Gate`
 - Current task status: `PASS`
-- Latest authoritative WDR: `WDR/_All/Trade-Data-Refinery/TDR-GLOBAL-5-R1-POLICY-RESOLUTION-001_WDR_2026-09-18_21-00.md` — `PASS`
+- Latest authoritative WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-005_WDR_2026-09-18_22-00.md` — `PASS`
 - Governed P8-003 commit: `dd540a873766fc2d472e27a72ada404438ed0dc5` — `feat(p8-003): auth session lifecycle and write endpoint protection` — not pushed
 - Universal AI Agent Execution Policy: `docs/UNIVERSAL-AI-AGENT-EXECUTION-POLICY.md` — ACTIVE (2026-09-18)
 - G1 frontend freeze: `PASS`
@@ -19,6 +19,7 @@ This is the mandatory restart checkpoint for ChatGPT Luna, Claude Code, and huma
 - **TOPLINE-P8-003: PASS** (2026-09-18) — auth lifecycle, global AuthGuard, write endpoint protection, 67/67 tests
 - **TOPLINE-P8-004: PASS** (2026-09-18) — RBAC, RolesGuard, PermissionsGuard, @Roles/@RequiresTenantContext decorators, 109/109 tests
 - **TDR-GLOBAL-5-R1-POLICY-RESOLUTION-001: PASS** (2026-09-18) — PM Option C: docs/UNIVERSAL-AI-AGENT-EXECUTION-POLICY.md confirmed as active canonical ERP64/TDR policy; P8-005 unblocked for preparation
+- **TOPLINE-P8-005: PASS** (2026-09-18) — Phase 8 freeze/readiness gate complete; 109/109 tests, build PASS, registry/WDR consistent, G1 PASS, G2 BLOCKED (TDR-P2-001 through TDR-P2-005 outstanding)
 - P8-004 commit: `df56379e83b0624260af8d07c957db961eaa63e3` — `feat(p8-004): RBAC role-based access control on auth foundation` — not pushed
 - G2 platform readiness: `BLOCKED` — TDR-P2-001 through TDR-P2-005 outstanding
 - P8-003 GOV commit created: `dd540a873766fc2d472e27a72ada404438ed0dc5` (TDR-GOV-COMMIT-P8-003-001 PASS); registry git.lastCommit updated (TDR-GOV-COMMIT-HASH-CHECKPOINT-001 PASS); not pushed
