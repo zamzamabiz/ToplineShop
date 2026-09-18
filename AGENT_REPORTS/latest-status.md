@@ -2,10 +2,11 @@
 
 ## Current Program
 
-**Trade Data Refinery (TDR) — TDR-P2-002 PASS (2026-09-18) — RBAC Guard Contract Verified for TDR**
+**Trade Data Refinery (TDR) — TDR-P2-003 PASS (2026-09-19) — Module-Registry Enablement Contract Verified for TDR**
 
 ## TDR Current Status
 
+**TDR-P2-003: PASS — platform architecture verified sufficient for TDR module enablement; module registration point defined; disabled-tenant isolation contract defined (403); route/API exclusion contract defined; no BLOCKER_FOR_G2; 109/109 tests PASS; G1 PASS, G2 BLOCKED (2026-09-19)**
 **TDR-P2-002: PASS — RBAC guard contract verified for TDR; 10 Role constants, 5 Permission constants, 3 decorators, JwtAuthGuard+RolesGuard APP_GUARD chain verified; TDR role matrix produced; 109/109 tests PASS; G1 PASS, G2 BLOCKED (2026-09-18)**
 **TDR-P2-001: PASS — TDR Phase 2 scope registered under #FDD; TDR-P2-002 through TDR-P2-005 registered as platform readiness verification tasks; G1 PASS, G2 BLOCKED (2026-09-18)**
 **TOPLINE-P8-005: PASS — Phase 8 freeze/readiness gate complete; 109/109 tests, build PASS, G1 PASS, G2 BLOCKED (2026-09-18)**
