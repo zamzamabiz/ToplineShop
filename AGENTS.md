@@ -34,6 +34,11 @@ DISCUSS → DECIDE → EXECUTE → VERIFY/AUDIT → CLOSE → NEXT
 - Inability to verify safety
 - Action involving shop.com
 
+## Universal AI Agent Execution Policy
+All AI agents (Codex, Claude Code, MiniMax, future agents) must follow:
+`docs/UNIVERSAL-AI-AGENT-EXECUTION-POLICY.md`
+This policy applies to ERP64 Trade Refinery-Bushra and all current/future ERP64 modules.
+
 ## Current Task
 Must be PM-approved before execution. See `src/project/projectRegistry.ts` for current state.
 

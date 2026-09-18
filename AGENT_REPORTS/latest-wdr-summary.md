@@ -2,20 +2,20 @@
 
 ## Current WDR
 
-**TDR-P8-003-GOVERNED-CLOSEOUT-RECON-001** — P8-003 Closeout Reconciliation and Pre-P8-004 Handoff
+**ERP64-UNIVERSAL-AI-POLICY-ADOPTION-001** — Universal AI Agent Execution Policy Adoption
 
 - Execution: `PASS`
 - G1 frontend freeze: `PASS`
 - G2 platform readiness: `BLOCKED` (P8-004, TDR-P2-001–P2-005 outstanding)
-- WDR: `WDR/_All/Trade-Data-Refinery/TDR-P8-003-GOVERNED-CLOSEOUT-RECON-001_WDR_2026-09-18_15-00.md`
-- Conclusion: **P8-003 PASS — auth lifecycle, write endpoint protection, 67/67 tests. G2 REMAINS BLOCKED.**
+- WDR: `WDR/_All/Trade-Data-Refinery/ERP64-UNIVERSAL-AI-POLICY-ADOPTION-001_WDR_2026-09-18_16-30.md`
+- Conclusion: **Policy file created at `docs/UNIVERSAL-AI-AGENT-EXECUTION-POLICY.md`. Applies to all ERP64 modules and all AI agents. P8-004 remains BLOCKED pending PM authorization.**
 
 ## Latest Prior WDR
 
-**TOPLINE-P8-003** — Authentication Session Lifecycle and Write Endpoint Protection
+**TDR-GOV-COMMIT-HASH-CHECKPOINT-001** — Registry Commit Evidence Checkpoint
 
-- Execution: `PASS` — 67/67 tests, build PASS
-- WDR: `WDR/_All/Phase-08-Database-Auth-RBAC/TOPLINE-P8-003_WDR_2026-09-18_14-30.md`
+- Execution: `PASS`
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-GOV-COMMIT-HASH-CHECKPOINT-001_WDR_2026-09-18_16-00.md`
 
 ## Registry Chain (Phase 8 + TDR)
 
@@ -39,6 +39,21 @@
 ## P8-003 Evidence Boundary (2026-09-18)
 
 P8-003 PASS. AuthModule, JwtAuthGuard (global APP_GUARD), @Public() allowlist, POST /auth/login + /auth/refresh + /auth/logout, HMAC-SHA256 refresh rotation, replay revocation, write endpoint protection (POST /tenants /vendors /categories /products → 401 without auth). 7 approved packages installed at exact versions. 67/67 tests PASS (46 new + 21 regression). Build PASS. No schema/migration changes. No commit created — GOV commit task required before P8-004. Registry syntax error (duplicate `{`) fixed by this closeout task. G1 PASS. G2 BLOCKED — P8-004 and TDR-P2-001 through TDR-P2-005 remaining.
+
+## GOV Commit Evidence
+
+- TDR-GOV-COMMIT-P8-003-001: PASS (2026-09-18)
+- Commit hash: `dd540a873766fc2d472e27a72ada404438ed0dc5`
+- 30 files, 3244 insertions(+), 145 deletions(-)
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-GOV-COMMIT-P8-003-001_WDR_2026-09-18_15-30.md`
+- Not pushed
+
+## Registry Commit Evidence Checkpoint
+
+- TDR-GOV-COMMIT-HASH-CHECKPOINT-001: PASS (2026-09-18)
+- git.lastCommit updated: `29deff2bb742bd3e101b18b307a85d6d72c96a0d` → `dd540a873766fc2d472e27a72ada404438ed0dc5`
+- WDR: `WDR/_All/Trade-Data-Refinery/TDR-GOV-COMMIT-HASH-CHECKPOINT-001_WDR_2026-09-18_<HH-MM>.md`
+- No commit created
 
 ## Last Updated
 

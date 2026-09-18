@@ -2,10 +2,13 @@
 
 ## Current Program
 
-**Trade Data Refinery (TDR) — TDR-P8-003-GOVERNED-CLOSEOUT-RECON-001 P8-003 Closeout Reconciliation (2026-09-18)**
+**Trade Data Refinery (TDR) — ERP64-UNIVERSAL-AI-POLICY-ADOPTION-001 Policy Adoption (2026-09-18)**
 
 ## TDR Current Status
 
+**ERP64-UNIVERSAL-AI-POLICY-ADOPTION-001: PASS — Universal AI Agent Execution Policy adopted; docs/UNIVERSAL-AI-AGENT-EXECUTION-POLICY.md created**
+**TDR-GOV-COMMIT-HASH-CHECKPOINT-001: PASS — registry git.lastCommit updated to dd540a8 (2026-09-18)**
+**TDR-GOV-COMMIT-P8-003-001: PASS — P8-003 GOV commit dd540a873766fc2d472e27a72ada404438ed0dc5 (2026-09-18)**
 **TDR-P8-003-GOVERNED-CLOSEOUT-RECON-001: PASS — P8-003 implementation reconciled; G2 still BLOCKED**
 **TOPLINE-P8-003: PASS — global AuthGuard, login/logout/refresh, write-endpoint protection, 67/67 tests (2026-09-18)**
 **TOPLINE-P8-002-DB-TESTS-001: PASS — 9/9 DB integration tests pass (2026-09-18)**
@@ -17,7 +20,7 @@
 **G1 — TDR Frontend Freeze: PASS**
 **G2 — Platform Readiness: BLOCKED** (P8-004 not started; TDR-P2-xxx not registered)
 
-P8-003 completed on 2026-09-18. Global JwtAuthGuard with @Public() allowlist, POST /auth/login + /auth/refresh + /auth/logout, HMAC-SHA256 refresh rotation, replay revocation, write endpoint protection on POST /tenants /vendors /categories /products. 67/67 tests pass (46 new + 21 regression). Build PASS. No schema/migration changes. G2 remains BLOCKED — P8-004 and TDR-P2-001 through TDR-P2-005 still outstanding. No commit created.
+P8-003 completed on 2026-09-18. Global JwtAuthGuard with @Public() allowlist, POST /auth/login + /auth/refresh + /auth/logout, HMAC-SHA256 refresh rotation, replay revocation, write endpoint protection on POST /tenants /vendors /categories /products. 67/67 tests pass (46 new + 21 regression). Build PASS. No schema/migration changes. G2 remains BLOCKED — P8-004 and TDR-P2-001 through TDR-P2-005 still outstanding. **P8-003 GOV commit created: `dd540a873766fc2d472e27a72ada404438ed0dc5` (TDR-GOV-COMMIT-P8-003-001 PASS, 2026-09-18). Not pushed.**
 
 **Registry syntax fix**: Pre-existing duplicate `{` at line 2016 of projectRegistry.ts (near TOPLINE-P8-002-DB-TESTS-WRITE-001 entry) has been corrected. TypeScript syntax error TS1136 is now resolved. Pre-existing TS2322 errors on `"PENDING PM"` Status values remain (introduced before P8-003, out of scope).
 
