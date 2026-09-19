@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Inbox, Eye, Search, ChevronLeft, ChevronRight, X } from "lucide-react";
-import type { TdrBatch, TdrBatchStatus } from "@/types/tdr";
+import type { TdrMockBatch, TdrBatchStatus } from "@/types/tdr";
 import { TdrBatchDetailPanel } from "./TdrBatchDetailPanel";
 
 const STATUS_MAP: Record<TdrBatchStatus, { label: string; bg: string; text: string }> = {
@@ -43,13 +43,13 @@ const SELECT_STYLE = {
   color: "var(--text-primary)",
 };
 
-export function TdrBatchTable({ batches }: { batches: TdrBatch[] }) {
+export function TdrBatchTable({ batches }: { batches: TdrMockBatch[] }) {
   const [search, setSearch]             = useState("");
   const [statusFilter, setStatusFilter] = useState<TdrBatchStatus | "">("");
   const [sourceFilter, setSourceFilter] = useState("");
   const [pageSize, setPageSize]         = useState(5);
   const [page, setPage]                 = useState(1);
-  const [selectedBatch, setSelectedBatch] = useState<TdrBatch | null>(null);
+  const [selectedBatch, setSelectedBatch] = useState<TdrMockBatch | null>(null);
 
   const sources = useMemo(
     () => Array.from(new Set(batches.map((b) => b.sourceName))).sort(),

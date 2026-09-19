@@ -24,6 +24,10 @@ import { CorrectionService } from './quality/correction/correction.service';
 import { QuarantineService } from './quality/service/quarantine.service';
 import { TdrExportService } from './export/service/tdr-export.service';
 import { CreateExportDto } from './export/dto/create-export.dto';
+import { AnalyticsService } from './analytics/analytics.service';
+import { RecordsService } from './analytics/records.service';
+import { AnalyticsFilterDto, BreakdownDimension, TrendGranularity } from './analytics/dto/analytics-filter.dto';
+import { ListRecordsDto } from './analytics/dto/list-records.dto';
 
 interface TdrRequest {
   user: AuthenticatedUser;
@@ -37,6 +41,8 @@ export class TdrController {
     private readonly correctionService: CorrectionService,
     private readonly quarantineService: QuarantineService,
     private readonly exportService: TdrExportService,
+    private readonly analyticsService: AnalyticsService,
+    private readonly recordsService: RecordsService,
   ) {}
 
   // ── Core batch endpoints ────────────────────────────────────────────────────
@@ -133,5 +139,60 @@ export class TdrController {
     @Res({ passthrough: true }) _res: Response,
   ) {
     return this.exportService.downloadExport(id, req.user);
+  }
+
+  // ── Analytics endpoints ───────────────────────────────────────────────────
+
+  @Get('analytics/summary')
+  getAnalyticsSummary(
+    @Req() req: TdrRequest,
+    @Query() dto: AnalyticsFilterDto,
+  ) {
+    return this.analyticsService.getSummary(req.user.tenantId, dto);
+  }
+
+  @Get('analytics/trend')
+  getAnalyticsTrend(
+    @Req() req: TdrRequest,
+    @Query() dto: AnalyticsFilterDto,
+    @Query('granularity') granularity: TrendGranularity = TrendGranularity.MONTH,
+  ) {
+    const safeGranularity =
+      Object.values(TrendGranularity).includes(granularity)
+        ? granularity
+        : TrendGranularity.MONTH;
+    return this.analyticsService.getTrend(req.user.tenantId, dto, safeGranularity);
+  }
+
+  @Get('analytics/breakdown')
+  getAnalyticsBreakdown(
+    @Req() req: TdrRequest,
+    @Query() dto: AnalyticsFilterDto,
+    @Query('dimension') dimension: BreakdownDimension = BreakdownDimension.TRADE_DIRECTION,
+    @Query('topN') topN = '20',
+  ) {
+    const safeDimension =
+      Object.values(BreakdownDimension).includes(dimension)
+        ? dimension
+        : BreakdownDimension.TRADE_DIRECTION;
+    const safeTopN = Math.min(Math.max(1, parseInt(topN, 10) || 20), 100);
+    return this.analyticsService.getBreakdown(
+      req.user.tenantId,
+      dto,
+      safeDimension,
+      safeTopN,
+    );
+  }
+
+  @Get('analytics/filter-options')
+  getAnalyticsFilterOptions(@Req() req: TdrRequest) {
+    return this.analyticsService.getFilterOptions(req.user.tenantId);
+  }
+
+  // ── Records endpoint ──────────────────────────────────────────────────────
+
+  @Get('records')
+  listRecords(@Req() req: TdrRequest, @Query() dto: ListRecordsDto) {
+    return this.recordsService.listRecords(req.user.tenantId, dto);
   }
 }

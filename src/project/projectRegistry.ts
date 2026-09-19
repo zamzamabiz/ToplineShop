@@ -9,7 +9,8 @@ export type Status =
   | "DEFERRED"
   | "NOT_STARTED"
   | "ACTIVE"
-  | "ENFORCED";
+  | "ENFORCED"
+  | "PENDING PM";
 
 export interface Phase {
   id: string;

@@ -17,6 +17,8 @@ import { QuarantineService } from './quality/service/quarantine.service';
 import { TdrExportOrchestratorService } from './export/orchestrator/tdr-export-orchestrator.service';
 import { TdrExportHandlerService } from './export/handler/tdr-export-handler.service';
 import { TdrExportService } from './export/service/tdr-export.service';
+import { AnalyticsService } from './analytics/analytics.service';
+import { RecordsService } from './analytics/records.service';
 
 @Module({
   controllers: [TdrController, UploadController],
@@ -37,6 +39,8 @@ import { TdrExportService } from './export/service/tdr-export.service';
     TdrExportOrchestratorService,
     TdrExportHandlerService,
     TdrExportService,
+    AnalyticsService,
+    RecordsService,
   ],
   exports: [TdrJobOrchestratorService, TdrProcessorService],
 })

@@ -1,296 +1,224 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { AppShell } from "@/components/layout/AppShell";
-import { Button } from "@/components/ui/Button";
-import { TdrPreviewBanner } from "@/components/tdr/TdrPreviewBanner";
-import { TdrProjectManagementPanel } from "@/components/tdr/TdrProjectManagementPanel";
-import { TdrMetricsGrid } from "@/components/tdr/TdrMetricsGrid";
-import { TdrBatchTable } from "@/components/tdr/TdrBatchTable";
-import { TdrQualityPanel } from "@/components/tdr/TdrQualityPanel";
-import { TdrQuarantinePanel } from "@/components/tdr/TdrQuarantinePanel";
-import { TdrSourceHealthPanel } from "@/components/tdr/TdrSourceHealthPanel";
-import { TdrImportWorkflowPanel } from "@/components/tdr/TdrImportWorkflowPanel";
-import { TdrLineageQualityPanel } from "@/components/tdr/TdrLineageQualityPanel";
-import { TDR_SCENARIOS, VIEW_STATE_LABELS } from "@/features/tdr/mockData";
-import type { TdrViewState } from "@/types/tdr";
-import { DatabaseZap, Upload, EyeOff, Settings, Eye } from "lucide-react";
+import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import { useAuth } from '@/lib/auth-context';
+import { getTdrStatus, getAnalyticsSummary, listBatches } from '@/lib/tdr-api';
+import type { TdrStatus, AnalyticsSummary, TdrBatch } from '@/types/tdr';
 
-const VIEW_STATES: TdrViewState[] = ["healthy", "empty", "loading", "warning", "failed", "disabled"];
-
-function SkeletonBox({ className = "" }: { className?: string }) {
+function StatCard({
+  label,
+  value,
+  sub,
+}: {
+  label: string;
+  value: string | number;
+  sub?: string;
+}) {
   return (
-    <div
-      className={`animate-pulse rounded-md ${className}`}
-      style={{ backgroundColor: "var(--surface-secondary)" }}
-      aria-hidden="true"
-    />
+    <div className="bg-surface-secondary border border-white/10 rounded-lg p-4">
+      <p className="text-xs text-text-muted uppercase tracking-wider mb-1">{label}</p>
+      <p className="text-2xl font-bold text-text-primary">{value}</p>
+      {sub && <p className="text-xs text-text-muted mt-1">{sub}</p>}
+    </div>
   );
 }
 
-function LoadingSkeleton() {
+function BatchStatusPill({ status }: { status: string }) {
+  const colors: Record<string, string> = {
+    PENDING: 'bg-yellow-900/40 text-yellow-300',
+    PROCESSING: 'bg-blue-900/40 text-blue-300',
+    READY: 'bg-green-900/40 text-green-300',
+    PARTIAL: 'bg-orange-900/40 text-orange-300',
+    FAILED: 'bg-red-900/40 text-red-300',
+    CANCELLED: 'bg-gray-800 text-gray-400',
+    QUALITY_PENDING: 'bg-purple-900/40 text-purple-300',
+    REVIEW_REQUIRED: 'bg-amber-900/40 text-amber-300',
+  };
   return (
-    <div role="status" aria-label="Loading Trade Data Refinery">
-      {/* Visible explanatory banner — clarifies this is a preview state, not a broken page */}
-      <div
-        className="rounded-xl border px-6 py-5 mb-8 flex items-start gap-4"
-        style={{ backgroundColor: "var(--surface-primary)", borderColor: "var(--border-default)" }}
-      >
-        <div
-          className="mt-0.5 h-9 w-9 shrink-0 rounded-full flex items-center justify-center"
-          style={{ backgroundColor: "var(--surface-secondary)" }}
-          aria-hidden="true"
-        >
-          <DatabaseZap className="h-5 w-5" style={{ color: "var(--brand-primary)" }} />
-        </div>
-        <div>
-          <p className="text-base font-semibold mb-1">Loading Trade Data Refinery preview…</p>
-          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-            This is a <strong style={{ color: "var(--text-secondary)" }}>frontend-only skeleton state</strong>.
-            No backend, API, or database is connected. The page is not broken — skeleton cards below show the
-            layout that will populate once data is available.
-          </p>
-        </div>
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div
-            key={i}
-            className="rounded-xl border p-6"
-            style={{ backgroundColor: "var(--surface-primary)", borderColor: "var(--border-default)" }}
-          >
-            <SkeletonBox className="h-3 w-24 mb-3" />
-            <SkeletonBox className="h-7 w-16" />
-          </div>
-        ))}
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <div
-            className="rounded-xl border"
-            style={{ backgroundColor: "var(--surface-primary)", borderColor: "var(--border-default)" }}
-          >
-            <div className="px-6 py-4 border-b" style={{ borderColor: "var(--border-default)" }}>
-              <SkeletonBox className="h-4 w-40" />
-            </div>
-            <div className="p-6 space-y-4">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="flex gap-4">
-                  <SkeletonBox className="h-4 flex-1" />
-                  <SkeletonBox className="h-4 w-20" />
-                  <SkeletonBox className="h-4 w-16" />
-                </div>
-              ))}
-            </div>
-          </div>
-          <div
-            className="rounded-xl border p-6"
-            style={{ backgroundColor: "var(--surface-primary)", borderColor: "var(--border-default)" }}
-          >
-            <SkeletonBox className="h-4 w-32 mb-4" />
-            <div className="space-y-3">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <SkeletonBox key={i} className="h-12 rounded-lg" />
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="space-y-6">
-          {Array.from({ length: 2 }).map((_, i) => (
-            <div
-              key={i}
-              className="rounded-xl border p-6"
-              style={{ backgroundColor: "var(--surface-primary)", borderColor: "var(--border-default)" }}
-            >
-              <SkeletonBox className="h-4 w-32 mb-4" />
-              <SkeletonBox className="h-3 mb-2" />
-              <SkeletonBox className="h-3 w-3/4 mb-2" />
-              <SkeletonBox className="h-3 w-1/2" />
-            </div>
+    <span
+      className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${colors[status] ?? 'bg-gray-800 text-gray-400'}`}
+    >
+      {status}
+    </span>
+  );
+}
+
+export default function TdrOverviewPage() {
+  const { accessToken } = useAuth();
+  const [status, setStatus] = useState<TdrStatus | null>(null);
+  const [summary, setSummary] = useState<AnalyticsSummary | null>(null);
+  const [recentBatches, setRecentBatches] = useState<TdrBatch[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    if (!accessToken) return;
+    abortRef.current?.abort();
+    const ctrl = new AbortController();
+    abortRef.current = ctrl;
+
+    setLoading(true);
+    setError(null);
+
+    Promise.all([
+      getTdrStatus(accessToken, ctrl.signal),
+      getAnalyticsSummary(accessToken, {}, ctrl.signal),
+      listBatches(accessToken, { pageSize: 5 }, ctrl.signal),
+    ])
+      .then(([s, sm, bl]) => {
+        setStatus(s);
+        setSummary(sm);
+        setRecentBatches(bl.batches);
+      })
+      .catch((err) => {
+        if (err?.name !== 'AbortError') setError(err?.message ?? 'Failed to load');
+      })
+      .finally(() => setLoading(false));
+
+    return () => ctrl.abort();
+  }, [accessToken]);
+
+  if (loading) {
+    return (
+      <div className="animate-pulse space-y-4">
+        <div className="h-8 bg-surface-secondary rounded w-48" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-20 bg-surface-secondary rounded-lg" />
           ))}
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-function ModuleDisabledState() {
-  return (
-    <div
-      className="rounded-xl border text-center py-16 px-8"
-      style={{ backgroundColor: "var(--surface-primary)", borderColor: "var(--border-default)" }}
-      role="status"
-      aria-label="Trade Data Refinery module is disabled"
-    >
-      <EyeOff className="h-12 w-12 mx-auto mb-4" style={{ color: "var(--text-muted)" }} aria-hidden="true" />
-      <h2 className="text-xl font-semibold mb-2">Module Disabled</h2>
-      <p className="text-sm max-w-md mx-auto" style={{ color: "var(--text-muted)" }}>
-        The Trade Data Refinery module is currently disabled for this tenant. Contact your platform administrator to
-        enable it.
-      </p>
-      <div className="mt-6">
-        <Button
-          variant="outline"
-          disabled
-          aria-label="Request access — not available in frontend preview"
-          title="Access request requires backend and Auth/RBAC implementation"
-        >
-          <Settings className="h-4 w-4" aria-hidden="true" />
-          Request Access
-        </Button>
+  if (error) {
+    return (
+      <div className="bg-red-900/20 border border-red-800 rounded-lg p-4 text-sm text-red-300">
+        {error}
       </div>
-    </div>
-  );
-}
-
-export default function TdrPage() {
-  const [viewState, setViewState] = useState<TdrViewState>("healthy");
-  const [importWorkflowOpen, setImportWorkflowOpen] = useState(false);
-
-  const scenario =
-    viewState !== "loading" && viewState !== "disabled" ? TDR_SCENARIOS[viewState] : null;
+    );
+  }
 
   return (
-    <AppShell dashboard="tdr">
-      <div style={{ backgroundColor: "var(--app-canvas)" }}>
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
-          <TdrPreviewBanner />
+    <div className="space-y-6 max-w-5xl">
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-semibold text-text-primary">Data Refinery</h1>
+        {status && !status.moduleEnabled && (
+          <span className="text-xs bg-yellow-900/40 text-yellow-300 px-3 py-1 rounded">
+            Module disabled for this tenant
+          </span>
+        )}
+      </div>
 
-          {/* Page header */}
-          <div className="mb-6">
-            <div className="flex items-start justify-between gap-4 flex-wrap">
-              <div className="flex items-center gap-3">
-                <DatabaseZap
-                  className="h-6 w-6 shrink-0"
-                  style={{ color: "var(--brand-primary)" }}
-                  aria-hidden="true"
-                />
-                <div>
-                  <h1 className="text-2xl font-bold">Trade Data Refinery</h1>
-                  <p className="mt-0.5 text-sm" style={{ color: "var(--text-muted)" }}>
-                    Ingest, validate, quarantine, and publish governed trade data records.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 flex-wrap">
-                <span
-                  className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium"
-                  style={{ backgroundColor: "#fef3c7", color: "#b45309" }}
-                  aria-label="Module status: Frontend Preview"
-                >
-                  Frontend Preview
-                </span>
-                <Button
-                  variant="outline"
-                  onClick={() => setImportWorkflowOpen(true)}
-                  aria-label="Open Import Workflow Preview — frontend demonstration only, no ingestion started"
-                  title="View the planned import workflow steps — frontend preview only"
-                >
-                  <Eye className="h-4 w-4" aria-hidden="true" />
-                  Import Workflow Preview
-                </Button>
-                <Button
-                  variant="default"
-                  disabled
-                  aria-label="New Import — backend not connected. Available after #FDD gate G1 and G2."
-                  title="Import requires backend and database implementation — not available in this frontend preview"
-                >
-                  <Upload className="h-4 w-4" aria-hidden="true" />
-                  New Import
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Project Management Panel */}
-          <TdrProjectManagementPanel isModuleDisabled={viewState === "disabled"} />
-
-          {/* Preview state selector */}
-          <div
-            className="rounded-lg border px-4 py-3 mb-8 flex items-center gap-3 flex-wrap"
-            style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-primary)" }}
-          >
-            <label
-              htmlFor="tdr-view-state"
-              className="text-xs font-medium shrink-0"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              Preview state:
-            </label>
-            <select
-              id="tdr-view-state"
-              value={viewState}
-              onChange={(e) => setViewState(e.target.value as TdrViewState)}
-              className="text-sm rounded-md border px-3 py-1.5 focus:outline-none focus-visible:ring-2"
-              style={{
-                backgroundColor: "var(--surface-secondary)",
-                borderColor: "var(--border-default)",
-                color: "var(--text-primary)",
-              }}
-            >
-              {VIEW_STATES.map((state) => (
-                <option key={state} value={state}>
-                  {VIEW_STATE_LABELS[state]}
-                </option>
-              ))}
-            </select>
-            <span className="text-xs" style={{ color: "var(--text-muted)" }}>
-              Switch states to review all required UX scenarios.
-            </span>
-          </div>
-
-          {/* State-conditional content */}
-          {viewState === "loading" && <LoadingSkeleton />}
-          {viewState === "disabled" && <ModuleDisabledState />}
-
-          {scenario && (
-            <>
-              <TdrMetricsGrid metrics={scenario.metrics} />
-              <div className="mb-8">
-                <TdrLineageQualityPanel lineage={scenario.lineage} />
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2 space-y-6">
-                  <TdrBatchTable key={viewState} batches={scenario.batches} />
-                  <TdrSourceHealthPanel sources={scenario.sources} />
-                </div>
-                <div className="space-y-6">
-                  <TdrQualityPanel quality={scenario.quality} />
-                  <TdrQuarantinePanel quality={scenario.quality} />
-                </div>
-              </div>
-
-              {/* Disabled import notice */}
-              <div
-                className="mt-6 rounded-lg border px-4 py-3 flex items-start gap-3"
-                style={{ borderColor: "var(--border-default)", backgroundColor: "var(--surface-muted)" }}
-                role="note"
-              >
-                <Upload className="h-4 w-4 mt-0.5 shrink-0" style={{ color: "var(--text-muted)" }} aria-hidden="true" />
-                <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-                  <strong style={{ color: "var(--text-secondary)" }}>New Import is disabled.</strong>{" "}
-                  Ingestion, file upload, and data processing require backend and database implementation gated behind
-                  #FDD gate G1 (frontend freeze) and G2 (platform Auth/RBAC). Use{" "}
-                  <button
-                    type="button"
-                    onClick={() => setImportWorkflowOpen(true)}
-                    className="underline font-medium focus-visible:outline-none focus-visible:ring-2 rounded"
-                    style={{ color: "var(--brand-primary)" }}
-                  >
-                    Import Workflow Preview
-                  </button>{" "}
-                  to explore the planned import workflow steps.
-                </p>
-              </div>
-            </>
-          )}
+      {summary && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <StatCard label="Total Records" value={summary.total.toLocaleString()} />
+          <StatCard
+            label="Quality Rate"
+            value={summary.qualityRate !== null ? `${summary.qualityRate}%` : '—'}
+            sub={`${summary.accepted.toLocaleString()} accepted`}
+          />
+          <StatCard
+            label="Quarantined"
+            value={summary.quarantined.toLocaleString()}
+          />
+          <StatCard
+            label="Export Eligible"
+            value={summary.exportEligibleCount.toLocaleString()}
+          />
         </div>
+      )}
+
+      <div className="grid md:grid-cols-3 gap-4">
+        <Link
+          href="/tdr/upload"
+          className="bg-accent-primary/10 border border-accent-primary/30 rounded-lg p-4 hover:bg-accent-primary/20 transition-colors"
+        >
+          <p className="font-medium text-accent-primary mb-1">New Import</p>
+          <p className="text-xs text-text-muted">Upload CSV or XLSX trade data</p>
+        </Link>
+        <Link
+          href="/tdr/analytics"
+          className="bg-surface-secondary border border-white/10 rounded-lg p-4 hover:border-white/20 transition-colors"
+        >
+          <p className="font-medium text-text-primary mb-1">Analytics</p>
+          <p className="text-xs text-text-muted">
+            Quality trends, HS breakdowns, country analysis
+          </p>
+        </Link>
+        <Link
+          href="/tdr/exports"
+          className="bg-surface-secondary border border-white/10 rounded-lg p-4 hover:border-white/20 transition-colors"
+        >
+          <p className="font-medium text-text-primary mb-1">Exports</p>
+          <p className="text-xs text-text-muted">Download accepted trade records as CSV</p>
+        </Link>
       </div>
 
-      {importWorkflowOpen && (
-        <TdrImportWorkflowPanel onClose={() => setImportWorkflowOpen(false)} />
+      {recentBatches.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
+              Recent Batches
+            </h2>
+            <Link
+              href="/tdr/batches"
+              className="text-xs text-accent-primary hover:underline"
+            >
+              View all
+            </Link>
+          </div>
+          <div className="bg-surface-secondary border border-white/10 rounded-lg overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="border-b border-white/10">
+                <tr className="text-left text-xs text-text-muted uppercase tracking-wider">
+                  <th className="px-4 py-2">File</th>
+                  <th className="px-4 py-2">Direction</th>
+                  <th className="px-4 py-2">Status</th>
+                  <th className="px-4 py-2">Uploaded</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentBatches.map((b) => (
+                  <tr
+                    key={b.id}
+                    className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                  >
+                    <td className="px-4 py-2 font-mono text-xs text-text-primary truncate max-w-[180px]">
+                      <Link
+                        href={`/tdr/batches/${b.id}`}
+                        className="hover:text-accent-primary"
+                      >
+                        {b.originalFilename}
+                      </Link>
+                    </td>
+                    <td className="px-4 py-2 text-xs text-text-secondary">
+                      {b.tradeDirection}
+                    </td>
+                    <td className="px-4 py-2">
+                      <BatchStatusPill status={b.status} />
+                    </td>
+                    <td className="px-4 py-2 text-xs text-text-muted">
+                      {new Date(b.uploadedAt ?? b.createdAt).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
-    </AppShell>
+
+      {recentBatches.length === 0 && !loading && (
+        <div className="border border-dashed border-white/20 rounded-lg p-8 text-center">
+          <p className="text-text-muted text-sm">No batches yet.</p>
+          <Link href="/tdr/upload" className="text-accent-primary text-sm hover:underline mt-2 inline-block">
+            Upload your first file
+          </Link>
+        </div>
+      )}
+    </div>
   );
 }

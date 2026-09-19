@@ -1,10 +1,232 @@
-export type TdrBatchStatus = "ACCEPTED" | "PARTIAL" | "FAILED" | "PROCESSING" | "QUEUED";
-export type TdrSourceStatus = "ACTIVE" | "PAUSED" | "ATTENTION";
-export type TdrViewState = "healthy" | "empty" | "loading" | "warning" | "failed" | "disabled";
-export type TdrEvidenceState = "available" | "stale" | "missing" | "unavailable";
-export type TdrLineageStatus = "accepted" | "warning" | "review" | "blocked";
-export type TdrQualitySeverity = "warning" | "error" | "fatal";
-export type TdrQualityDisposition = "accepted" | "corrected" | "quarantined" | "rejected";
+// Real backend types — replaces mock-only types from Frontend Preview mode.
+
+export type TradeDirection = 'IMPORT' | 'EXPORT';
+export type RowDisposition = 'ACCEPTED' | 'QUARANTINED' | 'REJECTED';
+export type BatchStatus =
+  | 'PENDING'
+  | 'PROCESSING'
+  | 'READY'
+  | 'PARTIAL'
+  | 'FAILED'
+  | 'CANCELLED'
+  | 'QUALITY_PENDING'
+  | 'REVIEW_REQUIRED';
+
+// ── Batch ─────────────────────────────────────────────────────────────────────
+
+export interface TdrBatch {
+  id: string;
+  tenantId: string;
+  status: BatchStatus;
+  tradeDirection: TradeDirection;
+  originalFilename: string;
+  mappingProfileId: string;
+  uploadedAt: string;
+  createdAt: string;
+  updatedAt: string;
+  // Legacy fields used by Frontend Preview components — not returned by real backend.
+  sourceName?: string;
+  quarantineCount?: number;
+}
+
+export interface TdrBatchProgress {
+  batchId: string;
+  status: BatchStatus;
+  totalRows: number;
+  processedRows: number;
+  acceptedRows: number;
+  quarantinedRows: number;
+  rejectedRows: number;
+  percentComplete: number;
+}
+
+export interface BatchListResponse {
+  batches: TdrBatch[];
+  total: number;
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
+}
+
+// ── Quarantine ────────────────────────────────────────────────────────────────
+
+export interface QuarantineRecord {
+  id: string;
+  batchId: string;
+  sourceRowNumber: number;
+  rowDisposition: RowDisposition;
+  issues: ValidationIssue[];
+}
+
+export interface ValidationIssue {
+  ruleCode: string;
+  severity: 'ERROR' | 'WARNING' | 'BLOCKING';
+  fieldName: string;
+  rawValue: string | null;
+  message: string;
+}
+
+export interface QuarantineListResponse {
+  records: QuarantineRecord[];
+  total: number;
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
+}
+
+// ── Exports ───────────────────────────────────────────────────────────────────
+
+export type ExportStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
+
+export interface TdrExportJob {
+  id: string;
+  status: ExportStatus;
+  rowCount: number | null;
+  rowLimit: number;
+  contentHash: string | null;
+  errorMessage: string | null;
+  createdAt: string;
+  completedAt: string | null;
+}
+
+// ── Analytics ─────────────────────────────────────────────────────────────────
+
+export interface AnalyticsSummary {
+  total: number;
+  accepted: number;
+  quarantined: number;
+  rejected: number;
+  qualityRate: number | null;
+  exportEligibleCount: number;
+  valueAggregationUnsafe: true;
+}
+
+export interface TrendPoint {
+  period: string;
+  total: number;
+  accepted: number;
+  quarantined: number;
+  rejected: number;
+}
+
+export interface TrendResponse {
+  granularity: 'DAY' | 'MONTH' | 'YEAR';
+  points: TrendPoint[];
+}
+
+export interface BreakdownItem {
+  value: string | null;
+  count: number;
+}
+
+export interface BreakdownResponse {
+  dimension: string;
+  items: BreakdownItem[];
+}
+
+export interface FilterOptions {
+  tradeDirections: TradeDirection[];
+  hsChapters: string[];
+  foreignCountryCodes: string[];
+  currencyCodes: string[];
+  quantityUnitCodes: string[];
+}
+
+// ── Records ───────────────────────────────────────────────────────────────────
+
+export interface TdrRecord {
+  id: string;
+  batchId: string;
+  sourceRowNumber: number;
+  tradeDirection: TradeDirection;
+  tradeDate: string | null;
+  hsCodeNormalized: string | null;
+  hsChapter: string | null;
+  productDescriptionNormalized: string | null;
+  localPartyNameNormalized: string | null;
+  localPartyTaxIdNormalized: string | null;
+  foreignPartyNameNormalized: string | null;
+  foreignPartyCountryCode: string | null;
+  quantityNormalized: number | null;
+  quantityUnitCode: string | null;
+  unitPriceNormalized: number | null;
+  currencyCode: string | null;
+  rowDisposition: RowDisposition;
+  exportEligible: boolean;
+  createdAt: string;
+}
+
+export interface RecordsListResponse {
+  records: TdrRecord[];
+  total: number;
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
+}
+
+// ── Shared analytics filter ───────────────────────────────────────────────────
+
+export interface AnalyticsFilter {
+  dateFrom?: string;
+  dateTo?: string;
+  tradeDirection?: TradeDirection;
+  hsCodePrefix?: string;
+  hsChapter?: string;
+  foreignCountryCode?: string;
+  localPartyTaxId?: string;
+  batchId?: string;
+  dispositions?: RowDisposition[];
+  currencyCode?: string;
+  quantityUnitCode?: string;
+  exportEligible?: boolean;
+}
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+
+export interface AuthLoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface AuthLoginResponse {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+  user: {
+    userId: string;
+    email: string;
+    tenantId: string;
+    roles: string[];
+  };
+}
+
+// ── Status ────────────────────────────────────────────────────────────────────
+
+export interface TdrStatus {
+  moduleEnabled: boolean;
+  tenantId: string;
+  activeBatchCount: number;
+}
+
+// ── Legacy types (used by orphaned Frontend Preview components) ───────────────
+
+// Legacy mock statuses — distinct from real BatchStatus intentionally.
+export type TdrBatchStatus = 'ACCEPTED' | 'PARTIAL' | 'FAILED' | 'PROCESSING' | 'QUEUED';
+export type TdrSourceStatus = 'ACTIVE' | 'PAUSED' | 'ATTENTION';
+export type TdrViewState = 'healthy' | 'empty' | 'loading' | 'warning' | 'failed' | 'disabled';
+export type TdrEvidenceState = 'available' | 'stale' | 'missing' | 'unavailable';
+export type TdrLineageStatus = 'accepted' | 'warning' | 'review' | 'blocked';
+export type TdrQualitySeverity = 'warning' | 'error' | 'fatal';
+export type TdrQualityDisposition = 'accepted' | 'corrected' | 'quarantined' | 'rejected';
+export type TdrSourceConfigState = 'draft' | 'ready' | 'needs_review' | 'disabled';
+export type TdrSourceType = 'CSV Import' | 'XLSX Import' | 'JSON Feed' | 'REST API' | 'SFTP Drop';
+export type TdrIngestionSchedule = 'Hourly' | 'Daily' | 'Weekly' | 'Manual';
+export type TdrQuarantineSeverity = 'warning' | 'error' | 'fatal';
+export type TdrQuarantineReviewStatus =
+  | 'needs_review'
+  | 'accepted_suggestion'
+  | 'rejected_suggestion'
+  | 'cannot_auto_fix';
 
 export interface TdrMetrics {
   batchesReceived: number;
@@ -13,15 +235,6 @@ export interface TdrMetrics {
   recordsPublished: number;
   dataQualityScore: number;
   lastSuccessfulRun: string | null;
-}
-
-export interface TdrBatch {
-  id: string;
-  sourceName: string;
-  receivedAt: string;
-  status: TdrBatchStatus;
-  acceptedCount: number;
-  quarantineCount: number;
 }
 
 export interface TdrQualitySummary {
@@ -82,17 +295,22 @@ export interface TdrLineageReport {
   evidence: TdrEvidenceItem[];
 }
 
+export interface TdrMockBatch {
+  id: string;
+  sourceName: string;
+  receivedAt: string;
+  status: TdrBatchStatus;
+  acceptedCount: number;
+  quarantineCount: number;
+}
+
 export interface TdrMockScenario {
   metrics: TdrMetrics;
-  batches: TdrBatch[];
+  batches: TdrMockBatch[];
   quality: TdrQualitySummary;
   sources: TdrSourceHealth[];
   lineage: TdrLineageReport;
 }
-
-export type TdrSourceConfigState = "draft" | "ready" | "needs_review" | "disabled";
-export type TdrSourceType = "CSV Import" | "XLSX Import" | "JSON Feed" | "REST API" | "SFTP Drop";
-export type TdrIngestionSchedule = "Hourly" | "Daily" | "Weekly" | "Manual";
 
 export interface TdrSourceConfig {
   id: string;
@@ -114,13 +332,6 @@ export interface TdrSourceConfig {
   batchCount: number;
   notes: string;
 }
-
-export type TdrQuarantineSeverity = "warning" | "error" | "fatal";
-export type TdrQuarantineReviewStatus =
-  | "needs_review"
-  | "accepted_suggestion"
-  | "rejected_suggestion"
-  | "cannot_auto_fix";
 
 export interface TdrQuarantineRecord {
   id: string;

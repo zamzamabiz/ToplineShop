@@ -6,7 +6,7 @@ import {
   X, CheckCircle2, AlertTriangle, XCircle, Clock, Ban,
   ShieldOff, Download, RefreshCw, Send,
 } from "lucide-react";
-import type { TdrBatch, TdrBatchStatus } from "@/types/tdr";
+import type { TdrMockBatch, TdrBatchStatus } from "@/types/tdr";
 
 // ---------------------------------------------------------------------------
 // Mock detail derivation — computed from existing TdrBatch fields.
@@ -109,7 +109,7 @@ const ISSUES: Record<TdrBatchStatus, (q: number) => QualityIssue[]> = {
   QUEUED:     () => [],
 };
 
-function buildMockDetail(batch: TdrBatch): MockDetail {
+function buildMockDetail(batch: TdrMockBatch): MockDetail {
   const src = SOURCE_CONFIG[batch.sourceName] ?? {
     fileType: "Data Feed",
     submittedBy: "Ingest Service",
@@ -251,7 +251,7 @@ export function TdrBatchDetailPanel({
   batch,
   onClose,
 }: {
-  batch: TdrBatch;
+  batch: TdrMockBatch;
   onClose: () => void;
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
