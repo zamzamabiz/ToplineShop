@@ -213,7 +213,7 @@ No 401/403 for dev user on any TDR endpoint.
 
 Confirmed via live browser:
 1. Open `/tdr` — login gate visible, form inputs present, button enabled ✓
-2. Enter `admin@toplineshop.dev` / `DevAdmin123!` ✓
+2. Enter `admin@toplineshop.dev` / `[password redacted — see CORRECTION-002]` ✓
 3. Sign in button enabled ✓
 4. Submit — spinner briefly appears ✓
 5. Login succeeds — Overview page renders with empty KPI cards ✓
@@ -262,7 +262,7 @@ Empty data is expected — no shipment records seeded (per §16 — data correct
 | TenantModuleGuard not bypassed | CONFIRMED — guard still queries DB on every request |
 | No hardcoded tokens or tenantId in frontend | CONFIRMED |
 | No localStorage usage introduced | CONFIRMED — authLogin test verifies no setItem calls |
-| Dev password in seed.js only (not in WDR, not in code) | CONFIRMED |
+| Dev password in seed.js only (not in WDR, not in code) | **RETROACTIVELY INCORRECT** — password was hardcoded in seed.js and printed to console. Corrected in CORRECTION-002 (commit follows). |
 | backend/.env not staged | CONFIRMED |
 | DATABASE_URL not in any committed file | CONFIRMED |
 | F:\OpenCode\shop.com not accessed | CONFIRMED |

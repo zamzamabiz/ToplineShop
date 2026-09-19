@@ -42,7 +42,7 @@ describe('authLogin — request contract', () => {
       ok: true,
       json: async () => ({ ok: true, data: makeLoginResp() }),
     });
-    await authLogin({ email: 'admin@toplineshop.dev', password: 'DevAdmin123!' });
+    await authLogin({ email: 'admin@toplineshop.dev', password: 'test-password' });
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const [url] = fetchMock.mock.calls[0];
     expect(url).toBe(`${API_BASE}/auth/login`);
