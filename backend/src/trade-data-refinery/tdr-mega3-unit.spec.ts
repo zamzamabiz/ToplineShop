@@ -257,8 +257,8 @@ describe('batch-transition with QUALITY_PENDING', () => {
     expect(isValidTransition('PROCESSING', 'QUALITY_PENDING')).toBe(true);
   });
 
-  it('QUALITY_PENDING → PROCESSING is valid (re-run quality)', () => {
-    expect(isValidTransition('QUALITY_PENDING', 'PROCESSING')).toBe(true);
+  it('QUALITY_PENDING → REVIEW_REQUIRED is valid (Mega 4: quality completed with quarantined rows)', () => {
+    expect(isValidTransition('QUALITY_PENDING', 'REVIEW_REQUIRED')).toBe(true);
   });
 
   it('QUALITY_PENDING → READY is valid', () => {

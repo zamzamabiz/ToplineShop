@@ -10,6 +10,13 @@ import { MappingResolverService } from './ingestion/mapping/mapping-resolver.ser
 import { UploadService } from './ingestion/upload/upload.service';
 import { UploadController } from './ingestion/upload/upload.controller';
 import { TdrIngestionHandlerService } from './ingestion/handler/tdr-ingestion-handler.service';
+import { TdrQualityOrchestratorService } from './quality/orchestrator/tdr-quality-orchestrator.service';
+import { TdrQualityHandlerService } from './quality/handler/tdr-quality-handler.service';
+import { CorrectionService } from './quality/correction/correction.service';
+import { QuarantineService } from './quality/service/quarantine.service';
+import { TdrExportOrchestratorService } from './export/orchestrator/tdr-export-orchestrator.service';
+import { TdrExportHandlerService } from './export/handler/tdr-export-handler.service';
+import { TdrExportService } from './export/service/tdr-export.service';
 
 @Module({
   controllers: [TdrController, UploadController],
@@ -23,6 +30,13 @@ import { TdrIngestionHandlerService } from './ingestion/handler/tdr-ingestion-ha
     MappingResolverService,
     UploadService,
     TdrIngestionHandlerService,
+    TdrQualityOrchestratorService,
+    TdrQualityHandlerService,
+    CorrectionService,
+    QuarantineService,
+    TdrExportOrchestratorService,
+    TdrExportHandlerService,
+    TdrExportService,
   ],
   exports: [TdrJobOrchestratorService, TdrProcessorService],
 })

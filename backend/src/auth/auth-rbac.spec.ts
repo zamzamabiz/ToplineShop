@@ -396,6 +396,10 @@ describe('P8-004 HTTP integration — RBAC enforcement', () => {
       create: jest.fn().mockResolvedValue({ id: 'p1', name: 'P', slug: 'p', tenantId: 'tenant-1', status: 'DRAFT', basePrice: '10.00', currency: 'NGN', inStock: true, createdAt: new Date(), updatedAt: new Date() }),
     },
     auditLog: { create: jest.fn().mockResolvedValue({}) },
+    tdrBatch: { findMany: jest.fn().mockResolvedValue([]), findFirst: jest.fn().mockResolvedValue(null) },
+    tdrQualityJob: { findUnique: jest.fn().mockResolvedValue(null), create: jest.fn().mockResolvedValue({ id: 'qj1' }), updateMany: jest.fn().mockResolvedValue({ count: 0 }) },
+    tdrExportJob: { findFirst: jest.fn().mockResolvedValue(null), updateMany: jest.fn().mockResolvedValue({ count: 0 }) },
+    $transaction: jest.fn().mockResolvedValue(null),
     $disconnect: jest.fn(),
     $connect: jest.fn(),
   };
