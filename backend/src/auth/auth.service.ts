@@ -85,6 +85,9 @@ export class AuthService {
       throw new UnauthorizedException(AuthService.FAILURE_MSG);
     }
 
+    const activeMembership = (user as any).memberships?.find((m: any) => m.tenantId === tenantId);
+    const roles: string[] = activeMembership?.roles ?? [];
+
     const rawRefreshToken = randomBytes(40).toString('hex');
     const tokenHash = this.hmacRefreshToken(rawRefreshToken);
     const expiresAt = new Date(Date.now() + AuthService.REFRESH_TTL_MS);
@@ -100,7 +103,7 @@ export class AuthService {
       },
     });
 
-    const accessToken = this.issueAccessToken(user.id, tenantId, [], session.id);
+    const accessToken = this.issueAccessToken(user.id, tenantId, roles, session.id);
 
     await this.audit.recordEvent({
       action: 'auth.login.success',
@@ -121,7 +124,7 @@ export class AuthService {
         userId: user.id,
         email: user.email,
         tenantId,
-        roles: [] as string[],
+        roles,
       },
     };
   }
@@ -200,7 +203,13 @@ export class AuthService {
       },
     });
 
-    const accessToken = this.issueAccessToken(session.userId, session.tenantId, [], newSession.id);
+    const refreshMembership = await this.prisma.membership.findUnique({
+      where: { userId_tenantId: { userId: session.userId, tenantId: session.tenantId } },
+      select: { roles: true },
+    });
+    const refreshRoles: string[] = refreshMembership?.roles ?? [];
+
+    const accessToken = this.issueAccessToken(session.userId, session.tenantId, refreshRoles, newSession.id);
 
     await this.audit.recordEvent({
       action: 'auth.refresh.success',

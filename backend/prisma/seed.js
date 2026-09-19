@@ -9,11 +9,9 @@
  * Requires TDR_DEV_ADMIN_PASSWORD environment variable — no default, must be set locally.
  * The seed is idempotent and rotates the password hash on every run.
  *
- * ROLE ARCHITECTURE NOTE: The Membership model carries no roles field.
- * auth.service.ts always issues roles: [] at login time.
- * Read-only TDR inspection works with roles: [].
- * Mutations (cancel/replay/correct/upload) require roles — this is a known
- * architecture gap pending PM authorization (not within scope of this seed).
+ * ROLE ARCHITECTURE: Membership.roles carries tenant-scoped roles (ARCH-ROLE-001 resolved).
+ * This seed explicitly assigns TENANT_ADMIN to the dev inspection account.
+ * Existing production memberships default to empty roles (additive migration).
  *
  * DO NOT RUN AGAINST PRODUCTION.
  */
@@ -71,14 +69,15 @@ async function main() {
 
   const membership = await prisma.membership.upsert({
     where: { userId_tenantId: { userId: user.id, tenantId: tenant.id } },
-    update: {},
+    update: { roles: ['TENANT_ADMIN'] },
     create: {
       userId: user.id,
       tenantId: tenant.id,
       status: 'ACTIVE',
+      roles: ['TENANT_ADMIN'],
     },
   });
-  console.log(`Membership:    ${membership.id}  (${membership.status})`);
+  console.log(`Membership:    ${membership.id}  (${membership.status}, roles: ${membership.roles.join(', ')})`);
 
   const tenantModule = await prisma.tenantModule.upsert({
     where: { tenantId_moduleKey: { tenantId: tenant.id, moduleKey: MODULE_KEY } },

@@ -238,6 +238,9 @@ describe('AuthService unit tests', () => {
         update: jest.fn().mockResolvedValue(makeSession({ revokedAt: new Date() })),
         updateMany: jest.fn().mockResolvedValue({ count: 1 }),
       },
+      membership: {
+        findUnique: jest.fn().mockResolvedValue({ roles: [] }),
+      },
     };
 
     mockJwt = {
