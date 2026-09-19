@@ -67,66 +67,71 @@ export class CorrectionService {
     // Apply correction to record
     const updateData = buildUpdateData(dto.fieldName, dto.correctedValue);
 
-    // Mark prior OPEN issues as REVIEWED
-    await this.prisma.tdrValidationIssue.updateMany({
-      where: { recordId, tenantId: user.tenantId, status: 'OPEN' },
-      data: { status: 'REVIEWED' },
-    });
-
-    // Apply the canonical field update
-    const updatedRecord = await this.prisma.tdrRecord.update({
-      where: { id: recordId },
-      data: { ...updateData, valueTreatmentMeta: { ...(record.valueTreatmentMeta as object ?? {}), [dto.fieldName]: 'CORRECTED' } },
-    });
-
-    // Revalidate using the corrected record's data (reconstruct a source-like row)
-    const revalidationRow = buildRevalidationRow(updatedRecord, config);
-    const newNormalized = normalizeRowV1(revalidationRow, config);
-    const newIssues = validateRowV1(newNormalized, config);
-    const newDecision = determineDisposition(newIssues);
-
-    // Create new OPEN issues from revalidation
-    if (newIssues.length > 0) {
-      await this.prisma.tdrValidationIssue.createMany({
-        data: newIssues.map((i) => ({
-          recordId,
-          batchId,
-          tenantId: user.tenantId,
-          fieldName: i.fieldName,
-          ruleCode: i.ruleCode,
-          severity: i.severity,
-          message: i.message,
-          rawValue: i.rawValue,
-          status: 'OPEN' as const,
-        })),
+    // All 5 DB ops in one atomic transaction (CORRECTION-ATOMICITY-001)
+    const { review, newDecision } = await this.prisma.$transaction(async (tx) => {
+      // Step 1: Mark prior OPEN issues as REVIEWED
+      await tx.tdrValidationIssue.updateMany({
+        where: { recordId, tenantId: user.tenantId, status: 'OPEN' },
+        data: { status: 'REVIEWED' },
       });
-    }
 
-    // Update disposition
-    await this.prisma.tdrRecord.update({
-      where: { id: recordId },
-      data: {
-        rowDisposition: newDecision.rowDisposition,
-        exportEligible: newDecision.exportEligible,
-        quarantineReviewRequired: newDecision.quarantineReviewRequired,
-      },
-    });
+      // Step 2: Apply the canonical field update
+      const updatedRecord = await tx.tdrRecord.update({
+        where: { id: recordId },
+        data: { ...updateData, valueTreatmentMeta: { ...(record.valueTreatmentMeta as object ?? {}), [dto.fieldName]: 'CORRECTED' } },
+      });
 
-    // Create quarantine review record
-    const review = await this.prisma.tdrQuarantineReview.create({
-      data: {
-        recordId,
-        tenantId: user.tenantId,
-        batchId,
-        reviewedById: user.userId,
-        action: 'CORRECT',
-        correctionFieldName: dto.fieldName,
-        correctionPayload: { fieldName: dto.fieldName, correctedValue: dto.correctedValue },
-        correctionValueHash: afterHash,
-        correctionNote: dto.note ?? null,
-        appliedAt: new Date(),
-      },
-      select: { id: true },
+      // Revalidate using the corrected record (in-memory, no I/O)
+      const revalidationRow = buildRevalidationRow(updatedRecord, config);
+      const newNormalized = normalizeRowV1(revalidationRow, config);
+      const newIssues = validateRowV1(newNormalized, config);
+      const txDecision = determineDisposition(newIssues);
+
+      // Step 3: Create new OPEN issues from revalidation
+      if (newIssues.length > 0) {
+        await tx.tdrValidationIssue.createMany({
+          data: newIssues.map((i) => ({
+            recordId,
+            batchId,
+            tenantId: user.tenantId,
+            fieldName: i.fieldName,
+            ruleCode: i.ruleCode,
+            severity: i.severity,
+            message: i.message,
+            rawValue: i.rawValue,
+            status: 'OPEN' as const,
+          })),
+        });
+      }
+
+      // Step 4: Update disposition and export eligibility
+      await tx.tdrRecord.update({
+        where: { id: recordId },
+        data: {
+          rowDisposition: txDecision.rowDisposition,
+          exportEligible: txDecision.exportEligible,
+          quarantineReviewRequired: txDecision.quarantineReviewRequired,
+        },
+      });
+
+      // Step 5: Create quarantine review record
+      const txReview = await tx.tdrQuarantineReview.create({
+        data: {
+          recordId,
+          tenantId: user.tenantId,
+          batchId,
+          reviewedById: user.userId,
+          action: 'CORRECT',
+          correctionFieldName: dto.fieldName,
+          correctionPayload: { fieldName: dto.fieldName, correctedValue: dto.correctedValue },
+          correctionValueHash: afterHash,
+          correctionNote: dto.note ?? null,
+          appliedAt: new Date(),
+        },
+        select: { id: true },
+      });
+
+      return { review: txReview, newDecision: txDecision };
     });
 
     // Audit: only hashes, no plaintext sensitive values

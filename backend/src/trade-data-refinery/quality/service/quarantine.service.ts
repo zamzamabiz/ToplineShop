@@ -70,6 +70,7 @@ export class QuarantineService {
           ruleCode: true,
           severity: true,
           message: true,
+          rawValue: true,
           status: true,
           createdAt: true,
           record: {

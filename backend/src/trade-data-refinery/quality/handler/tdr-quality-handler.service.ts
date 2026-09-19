@@ -164,14 +164,13 @@ export class TdrQualityHandlerService implements OnModuleInit, OnModuleDestroy {
       ? await readXlsxHeaders(filePath)
       : await readCsvHeaders(filePath);
 
-    // Build a set of PENDING_QUALITY sourceRowNumbers for fast lookup
-    const pendingRows = await this.prisma.tdrRecord.findMany({
+    // QUALITY-MEMORY-001 fix: sliding window — never load all pending IDs into memory.
+    // Query pending IDs per source-row window (QUALITY_CHUNK_SIZE rows at a time).
+    const totalPending = await this.prisma.tdrRecord.count({
       where: { batchId: batch!.id, tenantId: batch!.tenantId, rowDisposition: 'PENDING_QUALITY' },
-      select: { id: true, sourceRowNumber: true },
     });
-    const pendingMap = new Map<number, string>(pendingRows.map((r) => [r.sourceRowNumber, r.id]));
 
-    if (pendingMap.size === 0) {
+    if (totalPending === 0) {
       await this.finishQualityJob(job, batch!.id, batch!.tenantId);
       return;
     }
@@ -180,43 +179,68 @@ export class TdrQualityHandlerService implements OnModuleInit, OnModuleDestroy {
       ? streamXlsxRows(filePath, headers)
       : streamCsvRows(filePath, headers);
 
-    const chunk: QualityChunkResult[] = [];
+    const qualityResults: QualityChunkResult[] = [];
+    let srcWindow: Array<{ rowNumber: number; row: Record<string, string> }> = [];
+
+    const flushWindow = async () => {
+      if (srcWindow.length === 0) return;
+      const rowNumbers = srcWindow.map((r) => r.rowNumber);
+      const dbRows = await this.prisma.tdrRecord.findMany({
+        where: {
+          batchId: batch!.id,
+          tenantId: batch!.tenantId,
+          rowDisposition: 'PENDING_QUALITY',
+          sourceRowNumber: { in: rowNumbers },
+        },
+        select: { id: true, sourceRowNumber: true },
+      });
+      const windowMap = new Map<number, string>(dbRows.map((r) => [r.sourceRowNumber, r.id]));
+
+      for (const { rowNumber, row } of srcWindow) {
+        const recordId = windowMap.get(rowNumber);
+        if (!recordId) continue;
+        const normalized = normalizeRowV1(row, config);
+        const issues = validateRowV1(normalized, config);
+        const decision = determineDisposition(issues);
+        qualityResults.push({
+          recordId,
+          normalized,
+          issues,
+          rowDisposition: decision.rowDisposition,
+          exportEligible: decision.exportEligible,
+          quarantineReviewRequired: decision.quarantineReviewRequired,
+        });
+      }
+      srcWindow = [];
+    };
 
     for await (const parsed of rowGenerator) {
-      const recordId = pendingMap.get(parsed.rowNumber);
-      if (!recordId) continue; // already processed in a prior attempt
+      srcWindow.push({ rowNumber: parsed.rowNumber, row: parsed.row });
 
-      const normalized = normalizeRowV1(parsed.row, config);
-      const issues = validateRowV1(normalized, config);
-      const decision = determineDisposition(issues);
+      if (srcWindow.length >= QUALITY_CHUNK_SIZE) {
+        await flushWindow();
 
-      chunk.push({
-        recordId,
-        normalized,
-        issues,
-        rowDisposition: decision.rowDisposition,
-        exportEligible: decision.exportEligible,
-        quarantineReviewRequired: decision.quarantineReviewRequired,
-      });
-
-      if (chunk.length >= QUALITY_CHUNK_SIZE) {
-        const owned = await this.orchestrator.isLeaseOwned(job.id, this.workerInstanceId);
-        if (!owned) {
-          this.logger.warn(`Quality job ${job.id}: lease lost — aborting`);
-          return;
+        if (qualityResults.length >= QUALITY_CHUNK_SIZE) {
+          const owned = await this.orchestrator.isLeaseOwned(job.id, this.workerInstanceId);
+          if (!owned) {
+            this.logger.warn(`Quality job ${job.id}: lease lost — aborting`);
+            return;
+          }
+          await this.persistQualityChunk(qualityResults, batch!.id, batch!.tenantId);
+          qualityResults.length = 0;
         }
-        await this.persistQualityChunk(chunk, batch!.id, batch!.tenantId);
-        chunk.length = 0;
       }
     }
 
-    if (chunk.length > 0) {
+    await flushWindow();
+
+    if (qualityResults.length > 0) {
       const owned = await this.orchestrator.isLeaseOwned(job.id, this.workerInstanceId);
       if (!owned) {
         this.logger.warn(`Quality job ${job.id}: lease lost before final chunk — aborting`);
         return;
       }
-      await this.persistQualityChunk(chunk, batch!.id, batch!.tenantId);
+      await this.persistQualityChunk(qualityResults, batch!.id, batch!.tenantId);
     }
 
     await this.finishQualityJob(job, batch!.id, batch!.tenantId);

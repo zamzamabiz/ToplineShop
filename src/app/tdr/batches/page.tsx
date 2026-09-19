@@ -7,21 +7,24 @@ import { listBatches } from '@/lib/tdr-api';
 import type { TdrBatch, BatchStatus } from '@/types/tdr';
 
 const STATUS_COLORS: Record<string, string> = {
-  PENDING: 'bg-yellow-900/40 text-yellow-300',
+  RECEIVED: 'bg-sky-900/40 text-sky-300',
+  QUEUED: 'bg-yellow-900/40 text-yellow-300',
   PROCESSING: 'bg-blue-900/40 text-blue-300',
+  REVIEW_REQUIRED: 'bg-amber-900/40 text-amber-300',
   READY: 'bg-green-900/40 text-green-300',
   PARTIAL: 'bg-orange-900/40 text-orange-300',
   FAILED: 'bg-red-900/40 text-red-300',
   CANCELLED: 'bg-gray-800 text-gray-400',
+  EXPORTING: 'bg-indigo-900/40 text-indigo-300',
+  EXPORTED: 'bg-emerald-900/40 text-emerald-300',
   QUALITY_PENDING: 'bg-purple-900/40 text-purple-300',
-  REVIEW_REQUIRED: 'bg-amber-900/40 text-amber-300',
 };
 
 export default function TdrBatchesPage() {
   const { accessToken } = useAuth();
   const [batches, setBatches] = useState<TdrBatch[]>([]);
   const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -101,7 +104,7 @@ export default function TdrBatchesPage() {
                     </span>
                   </td>
                   <td className="px-4 py-2 text-xs text-text-muted">
-                    {new Date(b.uploadedAt ?? b.createdAt).toLocaleDateString()}
+                    {new Date(b.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-2">
                     <Link
@@ -121,17 +124,17 @@ export default function TdrBatchesPage() {
       {total > PAGE_SIZE && (
         <div className="flex items-center gap-3 text-sm">
           <button
-            disabled={page === 0}
+            disabled={page === 1}
             onClick={() => setPage((p) => p - 1)}
             className="px-3 py-1 rounded border border-white/10 text-text-secondary disabled:opacity-40"
           >
             Prev
           </button>
           <span className="text-text-muted text-xs">
-            {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, total)} of {total}
+            {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)} of {total}
           </span>
           <button
-            disabled={(page + 1) * PAGE_SIZE >= total}
+            disabled={page * PAGE_SIZE >= total}
             onClick={() => setPage((p) => p + 1)}
             className="px-3 py-1 rounded border border-white/10 text-text-secondary disabled:opacity-40"
           >

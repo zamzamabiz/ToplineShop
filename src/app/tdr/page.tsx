@@ -26,14 +26,17 @@ function StatCard({
 
 function BatchStatusPill({ status }: { status: string }) {
   const colors: Record<string, string> = {
-    PENDING: 'bg-yellow-900/40 text-yellow-300',
+    RECEIVED: 'bg-sky-900/40 text-sky-300',
+    QUEUED: 'bg-yellow-900/40 text-yellow-300',
     PROCESSING: 'bg-blue-900/40 text-blue-300',
+    REVIEW_REQUIRED: 'bg-amber-900/40 text-amber-300',
     READY: 'bg-green-900/40 text-green-300',
     PARTIAL: 'bg-orange-900/40 text-orange-300',
     FAILED: 'bg-red-900/40 text-red-300',
     CANCELLED: 'bg-gray-800 text-gray-400',
+    EXPORTING: 'bg-indigo-900/40 text-indigo-300',
+    EXPORTED: 'bg-emerald-900/40 text-emerald-300',
     QUALITY_PENDING: 'bg-purple-900/40 text-purple-300',
-    REVIEW_REQUIRED: 'bg-amber-900/40 text-amber-300',
   };
   return (
     <span
@@ -201,7 +204,7 @@ export default function TdrOverviewPage() {
                       <BatchStatusPill status={b.status} />
                     </td>
                     <td className="px-4 py-2 text-xs text-text-muted">
-                      {new Date(b.uploadedAt ?? b.createdAt).toLocaleDateString()}
+                      {new Date(b.createdAt).toLocaleDateString()}
                     </td>
                   </tr>
                 ))}

@@ -1,43 +1,49 @@
 // Real backend types — replaces mock-only types from Frontend Preview mode.
 
 export type TradeDirection = 'IMPORT' | 'EXPORT';
-export type RowDisposition = 'ACCEPTED' | 'QUARANTINED' | 'REJECTED';
+export type RowDisposition = 'ACCEPTED' | 'QUARANTINED' | 'REJECTED' | 'PENDING_QUALITY';
 export type BatchStatus =
-  | 'PENDING'
+  | 'RECEIVED'
+  | 'QUEUED'
   | 'PROCESSING'
+  | 'REVIEW_REQUIRED'
   | 'READY'
   | 'PARTIAL'
   | 'FAILED'
   | 'CANCELLED'
-  | 'QUALITY_PENDING'
-  | 'REVIEW_REQUIRED';
+  | 'EXPORTING'
+  | 'EXPORTED'
+  | 'QUALITY_PENDING';
 
 // ── Batch ─────────────────────────────────────────────────────────────────────
 
 export interface TdrBatch {
   id: string;
-  tenantId: string;
   status: BatchStatus;
   tradeDirection: TradeDirection;
-  originalFilename: string;
-  mappingProfileId: string;
-  uploadedAt: string;
+  originalFilename: string | null;
+  processedRows: number;
+  acceptedRows: number;
+  quarantinedRows: number;
+  rejectedRows: number;
+  totalSourceRows: number | null;
+  replayOfBatchId: string | null;
   createdAt: string;
   updatedAt: string;
-  // Legacy fields used by Frontend Preview components — not returned by real backend.
-  sourceName?: string;
-  quarantineCount?: number;
+  completedAt: string | null;
 }
 
 export interface TdrBatchProgress {
   batchId: string;
   status: BatchStatus;
-  totalRows: number;
+  totalSourceRows: number | null;
   processedRows: number;
   acceptedRows: number;
   quarantinedRows: number;
   rejectedRows: number;
-  percentComplete: number;
+  percentComplete: number | null;
+  startedAt: string | null;
+  completedAt: string | null;
 }
 
 export interface BatchListResponse {
@@ -45,18 +51,11 @@ export interface BatchListResponse {
   total: number;
   page: number;
   pageSize: number;
+  totalPages: number;
   hasMore: boolean;
 }
 
 // ── Quarantine ────────────────────────────────────────────────────────────────
-
-export interface QuarantineRecord {
-  id: string;
-  batchId: string;
-  sourceRowNumber: number;
-  rowDisposition: RowDisposition;
-  issues: ValidationIssue[];
-}
 
 export interface ValidationIssue {
   ruleCode: string;
@@ -66,12 +65,32 @@ export interface ValidationIssue {
   message: string;
 }
 
+// Issue-centric shape returned by GET /tdr/batches/:id/quarantine
+export interface QuarantineIssue {
+  id: string;
+  recordId: string;
+  fieldName: string;
+  ruleCode: string;
+  severity: 'ERROR' | 'WARNING' | 'BLOCKING';
+  message: string;
+  rawValue: string | null;
+  status: string;
+  createdAt: string;
+  record: {
+    id: string;
+    sourceRowNumber: number;
+    rowDisposition: RowDisposition;
+    exportEligible: boolean;
+    quarantineReviewRequired: boolean;
+  };
+}
+
 export interface QuarantineListResponse {
-  records: QuarantineRecord[];
+  issues: QuarantineIssue[];
   total: number;
   page: number;
   pageSize: number;
-  hasMore: boolean;
+  totalPages: number;
 }
 
 // ── Exports ───────────────────────────────────────────────────────────────────
@@ -204,8 +223,25 @@ export interface AuthLoginResponse {
 
 export interface TdrStatus {
   moduleEnabled: boolean;
-  tenantId: string;
-  activeBatchCount: number;
+  batchSummary: Record<string, number>;
+  processingVersions: Record<string, string>;
+}
+
+export interface CorrectionRequest {
+  fieldName: string;
+  correctedValue: string;
+  note?: string;
+}
+
+export interface CreateExportRequest {
+  batchId?: string;
+  tradeDirection?: TradeDirection;
+  dateFrom?: string;
+  dateTo?: string;
+  hsChapter?: string;
+  hsCode?: string;
+  foreignPartyCountryCode?: string;
+  rowLimit?: number;
 }
 
 // ── Legacy types (used by orphaned Frontend Preview components) ───────────────

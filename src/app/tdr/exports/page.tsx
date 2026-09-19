@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { createExport, getExportStatus, getExportDownloadUrl } from '@/lib/tdr-api';
+import { createExport, getExportStatus, downloadExport } from '@/lib/tdr-api';
 import type { TdrExportJob } from '@/types/tdr';
 
 const STATUS_COLORS: Record<string, string> = {
@@ -23,6 +23,18 @@ function ExportJobRow({
   onRefresh: (updated: TdrExportJob) => void;
 }) {
   const pollRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      await downloadExport(token, job.id);
+    } catch (err: any) {
+      alert(err?.message ?? 'Download failed');
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   useEffect(() => {
     if (job.status === 'PENDING' || job.status === 'PROCESSING') {
@@ -54,13 +66,13 @@ function ExportJobRow({
       </td>
       <td className="px-4 py-2">
         {job.status === 'COMPLETED' && (
-          <a
-            href={getExportDownloadUrl(job.id)}
-            className="text-accent-primary text-xs hover:underline"
-            download
+          <button
+            onClick={handleDownload}
+            disabled={downloading}
+            className="text-accent-primary text-xs hover:underline disabled:opacity-50"
           >
-            Download CSV
-          </a>
+            {downloading ? 'Downloading…' : 'Download CSV'}
+          </button>
         )}
         {job.status === 'FAILED' && (
           <span className="text-xs text-red-400">{job.errorMessage ?? 'Failed'}</span>
@@ -88,7 +100,7 @@ export default function TdrExportsPage() {
     setError(null);
     try {
       const job = await createExport(accessToken, {
-        filter: batchId ? { batchId } : {},
+        ...(batchId ? { batchId } : {}),
         rowLimit: Math.min(parseInt(rowLimit, 10) || 100_000, 100_000),
       });
       setJobs((prev) => [job, ...prev]);

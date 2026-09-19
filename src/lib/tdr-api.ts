@@ -12,12 +12,16 @@ import type {
   BatchListResponse,
   BatchStatus,
   BreakdownResponse,
+  CorrectionRequest,
+  CreateExportRequest,
   FilterOptions,
+  QuarantineIssue,
   QuarantineListResponse,
   RecordsListResponse,
   TdrBatch,
   TdrBatchProgress,
   TdrExportJob,
+  TdrRecord,
   TdrStatus,
   TrendResponse,
 } from '@/types/tdr';
@@ -33,12 +37,10 @@ type BreakdownDimensionValue =
 
 // ── Core fetch helpers ────────────────────────────────────────────────────────
 
-async function get<T>(
+function buildUrl(
   path: string,
-  token: string,
   params?: Record<string, string | number | boolean | string[] | undefined>,
-  signal?: AbortSignal,
-): Promise<T> {
+): string {
   const url = new URL(`${API_BASE}${path}`);
   if (params) {
     for (const [k, v] of Object.entries(params)) {
@@ -50,19 +52,46 @@ async function get<T>(
       }
     }
   }
-  const res = await fetch(url.toString(), {
+  return url.toString();
+}
+
+function throwApiError(body: Record<string, unknown>, status: number): never {
+  const err = body?.error as Record<string, unknown> | undefined;
+  throw Object.assign(new Error((err?.message as string) ?? `HTTP ${status}`), {
+    code: (err?.code as string) ?? `HTTP_${status}`,
+    status,
+  });
+}
+
+async function get<T>(
+  path: string,
+  token: string,
+  params?: Record<string, string | number | boolean | string[] | undefined>,
+  signal?: AbortSignal,
+): Promise<T> {
+  const res = await fetch(buildUrl(path, params), {
     headers: { Authorization: `Bearer ${token}` },
     signal,
   });
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw Object.assign(new Error(body?.error?.message ?? `HTTP ${res.status}`), {
-      code: body?.error?.code ?? `HTTP_${res.status}`,
-      status: res.status,
-    });
-  }
+  if (!res.ok) throwApiError(await res.json().catch(() => ({})), res.status);
   const body = await res.json();
   return body.data as T;
+}
+
+// Preserves meta alongside data for paginated responses
+async function getPage<T, M = Record<string, unknown>>(
+  path: string,
+  token: string,
+  params?: Record<string, string | number | boolean | string[] | undefined>,
+  signal?: AbortSignal,
+): Promise<{ data: T; meta: M }> {
+  const res = await fetch(buildUrl(path, params), {
+    headers: { Authorization: `Bearer ${token}` },
+    signal,
+  });
+  if (!res.ok) throwApiError(await res.json().catch(() => ({})), res.status);
+  const body = await res.json();
+  return { data: body.data as T, meta: body.meta as M };
 }
 
 async function post<TReq, TRes>(
@@ -80,13 +109,7 @@ async function post<TReq, TRes>(
     body: JSON.stringify(data),
     signal,
   });
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw Object.assign(new Error(body?.error?.message ?? `HTTP ${res.status}`), {
-      code: body?.error?.code ?? `HTTP_${res.status}`,
-      status: res.status,
-    });
-  }
+  if (!res.ok) throwApiError(await res.json().catch(() => ({})), res.status);
   const body = await res.json();
   return body.data as TRes;
 }
@@ -125,12 +148,26 @@ export function getTdrStatus(token: string, signal?: AbortSignal) {
 
 // ── Batches ───────────────────────────────────────────────────────────────────
 
-export function listBatches(
+export async function listBatches(
   token: string,
   opts: { page?: number; pageSize?: number; status?: BatchStatus },
   signal?: AbortSignal,
-) {
-  return get<BatchListResponse>('/tdr/batches', token, opts as any, signal);
+): Promise<BatchListResponse> {
+  type PageMeta = { page: number; pageSize: number; total: number; totalPages: number };
+  const { data, meta } = await getPage<TdrBatch[], PageMeta>(
+    '/tdr/batches',
+    token,
+    opts as Record<string, string | number | undefined>,
+    signal,
+  );
+  return {
+    batches: data,
+    page: meta.page,
+    pageSize: meta.pageSize,
+    total: meta.total,
+    totalPages: meta.totalPages,
+    hasMore: meta.page * meta.pageSize < meta.total,
+  };
 }
 
 export function getBatch(token: string, id: string, signal?: AbortSignal) {
@@ -147,7 +184,7 @@ export function getBatchProgress(token: string, id: string, signal?: AbortSignal
 }
 
 export function cancelBatch(token: string, id: string) {
-  return post<Record<string, never>, TdrBatch>(
+  return post<Record<string, never>, { cancelled: boolean; batchId: string; status: BatchStatus }>(
     `/tdr/batches/${encodeURIComponent(id)}/cancel`,
     token,
     {},
@@ -187,51 +224,60 @@ export async function uploadFile(
 
 // ── Quarantine ────────────────────────────────────────────────────────────────
 
-export function listQuarantine(
+export async function listQuarantine(
   token: string,
   batchId: string,
   opts: { page?: number; pageSize?: number },
   signal?: AbortSignal,
-) {
-  return get<QuarantineListResponse>(
+): Promise<QuarantineListResponse> {
+  type PageMeta = { page: number; pageSize: number; total: number; totalPages: number };
+  const { data, meta } = await getPage<QuarantineIssue[], PageMeta>(
     `/tdr/batches/${encodeURIComponent(batchId)}/quarantine`,
     token,
-    opts as any,
+    opts as Record<string, number | undefined>,
     signal,
   );
+  return { issues: data, page: meta.page, pageSize: meta.pageSize, total: meta.total, totalPages: meta.totalPages };
 }
 
 export function applyCorrection(
   token: string,
   batchId: string,
   recordId: string,
-  corrections: Record<string, string | null>,
+  req: CorrectionRequest,
 ) {
-  return post<{ corrections: Record<string, string | null> }, { ok: boolean }>(
+  return post<CorrectionRequest, { reviewId: string; recordId: string; fieldName: string; newDisposition: string; exportEligible: boolean }>(
     `/tdr/batches/${encodeURIComponent(batchId)}/records/${encodeURIComponent(recordId)}/correct`,
     token,
-    { corrections },
+    req,
   );
 }
 
 // ── Exports ───────────────────────────────────────────────────────────────────
 
-export function createExport(
-  token: string,
-  dto: {
-    filter?: AnalyticsFilter;
-    rowLimit?: number;
-  },
-) {
-  return post<typeof dto, TdrExportJob>('/tdr/exports', token, dto);
+export function createExport(token: string, dto: CreateExportRequest) {
+  return post<CreateExportRequest, TdrExportJob>('/tdr/exports', token, dto);
 }
 
 export function getExportStatus(token: string, exportId: string, signal?: AbortSignal) {
   return get<TdrExportJob>(`/tdr/exports/${encodeURIComponent(exportId)}`, token, undefined, signal);
 }
 
-export function getExportDownloadUrl(exportId: string): string {
-  return `${API_BASE}/tdr/exports/${encodeURIComponent(exportId)}/download`;
+// Authenticated download: Bearer fetch → Blob → object URL → auto-click → revoke
+export async function downloadExport(token: string, exportId: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/tdr/exports/${encodeURIComponent(exportId)}/download`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throwApiError(await res.json().catch(() => ({})), res.status);
+  const blob = await res.blob();
+  const objectUrl = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = objectUrl;
+  a.download = `export-${exportId}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(objectUrl);
 }
 
 // ── Analytics ─────────────────────────────────────────────────────────────────
@@ -296,7 +342,7 @@ export function getAnalyticsFilterOptions(token: string, signal?: AbortSignal) {
   return get<FilterOptions>('/tdr/analytics/filter-options', token, undefined, signal);
 }
 
-export function listRecords(
+export async function listRecords(
   token: string,
   opts: {
     filter?: AnalyticsFilter;
@@ -306,7 +352,7 @@ export function listRecords(
     pageSize?: number;
   },
   signal?: AbortSignal,
-) {
+): Promise<RecordsListResponse> {
   const params: Record<string, string | string[] | undefined> = opts.filter
     ? filterToParams(opts.filter)
     : {};
@@ -314,5 +360,7 @@ export function listRecords(
   if (opts.sortDir) params.sortDir = opts.sortDir;
   if (opts.page !== undefined) params.page = String(opts.page);
   if (opts.pageSize !== undefined) params.pageSize = String(opts.pageSize);
-  return get<RecordsListResponse>('/tdr/records', token, params, signal);
+  type PageMeta = { total: number; page: number; pageSize: number; hasMore: boolean };
+  const { data, meta } = await getPage<TdrRecord[], PageMeta>('/tdr/records', token, params, signal);
+  return { records: data, total: meta.total, page: meta.page, pageSize: meta.pageSize, hasMore: meta.hasMore };
 }

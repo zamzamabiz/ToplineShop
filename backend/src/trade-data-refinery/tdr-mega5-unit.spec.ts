@@ -310,9 +310,9 @@ describe('RecordsService (unit, mock Prisma)', () => {
   it('returns empty page when no records', async () => {
     const dto = plainToInstance(ListRecordsDto, { batchId: 'some-batch-id' });
     const result = await service.listRecords('tenant-1', dto);
-    expect(result.records).toEqual([]);
-    expect(result.total).toBe(0);
-    expect(result.hasMore).toBe(false);
+    expect(result.data).toEqual([]);
+    expect(result.meta.total).toBe(0);
+    expect(result.meta.hasMore).toBe(false);
   });
 
   it('caps pageSize at 500 (§16)', async () => {

@@ -53,14 +53,14 @@ export default function TdrUploadPage() {
             ) : (
               <p className="text-sm text-text-muted">
                 Click to select a file
-                <span className="block text-xs mt-1">CSV or XLSX, max 50 MB</span>
+                <span className="block text-xs mt-1">CSV or XLSX, max 500 MB</span>
               </p>
             )}
           </div>
           <input
             ref={fileRef}
             type="file"
-            accept=".csv,.xlsx,.xls"
+            accept=".csv,.xlsx"
             className="hidden"
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
           />

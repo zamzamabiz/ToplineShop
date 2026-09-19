@@ -77,7 +77,7 @@ export default function TdrBatchDetailPage() {
     setCancelling(true);
     try {
       const updated = await cancelBatch(accessToken, batchId);
-      setBatch(updated);
+      setBatch((prev) => prev ? { ...prev, status: updated.status } : null);
     } catch (e: any) {
       setError(e?.message ?? 'Cancel failed');
     } finally {
@@ -118,13 +118,15 @@ export default function TdrBatchDetailPage() {
           <p className="font-medium text-text-primary">{batch.tradeDirection}</p>
         </div>
         <div className="bg-surface-secondary border border-white/10 rounded-lg p-3">
-          <p className="text-xs text-text-muted mb-0.5">Mapping</p>
-          <p className="font-medium text-text-primary text-xs truncate">{batch.mappingProfileId}</p>
+          <p className="text-xs text-text-muted mb-0.5">Total Rows</p>
+          <p className="font-medium text-text-primary text-xs truncate">
+            {batch.totalSourceRows !== null ? batch.totalSourceRows.toLocaleString() : '—'}
+          </p>
         </div>
         <div className="bg-surface-secondary border border-white/10 rounded-lg p-3">
-          <p className="text-xs text-text-muted mb-0.5">Uploaded</p>
+          <p className="text-xs text-text-muted mb-0.5">Created</p>
           <p className="font-medium text-text-primary text-xs">
-            {new Date(batch.uploadedAt ?? batch.createdAt).toLocaleString()}
+            {new Date(batch.createdAt).toLocaleString()}
           </p>
         </div>
         <div className="bg-surface-secondary border border-white/10 rounded-lg p-3">
@@ -137,9 +139,11 @@ export default function TdrBatchDetailPage() {
         <div className="bg-surface-secondary border border-white/10 rounded-lg p-4 space-y-3">
           <div className="flex items-center justify-between text-sm">
             <span className="text-text-secondary">Progress</span>
-            <span className="text-text-primary font-medium">{progress.percentComplete}%</span>
+            <span className="text-text-primary font-medium">
+              {progress.percentComplete !== null ? `${progress.percentComplete}%` : '—'}
+            </span>
           </div>
-          <ProgressBar value={progress.percentComplete} />
+          <ProgressBar value={progress.percentComplete ?? 0} />
           <div className="grid grid-cols-3 gap-4 pt-1">
             <div>
               <p className="text-xs text-text-muted">Accepted</p>

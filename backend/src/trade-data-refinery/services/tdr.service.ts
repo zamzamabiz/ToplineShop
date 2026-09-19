@@ -73,12 +73,18 @@ export class TdrService {
           createdAt: true,
           updatedAt: true,
           completedAt: true,
+          sourceFile: { select: { originalFilename: true } },
         },
       }),
       this.prisma.tdrBatch.count({ where }),
     ]);
 
-    return success(items, { page, pageSize, total, totalPages: Math.ceil(total / pageSize) });
+    const batches = items.map(({ sourceFile, ...b }) => ({
+      ...b,
+      originalFilename: sourceFile?.originalFilename ?? null,
+    }));
+
+    return success(batches, { page, pageSize, total, totalPages: Math.ceil(total / pageSize) });
   }
 
   async getBatch(batchId: string, tenantId: string) {
@@ -121,7 +127,12 @@ export class TdrService {
       },
     });
     if (!batch) throw new NotFoundException(`Batch ${batchId} not found`);
-    return success(batch);
+    const { id, totalSourceRows, processedRows, ...rest } = batch;
+    const percentComplete =
+      totalSourceRows && totalSourceRows > 0
+        ? Math.min(100, Math.round(((processedRows ?? 0) / totalSourceRows) * 100))
+        : null;
+    return success({ batchId: id, totalSourceRows, processedRows, percentComplete, ...rest });
   }
 
   async cancelBatch(batchId: string, tenantId: string, userId: string) {
@@ -163,7 +174,7 @@ export class TdrService {
       metadata: { batchId },
     });
 
-    return success({ cancelled: true });
+    return success({ cancelled: true, batchId, status: 'CANCELLED' as const });
   }
 
   async replayBatch(

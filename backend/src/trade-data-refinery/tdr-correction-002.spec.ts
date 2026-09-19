@@ -416,11 +416,12 @@ describe('Auth controller success() envelope contract', () => {
     expect(src).toContain('expiresIn: 900');
   });
 
-  it('auth.service.ts login() sets roles: [] (architecture gap documented)', () => {
+  it('auth.service.ts login() resolves roles from membership (ARCH-ROLE-001 resolved)', () => {
     const servicePath = path.join(__dirname, '../auth/auth.service.ts');
     const src = fs.readFileSync(servicePath, 'utf-8');
-    // roles always issued as empty — Membership carries no roles
-    expect(src).toMatch(/roles:\s*\[\]/);
+    // Roles now come from membership — not hardcoded empty array
+    expect(src).toContain('activeMembership');
+    expect(src).toContain('membership.findUnique');
   });
 });
 

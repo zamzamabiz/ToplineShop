@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { listQuarantine, applyCorrection } from '@/lib/tdr-api';
-import type { QuarantineRecord } from '@/types/tdr';
+import { listQuarantine } from '@/lib/tdr-api';
+import type { QuarantineIssue } from '@/types/tdr';
 
 const SEVERITY_COLORS: Record<string, string> = {
   BLOCKING: 'text-red-400',
@@ -17,12 +17,11 @@ export default function TdrQuarantinePage() {
   const searchParams = useSearchParams();
   const batchId = searchParams.get('batchId') ?? '';
 
-  const [records, setRecords] = useState<QuarantineRecord[]>([]);
+  const [issues, setIssues] = useState<QuarantineIssue[]>([]);
   const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const PAGE_SIZE = 20;
 
@@ -34,7 +33,7 @@ export default function TdrQuarantinePage() {
     setLoading(true);
 
     listQuarantine(accessToken, batchId, { page, pageSize: PAGE_SIZE }, ctrl.signal)
-      .then((r) => { setRecords(r.records); setTotal(r.total); })
+      .then((r) => { setIssues(r.issues); setTotal(r.total); })
       .catch((e) => { if (e?.name !== 'AbortError') setError(e?.message ?? 'Failed to load'); })
       .finally(() => setLoading(false));
 
@@ -65,77 +64,67 @@ export default function TdrQuarantinePage() {
         <div className="space-y-2">
           {[1, 2, 3].map((i) => <div key={i} className="h-12 bg-surface-secondary rounded animate-pulse" />)}
         </div>
-      ) : records.length === 0 ? (
+      ) : issues.length === 0 ? (
         <div className="border border-dashed border-white/20 rounded-lg p-8 text-center text-text-muted text-sm">
-          No quarantined records found.
+          No quarantined issues found.
         </div>
       ) : (
         <div className="bg-surface-secondary border border-white/10 rounded-lg overflow-hidden">
-          {records.map((r) => (
-            <div key={r.id} className="border-b border-white/5 last:border-0">
-              <button
-                onClick={() => setExpanded(expanded === r.id ? null : r.id)}
-                className="w-full flex items-center gap-4 px-4 py-3 text-left hover:bg-white/5 transition-colors"
-              >
-                <span className="font-mono text-xs text-text-muted w-12 shrink-0">
-                  #{r.sourceRowNumber}
-                </span>
-                <span className={`text-xs font-medium shrink-0 ${
-                  r.rowDisposition === 'REJECTED' ? 'text-red-400' : 'text-amber-400'
-                }`}>
-                  {r.rowDisposition}
-                </span>
-                <span className="text-xs text-text-muted flex-1">
-                  {r.issues.length} issue{r.issues.length !== 1 ? 's' : ''}
-                </span>
-                <span className="text-xs text-text-muted">{expanded === r.id ? '▲' : '▼'}</span>
-              </button>
-
-              {expanded === r.id && (
-                <div className="px-4 pb-4 space-y-2">
-                  {r.issues.map((issue, i) => (
-                    <div
-                      key={i}
-                      className="bg-surface-primary rounded p-3 text-xs"
-                    >
-                      <div className="flex items-center gap-3 mb-1">
-                        <span className={`font-medium ${SEVERITY_COLORS[issue.severity] ?? 'text-text-secondary'}`}>
-                          {issue.severity}
-                        </span>
-                        <span className="text-text-muted font-mono">{issue.ruleCode}</span>
-                        {issue.fieldName && (
-                          <span className="text-text-secondary">field: {issue.fieldName}</span>
-                        )}
-                      </div>
-                      <p className="text-text-secondary">{issue.message}</p>
-                      {issue.rawValue !== null && (
-                        <p className="text-text-muted mt-1">
-                          Raw value: <code className="font-mono">{issue.rawValue}</code>
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+          <table className="w-full text-sm">
+            <thead className="border-b border-white/10">
+              <tr className="text-left text-xs text-text-muted uppercase tracking-wider">
+                <th className="px-4 py-2">Row #</th>
+                <th className="px-4 py-2">Disposition</th>
+                <th className="px-4 py-2">Severity</th>
+                <th className="px-4 py-2">Field</th>
+                <th className="px-4 py-2">Rule</th>
+                <th className="px-4 py-2">Message</th>
+                <th className="px-4 py-2">Raw Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              {issues.map((issue) => (
+                <tr key={issue.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                  <td className="px-4 py-2 font-mono text-xs text-text-muted">
+                    #{issue.record.sourceRowNumber}
+                  </td>
+                  <td className="px-4 py-2 text-xs font-medium">
+                    <span className={issue.record.rowDisposition === 'REJECTED' ? 'text-red-400' : 'text-amber-400'}>
+                      {issue.record.rowDisposition}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2 text-xs font-medium">
+                    <span className={SEVERITY_COLORS[issue.severity] ?? 'text-text-secondary'}>
+                      {issue.severity}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2 text-xs text-text-secondary font-mono">{issue.fieldName}</td>
+                  <td className="px-4 py-2 text-xs text-text-muted font-mono">{issue.ruleCode}</td>
+                  <td className="px-4 py-2 text-xs text-text-secondary max-w-[240px] truncate">{issue.message}</td>
+                  <td className="px-4 py-2 text-xs text-text-muted font-mono max-w-[120px] truncate">
+                    {issue.rawValue ?? '—'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 
       {total > PAGE_SIZE && (
         <div className="flex items-center gap-3 text-sm">
           <button
-            disabled={page === 0}
+            disabled={page === 1}
             onClick={() => setPage((p) => p - 1)}
             className="px-3 py-1 rounded border border-white/10 text-text-secondary disabled:opacity-40"
           >
             Prev
           </button>
           <span className="text-text-muted text-xs">
-            {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, total)} of {total}
+            {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)} of {total}
           </span>
           <button
-            disabled={(page + 1) * PAGE_SIZE >= total}
+            disabled={page * PAGE_SIZE >= total}
             onClick={() => setPage((p) => p + 1)}
             className="px-3 py-1 rounded border border-white/10 text-text-secondary disabled:opacity-40"
           >

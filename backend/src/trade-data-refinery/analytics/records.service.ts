@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma, TradeDirection } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
+import { success } from '../../common/api-response';
 import { ListRecordsDto, SORT_COLUMNS } from './dto/list-records.dto';
 
 // §17 — interactive raw scope budget.
@@ -14,8 +15,8 @@ export class RecordsService {
 
   async listRecords(tenantId: string, dto: ListRecordsDto) {
     const pageSize = Math.min(dto.pageSize ?? 50, PAGE_MAX);
-    const page = dto.page ?? 0;
-    const skip = page * pageSize;
+    const page = Math.max(1, dto.page ?? 1);
+    const skip = (page - 1) * pageSize;
 
     const where = buildWhere(tenantId, dto);
 
@@ -65,19 +66,16 @@ export class RecordsService {
       },
     });
 
-    return {
-      records: records.map((r) => ({
+    return success(
+      records.map((r) => ({
         ...r,
         tradeDate: r.tradeDate?.toISOString().split('T')[0] ?? null,
         quantityNormalized: r.quantityNormalized?.toNumber() ?? null,
         unitPriceNormalized: r.unitPriceNormalized?.toNumber() ?? null,
         createdAt: r.createdAt.toISOString(),
       })),
-      total,
-      page,
-      pageSize,
-      hasMore: skip + pageSize < total,
-    };
+      { total, page, pageSize, hasMore: skip + pageSize < total },
+    );
   }
 }
 

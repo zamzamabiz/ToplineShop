@@ -129,20 +129,33 @@ describe('AbortController forwarding (§58)', () => {
   });
 });
 
-// ── Export URL helper ─────────────────────────────────────────────────────────
+// ── Authenticated export download ─────────────────────────────────────────────
 
-describe('getExportDownloadUrl', () => {
-  it('returns a URL containing the export ID', async () => {
-    const { getExportDownloadUrl } = await import('@/lib/tdr-api');
-    const url = getExportDownloadUrl('export-abc-123');
+describe('downloadExport', () => {
+  it('calls the correct URL with Bearer auth', async () => {
+    // Stub URL and DOM APIs used by downloadExport (jsdom environment)
+    vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:fake');
+    vi.spyOn(URL, 'revokeObjectURL').mockReturnValue(undefined);
+    const clickFn = vi.fn();
+    vi.spyOn(document, 'createElement').mockReturnValue({ href: '', download: '', click: clickFn } as any);
+    vi.spyOn(document.body, 'appendChild').mockReturnValue({} as any);
+    vi.spyOn(document.body, 'removeChild').mockReturnValue({} as any);
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      blob: async () => new Blob(['csv-content'], { type: 'text/csv' }),
+    });
+
+    const { downloadExport } = await import('@/lib/tdr-api');
+    await downloadExport('export-token', 'export-abc-123');
+
+    const url = mockFetch.mock.calls[0][0] as string;
     expect(url).toContain('export-abc-123');
     expect(url).toContain('/tdr/exports/');
     expect(url).toContain('/download');
-  });
+    const opts = mockFetch.mock.calls[0][1] as RequestInit;
+    expect((opts?.headers as Record<string, string>)?.['Authorization']).toBe('Bearer export-token');
 
-  it('URL-encodes the export ID', async () => {
-    const { getExportDownloadUrl } = await import('@/lib/tdr-api');
-    const url = getExportDownloadUrl('id with spaces');
-    expect(url).not.toContain(' ');
+    vi.restoreAllMocks();
   });
 });
