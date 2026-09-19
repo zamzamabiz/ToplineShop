@@ -18,6 +18,16 @@ export interface AuthTokens {
   refreshToken: string;
 }
 
+export interface LoginResult extends AuthTokens {
+  expiresIn: number;
+  user: {
+    userId: string;
+    email: string;
+    tenantId: string;
+    roles: string[];
+  };
+}
+
 @Injectable()
 export class AuthService {
   private static readonly FAILURE_MSG = 'Authentication required';
@@ -29,7 +39,7 @@ export class AuthService {
     private readonly audit: AuditService,
   ) {}
 
-  async login(dto: LoginDto, meta: RequestMeta): Promise<AuthTokens> {
+  async login(dto: LoginDto, meta: RequestMeta): Promise<LoginResult> {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
       include: { memberships: { where: { status: 'ACTIVE' } } },
@@ -103,7 +113,17 @@ export class AuthService {
       userAgent: meta.userAgent,
     });
 
-    return { accessToken, refreshToken: rawRefreshToken };
+    return {
+      accessToken,
+      refreshToken: rawRefreshToken,
+      expiresIn: 900,
+      user: {
+        userId: user.id,
+        email: user.email,
+        tenantId,
+        roles: [] as string[],
+      },
+    };
   }
 
   async logout(userId: string, sessionId: string, meta: RequestMeta): Promise<{ ok: boolean }> {

@@ -26,7 +26,7 @@ import { TdrExportService } from './export/service/tdr-export.service';
 import { CreateExportDto } from './export/dto/create-export.dto';
 import { AnalyticsService } from './analytics/analytics.service';
 import { RecordsService } from './analytics/records.service';
-import { AnalyticsFilterDto, BreakdownDimension, TrendGranularity } from './analytics/dto/analytics-filter.dto';
+import { AnalyticsFilterDto, BreakdownDimension, TrendGranularity, TrendQueryDto, BreakdownQueryDto } from './analytics/dto/analytics-filter.dto';
 import { ListRecordsDto } from './analytics/dto/list-records.dto';
 
 interface TdrRequest {
@@ -154,12 +154,11 @@ export class TdrController {
   @Get('analytics/trend')
   getAnalyticsTrend(
     @Req() req: TdrRequest,
-    @Query() dto: AnalyticsFilterDto,
-    @Query('granularity') granularity: TrendGranularity = TrendGranularity.MONTH,
+    @Query() dto: TrendQueryDto,
   ) {
     const safeGranularity =
-      Object.values(TrendGranularity).includes(granularity)
-        ? granularity
+      dto.granularity && Object.values(TrendGranularity).includes(dto.granularity)
+        ? dto.granularity
         : TrendGranularity.MONTH;
     return this.analyticsService.getTrend(req.user.tenantId, dto, safeGranularity);
   }
@@ -167,15 +166,13 @@ export class TdrController {
   @Get('analytics/breakdown')
   getAnalyticsBreakdown(
     @Req() req: TdrRequest,
-    @Query() dto: AnalyticsFilterDto,
-    @Query('dimension') dimension: BreakdownDimension = BreakdownDimension.TRADE_DIRECTION,
-    @Query('topN') topN = '20',
+    @Query() dto: BreakdownQueryDto,
   ) {
     const safeDimension =
-      Object.values(BreakdownDimension).includes(dimension)
-        ? dimension
+      dto.dimension && Object.values(BreakdownDimension).includes(dto.dimension)
+        ? dto.dimension
         : BreakdownDimension.TRADE_DIRECTION;
-    const safeTopN = Math.min(Math.max(1, parseInt(topN, 10) || 20), 100);
+    const safeTopN = Math.min(Math.max(1, parseInt(dto.topN ?? '20', 10) || 20), 100);
     return this.analyticsService.getBreakdown(
       req.user.tenantId,
       dto,

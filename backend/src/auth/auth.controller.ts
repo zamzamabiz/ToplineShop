@@ -14,6 +14,7 @@ import { LoginDto } from './dto/login.dto';
 import { RefreshDto } from './dto/refresh.dto';
 import { Public } from './decorators/public.decorator';
 import { AuthenticatedUser } from './types/jwt-payload.type';
+import { success } from '../common/api-response';
 
 function extractMeta(req: Request): RequestMeta {
   return {
@@ -32,7 +33,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Throttle({ default: { ttl: 60000, limit: 5 } })
   async login(@Body() dto: LoginDto, @Req() req: Request) {
-    return this.authService.login(dto, extractMeta(req));
+    return success(await this.authService.login(dto, extractMeta(req)));
   }
 
   @Public()
@@ -40,13 +41,13 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Throttle({ default: { ttl: 60000, limit: 30 } })
   async refresh(@Body() dto: RefreshDto, @Req() req: Request) {
-    return this.authService.refresh(dto, extractMeta(req));
+    return success(await this.authService.refresh(dto, extractMeta(req)));
   }
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   async logout(@Req() req: Request) {
     const user = (req as any).user as AuthenticatedUser;
-    return this.authService.logout(user.userId, user.sessionId, extractMeta(req));
+    return success(await this.authService.logout(user.userId, user.sessionId, extractMeta(req)));
   }
 }

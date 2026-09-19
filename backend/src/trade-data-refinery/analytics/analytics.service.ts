@@ -265,8 +265,9 @@ function buildRawConditions(
   tenantId: string,
   filter: AnalyticsFilterDto,
 ): Prisma.Sql[] {
+  // tenant_id is stored as text (Prisma String maps to text without @db.Uuid)
   const conditions: Prisma.Sql[] = [
-    Prisma.sql`tenant_id = ${tenantId}::uuid`,
+    Prisma.sql`tenant_id = ${tenantId}`,
   ];
 
   if (filter.dateFrom) {
@@ -299,7 +300,7 @@ function buildRawConditions(
     );
   }
   if (filter.batchId) {
-    conditions.push(Prisma.sql`batch_id = ${filter.batchId}::uuid`);
+    conditions.push(Prisma.sql`batch_id = ${filter.batchId}`);
   }
   if (filter.exportEligible !== undefined) {
     conditions.push(Prisma.sql`export_eligible = ${filter.exportEligible}`);

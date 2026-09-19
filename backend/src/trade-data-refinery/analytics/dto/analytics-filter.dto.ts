@@ -56,3 +56,14 @@ export class AnalyticsFilterDto {
   @IsBoolean()
   exportEligible?: boolean;
 }
+
+// Used by GET /analytics/trend — extends filter with the granularity selector.
+export class TrendQueryDto extends AnalyticsFilterDto {
+  @IsOptional() @IsEnum(TrendGranularity) granularity?: TrendGranularity;
+}
+
+// Used by GET /analytics/breakdown — extends filter with dimension + topN selectors.
+export class BreakdownQueryDto extends AnalyticsFilterDto {
+  @IsOptional() @IsEnum(BreakdownDimension) dimension?: BreakdownDimension;
+  @IsOptional() @IsString() topN?: string;
+}
