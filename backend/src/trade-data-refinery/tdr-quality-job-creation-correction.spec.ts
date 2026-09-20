@@ -12,22 +12,46 @@ import { TdrQualityOrchestratorService } from './quality/orchestrator/tdr-qualit
 // ── 1. ensureQualityJob idempotency ──────────────────────────────────────────
 
 describe('TdrQualityOrchestratorService.ensureQualityJob — idempotency', () => {
-  function makePrismaMock(existingId: string | null) {
+  function makePrismaMock(existing: { id: string; status: string } | null) {
     return {
       tdrQualityJob: {
-        findUnique: jest.fn().mockResolvedValue(existingId ? { id: existingId } : null),
+        findUnique: jest.fn().mockResolvedValue(existing),
+        update: jest.fn().mockResolvedValue({}),
         create: jest.fn().mockResolvedValue({ id: 'new-job-id' }),
-        findUniqueOrThrow: jest.fn().mockResolvedValue({ id: existingId ?? 'race-job-id' }),
+        findUniqueOrThrow: jest.fn().mockResolvedValue({ id: existing?.id ?? 'race-job-id' }),
       },
     };
   }
 
-  it('returns existing job id without creating a new one', async () => {
-    const prisma = makePrismaMock('existing-job-id');
+  it('returns existing PENDING job id without creating a new one', async () => {
+    const prisma = makePrismaMock({ id: 'existing-job-id', status: 'PENDING' });
     const svc = new TdrQualityOrchestratorService(prisma as never);
     const result = await svc.ensureQualityJob('batch-1', 'tenant-1');
     expect(result).toBe('existing-job-id');
     expect(prisma.tdrQualityJob.create).not.toHaveBeenCalled();
+    expect(prisma.tdrQualityJob.update).not.toHaveBeenCalled();
+  });
+
+  it('resets existing FAILED job to PENDING and returns its id', async () => {
+    const prisma = makePrismaMock({ id: 'failed-job-id', status: 'FAILED' });
+    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const result = await svc.ensureQualityJob('batch-fail', 'tenant-1');
+    expect(result).toBe('failed-job-id');
+    expect(prisma.tdrQualityJob.create).not.toHaveBeenCalled();
+    expect(prisma.tdrQualityJob.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'failed-job-id' },
+        data: expect.objectContaining({ status: 'PENDING', attemptCount: 0 }),
+      }),
+    );
+  });
+
+  it('does not reset COMPLETED job', async () => {
+    const prisma = makePrismaMock({ id: 'completed-job-id', status: 'COMPLETED' });
+    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const result = await svc.ensureQualityJob('batch-completed', 'tenant-1');
+    expect(result).toBe('completed-job-id');
+    expect(prisma.tdrQualityJob.update).not.toHaveBeenCalled();
   });
 
   it('creates a new job when none exists, returns its id', async () => {
@@ -59,7 +83,7 @@ describe('TdrQualityOrchestratorService.ensureQualityJob — idempotency', () =>
     const svc = new TdrQualityOrchestratorService(prisma as never);
     await svc.ensureQualityJob('batch-4', 'tenant-1');
     // Second call: findUnique returns the just-created job
-    prisma.tdrQualityJob.findUnique.mockResolvedValue({ id: 'new-job-id' });
+    prisma.tdrQualityJob.findUnique.mockResolvedValue({ id: 'new-job-id', status: 'PENDING' });
     await svc.ensureQualityJob('batch-4', 'tenant-1');
     expect(prisma.tdrQualityJob.create).toHaveBeenCalledTimes(1);
   });
@@ -68,15 +92,25 @@ describe('TdrQualityOrchestratorService.ensureQualityJob — idempotency', () =>
 // ── 2. reconcileQualityJobs — startup recovery ────────────────────────────────
 
 describe('TdrQualityOrchestratorService.reconcileQualityJobs — startup recovery', () => {
+  // reconcileQualityJobs calls findMany TWICE:
+  //   1st call → QUALITY_PENDING batches with no job (withoutJob)
+  //   2nd call → batches with FAILED quality job + PENDING_QUALITY records (withFailedJob)
+  // Use mockResolvedValueOnce x2 to distinguish the two calls.
+
   it('creates quality jobs for QUALITY_PENDING batches without a job', async () => {
     const pendingBatches = [
       { id: 'b1', tenantId: 't1' },
       { id: 'b2', tenantId: 't1' },
     ];
     const prisma = {
-      tdrBatch: { findMany: jest.fn().mockResolvedValue(pendingBatches) },
+      tdrBatch: {
+        findMany: jest.fn()
+          .mockResolvedValueOnce(pendingBatches) // withoutJob
+          .mockResolvedValueOnce([]),            // withFailedJob
+      },
       tdrQualityJob: {
         findUnique: jest.fn().mockResolvedValue(null),
+        update: jest.fn().mockResolvedValue({}),
         create: jest.fn().mockImplementation(({ data }: { data: { batchId: string } }) =>
           Promise.resolve({ id: `job-${data.batchId}` }),
         ),
@@ -88,11 +122,70 @@ describe('TdrQualityOrchestratorService.reconcileQualityJobs — startup recover
     expect(prisma.tdrQualityJob.create).toHaveBeenCalledTimes(2);
   });
 
-  it('skips batches that already have a quality job', async () => {
+  it('resets FAILED quality jobs to PENDING for batches with PENDING_QUALITY records', async () => {
+    const failedBatches = [
+      { id: '8098ecbc', tenantId: 'tenant-a' },
+      { id: '0aecd7a9', tenantId: 'tenant-a' },
+    ];
     const prisma = {
-      tdrBatch: { findMany: jest.fn().mockResolvedValue([{ id: 'b1', tenantId: 't1' }]) },
+      tdrBatch: {
+        findMany: jest.fn()
+          .mockResolvedValueOnce([])          // withoutJob — none
+          .mockResolvedValueOnce(failedBatches), // withFailedJob — two
+      },
       tdrQualityJob: {
-        findUnique: jest.fn().mockResolvedValue({ id: 'existing-job' }),
+        findUnique: jest.fn()
+          .mockResolvedValueOnce({ id: 'job-export', status: 'FAILED' })
+          .mockResolvedValueOnce({ id: 'job-import', status: 'FAILED' }),
+        update: jest.fn().mockResolvedValue({}),
+        create: jest.fn(),
+      },
+    };
+    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const count = await svc.reconcileQualityJobs();
+    expect(count).toBe(2);
+    expect(prisma.tdrQualityJob.create).not.toHaveBeenCalled();
+    expect(prisma.tdrQualityJob.update).toHaveBeenCalledTimes(2);
+    expect(prisma.tdrQualityJob.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'job-export' },
+        data: expect.objectContaining({ status: 'PENDING', attemptCount: 0 }),
+      }),
+    );
+  });
+
+  it('handles both QUALITY_PENDING and FAILED stranded batches in one reconcile pass', async () => {
+    const prisma = {
+      tdrBatch: {
+        findMany: jest.fn()
+          .mockResolvedValueOnce([{ id: 'no-job-batch', tenantId: 't1' }])  // withoutJob
+          .mockResolvedValueOnce([{ id: 'failed-job-batch', tenantId: 't1' }]), // withFailedJob
+      },
+      tdrQualityJob: {
+        findUnique: jest.fn()
+          .mockResolvedValueOnce(null)                               // no-job-batch: no existing job
+          .mockResolvedValueOnce({ id: 'fj-1', status: 'FAILED' }), // failed-job-batch: FAILED job
+        update: jest.fn().mockResolvedValue({}),
+        create: jest.fn().mockResolvedValue({ id: 'new-job' }),
+      },
+    };
+    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const count = await svc.reconcileQualityJobs();
+    expect(count).toBe(2);
+    expect(prisma.tdrQualityJob.create).toHaveBeenCalledTimes(1); // for no-job-batch
+    expect(prisma.tdrQualityJob.update).toHaveBeenCalledTimes(1); // for failed-job-batch
+  });
+
+  it('skips batches that already have a PENDING quality job', async () => {
+    const prisma = {
+      tdrBatch: {
+        findMany: jest.fn()
+          .mockResolvedValueOnce([{ id: 'b1', tenantId: 't1' }]) // withoutJob
+          .mockResolvedValueOnce([]),                             // withFailedJob
+      },
+      tdrQualityJob: {
+        findUnique: jest.fn().mockResolvedValue({ id: 'existing-job', status: 'PENDING' }),
+        update: jest.fn().mockResolvedValue({}),
         create: jest.fn(),
       },
     };
@@ -100,12 +193,17 @@ describe('TdrQualityOrchestratorService.reconcileQualityJobs — startup recover
     const count = await svc.reconcileQualityJobs();
     expect(count).toBe(1);
     expect(prisma.tdrQualityJob.create).not.toHaveBeenCalled();
+    expect(prisma.tdrQualityJob.update).not.toHaveBeenCalled();
   });
 
-  it('returns 0 when no QUALITY_PENDING batches exist', async () => {
+  it('returns 0 when no stranded batches exist', async () => {
     const prisma = {
-      tdrBatch: { findMany: jest.fn().mockResolvedValue([]) },
-      tdrQualityJob: { findUnique: jest.fn(), create: jest.fn() },
+      tdrBatch: {
+        findMany: jest.fn()
+          .mockResolvedValueOnce([]) // withoutJob
+          .mockResolvedValueOnce([]), // withFailedJob
+      },
+      tdrQualityJob: { findUnique: jest.fn(), update: jest.fn(), create: jest.fn() },
     };
     const svc = new TdrQualityOrchestratorService(prisma as never);
     const count = await svc.reconcileQualityJobs();

@@ -16,9 +16,30 @@ export class TdrQualityOrchestratorService {
   async ensureQualityJob(batchId: string, tenantId: string): Promise<string> {
     const existing = await this.prisma.tdrQualityJob.findUnique({
       where: { batchId },
-      select: { id: true },
+      select: { id: true, status: true },
     });
-    if (existing) return existing.id;
+    if (existing) {
+      // Reset a permanently-failed job to PENDING so the worker can retry.
+      // Covers replay and reconciliation recovery after a code-level quality failure.
+      if (existing.status === 'FAILED') {
+        await this.prisma.tdrQualityJob.update({
+          where: { id: existing.id },
+          data: {
+            status: 'PENDING',
+            errorMessage: null,
+            errorCode: null,
+            completedAt: null,
+            workerInstanceId: null,
+            leasedAt: null,
+            leaseExpiresAt: null,
+            lastHeartbeatAt: null,
+            attemptCount: 0,
+          },
+        });
+        this.logger.log(`Reset FAILED quality job ${existing.id} to PENDING for batch ${batchId}`);
+      }
+      return existing.id;
+    }
 
     try {
       const job = await this.prisma.tdrQualityJob.create({
@@ -159,19 +180,34 @@ export class TdrQualityOrchestratorService {
     return result.count;
   }
 
-  /** Idempotent: create quality jobs for all QUALITY_PENDING batches without one. */
+  /**
+   * Ensures quality jobs exist and are PENDING for all stranded batches:
+   * 1. QUALITY_PENDING batches with no quality job (original case)
+   * 2. Batches with a FAILED quality job that still have PENDING_QUALITY records
+   *    (quality processing crashed before completion — e.g., after a code-level bug fix)
+   */
   async reconcileQualityJobs(): Promise<number> {
-    const batches = await this.prisma.tdrBatch.findMany({
+    const withoutJob = await this.prisma.tdrBatch.findMany({
       where: { status: 'QUALITY_PENDING', qualityJob: null },
       select: { id: true, tenantId: true },
     });
 
-    let created = 0;
-    for (const b of batches) {
+    const withFailedJob = await this.prisma.tdrBatch.findMany({
+      where: {
+        qualityJob: { status: 'FAILED' },
+        records: { some: { rowDisposition: 'PENDING_QUALITY' } },
+      },
+      select: { id: true, tenantId: true },
+    });
+
+    const allStranded = [...withoutJob, ...withFailedJob];
+
+    let reconciled = 0;
+    for (const b of allStranded) {
       await this.ensureQualityJob(b.id, b.tenantId);
-      created++;
+      reconciled++;
     }
-    if (created > 0) this.logger.log(`Reconciled ${created} quality job(s) for QUALITY_PENDING batches`);
-    return created;
+    if (reconciled > 0) this.logger.log(`Reconciled ${reconciled} quality job(s) for stranded batches`);
+    return reconciled;
   }
 }
