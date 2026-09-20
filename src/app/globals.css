@@ -276,6 +276,19 @@
   --color-danger: var(--state-danger);
   --color-info: var(--state-info);
   --color-accent: var(--brand-accent);
+  /* Surface tokens used by TDR and other feature modules */
+  --color-surface-primary: var(--surface-primary);
+  --color-surface-secondary: var(--surface-secondary);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-muted: var(--surface-muted);
+  /* Semantic text tokens */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-inverse: var(--text-inverse);
+  /* Accent tokens — accent-primary resolves to brand-primary per theme */
+  --color-accent-primary: var(--brand-primary);
+  --color-accent-secondary: var(--brand-secondary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

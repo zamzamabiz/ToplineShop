@@ -185,10 +185,10 @@ describe('AnalyticsService (unit, mock Prisma)', () => {
     it('returns all-zero summary when no records', async () => {
       prisma.tdrRecord.count.mockResolvedValue(0);
       const result = await service.getSummary('tenant-1', {});
-      expect(result.total).toBe(0);
-      expect(result.accepted).toBe(0);
-      expect(result.qualityRate).toBeNull();
-      expect(result.valueAggregationUnsafe).toBe(true);
+      expect(result.data.total).toBe(0);
+      expect(result.data.accepted).toBe(0);
+      expect(result.data.qualityRate).toBeNull();
+      expect(result.data.valueAggregationUnsafe).toBe(true);
     });
 
     it('computes qualityRate = accepted/total × 100', async () => {
@@ -200,9 +200,9 @@ describe('AnalyticsService (unit, mock Prisma)', () => {
         .mockResolvedValueOnce(5)   // rejected
         .mockResolvedValueOnce(75); // exportEligible
       const result = await service.getSummary('tenant-1', {});
-      expect(result.total).toBe(100);
-      expect(result.accepted).toBe(80);
-      expect(result.qualityRate).toBe(80);
+      expect(result.data.total).toBe(100);
+      expect(result.data.accepted).toBe(80);
+      expect(result.data.qualityRate).toBe(80);
     });
 
     it('never passes tenantId through the filter DTO (§66)', async () => {
@@ -217,7 +217,7 @@ describe('AnalyticsService (unit, mock Prisma)', () => {
     it('always sets valueAggregationUnsafe=true (§8 mixed-currency)', async () => {
       prisma.tdrRecord.count.mockResolvedValue(10);
       const result = await service.getSummary('t', {});
-      expect(result.valueAggregationUnsafe).toBe(true);
+      expect(result.data.valueAggregationUnsafe).toBe(true);
     });
   });
 
@@ -233,10 +233,10 @@ describe('AnalyticsService (unit, mock Prisma)', () => {
         { period: new Date('2025-01-01'), total: 10n, accepted: 8n, quarantined: 1n, rejected: 1n },
       ]);
       const result = await service.getTrend('t', {}, TrendGranularity.MONTH);
-      expect(result.points).toHaveLength(1);
-      expect(result.points[0].total).toBe(10);
-      expect(result.points[0].accepted).toBe(8);
-      expect(result.granularity).toBe(TrendGranularity.MONTH);
+      expect(result.data.points).toHaveLength(1);
+      expect(result.data.points[0].total).toBe(10);
+      expect(result.data.points[0].accepted).toBe(8);
+      expect(result.data.granularity).toBe(TrendGranularity.MONTH);
     });
 
     it('converts BigInt to number (JSON-safe)', async () => {
@@ -244,7 +244,7 @@ describe('AnalyticsService (unit, mock Prisma)', () => {
         { period: new Date('2025-01-01'), total: 999n, accepted: 800n, quarantined: 100n, rejected: 99n },
       ]);
       const result = await service.getTrend('t', {}, TrendGranularity.DAY);
-      expect(typeof result.points[0].total).toBe('number');
+      expect(typeof result.data.points[0].total).toBe('number');
     });
   });
 
@@ -267,8 +267,8 @@ describe('AnalyticsService (unit, mock Prisma)', () => {
         { dim_value: 'USD', record_count: 42n },
       ]);
       const result = await service.getBreakdown('t', {}, BreakdownDimension.CURRENCY_CODE, 10);
-      expect(typeof result.items[0].count).toBe('number');
-      expect(result.items[0].count).toBe(42);
+      expect(typeof result.data.items[0].count).toBe('number');
+      expect(result.data.items[0].count).toBe(42);
     });
   });
 
@@ -282,8 +282,8 @@ describe('AnalyticsService (unit, mock Prisma)', () => {
     it('returns empty arrays when no records', async () => {
       prisma.tdrRecord.groupBy.mockResolvedValue([]);
       const result = await service.getFilterOptions('t');
-      expect(result.tradeDirections).toEqual([]);
-      expect(result.currencyCodes).toEqual([]);
+      expect(result.data.tradeDirections).toEqual([]);
+      expect(result.data.currencyCodes).toEqual([]);
     });
   });
 });

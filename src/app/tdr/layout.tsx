@@ -65,7 +65,7 @@ function TdrNav() {
   );
 }
 
-function TdrLoginGate({ children }: { children: React.ReactNode }) {
+export function TdrLoginGate({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, setAuth } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -124,8 +124,8 @@ function TdrLoginGate({ children }: { children: React.ReactNode }) {
         />
         <button
           type="submit"
-          disabled={loading}
-          className="w-full py-2 text-sm font-medium bg-accent-primary text-white rounded hover:opacity-90 disabled:opacity-50"
+          disabled={loading || !email.trim() || !password}
+          className="w-full py-2 text-sm font-medium bg-accent-primary text-white rounded hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           {loading ? 'Signing in…' : 'Sign in'}
         </button>

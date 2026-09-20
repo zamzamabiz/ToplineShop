@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma, TradeDirection } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
+import { success } from '../../common/api-response';
 import {
   AnalyticsFilterDto,
   BreakdownDimension,
@@ -67,7 +68,7 @@ export class AnalyticsService {
     const qualityRate =
       total > 0 ? Math.round((accepted / total) * 10_000) / 100 : null;
 
-    return {
+    return success({
       total,
       accepted,
       quarantined,
@@ -76,7 +77,7 @@ export class AnalyticsService {
       exportEligibleCount,
       // §8 — always flag: values are not aggregated due to mixed-currency risk.
       valueAggregationUnsafe: true,
-    };
+    });
   }
 
   // ── Trend ─────────────────────────────────────────────────────────────────
@@ -112,7 +113,7 @@ export class AnalyticsService {
       LIMIT ${AGGREGATE_POINT_BUDGET}
     `;
 
-    return {
+    return success({
       granularity,
       points: rows.map((r) => ({
         period: r.period?.toISOString().split('T')[0] ?? null,
@@ -121,7 +122,7 @@ export class AnalyticsService {
         quarantined: Number(r.quarantined),
         rejected: Number(r.rejected),
       })),
-    };
+    });
   }
 
   // ── Breakdown ─────────────────────────────────────────────────────────────
@@ -151,13 +152,13 @@ export class AnalyticsService {
       LIMIT ${safeTopN}
     `;
 
-    return {
+    return success({
       dimension,
       items: rows.map((r) => ({
         value: r.dim_value,
         count: Number(r.record_count),
       })),
-    };
+    });
   }
 
   // ── Filter options ────────────────────────────────────────────────────────
@@ -205,7 +206,7 @@ export class AnalyticsService {
         }),
       ]);
 
-    return {
+    return success({
       tradeDirections: directions.map((r) => r.tradeDirection),
       hsChapters: chapters.map((r) => r.hsChapter).filter(Boolean),
       foreignCountryCodes: countries
@@ -213,7 +214,7 @@ export class AnalyticsService {
         .filter(Boolean),
       currencyCodes: currencies.map((r) => r.currencyCode).filter(Boolean),
       quantityUnitCodes: units.map((r) => r.quantityUnitCode).filter(Boolean),
-    };
+    });
   }
 }
 
