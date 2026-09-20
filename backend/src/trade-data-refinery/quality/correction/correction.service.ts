@@ -11,10 +11,31 @@ import { AuthenticatedUser } from '../../../auth/types/jwt-payload.type';
 import { Role } from '../../../auth/types/role.type';
 import { MappingConfigV1 } from '../types/mapping-config.types';
 import { normalizeRowV1 } from '../normalization/normalizer.service';
-import { validateRowV1 } from '../validation/validator.service';
+import { validateRowV1, ValidationIssueInput } from '../validation/validator.service';
 import { determineDisposition } from '../decision/quality-decision.service';
 import { CORRECTABLE_FIELDS, CorrectionDto } from './correction.dto';
+import { RULE_CODE } from '../constants/validation-rule.catalog';
 import { success } from '../../../common/api-response';
+
+/**
+ * Maps a raw canonical field that triggers REQUIRED_FIELD_MISSING
+ * to its correctable normalized counterpart.
+ * Used by filterCorrectedRequiredIssues to suppress the raw-required check
+ * when a human correction has already supplied a valid normalized value.
+ */
+export const RAW_TO_NORMALIZED_COUNTERPART: Readonly<Partial<Record<string, string>>> = {
+  quantityRaw: 'quantityNormalized',
+  quantityUnitRaw: 'quantityUnitCode',
+  unitPriceRaw: 'unitPriceNormalized',
+  currencyRaw: 'currencyCode',
+  hsCodeRaw: 'hsCodeNormalized',
+  productDescriptionRaw: 'productDescriptionNormalized',
+  localPartyTaxIdRaw: 'localPartyTaxIdNormalized',
+  localPartyNameRaw: 'localPartyNameNormalized',
+  foreignPartyNameRaw: 'foreignPartyNameNormalized',
+  originPortRaw: 'originPortNormalized',
+  foreignPartyCountryRaw: 'foreignPartyCountryCode',
+};
 
 @Injectable()
 export class CorrectionService {
@@ -66,6 +87,7 @@ export class CorrectionService {
 
     // Apply correction to record
     const updateData = buildUpdateData(dto.fieldName, dto.correctedValue);
+    const oldDisposition = record.rowDisposition;
 
     // All 5 DB ops in one atomic transaction (CORRECTION-ATOMICITY-001)
     const { review, newDecision } = await this.prisma.$transaction(async (tx) => {
@@ -84,7 +106,9 @@ export class CorrectionService {
       // Revalidate using the corrected record (in-memory, no I/O)
       const revalidationRow = buildRevalidationRow(updatedRecord, config);
       const newNormalized = normalizeRowV1(revalidationRow, config);
-      const newIssues = validateRowV1(newNormalized, config);
+      const rawIssues = validateRowV1(newNormalized, config);
+      const meta = (updatedRecord.valueTreatmentMeta as Record<string, string>) ?? {};
+      const newIssues = filterCorrectedRequiredIssues(rawIssues, meta, updatedRecord as Record<string, unknown>);
       const txDecision = determineDisposition(newIssues);
 
       // Step 3: Create new OPEN issues from revalidation
@@ -131,6 +155,14 @@ export class CorrectionService {
         select: { id: true },
       });
 
+      // Step 6: Update batch disposition counts when disposition changes
+      if (oldDisposition !== txDecision.rowDisposition) {
+        const countDelta = buildCountDelta(oldDisposition, txDecision.rowDisposition);
+        if (Object.keys(countDelta).length > 0) {
+          await tx.tdrBatch.update({ where: { id: batchId }, data: countDelta });
+        }
+      }
+
       return { review: txReview, newDecision: txDecision };
     });
 
@@ -159,6 +191,92 @@ export class CorrectionService {
       exportEligible: newDecision.exportEligible,
     });
   }
+
+  /**
+   * Re-evaluates an already-corrected record using the fixed revalidation code.
+   * Closes artefact OPEN issues from broken prior revalidation runs and
+   * recomputes disposition + batch counts.
+   * Does NOT create a new TdrQuarantineReview — this is not a new correction event.
+   */
+  async reEvaluateRecord(
+    batchId: string,
+    recordId: string,
+    tenantId: string,
+  ): Promise<{ rowDisposition: string; exportEligible: boolean; newIssueCount: number }> {
+    const record = await this.prisma.tdrRecord.findFirst({
+      where: { id: recordId, batchId, tenantId },
+      include: {
+        batch: { select: { mappingId: true } },
+      },
+    });
+    if (!record) throw new NotFoundException(`Record ${recordId} not found`);
+
+    const mapping = record.batch.mappingId
+      ? await this.prisma.tdrSchemaMapping.findUnique({ where: { id: record.batch.mappingId } })
+      : null;
+    const config = (mapping?.mappingConfig ?? { version: 'v1', columnMappings: [] }) as unknown as MappingConfigV1;
+
+    const oldDisposition = record.rowDisposition;
+
+    const result = await this.prisma.$transaction(async (tx) => {
+      // Close OPEN issues that are artefacts of the prior broken revalidation
+      await tx.tdrValidationIssue.updateMany({
+        where: { recordId, tenantId, status: 'OPEN' },
+        data: { status: 'REVIEWED' },
+      });
+
+      // Re-run revalidation with the fixed code
+      const revalidationRow = buildRevalidationRow(record as Record<string, unknown>, config);
+      const newNormalized = normalizeRowV1(revalidationRow, config);
+      const rawIssues = validateRowV1(newNormalized, config);
+      const meta = (record.valueTreatmentMeta as Record<string, string>) ?? {};
+      const filteredIssues = filterCorrectedRequiredIssues(rawIssues, meta, record as Record<string, unknown>);
+      const txDecision = determineDisposition(filteredIssues);
+
+      // Create new issues (only those that remain after correction filtering)
+      if (filteredIssues.length > 0) {
+        await tx.tdrValidationIssue.createMany({
+          data: filteredIssues.map((i) => ({
+            recordId,
+            batchId,
+            tenantId,
+            fieldName: i.fieldName,
+            ruleCode: i.ruleCode,
+            severity: i.severity,
+            message: i.message,
+            rawValue: i.rawValue,
+            status: 'OPEN' as const,
+          })),
+        });
+      }
+
+      // Update record disposition
+      await tx.tdrRecord.update({
+        where: { id: recordId },
+        data: {
+          rowDisposition: txDecision.rowDisposition,
+          exportEligible: txDecision.exportEligible,
+          quarantineReviewRequired: txDecision.quarantineReviewRequired,
+        },
+      });
+
+      // Update batch counts if disposition changed
+      if (oldDisposition !== txDecision.rowDisposition) {
+        const countDelta = buildCountDelta(oldDisposition, txDecision.rowDisposition);
+        if (Object.keys(countDelta).length > 0) {
+          await tx.tdrBatch.update({ where: { id: batchId }, data: countDelta });
+        }
+      }
+
+      return {
+        rowDisposition: txDecision.rowDisposition,
+        exportEligible: txDecision.exportEligible,
+        newIssueCount: filteredIssues.length,
+      };
+    });
+
+    return result;
+  }
 }
 
 function checkCorrectionAuthorization(roles: string[], direction: string): void {
@@ -183,15 +301,70 @@ function buildUpdateData(fieldName: string, value: string): Record<string, unkno
   return { [fieldName]: value || null };
 }
 
-function buildRevalidationRow(
+/**
+ * Formats a @db.Date field (UTC midnight) back to a source-parseable string
+ * using the column's transformationRule.
+ * Uses UTC accessors to avoid timezone-sensitive drift on date-only values.
+ */
+export function revalidationDateString(d: Date, transformationRule?: string): string {
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  if (transformationRule === 'DATE_PARSE_DMY') return `${day}-${m}-${y}`;
+  if (transformationRule === 'DATE_PARSE_MDY') return `${m}-${day}-${y}`;
+  return `${y}-${m}-${day}`;
+}
+
+/**
+ * Reconstructs a source-shaped row from the stored canonical record fields.
+ * Date objects (stored as @db.Date) are formatted back to their original
+ * source representation using the column's transformationRule and UTC accessors.
+ */
+export function buildRevalidationRow(
   record: Record<string, unknown>,
   config: MappingConfigV1,
 ): Record<string, string> {
-  // Reconstruct a source-like row using the canonical fields mapped back through config
   const row: Record<string, string> = {};
   for (const cm of config.columnMappings) {
-    const v = record[cm.canonicalField];
+    let v: unknown = record[cm.canonicalField];
+    if (v instanceof Date) {
+      v = revalidationDateString(v, cm.transformationRule);
+    }
     row[cm.sourceColumnName] = v !== null && v !== undefined ? String(v) : '';
   }
   return row;
+}
+
+/**
+ * Suppresses REQUIRED_FIELD_MISSING issues for raw fields whose normalized
+ * counterpart has been human-corrected with a valid non-empty value.
+ * All other issue types pass through unchanged.
+ */
+export function filterCorrectedRequiredIssues(
+  issues: ValidationIssueInput[],
+  meta: Record<string, string>,
+  record: Record<string, unknown>,
+): ValidationIssueInput[] {
+  return issues.filter((issue) => {
+    if (issue.ruleCode !== RULE_CODE.REQUIRED_FIELD_MISSING) return true;
+    const normalizedField = RAW_TO_NORMALIZED_COUNTERPART[issue.fieldName ?? ''];
+    if (!normalizedField) return true;
+    if (meta[normalizedField] !== 'CORRECTED') return true;
+    const correctedValue = record[normalizedField];
+    return correctedValue === null || correctedValue === undefined || String(correctedValue).trim() === '';
+  });
+}
+
+function buildCountDelta(
+  oldDisp: string | null,
+  newDisp: string,
+): Record<string, unknown> {
+  const delta: Record<string, unknown> = {};
+  if (oldDisp === 'ACCEPTED') delta.acceptedRows = { decrement: 1 };
+  else if (oldDisp === 'QUARANTINED') delta.quarantinedRows = { decrement: 1 };
+  else if (oldDisp === 'REJECTED') delta.rejectedRows = { decrement: 1 };
+  if (newDisp === 'ACCEPTED') delta.acceptedRows = { increment: 1 };
+  else if (newDisp === 'QUARANTINED') delta.quarantinedRows = { increment: 1 };
+  else if (newDisp === 'REJECTED') delta.rejectedRows = { increment: 1 };
+  return delta;
 }

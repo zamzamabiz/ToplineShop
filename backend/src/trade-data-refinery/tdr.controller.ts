@@ -103,6 +103,16 @@ export class TdrController {
     return this.quarantineService.getQualityDetail(batchId, recordId, req.user.tenantId);
   }
 
+  @Post('batches/:batchId/records/:recordId/re-evaluate')
+  @Roles(Role.SUPER_ADMIN, Role.TENANT_ADMIN)
+  reEvaluateRecord(
+    @Param('batchId') batchId: string,
+    @Param('recordId') recordId: string,
+    @Req() req: TdrRequest,
+  ) {
+    return this.correctionService.reEvaluateRecord(batchId, recordId, req.user.tenantId);
+  }
+
   @Post('batches/:batchId/records/:recordId/correct')
   @Roles(
     Role.SUPER_ADMIN,
