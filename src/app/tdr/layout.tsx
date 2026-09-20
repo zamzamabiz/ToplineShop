@@ -66,7 +66,7 @@ function TdrNav() {
 }
 
 export function TdrLoginGate({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, setAuth } = useAuth();
+  const { isAuthenticated, setAuth, sessionExpired } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -103,6 +103,11 @@ export function TdrLoginGate({ children }: { children: React.ReactNode }) {
         <p className="text-xs text-text-muted">
           Your session is kept in memory only (PM-005 storage strategy pending).
         </p>
+        {sessionExpired && !error && (
+          <p className="text-xs text-amber-400 bg-amber-900/20 rounded px-3 py-2">
+            Session expired — please sign in again
+          </p>
+        )}
         {error && (
           <p className="text-xs text-red-400 bg-red-900/20 rounded px-3 py-2">{error}</p>
         )}

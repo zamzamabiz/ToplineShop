@@ -28,6 +28,45 @@ import type {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
+// ── Auth refresh infrastructure ────────────────────────────────────────────────
+
+interface AuthRefreshCallbacks {
+  getRefreshToken: () => string | null;
+  onRefreshSuccess: (tokens: { accessToken: string; refreshToken: string }) => void;
+  onAuthFailed: () => void;
+}
+
+let _authCallbacks: AuthRefreshCallbacks | null = null;
+// Single in-flight promise — prevents concurrent 401s from triggering multiple refresh calls.
+let _pendingRefresh: Promise<string | null> | null = null;
+
+export function setAuthCallbacks(callbacks: AuthRefreshCallbacks | null): void {
+  _authCallbacks = callbacks;
+}
+
+async function tryRefreshOnce(): Promise<string | null> {
+  if (_pendingRefresh) return _pendingRefresh;
+  const cb = _authCallbacks;
+  if (!cb) return null;
+  const refreshToken = cb.getRefreshToken();
+  if (!refreshToken) return null;
+
+  _pendingRefresh = authRefresh(refreshToken)
+    .then((tokens) => {
+      cb.onRefreshSuccess(tokens);
+      return tokens.accessToken;
+    })
+    .catch(() => {
+      cb.onAuthFailed();
+      return null;
+    })
+    .finally(() => {
+      _pendingRefresh = null;
+    });
+
+  return _pendingRefresh;
+}
+
 type BreakdownDimensionValue =
   | 'tradeDirection'
   | 'hsChapter'
@@ -69,10 +108,15 @@ async function get<T>(
   params?: Record<string, string | number | boolean | string[] | undefined>,
   signal?: AbortSignal,
 ): Promise<T> {
-  const res = await fetch(buildUrl(path, params), {
-    headers: { Authorization: `Bearer ${token}` },
-    signal,
-  });
+  const makeReq = (tok: string) =>
+    fetch(buildUrl(path, params), { headers: { Authorization: `Bearer ${tok}` }, signal });
+
+  let res = await makeReq(token);
+  if (res.status === 401) {
+    const newToken = await tryRefreshOnce();
+    if (newToken) res = await makeReq(newToken);
+    else throwApiError(await res.json().catch(() => ({})), 401);
+  }
   if (!res.ok) throwApiError(await res.json().catch(() => ({})), res.status);
   const body = await res.json();
   return body.data as T;
@@ -85,10 +129,15 @@ async function getPage<T, M = Record<string, unknown>>(
   params?: Record<string, string | number | boolean | string[] | undefined>,
   signal?: AbortSignal,
 ): Promise<{ data: T; meta: M }> {
-  const res = await fetch(buildUrl(path, params), {
-    headers: { Authorization: `Bearer ${token}` },
-    signal,
-  });
+  const makeReq = (tok: string) =>
+    fetch(buildUrl(path, params), { headers: { Authorization: `Bearer ${tok}` }, signal });
+
+  let res = await makeReq(token);
+  if (res.status === 401) {
+    const newToken = await tryRefreshOnce();
+    if (newToken) res = await makeReq(newToken);
+    else throwApiError(await res.json().catch(() => ({})), 401);
+  }
   if (!res.ok) throwApiError(await res.json().catch(() => ({})), res.status);
   const body = await res.json();
   return { data: body.data as T, meta: body.meta as M };
@@ -100,21 +149,45 @@ async function post<TReq, TRes>(
   data: TReq,
   signal?: AbortSignal,
 ): Promise<TRes> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-    signal,
-  });
+  const makeReq = (tok: string) =>
+    fetch(`${API_BASE}${path}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tok}` },
+      body: JSON.stringify(data),
+      signal,
+    });
+
+  let res = await makeReq(token);
+  if (res.status === 401) {
+    const newToken = await tryRefreshOnce();
+    if (newToken) res = await makeReq(newToken);
+    else throwApiError(await res.json().catch(() => ({})), 401);
+  }
   if (!res.ok) throwApiError(await res.json().catch(() => ({})), res.status);
   const body = await res.json();
   return body.data as TRes;
 }
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
+
+export async function authRefresh(
+  refreshToken: string,
+): Promise<{ accessToken: string; refreshToken: string }> {
+  const res = await fetch(`${API_BASE}/auth/refresh`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refreshToken }),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw Object.assign(new Error(body?.error?.message ?? 'Refresh failed'), {
+      code: body?.error?.code ?? `HTTP_${res.status}`,
+      status: res.status,
+    });
+  }
+  const body = await res.json();
+  return body.data as { accessToken: string; refreshToken: string };
+}
 
 export async function authLogin(req: AuthLoginRequest): Promise<AuthLoginResponse> {
   const res = await fetch(`${API_BASE}/auth/login`, {
@@ -205,19 +278,21 @@ export async function uploadFile(
   form.append('tradeDirection', direction);
   form.append('mappingProfileId', mappingProfileId);
 
-  const res = await fetch(`${API_BASE}/tdr/batches/upload`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body: form,
-    signal,
-  });
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw Object.assign(new Error(body?.error?.message ?? `HTTP ${res.status}`), {
-      code: body?.error?.code ?? `HTTP_${res.status}`,
-      status: res.status,
+  const makeReq = (tok: string) =>
+    fetch(`${API_BASE}/tdr/batches/upload`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${tok}` },
+      body: form,
+      signal,
     });
+
+  let res = await makeReq(token);
+  if (res.status === 401) {
+    const newToken = await tryRefreshOnce();
+    if (newToken) res = await makeReq(newToken);
+    else throwApiError(await res.json().catch(() => ({})), 401);
   }
+  if (!res.ok) throwApiError(await res.json().catch(() => ({})), res.status);
   const body = await res.json();
   return body.data as TdrBatch;
 }
@@ -265,9 +340,16 @@ export function getExportStatus(token: string, exportId: string, signal?: AbortS
 
 // Authenticated download: Bearer fetch → Blob → object URL → auto-click → revoke
 export async function downloadExport(token: string, exportId: string): Promise<void> {
-  const res = await fetch(`${API_BASE}/tdr/exports/${encodeURIComponent(exportId)}/download`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  const downloadUrl = `${API_BASE}/tdr/exports/${encodeURIComponent(exportId)}/download`;
+  const makeReq = (tok: string) =>
+    fetch(downloadUrl, { headers: { Authorization: `Bearer ${tok}` } });
+
+  let res = await makeReq(token);
+  if (res.status === 401) {
+    const newToken = await tryRefreshOnce();
+    if (newToken) res = await makeReq(newToken);
+    else throwApiError(await res.json().catch(() => ({})), 401);
+  }
   if (!res.ok) throwApiError(await res.json().catch(() => ({})), res.status);
   const blob = await res.blob();
   const objectUrl = URL.createObjectURL(blob);

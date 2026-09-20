@@ -21,6 +21,8 @@ import React from 'react';
 vi.mock('@/lib/tdr-api', () => ({
   authLogin: vi.fn(),
   authLogout: vi.fn(),
+  authRefresh: vi.fn(),
+  setAuthCallbacks: vi.fn(),
 }));
 
 vi.mock('next/navigation', () => ({
