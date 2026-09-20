@@ -181,10 +181,11 @@ export class TdrQualityOrchestratorService {
   }
 
   /**
-   * Ensures quality jobs exist and are PENDING for all stranded batches:
-   * 1. QUALITY_PENDING batches with no quality job (original case)
-   * 2. Batches with a FAILED quality job that still have PENDING_QUALITY records
-   *    (quality processing crashed before completion — e.g., after a code-level bug fix)
+   * At startup, creates missing quality jobs for QUALITY_PENDING batches that have no job.
+   * This is the only automatic recovery path. FAILED batches are terminal and require
+   * explicit replay via the API — auto-resurrecting them on every restart would create
+   * an infinite retry loop for any permanently-failed condition (e.g. missing mapping,
+   * unsupported version, or bad data).
    */
   async reconcileQualityJobs(): Promise<number> {
     const withoutJob = await this.prisma.tdrBatch.findMany({
@@ -192,18 +193,8 @@ export class TdrQualityOrchestratorService {
       select: { id: true, tenantId: true },
     });
 
-    const withFailedJob = await this.prisma.tdrBatch.findMany({
-      where: {
-        qualityJob: { status: 'FAILED' },
-        records: { some: { rowDisposition: 'PENDING_QUALITY' } },
-      },
-      select: { id: true, tenantId: true },
-    });
-
-    const allStranded = [...withoutJob, ...withFailedJob];
-
     let reconciled = 0;
-    for (const b of allStranded) {
+    for (const b of withoutJob) {
       await this.ensureQualityJob(b.id, b.tenantId);
       reconciled++;
     }
