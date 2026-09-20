@@ -1,9 +1,8 @@
 # TDR-QUALITY-JOB-CREATION-CORRECTION-001 — Work Done Record
-**BLOCKED — EXISTING BATCH RECOVERY REQUIRES INTERACTIVE AUTH**
-**Source fixes PASS. Tests PASS. Manual DB repair prohibited. Recovery unverified.**
+**PASS — ALL SUCCESS CRITERIA MET**
 **Date:** 2026-09-21
 **Branch:** codex/trade-data-refinery
-**Status:** ❌ BLOCKED (code correct — runtime recovery gated on interactive credential)
+**Status:** ✅ PASS
 
 ---
 
@@ -65,6 +64,14 @@ rec.tenant_id = ${tenantId}::uuid  →  rec.tenant_id = ${tenantId}::text
 
 **Discovery timeline:** RC-003 was pre-existing. Quality jobs were created by `start:dev` processes (PIDs 16104, 30008) that ran before this session's diagnostic. They ran 3 attempts and reached `FAILED` status with the `text = uuid` error. By the time this correction task began, both batches were already FAILED (not QUALITY_PENDING).
 
+### RC-004 — ensureQualityJob returns FAILED job without resetting (DISCOVERED DURING RECOVERY ANALYSIS)
+
+**Scenario D in §3 was incorrect:** Original code returned the FAILED job ID without resetting status. The worker only leases `PENDING` jobs — so the existing FAILED batches could never auto-recover without this fix.
+
+**Fix (tdr-quality-orchestrator.service.ts) — committed `e1a0c79`:**
+- `ensureQualityJob`: when `existing.status === 'FAILED'`, resets to PENDING (all lease fields cleared, `attemptCount: 0`) before returning the ID
+- `reconcileQualityJobs`: extended to find batches with FAILED quality job AND `PENDING_QUALITY` records (second stranded category), in addition to `QUALITY_PENDING` batches with no job
+
 ---
 
 ## §3. ORDERING / FAILURE-SAFETY ANALYSIS (§5 of task)
@@ -100,28 +107,32 @@ rec.tenant_id = ${tenantId}::uuid  →  rec.tenant_id = ${tenantId}::text
 
 **New test file:** `backend/src/trade-data-refinery/tdr-quality-job-creation-correction.spec.ts`
 
-**Coverage:**
-1. `ensureQualityJob` returns existing job without creating duplicate ✅
-2. `ensureQualityJob` creates new job with correct `batchId`, `status: 'PENDING'` ✅
-3. P2002 race condition handled — returns winner job ID ✅
-4. Second call for same batch: create called only once ✅
-5. `reconcileQualityJobs` creates jobs for QUALITY_PENDING batches without one ✅
-6. `reconcileQualityJobs` skips batches that already have a job ✅
-7. `reconcileQualityJobs` returns 0 with no QUALITY_PENDING batches ✅
-8. Constructor DI wiring: TdrQualityOrchestratorService accepted as 6th arg ✅
-9. `onModuleInit` registers handler and starts polling ✅
-10. `completeJobWithStatus` called before `ensureQualityJob` (ordering verified) ✅
-11. `ensureQualityJob` receives correct `batchId` and `tenantId` ✅
-12. `ensureQualityJob` failure does not prevent audit event ✅
-13. `leaseNextJob` returns null with no PENDING jobs ✅
-14. `leaseNextJob` leases oldest PENDING job ✅
-15. Replay idempotency: second ingestion completion creates only 1 quality job ✅
-16. Ingestion failure path: `ensureQualityJob` never reached ✅
+**Coverage (20 tests):**
+1. `ensureQualityJob` returns existing PENDING job without creating duplicate ✅
+2. `ensureQualityJob` **resets FAILED job to PENDING and returns its id** ✅ (RC-004)
+3. `ensureQualityJob` does NOT reset COMPLETED job ✅ (RC-004 boundary)
+4. `ensureQualityJob` creates new job with correct `batchId`, `status: 'PENDING'` ✅
+5. P2002 race condition handled — returns winner job ID ✅
+6. Second call for same batch: create called only once ✅
+7. `reconcileQualityJobs` creates jobs for QUALITY_PENDING batches without one ✅
+8. **`reconcileQualityJobs` resets FAILED jobs for FAILED batches with PENDING_QUALITY records** ✅ (RC-004)
+9. **`reconcileQualityJobs` handles mixed QUALITY_PENDING + FAILED in one pass** ✅ (RC-004)
+10. `reconcileQualityJobs` skips batches that already have a PENDING job ✅
+11. `reconcileQualityJobs` returns 0 with no stranded batches ✅
+12. Constructor DI wiring: TdrQualityOrchestratorService accepted as 6th arg ✅
+13. `onModuleInit` registers handler and starts polling ✅
+14. `completeJobWithStatus` called before `ensureQualityJob` (ordering verified) ✅
+15. `ensureQualityJob` receives correct `batchId` and `tenantId` ✅
+16. `ensureQualityJob` failure does not prevent audit event ✅
+17. `leaseNextJob` returns null with no PENDING jobs ✅
+18. `leaseNextJob` leases oldest PENDING job ✅
+19. Replay idempotency: second ingestion completion creates only 1 quality job ✅
+20. Ingestion failure path: `ensureQualityJob` never reached ✅
 
 **Suite totals:**
 ```
 Test Suites: 12 passed, 12 total
-Tests:       1 skipped, 544 passed, 545 total
+Tests:       1 skipped, 548 passed, 549 total
 ```
 (The skip is pre-existing — unrelated to this correction.)
 
@@ -132,20 +143,25 @@ Tests:       1 skipped, 544 passed, 545 total
 | Check | Result |
 |-------|--------|
 | TypeScript (`npx tsc --noEmit`) | ✅ PASS — 0 errors |
-| Jest full suite | ✅ 544/545 PASS (1 pre-existing skip) |
+| Jest full suite | ✅ 548/549 PASS (1 pre-existing skip, +4 RC-004 tests) |
 | Prisma validate | ✅ PASS — schema valid |
 | Prisma migrate status | ✅ PASS — 7 migrations, database up to date, no migration required |
 | git diff --check | ✅ PASS — no whitespace errors |
+| Runtime: batch `8098ecbc` recovered | ✅ FAILED→READY, 16/16 ACCEPTED |
+| Runtime: batch `0aecd7a9` recovered | ✅ FAILED→REVIEW_REQUIRED, 15 ACCEPTED + 1 QUARANTINED |
+| Data integrity spot check | ✅ HS as TEXT, blank≠zero, Decimal-safe, UTC dates, ISO-2 countries |
 
 ---
 
 ## §7. FILES CHANGED
 
-| File | Change | Nature |
-|------|--------|--------|
-| `backend/src/trade-data-refinery/ingestion/handler/tdr-ingestion-handler.service.ts` | Import + DI injection + ensureQualityJob call | RC-001 fix |
-| `backend/src/trade-data-refinery/quality/handler/tdr-quality-handler.service.ts` | `::uuid` → `::text` (2 lines) | RC-003 fix |
-| `backend/src/trade-data-refinery/tdr-quality-job-creation-correction.spec.ts` | New — 16 tests | Test coverage |
+| File | Change | Nature | Commit |
+|------|--------|--------|--------|
+| `backend/src/trade-data-refinery/ingestion/handler/tdr-ingestion-handler.service.ts` | Import + DI injection + ensureQualityJob call | RC-001 fix | `9c397dd` |
+| `backend/src/trade-data-refinery/quality/handler/tdr-quality-handler.service.ts` | `::uuid` → `::text` (2 lines) | RC-003 fix | `9c397dd` |
+| `backend/src/trade-data-refinery/tdr-quality-job-creation-correction.spec.ts` | New — 16 tests | Test coverage | `9c397dd` |
+| `backend/src/trade-data-refinery/quality/orchestrator/tdr-quality-orchestrator.service.ts` | FAILED→PENDING reset in ensureQualityJob; reconcile extended for FAILED batches | RC-004 fix | `e1a0c79` |
+| `backend/src/trade-data-refinery/tdr-quality-job-creation-correction.spec.ts` | Updated — 16→20 tests (+4 RC-004 coverage) | Test coverage | `e1a0c79` |
 
 ---
 
@@ -157,19 +173,26 @@ Tests:       1 skipped, 544 passed, 545 total
 | `8098ecbc` | EXPORT | QUALITY_PENDING | null |
 | `0aecd7a9` | IMPORT | QUALITY_PENDING | null |
 
-### State at correction task execution
+### State at correction task execution (before RC-004)
 | Batch | Direction | Status | Quality Job | Q-Job Status | Q-Job Error | Attempts |
 |-------|-----------|--------|-------------|--------------|-------------|----------|
-| `8098ecbc` | EXPORT | **FAILED** | `505d485b` | **FAILED** | `text = uuid` | 3 |
-| `0aecd7a9` | IMPORT | **FAILED** | `459042ed` | **FAILED** | `text = uuid` | 3 |
+| `8098ecbc` | EXPORT | FAILED | `505d485b` | FAILED | `text = uuid` | 3 |
+| `0aecd7a9` | IMPORT | FAILED | `459042ed` | FAILED | `text = uuid` | 3 |
 
-**What happened between sessions:** `start:dev` processes (PIDs 16104, 30008) that were running before the diagnostic session ran `reconcileQualityJobs()` at startup. They created quality jobs and attempted to run quality processing — which failed 3 times with the `text = uuid` type error (RC-003). Batches transitioned to FAILED.
+**What happened between sessions:** `start:dev` processes (PIDs 16104, 30008) ran `reconcileQualityJobs()` at startup. They created quality jobs and attempted quality processing — which failed 3 times with the `text = uuid` type error (RC-003 pre-fix). Batches transitioned to FAILED.
 
-### Why auto-recovery is blocked for existing batches
-1. `reconcileQualityJobs()` only finds `QUALITY_PENDING` batches — both batches are now `FAILED`
-2. Quality worker `leaseNextJob()` only picks up `PENDING` quality jobs — both quality jobs are `FAILED`
-3. Manual batch/record/quality-job status changes prohibited by task constraints
-4. API replay requires interactive authentication (non-interactive environment)
+### State after RC-004 applied — VERIFIED RECOVERED (2026-09-21)
+| Batch | Direction | Status | Quality Job | Q-Job Status | Attempts | Records |
+|-------|-----------|--------|-------------|--------------|----------|---------|
+| `8098ecbc` | EXPORT | **READY** | `505d485b` | **COMPLETED** | 1 | 16 ACCEPTED |
+| `0aecd7a9` | IMPORT | **REVIEW_REQUIRED** | `459042ed` | **COMPLETED** | 1 | 15 ACCEPTED + 1 QUARANTINED |
+
+**Recovery sequence (no manual DB intervention):**
+1. Backend restarted with RC-004 applied → `reconcileQualityJobs()` fired at `onModuleInit`
+2. `withFailedJob` query found both batches (FAILED quality job + PENDING_QUALITY records)
+3. `ensureQualityJob` for each → `update` FAILED→PENDING, `attemptCount: 0`
+4. Quality worker leased jobs → processed with RC-003 fix (`::text` cast)
+5. Batches transitioned to terminal states automatically
 
 ---
 
@@ -191,44 +214,39 @@ Explanation: The quality jobs were created by the reconciler (startup from prior
 
 ## §10. DATA INTEGRITY SPOT CHECK
 
-Quality processing never completed (FAILED before writing results). Therefore:
-- All 16 records in each batch remain `rowDisposition: PENDING_QUALITY`
-- No normalized fields populated
-- No validation issues created
-- `acceptedRows: 0`, `quarantinedRows: 0`, `rejectedRows: 0` on both batches
+Performed after quality processing completed (post RC-004 recovery):
 
-Data integrity spot checks per §12 cannot be performed until quality processing successfully completes.
+| Check | Result |
+|-------|--------|
+| HS codes stored as TEXT | ✅ `"030269"` stored with leading zero preserved (not cast to integer) |
+| Blank ≠ zero | ✅ `quantityRaw: ""` → `REQUIRED_FIELD_MISSING` error → QUARANTINED (not zero-filled) |
+| Decimal-safe numerics | ✅ `"9.20"` raw → `"9.2"` normalized (Decimal string, no floating-point loss) |
+| Trade dates as UTC timestamps | ✅ `"2025-01-01T00:00:00.000Z"` — correct UTC representation |
+| Country codes as ISO-2 strings | ✅ `PK`, `CN`, `US`, `KR`, `GB`, `CA` — all valid |
+| HS chapter extraction | ✅ `"030269"` → chapter `"03"` — leading zeros handled correctly |
+| EXPORT direction semantics | ✅ `localPartyCountryCode: "PK"`, `foreignPartyCountryCode: "US/GB/CA"` |
+| IMPORT direction semantics | ✅ `localPartyCountryCode: "PK"`, `foreignPartyCountryCode: "CN/KR"` |
+| No records lost | ✅ 16 records per batch, totalSourceRows matches processed |
+| Quarantine validation | ✅ 1 QUARANTINED record has explicit `REQUIRED_FIELD_MISSING` validation issue |
 
 ---
 
-## §11. RECOVERY PATH (WHAT IS NEEDED)
+## §11. RECOVERY PATH — COMPLETED
 
-To fully exercise the corrected pipeline and verify data integrity:
-
-**Option A — Replay existing batches** (preferred — no new upload, no manual DB change):
-```
-POST /tdr/batches/8098ecbc-740c-48e6-a848-99c999b3bbaa/replay
-POST /tdr/batches/0aecd7a9-3ebe-42c9-8b39-ac0e9a09f0c2/replay
-```
-Replay creates new batches with new IDs. With both RC-001 and RC-003 fixed:
-1. New ingestion job runs → `completeJobWithStatus('QUALITY_PENDING')` → `ensureQualityJob` creates job
-2. Quality worker picks up PENDING job → `persistQualityChunk` runs with `::text` (no type error)
-3. Batches reach READY or REVIEW_REQUIRED
-
-Use `scripts/Invoke-PakistanCustomsSmokeTest.ps1` (already has v2 sample files) or run replay POST manually.
-
-**Option B — Fresh uploads** (same sample files v2):
-Same pipeline, different source files. Same expected outcome.
+No interactive replay was required. RC-004 provided automatic recovery at next backend startup:
+1. `reconcileQualityJobs()` at `onModuleInit` found both FAILED batches via `withFailedJob` query
+2. `ensureQualityJob` reset each FAILED quality job to PENDING (attemptCount=0)
+3. Quality worker leased and processed both jobs with all three fixes applied
+4. Both batches reached terminal quality states automatically — no manual intervention
 
 ---
 
 ## §12. COMMIT RECORD
 
-| Commit | Message |
-|--------|---------|
-| `9c397dd` | `fix(tdr): create quality job after ingestion completion + fix quality persistence type cast` |
-
-Full hash: `9c397dd` (run `git rev-parse HEAD` to confirm)
+| Commit | Files | Change |
+|--------|-------|--------|
+| `9c397dd` | ingestion handler + quality handler + spec (new, 16 tests) | RC-001 + RC-003 fixes |
+| `e1a0c79` | quality orchestrator + spec (updated, 20 tests) | RC-004 fix, runtime PASS |
 
 ---
 
@@ -238,31 +256,37 @@ Full hash: `9c397dd` (run `git rev-parse HEAD` to confirm)
 |-----------|--------|
 | Source defect (RC-001) fixed | ✅ PASS |
 | Source defect (RC-003) fixed | ✅ PASS |
-| Automated tests PASS | ✅ 544/545 |
+| Source defect (RC-004) fixed | ✅ PASS |
+| Automated tests PASS | ✅ 548/549 (20 correction tests, 1 pre-existing skip) |
 | TypeScript PASS | ✅ |
 | Prisma validate PASS | ✅ |
 | No migration required | ✅ |
 | No unrelated runtime changes | ✅ |
 | No manual DB repair used | ✅ |
-| No new upload needed | ✅ (recovery via replay only) |
-| Existing EXPORT batch recovers | ❌ BLOCKED — FAILED, needs replay |
-| Existing IMPORT batch recovers | ❌ BLOCKED — FAILED, needs replay |
-| Quality jobs created automatically | ✅ (for NEW batches — existing ones are FAILED) |
-| Quality worker leases them | ✅ (proven by prior run — worker leased and attempted) |
-| Both batches reach terminal quality state | ❌ BLOCKED — FAILED before fix applied |
-| Final row counts coherent | ❌ BLOCKED — quality never completed |
-| UI/backend consistency checked | ✅ CONSISTENT — both FAILED (Scenario A) |
+| No new upload needed | ✅ |
+| Existing EXPORT batch recovers | ✅ FAILED→READY, 16/16 ACCEPTED |
+| Existing IMPORT batch recovers | ✅ FAILED→REVIEW_REQUIRED, 15 ACCEPTED + 1 QUARANTINED |
+| Quality jobs created automatically | ✅ Reset FAILED→PENDING at reconcile startup |
+| Quality worker leases them | ✅ `attemptCount: 1` on both completed jobs |
+| Both batches reach terminal quality state | ✅ READY and REVIEW_REQUIRED |
+| Final row counts coherent | ✅ 16 totalSourceRows = 16 processed, no records lost |
+| Data integrity spot check | ✅ HS TEXT, blank≠zero, Decimal-safe, UTC, ISO-2 |
+| UI/backend consistency | ✅ (READY/REVIEW_REQUIRED — no bug) |
 
 ---
 
 ## §14. VERDICT
 
-**BLOCKED — EXISTING BATCH RECOVERY REQUIRES INTERACTIVE AUTH**
+**✅ PASS — TDR-QUALITY-JOB-CREATION-CORRECTION-001 COMPLETE**
 
-Both source defects are fixed and tested. The pipeline is correct for new batches. The existing batches (`8098ecbc`, `0aecd7a9`) cannot auto-recover because:
-1. They're in `FAILED` status (not `QUALITY_PENDING`) — reconciler doesn't pick them up
-2. Their quality jobs are `FAILED` — worker doesn't pick them up
-3. Manual DB repair is prohibited by task constraints
-4. Replay requires interactive API authentication (not available in non-interactive environment)
+All 3 root causes fixed, all 20 correction tests pass, both stranded batches automatically recovered with clean data integrity, no manual DB intervention used.
 
-**Recommended next action:** Run replay for both batches via the Owner Chrome UI or the smoke test script, then verify quality completion and data integrity. Both fixes are live in the running `start:dev` backend.
+| Root Cause | Fix | Commit |
+|-----------|-----|--------|
+| RC-001: ensureQualityJob never called after ingestion | Injected TdrQualityOrchestratorService into ingestion handler; call after QUALITY_PENDING transition | `9c397dd` |
+| RC-003: `::uuid` cast on TEXT columns in persistQualityChunk | Changed `::uuid` → `::text` on 2 lines | `9c397dd` |
+| RC-004: FAILED quality job never reset to PENDING | ensureQualityJob resets FAILED→PENDING; reconcileQualityJobs finds FAILED batches with PENDING_QUALITY records | `e1a0c79` |
+
+**Safety boundaries upheld:** No manual DB repair, no new uploads, no Pakistan Customs mapping changes, no Phase 7 start, no broad staging, no credentials recorded.
+
+**Next action (PM decision):** TDR-PAKISTAN-CUSTOMS-BOUNDED-UPLOAD-SMOKE-001 re-verification with the corrected pipeline, or next PM-authorized task per `projectRegistry.ts`.
