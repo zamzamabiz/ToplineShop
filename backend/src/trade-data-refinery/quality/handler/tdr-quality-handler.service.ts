@@ -255,7 +255,7 @@ export class TdrQualityHandlerService implements OnModuleInit, OnModuleDestroy {
       // Set-based bulk UPDATE using Prisma.sql VALUES
       const rows = chunk.map((r) =>
         Prisma.sql`(
-          ${r.recordId}::uuid,
+          ${r.recordId}::text,
           ${r.normalized.tradeDateRaw ?? null}::text,
           ${r.normalized.tradeDate ? r.normalized.tradeDate.toISOString().split('T')[0] : null}::date,
           ${r.normalized.hsCodeRaw ?? null}::text,
@@ -338,7 +338,7 @@ export class TdrQualityHandlerService implements OnModuleInit, OnModuleDestroy {
           unit_price_raw, unit_price_normalized, currency_raw, currency_code,
           row_disposition, export_eligible, quarantine_review_required, value_treatment_meta
         )
-        WHERE rec.id = v.id AND rec.tenant_id = ${tenantId}::uuid
+        WHERE rec.id = v.id AND rec.tenant_id = ${tenantId}::text
       `;
 
       // createMany validation issues

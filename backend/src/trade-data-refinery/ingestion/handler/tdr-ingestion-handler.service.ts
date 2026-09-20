@@ -6,6 +6,7 @@ import { AuditService } from '../../../audit/audit.service';
 import { TdrJobHandler } from '../../types/tdr-job-handler.interface';
 import { TdrJobOrchestratorService } from '../../services/tdr-job-orchestrator.service';
 import { TdrProcessorService } from '../../services/tdr-processor.service';
+import { TdrQualityOrchestratorService } from '../../quality/orchestrator/tdr-quality-orchestrator.service';
 import { StorageService } from '../storage/storage.service';
 import { streamCsvRows, readCsvHeaders, validateHeaders } from '../parsers/csv.parser';
 import { streamXlsxRows, getXlsxSchemaFingerprint } from '../parsers/xlsx.parser';
@@ -25,6 +26,7 @@ export class TdrIngestionHandlerService implements TdrJobHandler, OnModuleInit {
     private readonly orchestrator: TdrJobOrchestratorService,
     private readonly processor: TdrProcessorService,
     private readonly storage: StorageService,
+    private readonly qualityOrchestrator: TdrQualityOrchestratorService,
   ) {}
 
   onModuleInit(): void {
@@ -171,6 +173,19 @@ export class TdrIngestionHandlerService implements TdrJobHandler, OnModuleInit {
 
       // Complete job → batch QUALITY_PENDING
       await this.orchestrator.completeJobWithStatus(job.id, 'QUALITY_PENDING');
+
+      // Ensure a quality job exists so the quality worker can pick it up immediately.
+      // ensureQualityJob is idempotent (UNIQUE(batchId) guard). If it fails here, the
+      // batch is already at QUALITY_PENDING and reconcileQualityJobs() will recover it
+      // on the next backend startup — so we log and continue rather than revert.
+      try {
+        await this.qualityOrchestrator.ensureQualityJob(batch!.id, batch!.tenantId);
+      } catch (qErr) {
+        this.logger.error(
+          `ensureQualityJob failed for batch ${batch!.id} — will be recovered by reconciliation at next startup. ` +
+          `Error: ${qErr instanceof Error ? qErr.message : String(qErr)}`,
+        );
+      }
 
       await this.audit.recordEvent({
         action: 'tdr.batch.ingestion_complete',
