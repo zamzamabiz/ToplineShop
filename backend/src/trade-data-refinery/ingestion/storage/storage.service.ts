@@ -1,103 +1,117 @@
 import * as fs from 'fs';
-import * as path from 'path';
 import { Injectable, Logger } from '@nestjs/common';
-import { generateStorageKey, isStorageKeySafe } from './storage-key.util';
+import type { IStorageAdapter } from './i-storage.adapter';
+import { LocalFsStorageAdapter } from './local-fs.adapter';
+import { S3StorageAdapter } from './s3.adapter';
+import { resolveStorageConfig } from './storage.config';
+import { generateStorageKey } from './storage-key.util';
 
-const DEFAULT_STORAGE_ROOT = path.join(process.cwd(), 'uploads');
-
+/**
+ * StorageService — DI boundary for TDR storage operations.
+ *
+ * Acts as a facade that delegates to the configured IStorageAdapter
+ * (LocalFsStorageAdapter or S3StorageAdapter).
+ *
+ * Consumers (UploadService, TdrIngestionHandlerService, TdrExportHandlerService,
+ * TdrExportService) inject StorageService. The adapter is selected at startup
+ * via STORAGE_ADAPTER env var (default: local).
+ *
+ * Backward-compatible API: persist(), createReadStream(), getFilePath(),
+ * removeSafe(), removeTempSafe() are preserved.
+ *
+ * New API (via IStorageAdapter): put(), getStream(), exists(), delete(),
+ * copy(), getMetadata(), deleteTempSafe().
+ */
 @Injectable()
 export class StorageService {
   private readonly logger = new Logger(StorageService.name);
-  private readonly storageRoot: string;
+  private readonly adapter: IStorageAdapter;
 
   constructor() {
-    this.storageRoot = process.env['TDR_STORAGE_PATH'] || DEFAULT_STORAGE_ROOT;
+    const config = resolveStorageConfig();
+    if (config.adapter === 's3') {
+      this.adapter = new S3StorageAdapter(config);
+    } else {
+      this.adapter = new LocalFsStorageAdapter(config);
+    }
+    this.logger.log(`Storage adapter: ${config.adapter}`);
   }
 
+  /** Expose the underlying adapter for DI consumers that need IStorageAdapter directly. */
+  getAdapter(): IStorageAdapter {
+    return this.adapter;
+  }
+
+  // ── Key generation ─────────────────────────────────────────────────────────
+
+  /**
+   * Generate a logical storage key for a source file.
+   * Format: {tenantId}/{sourceFileId}  (backward-compatible with existing DB rows)
+   */
   generateKey(tenantId: string, sourceFileId: string): string {
     return generateStorageKey(tenantId, sourceFileId);
   }
 
-  /** Absolute path on disk for a given storage key. */
-  resolvePath(storageKey: string): string {
-    if (!isStorageKeySafe(storageKey)) {
-      throw new Error(`Unsafe storage key: ${storageKey}`);
-    }
-    return path.join(this.storageRoot, storageKey);
+  // ── Backward-compatible API ────────────────────────────────────────────────
+
+  /**
+   * Persist a temp file to permanent storage under the given logical key.
+   * Delegates to adapter.put().
+   */
+  async persist(tempPath: string, storageKey: string): Promise<void> {
+    return this.adapter.put(storageKey, tempPath);
   }
 
   /**
-   * Moves a temp file to permanent storage.
-   * Tries fs.renameSync first (atomic, same-volume).
-   * On EXDEV (cross-volume rename), falls back to a streaming copy + verify + delete source.
-   * No full-file buffer is allocated during the copy.
+   * Return a readable stream for the stored file.
+   * Delegates to adapter.getStream().
    */
-  async persist(tempPath: string, storageKey: string): Promise<void> {
-    const dest = this.resolvePath(storageKey);
-    fs.mkdirSync(path.dirname(dest), { recursive: true });
-
-    try {
-      fs.renameSync(tempPath, dest);
-    } catch (err) {
-      if ((err as NodeJS.ErrnoException).code !== 'EXDEV') throw err;
-
-      // Cross-volume: stream copy → verify → remove source
-      await this.streamCopy(tempPath, dest);
-
-      const srcSize = fs.statSync(tempPath).size;
-      const dstSize = fs.statSync(dest).size;
-      if (srcSize !== dstSize) {
-        await fs.promises.unlink(dest).catch(() => {});
-        throw new Error(
-          `Cross-volume copy verification failed for ${storageKey}: ` +
-          `src=${srcSize} dst=${dstSize}`,
-        );
-      }
-
-      await fs.promises.unlink(tempPath);
-      this.logger.warn(`Cross-volume copy used for ${storageKey} (EXDEV fallback)`);
-    }
-  }
-
-  /** Returns a readable stream for the stored file. */
   createReadStream(storageKey: string): fs.ReadStream {
-    return fs.createReadStream(this.resolvePath(storageKey));
+    return this.adapter.getStream(storageKey) as fs.ReadStream;
   }
 
-  /** Full absolute path for a stored file (for parsers that need path string). */
+  /**
+   * Return the absolute local path for a stored file.
+   * Only valid when STORAGE_ADAPTER=local. Throws for S3 adapter.
+   * Note: prefer streaming (createReadStream) where possible. The local path
+   * is required by CSV/XLSX parsers that accept a file path string.
+   */
   getFilePath(storageKey: string): string {
-    return this.resolvePath(storageKey);
+    const localPath = this.adapter.getLocalPath(storageKey);
+    if (!localPath) {
+      throw new Error(
+        `getFilePath() is not supported for the configured storage adapter. ` +
+        `Use createReadStream() instead. (storageKey: ${storageKey})`,
+      );
+    }
+    return localPath;
   }
 
-  /** Deletes the permanent file, ignoring errors (best-effort compensation). */
+  /**
+   * Delete the permanent object. Best-effort — never throws.
+   */
   async removeSafe(storageKey: string): Promise<void> {
-    try {
-      const p = this.resolvePath(storageKey);
-      if (fs.existsSync(p)) fs.unlinkSync(p);
-    } catch (err) {
-      this.logger.warn(`removeSafe failed for key ${storageKey}: ${String(err)}`);
-    }
+    return this.adapter.delete(storageKey);
   }
 
-  /** Deletes a temp file, ignoring errors. */
+  /**
+   * Delete a local temp file. Best-effort — never throws.
+   */
   async removeTempSafe(tempPath: string): Promise<void> {
-    try {
-      if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
-    } catch (err) {
-      this.logger.warn(`removeTempSafe failed for ${tempPath}: ${String(err)}`);
-    }
+    return this.adapter.deleteTempSafe(tempPath);
   }
 
-  private streamCopy(src: string, dest: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const readable = fs.createReadStream(src);
-      const writable = fs.createWriteStream(dest);
+  // ── New adapter API ─────────────────────────────────────────────────────────
 
-      writable.on('finish', resolve);
-      writable.on('error', (e) => { readable.destroy(); reject(e); });
-      readable.on('error', (e) => { writable.destroy(); reject(e); });
+  async exists(storageKey: string): Promise<boolean> {
+    return this.adapter.exists(storageKey);
+  }
 
-      readable.pipe(writable);
-    });
+  async copy(srcKey: string, dstKey: string): Promise<void> {
+    return this.adapter.copy(srcKey, dstKey);
+  }
+
+  async getMetadata(storageKey: string) {
+    return this.adapter.getMetadata(storageKey);
   }
 }

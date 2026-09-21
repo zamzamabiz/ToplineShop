@@ -6,6 +6,7 @@ import { TdrJobOrchestratorService } from './services/tdr-job-orchestrator.servi
 import { TdrProcessorService } from './services/tdr-processor.service';
 import { TenantModuleGuard } from './guards/tenant-module.guard';
 import { StorageService } from './ingestion/storage/storage.service';
+import { TempCleanupService } from './ingestion/storage/temp-cleanup.service';
 import { MappingResolverService } from './ingestion/mapping/mapping-resolver.service';
 import { UploadService } from './ingestion/upload/upload.service';
 import { UploadController } from './ingestion/upload/upload.controller';
@@ -29,6 +30,7 @@ import { RecordsService } from './analytics/records.service';
     TdrProcessorService,
     TenantModuleGuard,
     StorageService,
+    TempCleanupService,
     MappingResolverService,
     UploadService,
     TdrIngestionHandlerService,

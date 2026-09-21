@@ -624,10 +624,12 @@ describe('StorageService persist — EXDEV fallback', () => {
 
   it('falls back to stream copy when rename throws EXDEV', async () => {
     const { StorageService } = await import('./ingestion/storage/storage.service');
+    const { LocalFsStorageAdapter } = await import('./ingestion/storage/local-fs.adapter');
     const svc = new StorageService();
 
-    // Redirect resolvePath to return our controlled tmpDst
-    jest.spyOn(svc, 'resolvePath').mockReturnValue(tmpDst);
+    // Redirect resolvePath on the underlying local adapter to return our controlled tmpDst
+    const adapter = svc.getAdapter() as InstanceType<typeof LocalFsStorageAdapter>;
+    jest.spyOn(adapter, 'resolvePath').mockReturnValue(tmpDst);
     // Simulate EXDEV (cross-volume rename failure)
     const renameSpy = jest.spyOn(fs, 'renameSync').mockImplementationOnce(() => {
       throw Object.assign(new Error('cross-device link not permitted'), { code: 'EXDEV' });
