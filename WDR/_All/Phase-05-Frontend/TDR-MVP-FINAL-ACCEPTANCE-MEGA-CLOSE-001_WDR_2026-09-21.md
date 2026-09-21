@@ -83,8 +83,8 @@ Result:      PASS
 ```
 
 TypeScript: `npx tsc --noEmit` → 0 errors
-Prisma validate: N/A (schema in backend/)
-Prisma migrate status: "Database schema is up to date!" (7 migrations applied)
+Prisma validate: `npx prisma validate` → "The schema at prisma\schema.prisma is valid 🚀" (PASS)
+Prisma migrate status: "Database schema is up to date!" (7 migrations applied, PASS)
 
 ---
 
@@ -404,7 +404,12 @@ Updated `src/project/projectRegistry.ts`:
 
 | Commit | Description |
 |--------|-------------|
-| (this task's commit) | chore(gov): close TDR MVP final acceptance |
+| 5783bb6 | chore(gov): close TDR MVP final acceptance (WDR + registry) |
+| f05a20a | chore(gov): backfill final acceptance commit hash in registry |
+
+Governance-close HEAD: `f05a20a053c3853de88091d12e565ef993bca24a`
+
+Note: The WDR and registry were committed in 5783bb6, then the registry was updated with that hash in f05a20a. No further amendment loop — f05a20a is the authoritative final governance-close commit.
 
 Prior task commits (already committed):
 | Commit | Description |

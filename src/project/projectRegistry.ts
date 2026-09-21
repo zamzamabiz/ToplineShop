@@ -4623,7 +4623,7 @@ export const projectRegistry: ProjectRegistry = {
   ],
   git: {
     initialized: true,
-    lastCommit: "5783bb6",
+    lastCommit: "f05a20a",
   },
   github: {
     configured: true,
