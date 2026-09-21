@@ -4,7 +4,7 @@
 **Date:** 2026-09-22  
 **Branch:** codex/trade-data-refinery  
 **Starting HEAD:** 7ff4be6e2d1fe60c698213ed47309909eff98489  
-**Final HEAD:** (see governance commit)
+**Final HEAD:** 643401a (docs) → governance commit below
 
 ---
 
@@ -257,11 +257,9 @@ See `docs/TDR-LOCAL-TO-VPS-READINESS-GATE.md`.
 
 ## 15. Commits
 
-(Will be updated at close of governance commit)
-
 | Hash | Message |
 |------|---------|
-| `<feat-hash>` | docs(tdr): add local production-like validation runbooks and plans |
+| `643401a` | docs(tdr): add local production-like validation runbooks and plans |
 | `<gov-hash>` | chore(gov): record TDR-LOCAL-PRODUCTION-LIKE-VALIDATION-001 in registry |
 
 ---
