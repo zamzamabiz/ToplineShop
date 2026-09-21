@@ -2940,6 +2940,24 @@ export const projectRegistry: ProjectRegistry = {
       pmApproval: "PASS",
       notes: "PASS — IStorageAdapter + LocalFsStorageAdapter + S3StorageAdapter (mock-tested) + TempCleanupService. 44 new tests. Backend 719/720, Frontend 129/129. 13 files migrated to D:\\ToplineShopData\\TDR (0 hash mismatches). Originals retained in backend/uploads/. S3 limitation: ingestion parsers require local paths (future task).",
     },
+    {
+      id: "TDR-POST-MVP-SOURCE-LIFECYCLE-001", // commit: 670af31
+      phase: "tdr",
+      title: "Source File Retention, Archive/Restore, Original Download, Export Expiry (MEGA TASK 3)",
+      objective: "Add archivedAt/retentionExpiresAt to TdrSourceFile, expiresAt to TdrExportJob; archive/restore/download endpoints; lifecycle filter; export binary expiry cleanup; frontend lifecycle controls",
+      status: "PASS",
+      priority: "HIGH",
+      dependencies: ["TDR-POST-MVP-STORAGE-DURABILITY-001"],
+      startedAt: "2026-09-22T00:00:00.000Z",
+      completedAt: "2026-09-22T00:00:00.000Z",
+      wdrPath: "WDR/_All/Phase-05-Frontend/TDR-POST-MVP-SOURCE-LIFECYCLE-001_WDR_2026-09-22.md",
+      commitHash: "670af31",
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PASS",
+      notes: "PASS — archivedAt/retentionExpiresAt/expiresAt schema + backfill (4 sourceFiles, 5 exportJobs). TdrSourceLifecycleService (archive/restore/download + RBAC + audit). TdrExportCleanupService (hourly). 410 GoneException on expired exports. lifecycle filter (ACTIVE/ARCHIVED/ALL). Frontend: filter selector, archive/restore/download buttons, expired export state. 35 new backend + 16 new frontend tests. Backend 754/755 (1 pre-existing skip), Frontend 145/145. tsc clean. Prisma validate PASS.",
+    },
   ],
   modules: [
     {
@@ -4728,10 +4746,19 @@ export const projectRegistry: ProjectRegistry = {
       commitHash: "3d1ee3a",
       pmAudit: "PLANNED",
     },
+    {
+      id: "wdr-tdr-post-mvp-source-lifecycle-001",
+      taskId: "TDR-POST-MVP-SOURCE-LIFECYCLE-001",
+      phase: "tdr",
+      status: "PASS",
+      date: "2026-09-22",
+      commitHash: "670af31",
+      pmAudit: "PLANNED",
+    },
   ],
   git: {
     initialized: true,
-    lastCommit: "3d1ee3a",
+    lastCommit: "670af31",
   },
   github: {
     configured: true,
