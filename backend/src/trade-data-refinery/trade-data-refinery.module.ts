@@ -18,6 +18,8 @@ import { QuarantineService } from './quality/service/quarantine.service';
 import { TdrExportOrchestratorService } from './export/orchestrator/tdr-export-orchestrator.service';
 import { TdrExportHandlerService } from './export/handler/tdr-export-handler.service';
 import { TdrExportService } from './export/service/tdr-export.service';
+import { TdrExportCleanupService } from './export/service/tdr-export-cleanup.service';
+import { TdrSourceLifecycleService } from './services/tdr-source-lifecycle.service';
 import { AnalyticsService } from './analytics/analytics.service';
 import { RecordsService } from './analytics/records.service';
 
@@ -41,6 +43,8 @@ import { RecordsService } from './analytics/records.service';
     TdrExportOrchestratorService,
     TdrExportHandlerService,
     TdrExportService,
+    TdrExportCleanupService,
+    TdrSourceLifecycleService,
     AnalyticsService,
     RecordsService,
   ],

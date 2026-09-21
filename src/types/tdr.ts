@@ -22,6 +22,9 @@ export interface TdrBatch {
   status: BatchStatus;
   tradeDirection: TradeDirection;
   originalFilename: string | null;
+  sourceFileId: string | null;
+  sourceFileArchivedAt: string | null;
+  sourceFileRetentionExpiresAt: string | null;
   processedRows: number;
   acceptedRows: number;
   quarantinedRows: number;
@@ -180,6 +183,7 @@ export interface TdrExportJob {
   errorMessage: string | null | undefined;
   createdAt: string;
   completedAt: string | null | undefined;
+  expiresAt: string | null | undefined;
 }
 
 // ── Analytics ─────────────────────────────────────────────────────────────────

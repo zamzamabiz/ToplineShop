@@ -10,7 +10,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import type { Response } from 'express';
+import type { Response as ExpressResponse } from 'express';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../auth/types/role.type';
 import { AuthenticatedUser } from '../auth/types/jwt-payload.type';
@@ -28,6 +28,7 @@ import { AnalyticsService } from './analytics/analytics.service';
 import { RecordsService } from './analytics/records.service';
 import { AnalyticsFilterDto, BreakdownDimension, TrendGranularity, TrendQueryDto, BreakdownQueryDto } from './analytics/dto/analytics-filter.dto';
 import { ListRecordsDto } from './analytics/dto/list-records.dto';
+import { TdrSourceLifecycleService } from './services/tdr-source-lifecycle.service';
 
 interface TdrRequest {
   user: AuthenticatedUser;
@@ -43,6 +44,7 @@ export class TdrController {
     private readonly exportService: TdrExportService,
     private readonly analyticsService: AnalyticsService,
     private readonly recordsService: RecordsService,
+    private readonly lifecycleService: TdrSourceLifecycleService,
   ) {}
 
   // ── Core batch endpoints ────────────────────────────────────────────────────
@@ -146,9 +148,32 @@ export class TdrController {
   async downloadExport(
     @Param('id') id: string,
     @Req() req: TdrRequest,
-    @Res({ passthrough: true }) _res: Response,
+    @Res({ passthrough: true }) _res: ExpressResponse,
   ) {
     return this.exportService.downloadExport(id, req.user);
+  }
+
+  // ── Source file lifecycle endpoints ────────────────────────────────────────
+
+  @Post('source-files/:id/archive')
+  @Roles(Role.SUPER_ADMIN, Role.TENANT_ADMIN)
+  archiveSourceFile(@Param('id') id: string, @Req() req: TdrRequest) {
+    return this.lifecycleService.archiveSourceFile(id, req.user);
+  }
+
+  @Post('source-files/:id/restore')
+  @Roles(Role.SUPER_ADMIN, Role.TENANT_ADMIN)
+  restoreSourceFile(@Param('id') id: string, @Req() req: TdrRequest) {
+    return this.lifecycleService.restoreSourceFile(id, req.user);
+  }
+
+  @Get('source-files/:id/download')
+  async downloadSourceFile(
+    @Param('id') id: string,
+    @Req() req: TdrRequest,
+    @Res({ passthrough: true }) _res: ExpressResponse,
+  ) {
+    return this.lifecycleService.downloadSourceFile(id, req.user);
   }
 
   // ── Analytics endpoints ───────────────────────────────────────────────────

@@ -2,6 +2,8 @@ import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 import { BatchStatus, TradeDirection } from '@prisma/client';
 
+export type SourceLifecycleFilter = 'ACTIVE' | 'ARCHIVED' | 'ALL';
+
 export class ListBatchesDto {
   @IsOptional()
   @IsEnum(BatchStatus)
@@ -10,6 +12,10 @@ export class ListBatchesDto {
   @IsOptional()
   @IsEnum(TradeDirection)
   tradeDirection?: TradeDirection;
+
+  @IsOptional()
+  @IsEnum(['ACTIVE', 'ARCHIVED', 'ALL'])
+  lifecycle?: SourceLifecycleFilter;
 
   @IsOptional()
   @Type(() => Number)

@@ -3,8 +3,10 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
-import { listBatches } from '@/lib/tdr-api';
+import { listBatches, archiveSourceFile, restoreSourceFile, downloadSourceFile } from '@/lib/tdr-api';
 import type { TdrBatch, BatchStatus } from '@/types/tdr';
+
+type LifecycleFilter = 'ACTIVE' | 'ARCHIVED' | 'ALL';
 
 const STATUS_COLORS: Record<string, string> = {
   RECEIVED: 'bg-sky-900/40 text-sky-300',
@@ -25,8 +27,10 @@ export default function TdrBatchesPage() {
   const [batches, setBatches] = useState<TdrBatch[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
+  const [lifecycle, setLifecycle] = useState<LifecycleFilter>('ACTIVE');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const PAGE_SIZE = 25;
 
@@ -36,8 +40,9 @@ export default function TdrBatchesPage() {
     const ctrl = new AbortController();
     abortRef.current = ctrl;
     setLoading(true);
+    setError(null);
 
-    listBatches(accessToken, { page, pageSize: PAGE_SIZE }, ctrl.signal)
+    listBatches(accessToken, { page, pageSize: PAGE_SIZE, lifecycle }, ctrl.signal)
       .then((r) => {
         setBatches(r.batches);
         setTotal(r.total);
@@ -46,7 +51,54 @@ export default function TdrBatchesPage() {
       .finally(() => setLoading(false));
 
     return () => ctrl.abort();
-  }, [accessToken, page]);
+  }, [accessToken, page, lifecycle]);
+
+  const handleLifecycleChange = (lc: LifecycleFilter) => {
+    setPage(1);
+    setLifecycle(lc);
+  };
+
+  const handleArchive = async (b: TdrBatch) => {
+    if (!accessToken || !b.sourceFileId) return;
+    setActionError(null);
+    try {
+      await archiveSourceFile(accessToken, b.sourceFileId);
+      setBatches((prev) => prev.map((x) =>
+        x.sourceFileId === b.sourceFileId
+          ? { ...x, sourceFileArchivedAt: new Date().toISOString() }
+          : x,
+      ));
+      if (lifecycle === 'ACTIVE') setBatches((prev) => prev.filter((x) => x.sourceFileId !== b.sourceFileId));
+    } catch (e) {
+      setActionError((e as Error)?.message ?? 'Archive failed');
+    }
+  };
+
+  const handleRestore = async (b: TdrBatch) => {
+    if (!accessToken || !b.sourceFileId) return;
+    setActionError(null);
+    try {
+      await restoreSourceFile(accessToken, b.sourceFileId);
+      setBatches((prev) => prev.map((x) =>
+        x.sourceFileId === b.sourceFileId
+          ? { ...x, sourceFileArchivedAt: null }
+          : x,
+      ));
+      if (lifecycle === 'ARCHIVED') setBatches((prev) => prev.filter((x) => x.sourceFileId !== b.sourceFileId));
+    } catch (e) {
+      setActionError((e as Error)?.message ?? 'Restore failed');
+    }
+  };
+
+  const handleDownloadSource = async (b: TdrBatch) => {
+    if (!accessToken || !b.sourceFileId) return;
+    setActionError(null);
+    try {
+      await downloadSourceFile(accessToken, b.sourceFileId, b.originalFilename ?? `source-${b.sourceFileId}`);
+    } catch (e) {
+      setActionError((e as Error)?.message ?? 'Download failed');
+    }
+  };
 
   if (error) return (
     <div className="text-sm text-red-300 bg-red-900/20 rounded px-4 py-3">{error}</div>
@@ -63,6 +115,28 @@ export default function TdrBatchesPage() {
           + New Upload
         </Link>
       </div>
+
+      {/* Lifecycle filter */}
+      <div className="flex items-center gap-2 text-xs" data-testid="lifecycle-filter">
+        {(['ACTIVE', 'ARCHIVED', 'ALL'] as LifecycleFilter[]).map((lc) => (
+          <button
+            key={lc}
+            data-testid={`lifecycle-${lc}`}
+            onClick={() => handleLifecycleChange(lc)}
+            className={`px-3 py-1 rounded border transition-colors ${
+              lifecycle === lc
+                ? 'bg-accent-primary border-accent-primary text-white'
+                : 'border-white/20 text-text-muted hover:text-text-secondary'
+            }`}
+          >
+            {lc === 'ACTIVE' ? 'Active' : lc === 'ARCHIVED' ? 'Archived' : 'All'}
+          </button>
+        ))}
+      </div>
+
+      {actionError && (
+        <div className="text-sm text-red-300 bg-red-900/20 rounded px-4 py-2">{actionError}</div>
+      )}
 
       {loading ? (
         <div className="space-y-2">
@@ -83,6 +157,7 @@ export default function TdrBatchesPage() {
                 <th className="px-4 py-2">Direction</th>
                 <th className="px-4 py-2">Status</th>
                 <th className="px-4 py-2">Uploaded</th>
+                <th className="px-4 py-2">Source</th>
                 <th className="px-4 py-2 w-10" />
               </tr>
             </thead>
@@ -92,8 +167,11 @@ export default function TdrBatchesPage() {
                   key={b.id}
                   className="border-b border-white/5 hover:bg-white/5 transition-colors"
                 >
-                  <td className="px-4 py-2 font-mono text-xs truncate max-w-[200px] text-text-primary">
+                  <td className="px-4 py-2 font-mono text-xs truncate max-w-[180px] text-text-primary">
                     {b.originalFilename}
+                    {b.sourceFileArchivedAt && (
+                      <span className="ml-1 text-amber-400" title="Source file archived">⚑</span>
+                    )}
                   </td>
                   <td className="px-4 py-2 text-xs text-text-secondary">{b.tradeDirection}</td>
                   <td className="px-4 py-2">
@@ -105,6 +183,38 @@ export default function TdrBatchesPage() {
                   </td>
                   <td className="px-4 py-2 text-xs text-text-muted">
                     {new Date(b.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-4 py-2 text-xs">
+                    {b.sourceFileId ? (
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => handleDownloadSource(b)}
+                          className="text-accent-primary hover:underline"
+                          title="Download original source file"
+                        >
+                          ↓
+                        </button>
+                        {b.sourceFileArchivedAt ? (
+                          <button
+                            onClick={() => handleRestore(b)}
+                            className="text-emerald-400 hover:underline text-xs"
+                            title="Restore source file"
+                          >
+                            Restore
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleArchive(b)}
+                            className="text-amber-400 hover:underline text-xs"
+                            title="Archive source file"
+                          >
+                            Archive
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-text-muted">—</span>
+                    )}
                   </td>
                   <td className="px-4 py-2">
                     <Link

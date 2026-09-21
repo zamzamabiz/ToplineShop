@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ForbiddenException,
+  GoneException,
   Injectable,
   NotFoundException,
   StreamableFile,
@@ -91,6 +92,7 @@ export class TdrExportService {
         storageKey: true,
         rowCount: true,
         tradeDirection: true,
+        expiresAt: true,
       },
     });
 
@@ -99,16 +101,35 @@ export class TdrExportService {
       throw new BadRequestException(QUALITY_ERROR.EXPORT_NOT_READY);
     }
 
+    checkDownloadAuthorization(user.roles, job.tradeDirection ?? undefined);
+
+    if (job.expiresAt && job.expiresAt < new Date()) {
+      throw new GoneException('Export has expired and the download is no longer available');
+    }
+
+    const safeId = job.id.replace(/[\r\n]/g, '');
     const stream = this.storage.createReadStream(job.storageKey);
     return new StreamableFile(stream, {
       type: 'text/csv',
-      disposition: `attachment; filename="tdr-export-${job.id}.csv"`,
+      disposition: `attachment; filename="tdr-export-${safeId}.csv"`,
       length: undefined,
     });
   }
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
+
+function checkDownloadAuthorization(roles: string[], tradeDirection?: string): void {
+  const isSuperAdmin = roles.includes(Role.SUPER_ADMIN);
+  const isTenantAdmin = roles.includes(Role.TENANT_ADMIN);
+  if (isSuperAdmin || isTenantAdmin) return;
+
+  const isImportManager = roles.includes(Role.IMPORT_MANAGER);
+  const isExportManager = roles.includes(Role.EXPORT_MANAGER);
+  if (tradeDirection === 'IMPORT' && isImportManager) return;
+  if (tradeDirection === 'EXPORT' && isExportManager) return;
+  throw new ForbiddenException('Not authorized to download this export');
+}
 
 function checkExportAuthorization(roles: string[], tradeDirection?: string): void {
   const isSuperAdmin = roles.includes(Role.SUPER_ADMIN);

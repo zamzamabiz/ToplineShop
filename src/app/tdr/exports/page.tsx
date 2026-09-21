@@ -66,13 +66,17 @@ function ExportJobRow({
       </td>
       <td className="px-4 py-2">
         {job.status === 'COMPLETED' && (
-          <button
-            onClick={handleDownload}
-            disabled={downloading}
-            className="text-accent-primary text-xs hover:underline disabled:opacity-50"
-          >
-            {downloading ? 'Downloading…' : 'Download CSV'}
-          </button>
+          job.expiresAt && new Date(job.expiresAt) < new Date() ? (
+            <span className="text-xs text-gray-500" title="Export has expired">Expired / unavailable</span>
+          ) : (
+            <button
+              onClick={handleDownload}
+              disabled={downloading}
+              className="text-accent-primary text-xs hover:underline disabled:opacity-50"
+            >
+              {downloading ? 'Downloading…' : 'Download CSV'}
+            </button>
+          )
         )}
         {job.status === 'FAILED' && (
           <span className="text-xs text-red-400">{job.errorMessage ?? 'Failed'}</span>

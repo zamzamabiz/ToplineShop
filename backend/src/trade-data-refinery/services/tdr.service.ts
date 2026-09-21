@@ -48,10 +48,19 @@ export class TdrService {
     const pageSize = dto.pageSize ?? 25;
     const skip = (page - 1) * pageSize;
 
+    const lifecycle = dto.lifecycle ?? 'ACTIVE';
+    const lifecycleFilter =
+      lifecycle === 'ACTIVE'
+        ? { sourceFile: { archivedAt: null } }
+        : lifecycle === 'ARCHIVED'
+          ? { sourceFile: { archivedAt: { not: null } } }
+          : {};
+
     const where = {
       tenantId,
       ...(dto.status ? { status: dto.status } : {}),
       ...(dto.tradeDirection ? { tradeDirection: dto.tradeDirection } : {}),
+      ...lifecycleFilter,
     };
 
     const [items, total] = await Promise.all([
@@ -73,7 +82,7 @@ export class TdrService {
           createdAt: true,
           updatedAt: true,
           completedAt: true,
-          sourceFile: { select: { originalFilename: true } },
+          sourceFile: { select: { id: true, originalFilename: true, archivedAt: true, retentionExpiresAt: true } },
         },
       }),
       this.prisma.tdrBatch.count({ where }),
@@ -82,6 +91,9 @@ export class TdrService {
     const batches = items.map(({ sourceFile, ...b }) => ({
       ...b,
       originalFilename: sourceFile?.originalFilename ?? null,
+      sourceFileId: sourceFile?.id ?? null,
+      sourceFileArchivedAt: sourceFile?.archivedAt ?? null,
+      sourceFileRetentionExpiresAt: sourceFile?.retentionExpiresAt ?? null,
     }));
 
     return success(batches, { page, pageSize, total, totalPages: Math.ceil(total / pageSize) });

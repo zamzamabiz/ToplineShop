@@ -231,7 +231,7 @@ export function getTdrStatus(token: string, signal?: AbortSignal) {
 
 export async function listBatches(
   token: string,
-  opts: { page?: number; pageSize?: number; status?: BatchStatus },
+  opts: { page?: number; pageSize?: number; status?: BatchStatus; lifecycle?: 'ACTIVE' | 'ARCHIVED' | 'ALL' },
   signal?: AbortSignal,
 ): Promise<BatchListResponse> {
   type PageMeta = { page: number; pageSize: number; total: number; totalPages: number };
@@ -390,6 +390,47 @@ export async function downloadExport(token: string, exportId: string): Promise<v
   const a = document.createElement('a');
   a.href = objectUrl;
   a.download = `export-${exportId}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(objectUrl);
+}
+
+// ── Source file lifecycle ──────────────────────────────────────────────────────
+
+export function archiveSourceFile(token: string, sourceFileId: string) {
+  return post<Record<string, never>, { archived: boolean; sourceFileId: string }>(
+    `/tdr/source-files/${encodeURIComponent(sourceFileId)}/archive`,
+    token,
+    {},
+  );
+}
+
+export function restoreSourceFile(token: string, sourceFileId: string) {
+  return post<Record<string, never>, { restored: boolean; sourceFileId: string }>(
+    `/tdr/source-files/${encodeURIComponent(sourceFileId)}/restore`,
+    token,
+    {},
+  );
+}
+
+export async function downloadSourceFile(token: string, sourceFileId: string, filename: string): Promise<void> {
+  const downloadUrl = `${API_BASE}/tdr/source-files/${encodeURIComponent(sourceFileId)}/download`;
+  const makeReq = (tok: string) =>
+    fetch(downloadUrl, { headers: { Authorization: `Bearer ${tok}` } });
+
+  let res = await makeReq(token);
+  if (res.status === 401) {
+    const newToken = await tryRefreshOnce();
+    if (newToken) res = await makeReq(newToken);
+    else throwApiError(await res.json().catch(() => ({})), 401);
+  }
+  if (!res.ok) throwApiError(await res.json().catch(() => ({})), res.status);
+  const blob = await res.blob();
+  const objectUrl = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = objectUrl;
+  a.download = filename;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);

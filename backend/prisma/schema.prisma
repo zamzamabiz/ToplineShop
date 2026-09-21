@@ -353,6 +353,9 @@ model TdrSourceFile {
   uploadedAt       DateTime       @map("uploaded_at")
   createdAt        DateTime       @default(now()) @map("created_at")
 
+  archivedAt         DateTime? @map("archived_at")
+  retentionExpiresAt DateTime? @map("retention_expires_at")
+
   tenant     Tenant      @relation(fields: [tenantId], references: [id])
   uploadedBy User        @relation("TdrSourceFileUploadedBy", fields: [uploadedById], references: [id])
   batches    TdrBatch[]
@@ -360,6 +363,7 @@ model TdrSourceFile {
 
   @@unique([tenantId, contentHash])
   @@index([tenantId, uploadedAt])
+  @@index([tenantId, archivedAt])
   @@map("tdr_source_files")
 }
 
@@ -639,6 +643,7 @@ model TdrExportJob {
   errorMessage     String?         @map("error_message")
   startedAt        DateTime?       @map("started_at")
   completedAt      DateTime?       @map("completed_at")
+  expiresAt        DateTime?       @map("expires_at")
   createdAt        DateTime        @default(now()) @map("created_at")
   updatedAt        DateTime        @updatedAt @map("updated_at")
 
@@ -648,5 +653,6 @@ model TdrExportJob {
   @@index([status, leaseExpiresAt])
   @@index([tenantId, status])
   @@index([tenantId, createdAt])
+  @@index([status, expiresAt])
   @@map("tdr_export_jobs")
 }

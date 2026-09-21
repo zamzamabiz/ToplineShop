@@ -239,6 +239,10 @@ export class UploadService {
         ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         : 'text/csv';
 
+      const uploadedAt = new Date();
+      const retentionExpiresAt = new Date(uploadedAt);
+      retentionExpiresAt.setFullYear(retentionExpiresAt.getFullYear() + 7);
+
       await tx.tdrSourceFile.create({
         data: {
           id: sourceFileId,
@@ -250,7 +254,8 @@ export class UploadService {
           contentHash,
           tradeDirection: dto.tradeDirection,
           uploadedById: user.userId,
-          uploadedAt: new Date(),
+          uploadedAt,
+          retentionExpiresAt,
         },
       });
 

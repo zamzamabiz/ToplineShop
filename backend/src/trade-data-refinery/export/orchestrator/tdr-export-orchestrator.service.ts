@@ -63,6 +63,10 @@ export class TdrExportOrchestratorService {
     rowCount: number,
     contentHash: string,
   ): Promise<void> {
+    const completedAt = new Date();
+    const expiresAt = new Date(completedAt);
+    expiresAt.setDate(expiresAt.getDate() + 90);
+
     await this.prisma.tdrExportJob.update({
       where: { id: jobId },
       data: {
@@ -70,7 +74,8 @@ export class TdrExportOrchestratorService {
         storageKey,
         rowCount,
         contentHash,
-        completedAt: new Date(),
+        completedAt,
+        expiresAt,
         leasedAt: null,
         leaseExpiresAt: null,
         workerInstanceId: null,
