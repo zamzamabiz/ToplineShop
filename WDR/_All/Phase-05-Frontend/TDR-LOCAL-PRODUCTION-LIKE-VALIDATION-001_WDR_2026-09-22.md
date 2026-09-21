@@ -260,7 +260,7 @@ See `docs/TDR-LOCAL-TO-VPS-READINESS-GATE.md`.
 | Hash | Message |
 |------|---------|
 | `643401a` | docs(tdr): add local production-like validation runbooks and plans |
-| `<gov-hash>` | chore(gov): record TDR-LOCAL-PRODUCTION-LIKE-VALIDATION-001 in registry |
+| `c9f1321` | chore(gov): record TDR-LOCAL-PRODUCTION-LIKE-VALIDATION-001 in registry |
 
 ---
 
