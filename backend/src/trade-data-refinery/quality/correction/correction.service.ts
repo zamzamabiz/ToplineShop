@@ -5,6 +5,7 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { type Prisma, type BatchStatus } from '@prisma/client';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { AuditService } from '../../../audit/audit.service';
 import { AuthenticatedUser } from '../../../auth/types/jwt-payload.type';
@@ -12,7 +13,8 @@ import { Role } from '../../../auth/types/role.type';
 import { MappingConfigV1 } from '../types/mapping-config.types';
 import { normalizeRowV1 } from '../normalization/normalizer.service';
 import { validateRowV1, ValidationIssueInput } from '../validation/validator.service';
-import { determineDisposition } from '../decision/quality-decision.service';
+import { determineBatchStatus, determineDisposition } from '../decision/quality-decision.service';
+import { isValidTransition } from '../../types/batch-transition';
 import { CORRECTABLE_FIELDS, CorrectionDto } from './correction.dto';
 import { RULE_CODE } from '../constants/validation-rule.catalog';
 import { success } from '../../../common/api-response';
@@ -65,6 +67,7 @@ export class CorrectionService {
             mappingId: true,
             normalizationVersion: true,
             validationVersion: true,
+            status: true,
           },
         },
       },
@@ -155,11 +158,12 @@ export class CorrectionService {
         select: { id: true },
       });
 
-      // Step 6: Update batch disposition counts when disposition changes
+      // Step 6: Update batch disposition counts and recompute status when disposition changes
       if (oldDisposition !== txDecision.rowDisposition) {
         const countDelta = buildCountDelta(oldDisposition, txDecision.rowDisposition);
         if (Object.keys(countDelta).length > 0) {
           await tx.tdrBatch.update({ where: { id: batchId }, data: countDelta });
+          await recomputeBatchStatusInTx(tx, batchId, user.tenantId, record.batch.status as BatchStatus);
         }
       }
 
@@ -206,7 +210,7 @@ export class CorrectionService {
     const record = await this.prisma.tdrRecord.findFirst({
       where: { id: recordId, batchId, tenantId },
       include: {
-        batch: { select: { mappingId: true } },
+        batch: { select: { mappingId: true, status: true } },
       },
     });
     if (!record) throw new NotFoundException(`Record ${recordId} not found`);
@@ -267,6 +271,10 @@ export class CorrectionService {
           await tx.tdrBatch.update({ where: { id: batchId }, data: countDelta });
         }
       }
+
+      // Always recompute batch status — re-evaluation may clear stale REVIEW_REQUIRED
+      // even when this record's own disposition did not change in this run.
+      await recomputeBatchStatusInTx(tx, batchId, tenantId, record.batch.status as BatchStatus);
 
       return {
         rowDisposition: txDecision.rowDisposition,
@@ -353,6 +361,36 @@ export function filterCorrectedRequiredIssues(
     const correctedValue = record[normalizedField];
     return correctedValue === null || correctedValue === undefined || String(correctedValue).trim() === '';
   });
+}
+
+/**
+ * After batch count fields are atomically updated in a transaction,
+ * re-reads the counts and transitions batch.status if the result
+ * warrants it (e.g. REVIEW_REQUIRED → READY when quarantinedRows hits 0).
+ */
+async function recomputeBatchStatusInTx(
+  tx: Prisma.TransactionClient,
+  batchId: string,
+  tenantId: string,
+  currentStatus: BatchStatus,
+): Promise<void> {
+  const batch = await tx.tdrBatch.findUnique({
+    where: { id: batchId },
+    select: { acceptedRows: true, quarantinedRows: true, rejectedRows: true },
+  });
+  if (!batch) return;
+  const pendingCount = await tx.tdrRecord.count({
+    where: { batchId, tenantId, rowDisposition: 'PENDING_QUALITY' },
+  });
+  const newStatus = determineBatchStatus(
+    batch.acceptedRows,
+    batch.quarantinedRows,
+    batch.rejectedRows,
+    pendingCount,
+  );
+  if (newStatus !== currentStatus && isValidTransition(currentStatus, newStatus)) {
+    await tx.tdrBatch.update({ where: { id: batchId }, data: { status: newStatus } });
+  }
 }
 
 function buildCountDelta(

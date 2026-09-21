@@ -98,34 +98,56 @@ if (-not $authorized) {
 }
 Write-Host "    roles: $($loginRoles -join ', ')  tenantId: $loginTenant" -ForegroundColor Green
 
-# ── §4: Submit correction ─────────────────────────────────────────────────────
-Write-Host "`n[correction] Submitting correction quantityNormalized=100..." -ForegroundColor Yellow
-$corrBody = @{
-    fieldName      = "quantityNormalized"
-    correctedValue = "100"
-    note           = "Owner-authorized bounded smoke-test correction for intentionally blank fixture quantity (Imp_Pak_Jan_2025_sample_v2.csv row 15, HS 2202.10)"
-} | ConvertTo-Json
-
+# ── §4: Idempotency guard — check current record state before POST /correct ───
+Write-Host "`n[idempotency] Checking whether correction is already applied..." -ForegroundColor Yellow
+$SKIP_CORRECTION = $false
 try {
-    $corrResp = Invoke-RestMethod `
-        -Uri "$API/tdr/batches/$BATCH_ID/records/$RECORD_ID/correct" `
-        -Method POST -Headers $HEADERS `
-        -ContentType "application/json" -Body $corrBody
-    $result.correctionPass = $true
-    $result.correctionResp = $corrResp
-    Write-Host "    PASS: correction accepted" -ForegroundColor Green
-    Write-Host "    response: $($corrResp | ConvertTo-Json -Compress)" -ForegroundColor DarkGray
+    $preDetail = Invoke-RestMethod `
+        -Uri "$API/tdr/batches/$BATCH_ID/records/$RECORD_ID/quality" `
+        -Method GET -Headers $HEADERS
+    $preNorm  = [string]$preDetail.data.quantityNormalized
+    $preMeta  = $preDetail.data.valueTreatmentMeta
+    $preTreat = if ($preMeta) { [string]$preMeta.quantityNormalized } else { "" }
+    Write-Host "    quantityNormalized: $preNorm   valueTreatmentMeta.quantityNormalized: $preTreat" -ForegroundColor DarkGray
+    if ($preNorm -eq "100" -and $preTreat -eq "CORRECTED") {
+        $SKIP_CORRECTION = $true
+        $result.correctionPass = $true   # Treated as already applied
+        Write-Host "    SKIP: correction already applied — proceeding to re-evaluation/verification" -ForegroundColor Yellow
+    }
 } catch {
-    $result.error = "Correction API failed: $($_.Exception.Message)"
+    Write-Host "    WARN: pre-check failed ($($_.Exception.Message)) — will attempt correction" -ForegroundColor Yellow
+}
+
+# ── §4b: Submit correction (skipped if already applied) ──────────────────────
+if (-not $SKIP_CORRECTION) {
+    Write-Host "`n[correction] Submitting correction quantityNormalized=100..." -ForegroundColor Yellow
+    $corrBody = @{
+        fieldName      = "quantityNormalized"
+        correctedValue = "100"
+        note           = "Owner-authorized bounded smoke-test correction for intentionally blank fixture quantity (Imp_Pak_Jan_2025_sample_v2.csv row 15, HS 2202.10)"
+    } | ConvertTo-Json
+
     try {
-        $errBody = $_.Exception.Response.GetResponseStream()
-        $reader  = New-Object System.IO.StreamReader($errBody)
-        $result.error += " | body: " + $reader.ReadToEnd()
-    } catch {}
-    $result.correctionPass = $false
-    $result | ConvertTo-Json -Depth 10 | Set-Content -Path $LOG_PATH -Encoding UTF8
-    Write-Host "    FAIL: $($result.error)" -ForegroundColor Red
-    exit 1
+        $corrResp = Invoke-RestMethod `
+            -Uri "$API/tdr/batches/$BATCH_ID/records/$RECORD_ID/correct" `
+            -Method POST -Headers $HEADERS `
+            -ContentType "application/json" -Body $corrBody
+        $result.correctionPass = $true
+        $result.correctionResp = $corrResp
+        Write-Host "    PASS: correction accepted" -ForegroundColor Green
+        Write-Host "    response: $($corrResp | ConvertTo-Json -Compress)" -ForegroundColor DarkGray
+    } catch {
+        $result.error = "Correction API failed: $($_.Exception.Message)"
+        try {
+            $errBody = $_.Exception.Response.GetResponseStream()
+            $reader  = New-Object System.IO.StreamReader($errBody)
+            $result.error += " | body: " + $reader.ReadToEnd()
+        } catch {}
+        $result.correctionPass = $false
+        $result | ConvertTo-Json -Depth 10 | Set-Content -Path $LOG_PATH -Encoding UTF8
+        Write-Host "    FAIL: $($result.error)" -ForegroundColor Red
+        exit 1
+    }
 }
 
 # ── §5: Re-evaluate record (fix broken revalidation artefacts) ───────────────

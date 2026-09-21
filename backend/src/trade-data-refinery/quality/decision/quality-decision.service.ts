@@ -1,4 +1,4 @@
-import { IssueSeverity, RowDisposition } from '@prisma/client';
+import { BatchStatus, IssueSeverity, RowDisposition } from '@prisma/client';
 import { ValidationIssueInput } from '../validation/validator.service';
 
 export interface QualityDecision {
@@ -37,4 +37,22 @@ function resolveMaxSeverity(issues: ValidationIssueInput[]): IssueSeverity | nul
   if (issues.some((i) => i.severity === 'ERROR')) return 'ERROR';
   if (issues.some((i) => i.severity === 'WARNING')) return 'WARNING';
   return null;
+}
+
+/**
+ * Derives the canonical batch status from post-quality counters.
+ * Source of truth for REVIEW_REQUIRED ↔ READY transitions.
+ *
+ * pendingQuality: rows still in PENDING_QUALITY disposition (0 for a completed batch).
+ */
+export function determineBatchStatus(
+  accepted: number,
+  quarantined: number,
+  rejected: number,
+  pendingQuality: number,
+): BatchStatus {
+  if (pendingQuality > 0) return 'QUALITY_PENDING';
+  if (quarantined > 0) return 'REVIEW_REQUIRED';
+  if (rejected > 0) return 'PARTIAL';
+  return 'READY';
 }

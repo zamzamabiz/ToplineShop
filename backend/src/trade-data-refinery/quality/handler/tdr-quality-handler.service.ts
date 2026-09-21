@@ -9,7 +9,7 @@ import { streamXlsxRows, readXlsxHeaders } from '../../ingestion/parsers/xlsx.pa
 import { MappingConfigV1 } from '../types/mapping-config.types';
 import { normalizeRowV1, NormalizationResult } from '../normalization/normalizer.service';
 import { validateRowV1, ValidationIssueInput } from '../validation/validator.service';
-import { determineDisposition } from '../decision/quality-decision.service';
+import { determineBatchStatus, determineDisposition } from '../decision/quality-decision.service';
 import { TdrQualityOrchestratorService } from '../orchestrator/tdr-quality-orchestrator.service';
 import {
   QUALITY_CHUNK_SIZE,
@@ -413,16 +413,4 @@ export class TdrQualityHandlerService implements OnModuleInit, OnModuleDestroy {
       `(accepted=${accepted} quarantined=${quarantined} rejected=${rejected})`,
     );
   }
-}
-
-function determineBatchStatus(
-  accepted: number,
-  quarantined: number,
-  rejected: number,
-  pendingQuality: number,
-): string {
-  if (pendingQuality > 0) return 'QUALITY_PENDING'; // shouldn't happen, but defensive
-  if (quarantined > 0) return 'REVIEW_REQUIRED';
-  if (rejected > 0) return 'PARTIAL';
-  return 'READY';
 }
