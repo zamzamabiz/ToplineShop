@@ -13,11 +13,14 @@ import type {
   BatchStatus,
   BreakdownResponse,
   CorrectionRequest,
+  CorrectionResult,
   CreateExportRequest,
   FilterOptions,
+  QualityDetailRecord,
   QuarantineIssue,
   QuarantineListResponse,
   RecordsListResponse,
+  ReEvaluateResult,
   TdrBatch,
   TdrBatchProgress,
   TdrExportJob,
@@ -321,10 +324,36 @@ export function applyCorrection(
   recordId: string,
   req: CorrectionRequest,
 ) {
-  return post<CorrectionRequest, { reviewId: string; recordId: string; fieldName: string; newDisposition: string; exportEligible: boolean }>(
+  return post<CorrectionRequest, CorrectionResult>(
     `/tdr/batches/${encodeURIComponent(batchId)}/records/${encodeURIComponent(recordId)}/correct`,
     token,
     req,
+  );
+}
+
+export function getQualityDetail(
+  token: string,
+  batchId: string,
+  recordId: string,
+  signal?: AbortSignal,
+) {
+  return get<QualityDetailRecord>(
+    `/tdr/batches/${encodeURIComponent(batchId)}/records/${encodeURIComponent(recordId)}/quality`,
+    token,
+    undefined,
+    signal,
+  );
+}
+
+export function reEvaluateRecord(
+  token: string,
+  batchId: string,
+  recordId: string,
+) {
+  return post<Record<string, never>, ReEvaluateResult>(
+    `/tdr/batches/${encodeURIComponent(batchId)}/records/${encodeURIComponent(recordId)}/re-evaluate`,
+    token,
+    {},
   );
 }
 

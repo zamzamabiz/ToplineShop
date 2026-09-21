@@ -93,6 +93,80 @@ export interface QuarantineListResponse {
   totalPages: number;
 }
 
+// ── Quality Detail ─────────────────────────────────────────────────────────────
+
+export interface QualityDetailIssue {
+  id: string;
+  fieldName: string;
+  ruleCode: string;
+  severity: 'ERROR' | 'WARNING' | 'BLOCKING';
+  message: string;
+  status: 'OPEN' | 'REVIEWED';
+  createdAt: string;
+}
+
+export interface QualityDetailReview {
+  id: string;
+  action: string;
+  correctionFieldName: string | null;
+  correctionNote: string | null;
+  appliedAt: string;
+  createdAt: string;
+}
+
+export interface QualityDetailRecord {
+  id: string;
+  sourceRowNumber: number;
+  rowDisposition: RowDisposition;
+  exportEligible: boolean;
+  quarantineReviewRequired: boolean;
+  tradeDate: string | null;
+  tradeDirection: TradeDirection;
+  hsCodeRaw: string | null;
+  hsCodeNormalized: string | null;
+  hsChapter: string | null;
+  productDescriptionRaw: string | null;
+  productDescriptionNormalized: string | null;
+  localPartyTaxIdRaw: string | null;
+  localPartyTaxIdNormalized: string | null;
+  localPartyNameRaw: string | null;
+  localPartyNameNormalized: string | null;
+  localPartyAddressRaw: string | null;
+  localPartyCountryCode: string | null;
+  foreignPartyNameRaw: string | null;
+  foreignPartyNameNormalized: string | null;
+  foreignPartyAddressRaw: string | null;
+  foreignPartyCountryRaw: string | null;
+  foreignPartyCountryCode: string | null;
+  originPortRaw: string | null;
+  originPortNormalized: string | null;
+  quantityRaw: string | null;
+  quantityNormalized: number | null;
+  quantityUnitRaw: string | null;
+  quantityUnitCode: string | null;
+  unitPriceRaw: string | null;
+  unitPriceNormalized: number | null;
+  currencyRaw: string | null;
+  currencyCode: string | null;
+  valueTreatmentMeta: Record<string, string> | null;
+  validationIssues: QualityDetailIssue[];
+  quarantineReviews: QualityDetailReview[];
+}
+
+export interface CorrectionResult {
+  reviewId: string;
+  recordId: string;
+  fieldName: string;
+  newDisposition: string;
+  exportEligible: boolean;
+}
+
+export interface ReEvaluateResult {
+  rowDisposition: string;
+  exportEligible: boolean;
+  newIssueCount: number;
+}
+
 // ── Exports ───────────────────────────────────────────────────────────────────
 
 export type ExportStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
