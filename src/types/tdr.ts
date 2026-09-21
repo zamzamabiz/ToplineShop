@@ -174,12 +174,12 @@ export type ExportStatus = 'PENDING' | 'LEASED' | 'COMPLETED' | 'FAILED';
 export interface TdrExportJob {
   id: string;
   status: ExportStatus;
-  rowCount: number | null;
+  rowCount: number | null | undefined;
   rowLimit: number;
-  contentHash: string | null;
-  errorMessage: string | null;
+  contentHash: string | null | undefined;
+  errorMessage: string | null | undefined;
   createdAt: string;
-  completedAt: string | null;
+  completedAt: string | null | undefined;
 }
 
 // ── Analytics ─────────────────────────────────────────────────────────────────

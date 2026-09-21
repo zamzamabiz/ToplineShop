@@ -1,5 +1,6 @@
 /**
  * TDR-MVP-EXPORT-INTEGRATION-MEGA-CLOSE-001
+ * TDR-EXPORT-RUNTIME-ROWCOUNT-CORRECTION-001
  * TdrExportsPage — export workflow tests.
  *
  * Verifies:
@@ -15,6 +16,7 @@
  * §10  COMPLETED job does NOT trigger polling
  * §11  Error message shown when createExport rejects
  * §12  Download button calls downloadExport
+ * §13  rowCount undefined/null/zero regression — no TypeError on Create Export
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
@@ -292,5 +294,110 @@ describe('§12 Download button triggers download', () => {
       fireEvent.click(screen.getByText(/Download CSV/i));
     });
     expect(mockDownloadExport).toHaveBeenCalledWith('test-token', 'job-dl-001');
+  });
+});
+
+// ── §13 rowCount undefined/null/zero regression ───────────────────────────────
+// TDR-EXPORT-RUNTIME-ROWCOUNT-CORRECTION-001
+// Owner-observed: Create Export → TypeError: Cannot read properties of undefined
+// Root cause: createExport API response omits rowCount (undefined), !==null guard passes → crash.
+
+describe('§13 rowCount undefined/null/zero regression', () => {
+  it('§13.1 freshly-created PENDING job with rowCount=undefined does not crash', async () => {
+    // Simulates exact owner crash: createExport returns rowCount absent (undefined)
+    const fresh = { ...pendingJob(), rowCount: undefined };
+    mockCreateExport.mockResolvedValueOnce(fresh);
+    render(<TdrExportsPage />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
+    });
+    await waitFor(() => expect(screen.getByText('PENDING')).toBeDefined());
+    // Dash rendered for unavailable rowCount
+    expect(screen.getAllByText(/—/).length).toBeGreaterThan(0);
+  });
+
+  it('§13.2 PENDING job with rowCount=null does not crash', async () => {
+    const job = pendingJob({ rowCount: null });
+    mockCreateExport.mockResolvedValueOnce(job);
+    render(<TdrExportsPage />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
+    });
+    await waitFor(() => expect(screen.getByText('PENDING')).toBeDefined());
+    expect(screen.getAllByText(/—/).length).toBeGreaterThan(0);
+  });
+
+  it('§13.3 COMPLETED job with numeric rowCount renders formatted value', async () => {
+    const job = completedJob({ rowCount: 16 });
+    mockCreateExport.mockResolvedValueOnce(job);
+    render(<TdrExportsPage />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
+    });
+    // rowCount=16 appears in "16 / 100,000 limit" cell — no dash for available count
+    await waitFor(() => {
+      const tds = Array.from(document.querySelectorAll('td'));
+      expect(tds.some((td) => /^\d+ \/ \d/.test(td.textContent?.trim() ?? ''))).toBe(true);
+    });
+  });
+
+  it('§13.4 rowCount=0 renders "0" not dash', async () => {
+    const job = completedJob({ rowCount: 0 });
+    mockCreateExport.mockResolvedValueOnce(job);
+    render(<TdrExportsPage />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
+    });
+    // rowCount=0 must render "0 / ..." not "—" (blank≠zero)
+    await waitFor(() => {
+      const tds = Array.from(document.querySelectorAll('td'));
+      expect(tds.some((td) => td.textContent?.trim().startsWith('0 /'))).toBe(true);
+    });
+  });
+
+  it('§13.5 rowLimit renders correctly from createExport response', async () => {
+    const job = { ...pendingJob(), rowCount: undefined, rowLimit: 50_000 };
+    mockCreateExport.mockResolvedValueOnce(job);
+    render(<TdrExportsPage />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
+    });
+    await waitFor(() => expect(screen.getByText(/50,000 limit/i)).toBeDefined());
+  });
+
+  it('§13.6 Create Export → immediate render does not throw', async () => {
+    // Reproduces the exact owner sequence: click Create Export, job appears immediately
+    const fresh = { id: 'rc-001', status: 'PENDING', rowCount: undefined, rowLimit: 100_000, createdAt: new Date().toISOString() };
+    mockCreateExport.mockResolvedValueOnce(fresh);
+    expect(() => {
+      render(<TdrExportsPage />);
+    }).not.toThrow();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
+    });
+    // No unhandled exception — job row renders
+    await waitFor(() => expect(screen.getByText('PENDING')).toBeDefined());
+  });
+
+  it('§13.7 LEASED job with undefined rowCount renders safely', async () => {
+    const job = { ...leasedJob(), rowCount: undefined };
+    mockCreateExport.mockResolvedValueOnce(job);
+    render(<TdrExportsPage />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
+    });
+    await waitFor(() => expect(screen.getByText('LEASED')).toBeDefined());
+    expect(screen.getAllByText(/—/).length).toBeGreaterThan(0);
+  });
+
+  it('§13.8 FAILED job still renders after fix', async () => {
+    const job = failedJob();
+    mockCreateExport.mockResolvedValueOnce(job);
+    render(<TdrExportsPage />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
+    });
+    await waitFor(() => expect(screen.getByText('FAILED')).toBeDefined());
+    await waitFor(() => expect(screen.getByText(/Export limit exceeded/i)).toBeDefined());
   });
 });

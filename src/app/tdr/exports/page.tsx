@@ -57,9 +57,9 @@ function ExportJobRow({
         </span>
       </td>
       <td className="px-4 py-2 text-xs text-text-secondary">
-        {job.rowCount !== null ? job.rowCount.toLocaleString() : '—'}
+        {job.rowCount != null ? job.rowCount.toLocaleString() : '—'}
         {' / '}
-        {job.rowLimit.toLocaleString()} limit
+        {job.rowLimit != null ? job.rowLimit.toLocaleString() : '—'} limit
       </td>
       <td className="px-4 py-2 text-xs text-text-muted">
         {new Date(job.createdAt).toLocaleString()}
