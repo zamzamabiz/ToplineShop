@@ -2959,7 +2959,7 @@ export const projectRegistry: ProjectRegistry = {
       notes: "PASS — archivedAt/retentionExpiresAt/expiresAt schema + backfill (4 sourceFiles, 5 exportJobs). TdrSourceLifecycleService (archive/restore/download + RBAC + audit). TdrExportCleanupService (hourly). 410 GoneException on expired exports. lifecycle filter (ACTIVE/ARCHIVED/ALL). Frontend: filter selector, archive/restore/download buttons, expired export state. 35 new backend + 16 new frontend tests. Backend 754/755 (1 pre-existing skip), Frontend 145/145. tsc clean. Prisma validate PASS.",
     },
     {
-      id: "TDR-POST-MVP-OPERATIONS-OBSERVABILITY-001", // commit: TBD
+      id: "TDR-POST-MVP-OPERATIONS-OBSERVABILITY-001", // commit: a1ab83c
       phase: "phase-post-mvp",
       title: "POST-MVP MEGA TASK 4 — Operations + Observability + Backup/Restore Readiness",
       objective: "Structured logging, correlation IDs, in-process Prometheus metrics, health integration, job/storage/lifecycle observability, alert matrix, backup runbook, deployment checklist",
@@ -4779,7 +4779,7 @@ export const projectRegistry: ProjectRegistry = {
       phase: "tdr",
       status: "PASS",
       date: "2026-09-22",
-      commitHash: null,
+      commitHash: "a1ab83c",
       pmAudit: "PLANNED",
     },
   ],
