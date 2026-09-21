@@ -170,6 +170,6 @@ Runtime proof: §13.1 and §13.6 reproduce the owner sequence (Create Export →
 
 | Commit | Description |
 |--------|-------------|
-| (see final response) | fix(tdr): handle unavailable export job row counts |
+| bf9e5ef | fix(tdr): handle unavailable export job row counts |
 
 **PHASE 7 NOT STARTED**
