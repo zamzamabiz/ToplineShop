@@ -13,6 +13,7 @@ import { AuditService } from '../../audit/audit.service';
 import { AuthenticatedUser } from '../../auth/types/jwt-payload.type';
 import { Role } from '../../auth/types/role.type';
 import { success } from '../../common/api-response';
+import { decryptWebhookSecret, encryptWebhookSecret } from './webhook-secret.util';
 
 export const VALID_EVENT_TYPES = [
   'source.uploaded',
@@ -52,11 +53,26 @@ export class TdrWebhookService implements OnModuleInit, OnModuleDestroy {
   ) {}
 
   onModuleInit() {
+    const encKey = process.env['TDR_WEBHOOK_SECRET_ENCRYPTION_KEY'];
+    if (!encKey && process.env['NODE_ENV'] === 'production') {
+      throw new Error(
+        'FATAL: TDR_WEBHOOK_SECRET_ENCRYPTION_KEY must be set in production ' +
+        '(64 hex chars / 32 bytes for AES-256-GCM).',
+      );
+    }
+    if (!encKey) {
+      this.logger.warn(
+        'TDR_WEBHOOK_SECRET_ENCRYPTION_KEY is not set — webhook signing secrets ' +
+        'will be stored as plaintext. Set this variable before deploying to production.',
+      );
+    }
     this.retryTimer = setInterval(() => {
       void this.processRetries().catch((err) =>
         this.logger.error('Webhook retry loop error', err),
       );
     }, RETRY_INTERVAL_MS);
+    // Unref so the interval does not prevent process exit in test environments.
+    this.retryTimer.unref();
   }
 
   onModuleDestroy() {
@@ -73,13 +89,17 @@ export class TdrWebhookService implements OnModuleInit, OnModuleDestroy {
     this.validateUrl(url);
 
     const signingSecret = randomBytes(32).toString('hex');
+    const encKey = process.env['TDR_WEBHOOK_SECRET_ENCRYPTION_KEY'];
+    const storedSecret = encKey
+      ? encryptWebhookSecret(signingSecret, encKey)
+      : signingSecret;
 
     const sub = await this.prisma.tdrWebhookSubscription.create({
       data: {
         tenantId: user.tenantId,
         url,
         eventTypes,
-        signingSecret,
+        signingSecret: storedSecret,
         enabled: true,
       },
     });
@@ -157,6 +177,7 @@ export class TdrWebhookService implements OnModuleInit, OnModuleDestroy {
       select: { id: true, url: true, signingSecret: true },
     });
 
+    const encKey = process.env['TDR_WEBHOOK_SECRET_ENCRYPTION_KEY'];
     for (const sub of subs) {
       const eventId = randomUUID();
       const attempt = await this.prisma.tdrWebhookDeliveryAttempt.create({
@@ -172,8 +193,12 @@ export class TdrWebhookService implements OnModuleInit, OnModuleDestroy {
         },
       });
 
+      const plainSecret = encKey
+        ? decryptWebhookSecret(sub.signingSecret, encKey)
+        : sub.signingSecret;
+
       // Attempt immediate delivery
-      await this.attemptDelivery(attempt.id, sub.url, sub.signingSecret, attempt.payload as Record<string, unknown>);
+      await this.attemptDelivery(attempt.id, sub.url, plainSecret, attempt.payload as Record<string, unknown>);
     }
   }
 
@@ -262,10 +287,15 @@ export class TdrWebhookService implements OnModuleInit, OnModuleDestroy {
         data: { attemptNumber: attempt.attemptNumber + 1 },
       });
 
+      const encKey = process.env['TDR_WEBHOOK_SECRET_ENCRYPTION_KEY'];
+      const plainSecret = encKey
+        ? decryptWebhookSecret(sub.signingSecret, encKey)
+        : sub.signingSecret;
+
       await this.attemptDelivery(
         attempt.id,
         sub.url,
-        sub.signingSecret,
+        plainSecret,
         attempt.payload as Record<string, unknown>,
       );
     }

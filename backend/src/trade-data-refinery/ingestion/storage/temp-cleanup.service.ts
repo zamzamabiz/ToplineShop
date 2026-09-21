@@ -42,13 +42,13 @@ export class TempCleanupService implements OnModuleInit, OnModuleDestroy {
   onModuleInit(): void {
     // Run once on startup with a short delay to avoid contending with startup I/O
     const initDelay = setTimeout(() => void this.runCleanup(), 5000);
-    // Store as a property we can clear if needed (not strictly required for init)
-    void initDelay;
+    initDelay.unref(); // allow process/worker exit without waiting for this one-shot timer
 
     this.cleanupTimer = setInterval(
       () => void this.runCleanup(),
       TempCleanupService.CLEANUP_INTERVAL_MS,
     );
+    this.cleanupTimer.unref(); // allow process/worker exit without waiting for the recurring timer
     this.logger.log('TempCleanupService started (24h stale threshold, 1h interval)');
   }
 

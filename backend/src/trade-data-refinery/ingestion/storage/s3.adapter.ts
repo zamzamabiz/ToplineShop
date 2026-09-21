@@ -80,12 +80,18 @@ export class S3StorageAdapter implements IStorageAdapter {
     const { createReadStream, statSync } = await import('fs');
     const client = await this.getClient();
     const stat = statSync(tempPath);
+    const body = createReadStream(tempPath);
+    // Prevent unhandled 'error' event if the stream is never consumed (e.g. mock SDK in tests
+    // resolves before the lazy file-open completes, causing a delayed ENOENT after unlink).
+    body.on('error', () => {});
     await client.send(new PutObjectCommand({
       Bucket: this.config.bucket,
       Key: this.qualifiedKey(storageKey),
-      Body: createReadStream(tempPath),
+      Body: body,
       ContentLength: stat.size,
     }));
+    // Destroy the stream to close any open file handle before unlinking.
+    body.destroy();
     // Remove temp file after successful upload
     try {
       const { unlink } = await import('fs/promises');

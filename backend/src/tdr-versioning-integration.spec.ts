@@ -1,7 +1,8 @@
 /**
- * TDR-POST-MVP-VERSIONING-INTEGRATION-001
+ * TDR-POST-MVP-VERSIONING-INTEGRATION-001 + TDR-POST-MVP-FINAL-PRODUCTION-READINESS-GATE-001
  * §37 backend tests: versioning, deletion requests, API keys, webhooks, RBAC,
  * tenant isolation, webhook SSRF, scheduler, cardinality safety.
+ * §5 additional: webhook secret encryption (WS.1–WS.5)
  */
 
 import { TdrApiKeyService, VALID_SCOPES } from './trade-data-refinery/services/tdr-api-key.service';
@@ -10,6 +11,11 @@ import {
   TdrWebhookService,
   VALID_EVENT_TYPES,
 } from './trade-data-refinery/services/tdr-webhook.service';
+import {
+  encryptWebhookSecret,
+  decryptWebhookSecret,
+  isEncryptedEnvelope,
+} from './trade-data-refinery/services/webhook-secret.util';
 import { BadRequestException, ConflictException, ForbiddenException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { createHash } from 'crypto';
 
@@ -388,5 +394,65 @@ describe('Cardinality safety', () => {
     const svc = new TdrWebhookService(makePrisma() as never, makeAudit());
     expect(svc).toBeDefined();
     svc.onModuleDestroy();
+  });
+});
+
+// ── Webhook secret encryption utility ─────────────────────────────────────────
+
+const TEST_KEY_HEX = '0'.repeat(64); // 32-byte all-zero key for deterministic tests
+
+describe('Webhook secret encryption (AES-256-GCM)', () => {
+  // WS.1 — encrypt → decrypt round-trip produces the original plaintext
+  it('WS.1 encrypt/decrypt round-trip', () => {
+    const plaintext = 'abc123secretvalue';
+    const envelope = encryptWebhookSecret(plaintext, TEST_KEY_HEX);
+    expect(isEncryptedEnvelope(envelope)).toBe(true);
+    expect(decryptWebhookSecret(envelope, TEST_KEY_HEX)).toBe(plaintext);
+  });
+
+  // WS.2 — each call produces a different ciphertext (random IV)
+  it('WS.2 random IV produces different envelopes each call', () => {
+    const plaintext = 'same-secret';
+    const e1 = encryptWebhookSecret(plaintext, TEST_KEY_HEX);
+    const e2 = encryptWebhookSecret(plaintext, TEST_KEY_HEX);
+    expect(e1).not.toBe(e2);
+    // Both decrypt correctly
+    expect(decryptWebhookSecret(e1, TEST_KEY_HEX)).toBe(plaintext);
+    expect(decryptWebhookSecret(e2, TEST_KEY_HEX)).toBe(plaintext);
+  });
+
+  // WS.3 — legacy plaintext (no prefix) is returned unchanged
+  it('WS.3 legacy plaintext value returned unchanged by decrypt', () => {
+    const legacy = 'abcdef0123456789'.repeat(4); // 64-char hex, no enc:v1: prefix
+    expect(decryptWebhookSecret(legacy, TEST_KEY_HEX)).toBe(legacy);
+    expect(isEncryptedEnvelope(legacy)).toBe(false);
+  });
+
+  // WS.4 — wrong-length key throws
+  it('WS.4 wrong-length key throws on encrypt', () => {
+    expect(() => encryptWebhookSecret('secret', 'deadbeef')).toThrow();
+  });
+
+  // WS.5 — subscribe stores encrypted envelope when key env is set
+  it('WS.5 subscribe stores encrypted secret when TDR_WEBHOOK_SECRET_ENCRYPTION_KEY is set', async () => {
+    const orig = process.env['TDR_WEBHOOK_SECRET_ENCRYPTION_KEY'];
+    process.env['TDR_WEBHOOK_SECRET_ENCRYPTION_KEY'] = TEST_KEY_HEX;
+    const prisma = makePrisma();
+    const svc2 = new TdrWebhookService(prisma as never, makeAudit());
+    let capturedSecret = '';
+    (prisma.tdrWebhookSubscription.create as jest.Mock).mockImplementation((args: { data: { signingSecret: string }; }) => {
+      capturedSecret = args.data.signingSecret;
+      return Promise.resolve({ id: 'sub-1', url: 'https://example.com/hook', eventTypes: ['source.uploaded'], enabled: true, signingSecret: capturedSecret, createdAt: new Date() });
+    });
+    const r = await svc2.subscribe('https://example.com/hook', ['source.uploaded'], makeUser());
+    // Stored secret should be encrypted
+    expect(isEncryptedEnvelope(capturedSecret)).toBe(true);
+    // Returned signingSecret should be the original plaintext
+    expect(isEncryptedEnvelope(r.data.signingSecret)).toBe(false);
+    // Round-trip
+    expect(decryptWebhookSecret(capturedSecret, TEST_KEY_HEX)).toBe(r.data.signingSecret);
+    svc2.onModuleDestroy();
+    process.env['TDR_WEBHOOK_SECRET_ENCRYPTION_KEY'] = orig ?? '';
+    if (!orig) delete process.env['TDR_WEBHOOK_SECRET_ENCRYPTION_KEY'];
   });
 });

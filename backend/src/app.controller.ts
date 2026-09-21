@@ -1,4 +1,4 @@
-import { Controller, Get, Header, Res } from '@nestjs/common';
+import { Controller, Get, Header, Headers, Res } from '@nestjs/common';
 import type { Response } from 'express';
 import { AppService } from './app.service';
 import { ApiResponse } from './common/api-response';
@@ -57,16 +57,32 @@ export class AppController {
   /**
    * Prometheus-compatible metrics endpoint.
    *
-   * PRODUCTION NOTE: This endpoint must be protected at the network/proxy layer
-   * (not publicly reachable). It contains no secrets, PII, or trade data,
-   * but it does expose operational system state.
+   * Protected by METRICS_TOKEN bearer authentication:
+   * - METRICS_TOKEN set → requires `Authorization: Bearer <token>` header.
+   * - METRICS_TOKEN not set in production → 401 for all requests.
+   * - METRICS_TOKEN not set in development → open (convenient for local dev).
    *
-   * Returns Prometheus text exposition format.
+   * In production, METRICS_TOKEN must be configured and the scrape target
+   * must supply it. The endpoint should also be network-restricted (not
+   * publicly reachable) via reverse-proxy or firewall rules.
    */
   @Public()
   @Get('metrics')
   @Header('Content-Type', 'text/plain; version=0.0.4; charset=utf-8')
-  getMetrics(@Res({ passthrough: true }) res: Response) {
+  getMetrics(
+    @Res({ passthrough: true }) res: Response,
+    @Headers('authorization') auth: string | undefined,
+  ) {
+    const token = process.env['METRICS_TOKEN'];
+    if (token) {
+      if (auth !== `Bearer ${token}`) {
+        res.status(401).send('Unauthorized');
+        return;
+      }
+    } else if (process.env['NODE_ENV'] === 'production') {
+      res.status(401).send('Unauthorized — METRICS_TOKEN must be configured in production');
+      return;
+    }
     res.setHeader('Cache-Control', 'no-store, no-cache');
     return this.metrics.toPrometheus();
   }
