@@ -1,0 +1,47 @@
+# TDR Frontend — systemd Unit Reference
+# Trade Data Refinery-Bushra v1.0
+# Date: 2026-09-22
+#
+# REFERENCE FILE — not installed automatically.
+# Install to: /etc/systemd/system/tdr-frontend.service
+# Then: systemctl daemon-reload && systemctl enable tdr-frontend && systemctl start tdr-frontend
+#
+# Replace <app-path> with the actual deployment directory.
+# Replace <service-account> with the dedicated service user.
+# NEXT_PUBLIC_* vars are baked at build time — they do not need to be in the runtime env file.
+# Runtime env file needs only: NODE_ENV, PORT (if overriding default 3000).
+
+[Unit]
+Description=Trade Data Refinery-Bushra Frontend (Next.js)
+After=network.target tdr-backend.service
+Wants=tdr-backend.service
+
+[Service]
+Type=simple
+User=<service-account>
+Group=<service-account>
+WorkingDirectory=<app-path>
+
+# Environment
+Environment=NODE_ENV=production
+Environment=PORT=3000
+
+# Production start command (Next.js root is the repo root)
+ExecStart=/usr/bin/npm run start
+
+# Restart policy
+Restart=on-failure
+RestartSec=5
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=tdr-frontend
+
+# Process limits
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

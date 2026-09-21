@@ -16,7 +16,7 @@ Date: 2026-09-22
   - `LOCAL_STORAGE_ROOT` or `S3_BUCKET_NAME` + `S3_REGION`
   - `CORS_ORIGINS` — set to frontend URL
 - [ ] **Schema migration dry run** — `npx prisma migrate status` to confirm pending migrations
-- [ ] **Test suite green** — Backend: 776+/777 passing. Frontend: 145/145 passing.
+- [ ] **Test suite green** — Backend: 818/819 passing (1 governed skip). Frontend: 159/159 passing.
 - [ ] **TypeScript check** — `npx tsc --noEmit` exits 0
 - [ ] **Build check** — `npm run build` exits 0 (frontend: `next build`)
 - [ ] **Merge freeze** — Confirm no other branch is being merged concurrently
@@ -39,7 +39,7 @@ Date: 2026-09-22
 - [ ] **Smoke test — upload** — Upload a small test CSV; verify batch enters PROCESSING
 - [ ] **Smoke test — quality** — Confirm quality job is created for QUALITY_PENDING batch
 - [ ] **Smoke test — export** — Create export job; download CSV; verify content
-- [ ] **Smoke test — metrics** — `GET /metrics` returns Prometheus text with counters
+- [ ] **Smoke test — metrics** — `GET /metrics` with `Authorization: Bearer <METRICS_TOKEN>` returns Prometheus text with counters; without auth header returns 401
 - [ ] **Smoke test — lifecycle** — Archive a source file; verify 409 on re-archive; restore
 - [ ] **Correlation ID** — Verify `X-Request-ID` header appears in responses
 - [ ] **Logs** — Check backend logs for unexpected ERROR lines in first 5 minutes
@@ -65,4 +65,6 @@ If a critical issue is found post-deployment:
 - `validateEnv()` runs at startup and will exit the process if required env vars are missing — check logs immediately on deploy.
 - `TempCleanupService` and `TdrExportCleanupService` start their first run 5 seconds after startup — normal `[INFO]` log expected.
 - `reconcileQualityJobs()` runs at startup and will emit `[LOG]` for any stranded batches it repairs — not an error.
-- The `/metrics` endpoint is unauthenticated by design but must be blocked at the network layer in production.
+- `GET /metrics` requires `Authorization: Bearer <METRICS_TOKEN>` in production. Without it the endpoint returns 401. Configure your Prometheus scraper job with `bearer_token`.
+- `TDR_WEBHOOK_SECRET_ENCRYPTION_KEY` (64 hex chars) must be set before first webhook subscription. Losing this key makes stored secrets unrecoverable.
+- Backend worker execution = SINGLE CONTROLLED INSTANCE for initial deployment. Do not run multiple backend instances without reviewing the lease architecture.

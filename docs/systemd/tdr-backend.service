@@ -1,0 +1,52 @@
+# TDR Backend — systemd Unit Reference
+# Trade Data Refinery-Bushra v1.0
+# Date: 2026-09-22
+#
+# REFERENCE FILE — not installed automatically.
+# Install to: /etc/systemd/system/tdr-backend.service
+# Then: systemctl daemon-reload && systemctl enable tdr-backend && systemctl start tdr-backend
+#
+# Replace <app-path> with the actual deployment directory (e.g. /opt/toplineshop).
+# Replace <service-account> with the dedicated service user (e.g. tdr).
+# Secrets are loaded from /etc/tdr/env — set permissions: chmod 600 /etc/tdr/env
+
+[Unit]
+Description=Trade Data Refinery-Bushra Backend (NestJS)
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=<service-account>
+Group=<service-account>
+WorkingDirectory=<app-path>/backend
+
+# Environment file — contains all production secrets (chmod 600, restricted ownership)
+EnvironmentFile=/etc/tdr/env
+
+# Production start command
+ExecStart=/usr/bin/node dist/main
+
+# Restart policy
+Restart=on-failure
+RestartSec=5
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+# Logging — journal captures stdout/stderr
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=tdr-backend
+
+# Process limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# Security hardening (optional — enable if supported by host)
+# NoNewPrivileges=yes
+# PrivateTmp=yes
+# ProtectSystem=strict
+# ReadWritePaths=<tdr-storage-path>
+
+[Install]
+WantedBy=multi-user.target
