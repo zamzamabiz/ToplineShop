@@ -172,7 +172,7 @@ describe('TdrJobOrchestratorService', () => {
 
   beforeEach(() => {
     mockPrisma = makePrismaMock();
-    orchestrator = new TdrJobOrchestratorService(mockPrisma as never);
+    orchestrator = new TdrJobOrchestratorService(mockPrisma as never, { recordJobEvent: jest.fn() } as never);
   });
 
   it('leaseNextJob returns null when no PENDING jobs', async () => {

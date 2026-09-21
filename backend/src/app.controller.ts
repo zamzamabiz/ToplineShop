@@ -1,11 +1,16 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Header, Res } from '@nestjs/common';
+import type { Response } from 'express';
 import { AppService } from './app.service';
 import { ApiResponse } from './common/api-response';
 import { Public } from './auth/decorators/public.decorator';
+import { MetricsService } from './common/metrics/metrics.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly metrics: MetricsService,
+  ) {}
 
   @Public()
   @Get()
@@ -47,5 +52,22 @@ export class AppController {
   @Get('version')
   getVersion() {
     return this.appService.getVersion();
+  }
+
+  /**
+   * Prometheus-compatible metrics endpoint.
+   *
+   * PRODUCTION NOTE: This endpoint must be protected at the network/proxy layer
+   * (not publicly reachable). It contains no secrets, PII, or trade data,
+   * but it does expose operational system state.
+   *
+   * Returns Prometheus text exposition format.
+   */
+  @Public()
+  @Get('metrics')
+  @Header('Content-Type', 'text/plain; version=0.0.4; charset=utf-8')
+  getMetrics(@Res({ passthrough: true }) res: Response) {
+    res.setHeader('Cache-Control', 'no-store, no-cache');
+    return this.metrics.toPrometheus();
   }
 }

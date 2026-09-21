@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from './prisma/prisma.service';
 import { success, ApiResponse } from './common/api-response';
+import { MetricsService } from './common/metrics/metrics.service';
 
 export interface RootData {
   message: string;
@@ -46,7 +47,10 @@ export interface ReadinessData {
 
 @Injectable()
 export class AppService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly metrics: MetricsService,
+  ) {}
 
   getRoot(): ApiResponse<RootData> {
     return success({
@@ -110,8 +114,10 @@ export class AppService {
   private async checkDatabase(): Promise<'ok' | 'unavailable'> {
     try {
       await this.prisma.$queryRaw`SELECT 1`;
+      this.metrics.recordDbReadiness(true);
       return 'ok';
     } catch {
+      this.metrics.recordDbReadiness(false);
       return 'unavailable';
     }
   }

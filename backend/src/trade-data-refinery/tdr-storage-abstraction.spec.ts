@@ -432,7 +432,7 @@ describe('§SA.15–17 TempCleanupService', () => {
 
   beforeEach(() => {
     tmpDir = makeTempRoot();
-    svc = new TempCleanupService();
+    svc = new TempCleanupService({ recordTempCleanup: jest.fn() } as never);
     // Override private readonly tmpDir to our isolated test root
     (svc as any).tmpDir = tmpDir;
   });

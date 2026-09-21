@@ -25,7 +25,7 @@ describe('TdrQualityOrchestratorService.ensureQualityJob — idempotency', () =>
 
   it('returns existing PENDING job id without creating a new one', async () => {
     const prisma = makePrismaMock({ id: 'existing-job-id', status: 'PENDING' });
-    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const svc = new TdrQualityOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     const result = await svc.ensureQualityJob('batch-1', 'tenant-1');
     expect(result).toBe('existing-job-id');
     expect(prisma.tdrQualityJob.create).not.toHaveBeenCalled();
@@ -34,7 +34,7 @@ describe('TdrQualityOrchestratorService.ensureQualityJob — idempotency', () =>
 
   it('resets existing FAILED job to PENDING and returns its id', async () => {
     const prisma = makePrismaMock({ id: 'failed-job-id', status: 'FAILED' });
-    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const svc = new TdrQualityOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     const result = await svc.ensureQualityJob('batch-fail', 'tenant-1');
     expect(result).toBe('failed-job-id');
     expect(prisma.tdrQualityJob.create).not.toHaveBeenCalled();
@@ -48,7 +48,7 @@ describe('TdrQualityOrchestratorService.ensureQualityJob — idempotency', () =>
 
   it('does not reset COMPLETED job', async () => {
     const prisma = makePrismaMock({ id: 'completed-job-id', status: 'COMPLETED' });
-    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const svc = new TdrQualityOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     const result = await svc.ensureQualityJob('batch-completed', 'tenant-1');
     expect(result).toBe('completed-job-id');
     expect(prisma.tdrQualityJob.update).not.toHaveBeenCalled();
@@ -56,7 +56,7 @@ describe('TdrQualityOrchestratorService.ensureQualityJob — idempotency', () =>
 
   it('creates a new job when none exists, returns its id', async () => {
     const prisma = makePrismaMock(null);
-    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const svc = new TdrQualityOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     const result = await svc.ensureQualityJob('batch-2', 'tenant-1');
     expect(result).toBe('new-job-id');
     expect(prisma.tdrQualityJob.create).toHaveBeenCalledWith(
@@ -72,7 +72,7 @@ describe('TdrQualityOrchestratorService.ensureQualityJob — idempotency', () =>
         findUniqueOrThrow: jest.fn().mockResolvedValue({ id: 'race-winner-id' }),
       },
     };
-    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const svc = new TdrQualityOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     const result = await svc.ensureQualityJob('batch-3', 'tenant-1');
     expect(result).toBe('race-winner-id');
   });
@@ -80,7 +80,7 @@ describe('TdrQualityOrchestratorService.ensureQualityJob — idempotency', () =>
   it('does not create a duplicate job on a second call for the same batch', async () => {
     const prisma = makePrismaMock(null);
     // First call: creates
-    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const svc = new TdrQualityOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     await svc.ensureQualityJob('batch-4', 'tenant-1');
     // Second call: findUnique returns the just-created job
     prisma.tdrQualityJob.findUnique.mockResolvedValue({ id: 'new-job-id', status: 'PENDING' });
@@ -115,7 +115,7 @@ describe('TdrQualityOrchestratorService.reconcileQualityJobs — startup recover
       { id: 'b1', tenantId: 't1' },
       { id: 'b2', tenantId: 't1' },
     ]);
-    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const svc = new TdrQualityOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     const count = await svc.reconcileQualityJobs();
     expect(count).toBe(2);
     expect(prisma.tdrQualityJob.create).toHaveBeenCalledTimes(2);
@@ -127,7 +127,7 @@ describe('TdrQualityOrchestratorService.reconcileQualityJobs — startup recover
     // findMany returns empty (no QUALITY_PENDING+no-job batches) — FAILED batches
     // are not in this query result by design.
     const prisma = makeReconcilePrismaMock([]);
-    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const svc = new TdrQualityOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     const count = await svc.reconcileQualityJobs();
     expect(count).toBe(0);
     expect(prisma.tdrQualityJob.update).not.toHaveBeenCalled();
@@ -140,7 +140,7 @@ describe('TdrQualityOrchestratorService.reconcileQualityJobs — startup recover
     // reconcileQualityJobs only queries QUALITY_PENDING+no-job batches — FAILED batches
     // are simply not in the result.
     const prisma = makeReconcilePrismaMock([]); // no QUALITY_PENDING batches found
-    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const svc = new TdrQualityOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     const count = await svc.reconcileQualityJobs();
     expect(count).toBe(0);
     // The FAILED quality job and FAILED batch remain untouched — no update, no create
@@ -151,7 +151,7 @@ describe('TdrQualityOrchestratorService.reconcileQualityJobs — startup recover
   // SAFETY: no infinite retry loop — repeated reconcile calls for same FAILED state produce 0.
   it('reconcile called N times for same FAILED state returns 0 each time — no infinite loop', async () => {
     const prisma = makeReconcilePrismaMock([]);
-    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const svc = new TdrQualityOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     expect(await svc.reconcileQualityJobs()).toBe(0);
     expect(await svc.reconcileQualityJobs()).toBe(0);
     expect(await svc.reconcileQualityJobs()).toBe(0);
@@ -168,7 +168,7 @@ describe('TdrQualityOrchestratorService.reconcileQualityJobs — startup recover
         create: jest.fn(),
       },
     };
-    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const svc = new TdrQualityOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     const count = await svc.reconcileQualityJobs();
     expect(count).toBe(1);
     expect(prisma.tdrQualityJob.create).not.toHaveBeenCalled();
@@ -177,7 +177,7 @@ describe('TdrQualityOrchestratorService.reconcileQualityJobs — startup recover
 
   it('returns 0 when no QUALITY_PENDING batches exist', async () => {
     const prisma = makeReconcilePrismaMock([]);
-    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const svc = new TdrQualityOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     const count = await svc.reconcileQualityJobs();
     expect(count).toBe(0);
     expect(prisma.tdrQualityJob.create).not.toHaveBeenCalled();
@@ -368,7 +368,7 @@ describe('TdrQualityOrchestratorService.leaseNextJob — worker can lease create
         }),
       ),
     };
-    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const svc = new TdrQualityOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     const result = await svc.leaseNextJob('worker-1');
     expect(result).toBeNull();
   });
@@ -384,7 +384,7 @@ describe('TdrQualityOrchestratorService.leaseNextJob — worker can lease create
         }),
       ),
     };
-    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const svc = new TdrQualityOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     const result = await svc.leaseNextJob('worker-1');
     expect(result).toMatchObject({ id: 'qj-1', status: 'LEASED' });
   });
@@ -403,7 +403,7 @@ describe('ensureQualityJob — replay and retry idempotency', () => {
         create: jest.fn().mockResolvedValue({ id: 'qj-1' }),
       },
     };
-    const svc = new TdrQualityOrchestratorService(prisma as never);
+    const svc = new TdrQualityOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     await svc.ensureQualityJob('b-replay', 't-1');
     await svc.ensureQualityJob('b-replay', 't-1');
     expect(prisma.tdrQualityJob.create).toHaveBeenCalledTimes(1);

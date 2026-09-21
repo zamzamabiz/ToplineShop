@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { MetricsService } from '../../../common/metrics/metrics.service';
 
 /**
  * TempCleanupService — removes orphaned TDR temp files from os.tmpdir().
@@ -35,6 +36,8 @@ export class TempCleanupService implements OnModuleInit, OnModuleDestroy {
   ];
 
   private cleanupTimer: ReturnType<typeof setInterval> | null = null;
+
+  constructor(private readonly metrics: MetricsService) {}
 
   onModuleInit(): void {
     // Run once on startup with a short delay to avoid contending with startup I/O
@@ -91,6 +94,8 @@ export class TempCleanupService implements OnModuleInit, OnModuleDestroy {
         this.logger.warn(`TempCleanupService: error processing ${entry}: ${String(err)}`);
       }
     }
+
+    this.metrics.recordTempCleanup(removed, errors);
 
     if (removed > 0 || errors > 0) {
       this.logger.log(`TempCleanupService: run complete. removed=${removed} skipped=${skipped} errors=${errors}`);

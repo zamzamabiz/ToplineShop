@@ -12,6 +12,7 @@ import { StorageService } from '../ingestion/storage/storage.service';
 import { AuthenticatedUser } from '../../auth/types/jwt-payload.type';
 import { Role } from '../../auth/types/role.type';
 import { success } from '../../common/api-response';
+import { MetricsService } from '../../common/metrics/metrics.service';
 
 @Injectable()
 export class TdrSourceLifecycleService {
@@ -19,6 +20,7 @@ export class TdrSourceLifecycleService {
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
     private readonly storage: StorageService,
+    private readonly metrics: MetricsService,
   ) {}
 
   async archiveSourceFile(sourceFileId: string, user: AuthenticatedUser) {
@@ -45,6 +47,7 @@ export class TdrSourceLifecycleService {
       metadata: { sourceFileId },
     });
 
+    this.metrics.recordLifecycleOp('archive');
     return success({ archived: true, sourceFileId });
   }
 
@@ -72,6 +75,7 @@ export class TdrSourceLifecycleService {
       metadata: { sourceFileId },
     });
 
+    this.metrics.recordLifecycleOp('restore');
     return success({ restored: true, sourceFileId });
   }
 
@@ -95,6 +99,7 @@ export class TdrSourceLifecycleService {
       .replace(/[\r\n"\\]/g, '_')
       .slice(0, 200);
 
+    this.metrics.recordLifecycleOp('source_download');
     const stream = this.storage.createReadStream(sf.storageKey);
     return new StreamableFile(stream, {
       type: sf.mimeType ?? 'application/octet-stream',

@@ -1,6 +1,7 @@
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { StorageService } from '../../ingestion/storage/storage.service';
+import { MetricsService } from '../../../common/metrics/metrics.service';
 
 @Injectable()
 export class TdrExportCleanupService implements OnModuleInit, OnModuleDestroy {
@@ -13,6 +14,7 @@ export class TdrExportCleanupService implements OnModuleInit, OnModuleDestroy {
   constructor(
     private readonly prisma: PrismaService,
     private readonly storage: StorageService,
+    private readonly metrics: MetricsService,
   ) {}
 
   onModuleInit(): void {
@@ -59,6 +61,8 @@ export class TdrExportCleanupService implements OnModuleInit, OnModuleDestroy {
         this.logger.error(`Failed to clean expired export ${job.id}: ${(err as Error).message}`);
       }
     }
+
+    this.metrics.recordExportCleanup('success', cleaned);
 
     if (cleaned > 0) {
       this.logger.log(`Cleaned ${cleaned} expired export binary/binaries`);

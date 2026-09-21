@@ -1,12 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { TdrExportJob } from '@prisma/client';
 import { PrismaService } from '../../../prisma/prisma.service';
+import { MetricsService } from '../../../common/metrics/metrics.service';
 
 @Injectable()
 export class TdrExportOrchestratorService {
   private readonly logger = new Logger(TdrExportOrchestratorService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly metrics: MetricsService,
+  ) {}
 
   async leaseNextJob(workerInstanceId: string): Promise<TdrExportJob | null> {
     return this.prisma.$transaction(async (tx) => {
@@ -27,7 +31,7 @@ export class TdrExportOrchestratorService {
       const row = rows[0];
       const leaseExpiresAt = new Date(now.getTime() + Number(row.lease_duration_ms));
 
-      return tx.tdrExportJob.update({
+      const updated = await tx.tdrExportJob.update({
         where: { id: row.id },
         data: {
           status: 'LEASED',
@@ -39,6 +43,8 @@ export class TdrExportOrchestratorService {
           startedAt: now,
         },
       });
+      this.metrics.recordJobEvent('export', 'leased');
+      return updated;
     });
   }
 
@@ -81,6 +87,7 @@ export class TdrExportOrchestratorService {
         workerInstanceId: null,
       },
     });
+    this.metrics.recordJobEvent('export', 'completed');
   }
 
   async failJob(
@@ -107,6 +114,7 @@ export class TdrExportOrchestratorService {
         ...(isFinal ? { completedAt: new Date() } : {}),
       },
     });
+    this.metrics.recordJobEvent('export', 'failed');
   }
 
   async reclaimExpiredLeases(): Promise<number> {
@@ -122,6 +130,9 @@ export class TdrExportOrchestratorService {
     });
     if (result.count > 0) {
       this.logger.warn(`Reclaimed ${result.count} expired export job lease(s)`);
+      for (let i = 0; i < result.count; i++) {
+        this.metrics.recordJobEvent('export', 'lease_reclaim');
+      }
     }
     return result.count;
   }

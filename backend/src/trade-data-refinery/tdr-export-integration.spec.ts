@@ -152,7 +152,7 @@ function makeOrchestratorPrisma(options: {
 describe('TdrExportOrchestratorService — worker lifecycle', () => {
   it('leaseNextJob returns null when no PENDING jobs exist', async () => {
     const prisma = makeOrchestratorPrisma({ queryRows: [] });
-    const svc = new TdrExportOrchestratorService(prisma as never);
+    const svc = new TdrExportOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     const result = await svc.leaseNextJob('worker-1');
     expect(result).toBeNull();
   });
@@ -163,7 +163,7 @@ describe('TdrExportOrchestratorService — worker lifecycle', () => {
       queryRows: [{ id: 'job-1', tenant_id: 'tenant-1', lease_duration_ms: 600_000 }],
       updatedJob: fakeJob,
     });
-    const svc = new TdrExportOrchestratorService(prisma as never);
+    const svc = new TdrExportOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     const result = await svc.leaseNextJob('worker-1');
     expect(result).not.toBeNull();
     // The transaction's tdrExportJob.update should set status LEASED
@@ -173,7 +173,7 @@ describe('TdrExportOrchestratorService — worker lifecycle', () => {
 
   it('failJob retries (PENDING) when attemptCount < maxAttempts', async () => {
     const prisma = makeOrchestratorPrisma({ existingJob: { attemptCount: 1, maxAttempts: 3 } });
-    const svc = new TdrExportOrchestratorService(prisma as never);
+    const svc = new TdrExportOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     await svc.failJob('job-1', 'worker-1', 'transient error');
     expect(prisma.tdrExportJob.updateMany).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -184,7 +184,7 @@ describe('TdrExportOrchestratorService — worker lifecycle', () => {
 
   it('failJob terminates (FAILED) when attemptCount >= maxAttempts', async () => {
     const prisma = makeOrchestratorPrisma({ existingJob: { attemptCount: 3, maxAttempts: 3 } });
-    const svc = new TdrExportOrchestratorService(prisma as never);
+    const svc = new TdrExportOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     await svc.failJob('job-1', 'worker-1', 'fatal error');
     expect(prisma.tdrExportJob.updateMany).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -195,7 +195,7 @@ describe('TdrExportOrchestratorService — worker lifecycle', () => {
 
   it('reclaimExpiredLeases resets expired LEASED jobs back to PENDING', async () => {
     const prisma = makeOrchestratorPrisma({});
-    const svc = new TdrExportOrchestratorService(prisma as never);
+    const svc = new TdrExportOrchestratorService(prisma as never, { recordJobEvent: jest.fn() } as never);
     const count = await svc.reclaimExpiredLeases();
     expect(prisma.tdrExportJob.updateMany).toHaveBeenCalledWith(
       expect.objectContaining({

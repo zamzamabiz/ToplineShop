@@ -1,12 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { TdrQualityJob } from '@prisma/client';
 import { PrismaService } from '../../../prisma/prisma.service';
+import { MetricsService } from '../../../common/metrics/metrics.service';
 
 @Injectable()
 export class TdrQualityOrchestratorService {
   private readonly logger = new Logger(TdrQualityOrchestratorService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly metrics: MetricsService,
+  ) {}
 
   /**
    * Creates a TdrQualityJob for the given batch if one does not already exist.
@@ -81,7 +85,7 @@ export class TdrQualityOrchestratorService {
       const row = rows[0];
       const leaseExpiresAt = new Date(now.getTime() + Number(row.lease_duration_ms));
 
-      return tx.tdrQualityJob.update({
+      const updated = await tx.tdrQualityJob.update({
         where: { id: row.id },
         data: {
           status: 'LEASED',
@@ -93,6 +97,8 @@ export class TdrQualityOrchestratorService {
           startedAt: now,
         },
       });
+      this.metrics.recordJobEvent('quality', 'leased');
+      return updated;
     });
   }
 
@@ -121,6 +127,7 @@ export class TdrQualityOrchestratorService {
       where: { id: job.batchId },
       data: { status: batchStatus as never, completedAt: new Date() },
     });
+    this.metrics.recordJobEvent('quality', 'completed');
   }
 
   async failJob(jobId: string, errorMessage: string, errorCode?: string): Promise<void> {
@@ -141,6 +148,7 @@ export class TdrQualityOrchestratorService {
       where: { id: job.batchId },
       data: { status: 'FAILED' },
     });
+    this.metrics.recordJobEvent('quality', 'failed');
   }
 
   async retryJob(
@@ -176,6 +184,9 @@ export class TdrQualityOrchestratorService {
     });
     if (result.count > 0) {
       this.logger.warn(`Reclaimed ${result.count} expired quality job lease(s)`);
+      for (let i = 0; i < result.count; i++) {
+        this.metrics.recordJobEvent('quality', 'lease_reclaim');
+      }
     }
     return result.count;
   }

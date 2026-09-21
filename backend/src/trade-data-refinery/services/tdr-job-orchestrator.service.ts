@@ -1,12 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { TdrProcessingJob } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
+import { MetricsService } from '../../common/metrics/metrics.service';
 
 @Injectable()
 export class TdrJobOrchestratorService {
   private readonly logger = new Logger(TdrJobOrchestratorService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly metrics: MetricsService,
+  ) {}
 
   async leaseNextJob(workerInstanceId: string): Promise<TdrProcessingJob | null> {
     return this.prisma.$transaction(async (tx) => {
@@ -27,7 +31,7 @@ export class TdrJobOrchestratorService {
       const row = rows[0];
       const leaseExpiresAt = new Date(now.getTime() + Number(row.lease_duration_ms));
 
-      return tx.tdrProcessingJob.update({
+      const updated = await tx.tdrProcessingJob.update({
         where: { id: row.id },
         data: {
           status: 'LEASED',
@@ -38,6 +42,8 @@ export class TdrJobOrchestratorService {
           lastHeartbeatAt: now,
         },
       });
+      this.metrics.recordJobEvent('processing', 'leased');
+      return updated;
     });
   }
 
@@ -69,6 +75,7 @@ export class TdrJobOrchestratorService {
       where: { id: job.batchId },
       data: { status: 'READY', completedAt: new Date() },
     });
+    this.metrics.recordJobEvent('processing', 'completed');
   }
 
   async failJob(jobId: string, errorMessage: string, errorCode?: string): Promise<void> {
@@ -81,6 +88,7 @@ export class TdrJobOrchestratorService {
       where: { id: job.batchId },
       data: { status: 'FAILED' },
     });
+    this.metrics.recordJobEvent('processing', 'failed');
   }
 
   async releaseLease(jobId: string): Promise<void> {
@@ -109,6 +117,9 @@ export class TdrJobOrchestratorService {
     });
     if (result.count > 0) {
       this.logger.warn(`Reclaimed ${result.count} expired job lease(s)`);
+      for (let i = 0; i < result.count; i++) {
+        this.metrics.recordJobEvent('processing', 'lease_reclaim');
+      }
     }
     return result.count;
   }

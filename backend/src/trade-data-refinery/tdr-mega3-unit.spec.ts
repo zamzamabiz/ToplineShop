@@ -418,7 +418,7 @@ describe('TdrJobOrchestratorService — Mega 3 additions', () => {
       },
       tdrBatch: { update: jest.fn() },
     };
-    orchestrator = new TdrJobOrchestratorService(prismaMock as never);
+    orchestrator = new TdrJobOrchestratorService(prismaMock as never, { recordJobEvent: jest.fn() } as never);
   });
 
   it('completeJobWithStatus sets job COMPLETED and batch to given status', async () => {

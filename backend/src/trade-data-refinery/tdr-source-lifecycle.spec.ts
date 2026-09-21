@@ -12,6 +12,8 @@ import { AuditService } from '../audit/audit.service';
 import { StorageService } from './ingestion/storage/storage.service';
 import { TenantModuleService } from './services/tenant-module.service';
 import { AuthenticatedUser } from '../auth/types/jwt-payload.type';
+import { MetricsService } from '../common/metrics/metrics.service';
+import { TdrExportOrchestratorService } from './export/orchestrator/tdr-export-orchestrator.service';
 
 // ── Shared fixtures ────────────────────────────────────────────────────────────
 
@@ -96,6 +98,7 @@ describe('TdrSourceLifecycleService', () => {
         { provide: PrismaService, useValue: prisma },
         { provide: AuditService, useValue: audit },
         { provide: StorageService, useValue: storage },
+        { provide: MetricsService, useValue: { recordLifecycleOp: jest.fn() } },
       ],
     }).compile();
 
@@ -279,6 +282,7 @@ describe('TdrExportCleanupService', () => {
         TdrExportCleanupService,
         { provide: PrismaService, useValue: prisma },
         { provide: StorageService, useValue: storage },
+        { provide: MetricsService, useValue: { recordExportCleanup: jest.fn() } },
       ],
     }).compile();
 
@@ -475,8 +479,6 @@ describe('TdrExportService.downloadExport — expiry check', () => {
 
 // ── Export orchestrator: expiresAt set in completeJob ────────────────────────
 
-import { TdrExportOrchestratorService } from './export/orchestrator/tdr-export-orchestrator.service';
-
 describe('TdrExportOrchestratorService.completeJob — sets expiresAt', () => {
   let svc: TdrExportOrchestratorService;
   let prisma: ReturnType<typeof makePrismaMock>;
@@ -488,6 +490,7 @@ describe('TdrExportOrchestratorService.completeJob — sets expiresAt', () => {
       providers: [
         TdrExportOrchestratorService,
         { provide: PrismaService, useValue: prisma },
+        { provide: MetricsService, useValue: { recordJobEvent: jest.fn() } },
       ],
     }).compile();
 
