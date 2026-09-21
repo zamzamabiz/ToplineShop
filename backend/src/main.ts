@@ -3,37 +3,33 @@ import { AppModule } from './app.module';
 import { CustomValidationPipe } from './common/pipes/validation.pipe';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { validateEnv } from './config/env-validation';
 
 async function bootstrap() {
+  // Validate environment before creating the app.
+  // In production: throws a fatal error if secrets are missing or weak.
+  const env = validateEnv();
+
   const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn', 'log'],
   });
 
-  // CORS configuration
-  const corsOrigins = process.env.CORS_ALLOWED_ORIGINS
-    ? process.env.CORS_ALLOWED_ORIGINS.split(',').map((s) => s.trim())
-    : ['http://localhost:3000'];
-
   app.enableCors({
-    origin: corsOrigins,
+    origin: env.corsOrigins,
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Correlation-ID'],
     credentials: true,
   });
 
-  // Global logging interceptor
   app.useGlobalInterceptors(new LoggingInterceptor());
-
-  // Global validation pipe
   app.useGlobalPipes(new CustomValidationPipe());
-
-  // Global exception filter
   app.useGlobalFilters(new AllExceptionsFilter());
 
-  const port = process.env.PORT || 4000;
-  await app.listen(port);
+  await app.listen(env.port);
 
-  console.log(`ToplineShop backend is running on: http://localhost:${port}`);
-  console.log(`CORS allowed origins: ${corsOrigins.join(', ')}`);
+  console.log(`ToplineShop backend is running on: http://localhost:${env.port}`);
+  console.log(`Environment: ${env.nodeEnv}`);
+  console.log(`CORS allowed origins: ${env.corsOrigins.join(', ')}`);
+  console.log(`Cookie Secure flag: ${env.cookieSecure}`);
 }
 bootstrap();

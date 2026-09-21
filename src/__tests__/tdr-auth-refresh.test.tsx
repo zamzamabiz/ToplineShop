@@ -17,7 +17,9 @@ import React from 'react';
 vi.mock('@/lib/tdr-api', () => ({
   authLogin: vi.fn(),
   authLogout: vi.fn(),
-  authRefresh: vi.fn(),
+  // PM-005: AuthProvider calls authRefresh() on mount (cookie-based restore).
+  // Default: rejected (no cookie present) so restoring resolves to unauthenticated.
+  authRefresh: vi.fn().mockRejectedValue(new Error('no cookie')),
   setAuthCallbacks: vi.fn(),
 }));
 

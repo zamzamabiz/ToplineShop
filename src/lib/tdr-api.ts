@@ -51,10 +51,9 @@ async function tryRefreshOnce(): Promise<string | null> {
   if (_pendingRefresh) return _pendingRefresh;
   const cb = _authCallbacks;
   if (!cb) return null;
-  const refreshToken = cb.getRefreshToken();
-  if (!refreshToken) return null;
-
-  _pendingRefresh = authRefresh(refreshToken)
+  // Cookie-based refresh — HttpOnly cookie is sent automatically via credentials: 'include'.
+  // No in-memory refresh token needed.
+  _pendingRefresh = authRefresh()
     .then((tokens) => {
       cb.onRefreshSuccess(tokens);
       return tokens.accessToken;
@@ -173,13 +172,17 @@ async function post<TReq, TRes>(
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
-export async function authRefresh(
-  refreshToken: string,
-): Promise<{ accessToken: string; refreshToken: string }> {
+/**
+ * Refresh the access token using the HttpOnly refresh cookie.
+ * No body token needed — the browser sends the cookie automatically.
+ * Must be called with credentials: 'include' (set in this function).
+ */
+export async function authRefresh(): Promise<{ accessToken: string; refreshToken: string }> {
   const res = await fetch(`${API_BASE}/auth/refresh`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ refreshToken }),
+    credentials: 'include',
+    body: JSON.stringify({}),
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
@@ -196,6 +199,7 @@ export async function authLogin(req: AuthLoginRequest): Promise<AuthLoginRespons
   const res = await fetch(`${API_BASE}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify(req),
   });
   if (!res.ok) {
@@ -213,6 +217,7 @@ export async function authLogout(token: string): Promise<void> {
   await fetch(`${API_BASE}/auth/logout`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
+    credentials: 'include',
   });
 }
 

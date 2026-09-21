@@ -66,14 +66,22 @@ describe('tdr-api — 401 refresh-and-retry', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
-  it('throws 401 and does not refresh when getRefreshToken returns null', async () => {
-    setAuthCallbacks({ getRefreshToken: () => null, onRefreshSuccess: vi.fn(), onAuthFailed: vi.fn() });
+  it('calls onAuthFailed and throws 401 when refresh endpoint fails (cookie absent/expired)', async () => {
+    // PM-005: cookie-based refresh — getRefreshToken is always null (cookie is the authority).
+    // When the refresh endpoint itself returns 401 (no valid cookie), onAuthFailed is called.
+    const onRefreshSuccess = vi.fn();
+    const onAuthFailed = vi.fn();
+    setAuthCallbacks({ getRefreshToken: () => null, onRefreshSuccess, onAuthFailed });
 
+    // Both the original call and the /auth/refresh call return 401
     const fetchMock = vi.fn().mockResolvedValue(errResp('Authentication required', 401));
     vi.stubGlobal('fetch', fetchMock);
 
     await expect(getTdrStatus('expired-token')).rejects.toMatchObject({ status: 401 });
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(onAuthFailed).toHaveBeenCalledTimes(1);
+    expect(onRefreshSuccess).not.toHaveBeenCalled();
+    // Two calls: original request (401) + refresh attempt (401)
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
   it('refreshes once and retries original request on 401', async () => {
