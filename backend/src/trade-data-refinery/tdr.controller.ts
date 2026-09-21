@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Header,
   Param,
@@ -8,8 +9,15 @@ import {
   Query,
   Req,
   Res,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import * as os from 'os';
+import * as path from 'path';
+import { randomUUID } from 'crypto';
 import type { Response as ExpressResponse } from 'express';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../auth/types/role.type';
@@ -29,6 +37,10 @@ import { RecordsService } from './analytics/records.service';
 import { AnalyticsFilterDto, BreakdownDimension, TrendGranularity, TrendQueryDto, BreakdownQueryDto } from './analytics/dto/analytics-filter.dto';
 import { ListRecordsDto } from './analytics/dto/list-records.dto';
 import { TdrSourceLifecycleService } from './services/tdr-source-lifecycle.service';
+import { TdrVersioningService } from './services/tdr-versioning.service';
+import { TdrDeletionRequestService } from './services/tdr-deletion-request.service';
+import { TdrApiKeyService } from './services/tdr-api-key.service';
+import { TdrWebhookService } from './services/tdr-webhook.service';
 
 interface TdrRequest {
   user: AuthenticatedUser;
@@ -45,6 +57,10 @@ export class TdrController {
     private readonly analyticsService: AnalyticsService,
     private readonly recordsService: RecordsService,
     private readonly lifecycleService: TdrSourceLifecycleService,
+    private readonly versioningService: TdrVersioningService,
+    private readonly deletionRequestService: TdrDeletionRequestService,
+    private readonly apiKeyService: TdrApiKeyService,
+    private readonly webhookService: TdrWebhookService,
   ) {}
 
   // ── Core batch endpoints ────────────────────────────────────────────────────
@@ -226,5 +242,137 @@ export class TdrController {
   @Get('records')
   listRecords(@Req() req: TdrRequest, @Query() dto: ListRecordsDto) {
     return this.recordsService.listRecords(req.user.tenantId, dto);
+  }
+
+  // ── Versioning endpoints ──────────────────────────────────────────────────
+
+  @Post('source-files/:id/replace')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: os.tmpdir(),
+        filename: (_req, _file, cb) => cb(null, `tdr-replace-${randomUUID()}`),
+      }),
+      limits: { fileSize: 200 * 1024 * 1024 },
+    }),
+  )
+  replaceSourceFile(
+    @Param('id') id: string,
+    @Req() req: TdrRequest,
+    @UploadedFile() file: Express.Multer.File,
+    @Body('replacementReason') replacementReason: string,
+    @Body('mappingProfileId') mappingProfileId?: string,
+  ) {
+    return this.versioningService.createReplacement({
+      file,
+      previousSourceFileId: id,
+      replacementReason: replacementReason ?? '',
+      mappingProfileId,
+      user: req.user,
+    });
+  }
+
+  @Get('lineage/:logicalDatasetId')
+  getLineage(
+    @Param('logicalDatasetId') logicalDatasetId: string,
+    @Req() req: TdrRequest,
+  ) {
+    return this.versioningService.getLineage(logicalDatasetId, req.user);
+  }
+
+  // ── Deletion request endpoints ────────────────────────────────────────────
+
+  @Post('source-files/:id/deletion-requests')
+  createDeletionRequest(
+    @Param('id') sourceFileId: string,
+    @Req() req: TdrRequest,
+    @Body('reason') reason: string,
+  ) {
+    return this.deletionRequestService.create(sourceFileId, reason, req.user);
+  }
+
+  @Get('deletion-requests')
+  listDeletionRequests(
+    @Req() req: TdrRequest,
+    @Query('status') status?: string,
+  ) {
+    return this.deletionRequestService.list(req.user, status);
+  }
+
+  @Post('deletion-requests/:id/approve')
+  @Roles(Role.SUPER_ADMIN, Role.TENANT_ADMIN)
+  approveDeletionRequest(
+    @Param('id') id: string,
+    @Req() req: TdrRequest,
+    @Body('reviewNote') reviewNote?: string,
+  ) {
+    return this.deletionRequestService.approve(id, reviewNote, req.user);
+  }
+
+  @Post('deletion-requests/:id/reject')
+  @Roles(Role.SUPER_ADMIN, Role.TENANT_ADMIN)
+  rejectDeletionRequest(
+    @Param('id') id: string,
+    @Req() req: TdrRequest,
+    @Body('reviewNote') reviewNote?: string,
+  ) {
+    return this.deletionRequestService.reject(id, reviewNote, req.user);
+  }
+
+  @Post('deletion-requests/:id/cancel')
+  cancelDeletionRequest(@Param('id') id: string, @Req() req: TdrRequest) {
+    return this.deletionRequestService.cancel(id, req.user);
+  }
+
+  // ── API key endpoints ─────────────────────────────────────────────────────
+
+  @Post('api-keys')
+  @Roles(Role.SUPER_ADMIN, Role.TENANT_ADMIN)
+  createApiKey(
+    @Req() req: TdrRequest,
+    @Body('name') name: string,
+    @Body('scopes') scopes: string[],
+    @Body('expiresAt') expiresAt?: string,
+  ) {
+    return this.apiKeyService.create(
+      name,
+      scopes,
+      expiresAt ? new Date(expiresAt) : undefined,
+      req.user,
+    );
+  }
+
+  @Get('api-keys')
+  listApiKeys(@Req() req: TdrRequest) {
+    return this.apiKeyService.list(req.user);
+  }
+
+  @Delete('api-keys/:id')
+  @Roles(Role.SUPER_ADMIN, Role.TENANT_ADMIN)
+  revokeApiKey(@Param('id') id: string, @Req() req: TdrRequest) {
+    return this.apiKeyService.revoke(id, req.user);
+  }
+
+  // ── Webhook endpoints ─────────────────────────────────────────────────────
+
+  @Post('webhooks')
+  @Roles(Role.SUPER_ADMIN, Role.TENANT_ADMIN)
+  subscribeWebhook(
+    @Req() req: TdrRequest,
+    @Body('url') url: string,
+    @Body('eventTypes') eventTypes: string[],
+  ) {
+    return this.webhookService.subscribe(url, eventTypes, req.user);
+  }
+
+  @Get('webhooks')
+  listWebhooks(@Req() req: TdrRequest) {
+    return this.webhookService.listSubscriptions(req.user);
+  }
+
+  @Delete('webhooks/:id')
+  @Roles(Role.SUPER_ADMIN, Role.TENANT_ADMIN)
+  unsubscribeWebhook(@Param('id') id: string, @Req() req: TdrRequest) {
+    return this.webhookService.unsubscribe(id, req.user);
   }
 }

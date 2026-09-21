@@ -521,3 +521,114 @@ export async function listRecords(
   const { data, meta } = await getPage<TdrRecord[], PageMeta>('/tdr/records', token, params, signal);
   return { records: data, total: meta.total, page: meta.page, pageSize: meta.pageSize, hasMore: meta.hasMore };
 }
+
+// ── Versioning ────────────────────────────────────────────────────────────────
+
+export interface LineageVersion {
+  id: string;
+  versionNumber: number;
+  originalFilename: string;
+  uploadedAt: string;
+  fileSizeBytes: string;
+  replacementReason: string | null;
+  uploadedById: string;
+  archivedAt: string | null;
+}
+
+export async function getLineage(
+  token: string,
+  logicalDatasetId: string,
+  signal?: AbortSignal,
+): Promise<LineageVersion[]> {
+  return get<LineageVersion[]>(
+    `/tdr/lineage/${encodeURIComponent(logicalDatasetId)}`,
+    token,
+    undefined,
+    signal,
+  );
+}
+
+export async function replaceSourceFile(
+  token: string,
+  sourceFileId: string,
+  file: File,
+  replacementReason: string,
+  mappingProfileId?: string,
+): Promise<{ sourceFileId: string; batchId: string; jobId: string; versionNumber: number; logicalDatasetId: string; status: string }> {
+  const form = new FormData();
+  form.append('file', file);
+  form.append('replacementReason', replacementReason);
+  if (mappingProfileId) form.append('mappingProfileId', mappingProfileId);
+
+  const makeReq = (tok: string) =>
+    fetch(`${API_BASE}/tdr/source-files/${encodeURIComponent(sourceFileId)}/replace`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${tok}` },
+      body: form,
+    });
+
+  let res = await makeReq(token);
+  if (res.status === 401) {
+    const newToken = await tryRefreshOnce();
+    if (newToken) res = await makeReq(newToken);
+    else throwApiError(await res.json().catch(() => ({})), 401);
+  }
+  if (!res.ok) throwApiError(await res.json().catch(() => ({})), res.status);
+  const body = await res.json();
+  return body.data;
+}
+
+// ── Deletion requests ─────────────────────────────────────────────────────────
+
+export interface TdrDeletionRequest {
+  id: string;
+  sourceFileId: string;
+  requestedById: string;
+  reason: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
+  requestedAt: string;
+  reviewedAt: string | null;
+  reviewedById: string | null;
+  reviewNote: string | null;
+}
+
+export function createDeletionRequest(token: string, sourceFileId: string, reason: string) {
+  return post<{ reason: string }, { id: string; status: string }>(
+    `/tdr/source-files/${encodeURIComponent(sourceFileId)}/deletion-requests`,
+    token,
+    { reason },
+  );
+}
+
+export function listDeletionRequests(token: string, status?: string, signal?: AbortSignal) {
+  return get<TdrDeletionRequest[]>(
+    '/tdr/deletion-requests',
+    token,
+    status ? { status } : undefined,
+    signal,
+  );
+}
+
+export function approveDeletionRequest(token: string, id: string, reviewNote?: string) {
+  return post<{ reviewNote?: string }, { id: string; status: string }>(
+    `/tdr/deletion-requests/${encodeURIComponent(id)}/approve`,
+    token,
+    reviewNote ? { reviewNote } : {},
+  );
+}
+
+export function rejectDeletionRequest(token: string, id: string, reviewNote?: string) {
+  return post<{ reviewNote?: string }, { id: string; status: string }>(
+    `/tdr/deletion-requests/${encodeURIComponent(id)}/reject`,
+    token,
+    reviewNote ? { reviewNote } : {},
+  );
+}
+
+export function cancelDeletionRequest(token: string, id: string) {
+  return post<Record<string, never>, { id: string; status: string }>(
+    `/tdr/deletion-requests/${encodeURIComponent(id)}/cancel`,
+    token,
+    {},
+  );
+}

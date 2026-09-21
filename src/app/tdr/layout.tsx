@@ -14,6 +14,8 @@ const NAV_ITEMS = [
   { href: '/tdr/quarantine', label: 'Quarantine' },
   { href: '/tdr/exports', label: 'Exports' },
   { href: '/tdr/analytics', label: 'Analytics' },
+  { href: '/tdr/lineage', label: 'Lineage' },
+  { href: '/tdr/deletion-requests', label: 'Deletion Requests' },
 ];
 
 function TdrNav() {

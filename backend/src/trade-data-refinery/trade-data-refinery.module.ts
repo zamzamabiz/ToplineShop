@@ -22,6 +22,10 @@ import { TdrExportCleanupService } from './export/service/tdr-export-cleanup.ser
 import { TdrSourceLifecycleService } from './services/tdr-source-lifecycle.service';
 import { AnalyticsService } from './analytics/analytics.service';
 import { RecordsService } from './analytics/records.service';
+import { TdrVersioningService } from './services/tdr-versioning.service';
+import { TdrDeletionRequestService } from './services/tdr-deletion-request.service';
+import { TdrApiKeyService } from './services/tdr-api-key.service';
+import { TdrWebhookService } from './services/tdr-webhook.service';
 
 @Module({
   controllers: [TdrController, UploadController],
@@ -47,6 +51,10 @@ import { RecordsService } from './analytics/records.service';
     TdrSourceLifecycleService,
     AnalyticsService,
     RecordsService,
+    TdrVersioningService,
+    TdrDeletionRequestService,
+    TdrApiKeyService,
+    TdrWebhookService,
   ],
   exports: [TdrJobOrchestratorService, TdrProcessorService],
 })
