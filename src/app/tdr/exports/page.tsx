@@ -8,7 +8,7 @@ import type { TdrExportJob } from '@/types/tdr';
 
 const STATUS_COLORS: Record<string, string> = {
   PENDING: 'bg-yellow-900/40 text-yellow-300',
-  PROCESSING: 'bg-blue-900/40 text-blue-300',
+  LEASED: 'bg-blue-900/40 text-blue-300',
   COMPLETED: 'bg-green-900/40 text-green-300',
   FAILED: 'bg-red-900/40 text-red-300',
 };
@@ -37,7 +37,7 @@ function ExportJobRow({
   };
 
   useEffect(() => {
-    if (job.status === 'PENDING' || job.status === 'PROCESSING') {
+    if (job.status === 'PENDING' || job.status === 'LEASED') {
       pollRef.current = setTimeout(async () => {
         try {
           const updated = await getExportStatus(token, job.id);
@@ -90,6 +90,7 @@ export default function TdrExportsPage() {
   const [jobs, setJobs] = useState<TdrExportJob[]>([]);
   const [creating, setCreating] = useState(false);
   const [batchId, setBatchId] = useState(batchIdFromQuery);
+  const [tradeDirection, setTradeDirection] = useState<'' | 'IMPORT' | 'EXPORT'>('');
   const [rowLimit, setRowLimit] = useState('100000');
   const [error, setError] = useState<string | null>(null);
 
@@ -101,6 +102,7 @@ export default function TdrExportsPage() {
     try {
       const job = await createExport(accessToken, {
         ...(batchId ? { batchId } : {}),
+        ...(tradeDirection ? { tradeDirection } : {}),
         rowLimit: Math.min(parseInt(rowLimit, 10) || 100_000, 100_000),
       });
       setJobs((prev) => [job, ...prev]);
@@ -140,6 +142,19 @@ export default function TdrExportsPage() {
               placeholder="Leave blank for all accepted records"
               className="w-full px-3 py-1.5 text-sm bg-surface-primary border border-white/10 rounded text-text-primary placeholder-text-muted focus:outline-none focus:ring-1 focus:ring-accent-primary"
             />
+          </div>
+          <div className="w-40">
+            <label className="block text-xs text-text-muted mb-1">Trade Direction (optional)</label>
+            <select
+              value={tradeDirection}
+              onChange={(e) => setTradeDirection(e.target.value as '' | 'IMPORT' | 'EXPORT')}
+              data-testid="trade-direction-select"
+              className="w-full px-3 py-1.5 text-sm bg-surface-primary border border-white/10 rounded text-text-primary focus:outline-none focus:ring-1 focus:ring-accent-primary"
+            >
+              <option value="">All directions</option>
+              <option value="IMPORT">IMPORT</option>
+              <option value="EXPORT">EXPORT</option>
+            </select>
           </div>
           <div className="w-36">
             <label className="block text-xs text-text-muted mb-1">Row Limit (max 100k)</label>

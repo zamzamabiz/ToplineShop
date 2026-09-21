@@ -169,7 +169,7 @@ export interface ReEvaluateResult {
 
 // ── Exports ───────────────────────────────────────────────────────────────────
 
-export type ExportStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
+export type ExportStatus = 'PENDING' | 'LEASED' | 'COMPLETED' | 'FAILED';
 
 export interface TdrExportJob {
   id: string;
