@@ -3,9 +3,10 @@
 
 **Date:** 2026-09-23
 **Branch:** codex/trade-data-refinery
-**Status:** PASS
+**Status:** PASS — CLOSED
 **Commit (implementation):** 0c3280a
 **Commit (governance):** c1fe5e9
+**Commit (STD-001 resolution):** f844bbe
 
 ---
 
@@ -110,7 +111,7 @@ New tests: +16 (UploadBatchDto year/month validation + buildStandardizedFilename
 
 | ID | Severity | Description |
 |----|----------|-------------|
-| STD-001 | P3 | `TDR_V1` mapping profile must exist in DB for uploads to resolve — no seed migration provided for the canonical default profile. Pakistan Customs profiles (Exp_Pak_Jan_2025, Imp_Pak_Jan_2025) continue to work unchanged. |
+| STD-001 | CLOSED | ~~P1~~ → CLOSED. `TDR_V1` IMPORT + EXPORT profiles seeded via `seed-tdr-v1.js`. Unique constraint extended to include `tradeDirection` (migration 20260923010000). Commit f844bbe. |
 | STD-002 | P3 | Sequence resets to 001 per `(tenant, type, year, month)` — sequences are not global across years/months, by design. |
 
 ---
@@ -123,5 +124,5 @@ New tests: +16 (UploadBatchDto year/month validation + buildStandardizedFilename
 - **DECIDE:** Sequence table with PG upsert; `period_month=0` sentinel; pure utility function for testability; frontend preview with `###` placeholder
 - **EXECUTE:** 12 files, 317 insertions, commit 0c3280a
 - **VERIFY:** 834/835 + 159/159 tests PASS; migration applied to `toplineshop_dev`
-- **CLOSE:** This WDR
+- **CLOSE:** This WDR — STD-001 resolved, status PASS — CLOSED
 - **NEXT:** PM authorization required for next task

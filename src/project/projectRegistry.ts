@@ -3023,12 +3023,12 @@ export const projectRegistry: ProjectRegistry = {
       startedAt: "2026-09-23",
       completedAt: "2026-09-23",
       wdrPath: "WDR/_All/Trade-Data-Refinery/TDR-STANDARDIZED-FILENAME-001_WDR_2026-09-23.md",
-      commitHash: "0c3280a",
+      commitHash: "f844bbe",
       tests: "PASS",
       build: "PASS",
       ownerApproval: "PLANNED",
       pmApproval: "PASS",
-      notes: "PASS — 12 files, 317 insertions. Migration 20260923000000: standardized_filename + data_period_year/month on tdr_source_files; tdr_filename_sequences sequence table. Backend 834/835, Frontend 159/159. +16 new tests.",
+      notes: "PASS — CLOSED. STD-001 resolved: TDR_V1 IMPORT+EXPORT profiles seeded (seed-tdr-v1.js); unique constraint extended to include tradeDirection (migration 20260923010000). Backend 834/835, Frontend 159/159.",
     },
     {
       id: "TDR-LOCAL-PRODUCTION-LIKE-VALIDATION-001",
@@ -4924,7 +4924,7 @@ export const projectRegistry: ProjectRegistry = {
       status: "PASS",
       date: "2026-09-23",
       path: "WDR/_All/Trade-Data-Refinery/TDR-STANDARDIZED-FILENAME-001_WDR_2026-09-23.md",
-      commitHash: "0c3280a",
+      commitHash: "f844bbe",
     },
     {
       id: "wdr-tdr-local-production-like-validation-001",
