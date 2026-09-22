@@ -392,8 +392,8 @@ describe('CreateExportDto validation', () => {
     expect(errors.length).toBeGreaterThan(0);
   });
 
-  it('rowLimit above 100000 fails', async () => {
-    const errors = await validateDto({ rowLimit: 100001 });
+  it('rowLimit above MAX_EXPORT_ROW_LIMIT (1,000,000) fails', async () => {
+    const errors = await validateDto({ rowLimit: 1_000_001 });
     expect(errors.length).toBeGreaterThan(0);
   });
 

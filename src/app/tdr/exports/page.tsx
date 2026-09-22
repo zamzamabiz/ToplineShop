@@ -22,7 +22,6 @@ function ExportJobRow({
   token: string;
   onRefresh: (updated: TdrExportJob) => void;
 }) {
-  const pollRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [downloading, setDownloading] = useState(false);
 
   const handleDownload = async () => {
@@ -36,16 +35,16 @@ function ExportJobRow({
     }
   };
 
+  // Continuous polling while job is active — interval fires every 3 s until terminal status.
   useEffect(() => {
-    if (job.status === 'PENDING' || job.status === 'LEASED') {
-      pollRef.current = setTimeout(async () => {
-        try {
-          const updated = await getExportStatus(token, job.id);
-          onRefresh(updated);
-        } catch {}
-      }, 3000);
-    }
-    return () => { if (pollRef.current) clearTimeout(pollRef.current); };
+    if (job.status !== 'PENDING' && job.status !== 'LEASED') return;
+    const id = setInterval(async () => {
+      try {
+        const updated = await getExportStatus(token, job.id);
+        onRefresh(updated);
+      } catch {}
+    }, 3000);
+    return () => clearInterval(id);
   }, [job.status, job.id, token, onRefresh]);
 
   return (
@@ -79,7 +78,9 @@ function ExportJobRow({
           )
         )}
         {job.status === 'FAILED' && (
-          <span className="text-xs text-red-400">{job.errorMessage ?? 'Failed'}</span>
+          <span className="text-xs text-red-400" title={job.errorCode ?? undefined}>
+            {job.errorCode ? `[${job.errorCode}] ` : ''}{job.errorMessage ?? 'Failed'}
+          </span>
         )}
       </td>
     </tr>
@@ -98,22 +99,28 @@ export default function TdrExportsPage() {
   const [rowLimit, setRowLimit] = useState('100000');
   const [error, setError] = useState<string | null>(null);
 
+  // Ref-based guard prevents duplicate job creation from rapid double-click.
+  const submittingRef = useRef(false);
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!accessToken) return;
+    if (!accessToken || submittingRef.current) return;
+    submittingRef.current = true;
     setCreating(true);
     setError(null);
     try {
+      const limit = Math.min(Math.max(parseInt(rowLimit, 10) || 100_000, 1), 1_000_000);
       const job = await createExport(accessToken, {
         ...(batchId ? { batchId } : {}),
         ...(tradeDirection ? { tradeDirection } : {}),
-        rowLimit: Math.min(parseInt(rowLimit, 10) || 100_000, 100_000),
+        rowLimit: limit,
       });
       setJobs((prev) => [job, ...prev]);
     } catch (e: any) {
       setError(e?.message ?? 'Failed to create export');
     } finally {
       setCreating(false);
+      submittingRef.current = false;
     }
   };
 
@@ -161,13 +168,13 @@ export default function TdrExportsPage() {
             </select>
           </div>
           <div className="w-36">
-            <label className="block text-xs text-text-muted mb-1">Row Limit (max 100k)</label>
+            <label className="block text-xs text-text-muted mb-1">Row Limit (max 1 M)</label>
             <input
               type="number"
               value={rowLimit}
               onChange={(e) => setRowLimit(e.target.value)}
               min={1}
-              max={100_000}
+              max={1_000_000}
               className="w-full px-3 py-1.5 text-sm bg-surface-primary border border-white/10 rounded text-text-primary focus:outline-none focus:ring-1 focus:ring-accent-primary"
             />
           </div>

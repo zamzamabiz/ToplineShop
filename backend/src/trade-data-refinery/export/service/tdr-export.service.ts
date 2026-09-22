@@ -157,5 +157,6 @@ function buildFilterConfig(dto: CreateExportDto): Record<string, unknown> {
   if (dto.hsChapter) config['hsChapter'] = dto.hsChapter;
   if (dto.hsCode) config['hsCode'] = dto.hsCode;
   if (dto.foreignPartyCountryCode) config['foreignPartyCountryCode'] = dto.foreignPartyCountryCode;
+  if (dto.rowOffset != null && dto.rowOffset > 0) config['rowOffset'] = dto.rowOffset;
   return config;
 }

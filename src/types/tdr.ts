@@ -191,6 +191,7 @@ export interface TdrExportJob {
   rowCount: number | null | undefined;
   rowLimit: number;
   contentHash: string | null | undefined;
+  errorCode: string | null | undefined;
   errorMessage: string | null | undefined;
   createdAt: string;
   completedAt: string | null | undefined;

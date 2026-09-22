@@ -401,3 +401,134 @@ describe('§13 rowCount undefined/null/zero regression', () => {
     await waitFor(() => expect(screen.getByText(/Export limit exceeded/i)).toBeDefined());
   });
 });
+
+// ── §14 FAILED with errorCode display ────────────────────────────────────────
+
+describe('§14 FAILED status shows errorCode and errorMessage', () => {
+  it('renders [ERROR_CODE] prefix when errorCode is present', async () => {
+    const job = failedJob({ errorCode: 'EXPORT_LIMIT_EXCEEDED', errorMessage: 'Too many rows' });
+    mockCreateExport.mockResolvedValueOnce(job);
+    render(<TdrExportsPage />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
+    });
+    await waitFor(() => {
+      const failedCell = screen.getByText(/EXPORT_LIMIT_EXCEEDED/);
+      expect(failedCell).toBeDefined();
+    });
+    await waitFor(() => expect(screen.getByText(/Too many rows/i)).toBeDefined());
+  });
+
+  it('renders errorMessage without prefix when errorCode is absent', async () => {
+    const job = failedJob({ errorCode: null, errorMessage: 'Internal error' });
+    mockCreateExport.mockResolvedValueOnce(job);
+    render(<TdrExportsPage />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
+    });
+    await waitFor(() => expect(screen.getByText('Internal error')).toBeDefined());
+  });
+
+  it('renders "Failed" fallback when both errorCode and errorMessage are absent', async () => {
+    const job = failedJob({ errorCode: null, errorMessage: null });
+    mockCreateExport.mockResolvedValueOnce(job);
+    render(<TdrExportsPage />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
+    });
+    await waitFor(() => expect(screen.getByText('Failed')).toBeDefined());
+  });
+});
+
+// ── §15 Duplicate-click prevention ───────────────────────────────────────────
+
+describe('§15 Duplicate-click prevention', () => {
+  it('disables Create Export button while submission is in flight', async () => {
+    let resolveFn!: (v: object) => void;
+    mockCreateExport.mockReturnValueOnce(new Promise((r) => { resolveFn = r; }));
+    render(<TdrExportsPage />);
+    const btn = screen.getByRole('button', { name: /Create Export/i }) as HTMLButtonElement;
+    expect(btn.disabled).toBe(false);
+
+    fireEvent.click(btn);
+    // After click, button should be disabled while request is in flight
+    await waitFor(() => expect(btn.disabled).toBe(true));
+
+    // Resolve the promise to finish
+    await act(async () => { resolveFn(pendingJob()); });
+    await waitFor(() => expect(btn.disabled).toBe(false));
+  });
+
+  it('createExport is called exactly once even if button is clicked twice rapidly', async () => {
+    mockCreateExport.mockResolvedValue(pendingJob());
+    render(<TdrExportsPage />);
+    const btn = screen.getByRole('button', { name: /Create Export/i });
+    await act(async () => {
+      fireEvent.click(btn);
+      fireEvent.click(btn);  // Second click before state update
+    });
+    expect(mockCreateExport).toHaveBeenCalledTimes(1);
+  });
+});
+
+// ── §16 Continuous polling (not one-shot) ────────────────────────────────────
+
+describe('§16 Continuous polling for active jobs', () => {
+  afterEach(() => vi.useRealTimers());
+
+  it('polls multiple times while status stays PENDING', async () => {
+    vi.useFakeTimers();
+    const job = pendingJob();
+    mockCreateExport.mockResolvedValueOnce(job);
+    mockGetExportStatus.mockResolvedValue(job);  // Always returns PENDING
+    render(<TdrExportsPage />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
+    });
+    // Advance 9 seconds → 3 poll cycles (at 3s, 6s, 9s)
+    await act(async () => { vi.advanceTimersByTime(9100); });
+    expect(mockGetExportStatus.mock.calls.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('stops polling once job reaches COMPLETED', async () => {
+    vi.useFakeTimers();
+    const job = leasedJob();
+    const done = completedJob({ id: job.id });
+    mockCreateExport.mockResolvedValueOnce(job);
+    mockGetExportStatus.mockResolvedValueOnce(done);  // First poll → COMPLETED
+    mockGetExportStatus.mockResolvedValue(done);
+    render(<TdrExportsPage />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
+    });
+    await act(async () => { vi.advanceTimersByTime(3100); });
+    const callsAfterFirst = mockGetExportStatus.mock.calls.length;
+    await act(async () => { vi.advanceTimersByTime(6100); });
+    // Should not poll again after reaching COMPLETED
+    expect(mockGetExportStatus.mock.calls.length).toBe(callsAfterFirst);
+  });
+});
+
+// ── §17 rowLimit=100 sample export ───────────────────────────────────────────
+
+describe('§17 Sample export — rowLimit=100', () => {
+  it('creates export with rowLimit=100 when input is set to 100', async () => {
+    mockCreateExport.mockResolvedValueOnce(pendingJob({ rowLimit: 100 }));
+    render(<TdrExportsPage />);
+    const limitInput = screen.getByRole('spinbutton') as HTMLInputElement;
+    fireEvent.change(limitInput, { target: { value: '100' } });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
+    });
+    expect(mockCreateExport).toHaveBeenCalledWith(
+      'test-token',
+      expect.objectContaining({ rowLimit: 100 }),
+    );
+  });
+
+  it('row limit input accepts values up to 1,000,000', () => {
+    render(<TdrExportsPage />);
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    expect(Number(input.max)).toBe(1_000_000);
+  });
+});

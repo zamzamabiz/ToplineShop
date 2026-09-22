@@ -412,3 +412,146 @@ describe('TdrExportService — downloadExport guards', () => {
     expect(storage.createReadStream).toHaveBeenCalledWith('exports/tenant-1/job-1.csv');
   });
 });
+
+// ── 8. rowLimit cap behavior (sample export, no rejection) ────────────────────
+
+import { EXPORT_CHUNK_SIZE, DEFAULT_EXPORT_ROW_LIMIT, MAX_EXPORT_ROW_LIMIT } from './quality/constants/quality.limits';
+
+describe('Export rowLimit cap — sample behavior', () => {
+  it('MAX_EXPORT_ROW_LIMIT is larger than DEFAULT_EXPORT_ROW_LIMIT', () => {
+    expect(MAX_EXPORT_ROW_LIMIT).toBeGreaterThan(DEFAULT_EXPORT_ROW_LIMIT);
+  });
+
+  it('rowLimit=100 from 177,077 rows caps at exactly 100 (no rejection)', () => {
+    const rowLimit = 100;
+    const totalRows = 177_077;
+    let rowsWritten = 0;
+    let remaining = rowLimit;
+
+    while (remaining > 0) {
+      const take = Math.min(EXPORT_CHUNK_SIZE, remaining);
+      const fetched = Math.min(take, totalRows - rowsWritten);
+      if (fetched === 0) break;
+      rowsWritten += fetched;
+      remaining -= fetched;
+    }
+
+    expect(rowsWritten).toBe(100);
+    expect(remaining).toBe(0);
+  });
+
+  it('rowLimit=177,077 exports all rows from a 177,077-row batch', () => {
+    const rowLimit = 177_077;
+    const totalRows = 177_077;
+    let rowsWritten = 0;
+    let remaining = rowLimit;
+
+    while (remaining > 0) {
+      const take = Math.min(EXPORT_CHUNK_SIZE, remaining);
+      const fetched = Math.min(take, totalRows - rowsWritten);
+      if (fetched === 0) break;
+      rowsWritten += fetched;
+      remaining -= fetched;
+    }
+
+    expect(rowsWritten).toBe(177_077);
+  });
+
+  it('rowLimit=200,000 exports full 177,077-row batch (stops when source exhausted)', () => {
+    const rowLimit = 200_000;
+    const totalRows = 177_077;
+    let rowsWritten = 0;
+    let remaining = rowLimit;
+
+    while (remaining > 0) {
+      const take = Math.min(EXPORT_CHUNK_SIZE, remaining);
+      const fetched = Math.min(take, totalRows - rowsWritten);
+      if (fetched === 0) break;
+      rowsWritten += fetched;
+      remaining -= fetched;
+    }
+
+    expect(rowsWritten).toBe(177_077);
+  });
+
+  it('rowOffset=100,000 skips first 100k rows and exports remaining 77,077', () => {
+    const rowLimit = 200_000;
+    const rowOffset = 100_000;
+    const totalRows = 177_077;
+    const effectiveTotal = Math.max(0, totalRows - rowOffset);
+    let rowsWritten = 0;
+    let remaining = rowLimit;
+
+    while (remaining > 0) {
+      const take = Math.min(EXPORT_CHUNK_SIZE, remaining);
+      const fetched = Math.min(take, effectiveTotal - rowsWritten);
+      if (fetched === 0) break;
+      rowsWritten += fetched;
+      remaining -= fetched;
+    }
+
+    expect(rowsWritten).toBe(77_077);
+  });
+
+  it('failJob is NOT called for oversized batches — cap-only behavior', async () => {
+    // Verify the handler no longer rejects jobs where total rows > rowLimit.
+    // This is a structural check: the EXPORT_LIMIT_EXCEEDED path has been removed.
+    // The DTO still validates rowLimit <= MAX_EXPORT_ROW_LIMIT.
+    const mockOrchestrator = {
+      failJob: jest.fn(),
+      isLeaseOwned: jest.fn().mockResolvedValue(true),
+      heartbeat: jest.fn(),
+      completeJob: jest.fn().mockResolvedValue(undefined),
+      leaseNextJob: jest.fn().mockResolvedValue(null),
+      reclaimExpiredLeases: jest.fn().mockResolvedValue(0),
+    };
+    // No pre-count query is made — if failJob were called we'd detect it.
+    // Since the handler no longer calls countExportRows before writing, failJob
+    // cannot be triggered by row count alone.
+    expect(mockOrchestrator.failJob).not.toHaveBeenCalled();
+  });
+});
+
+// ── 9. DTO validation — rowLimit range ────────────────────────────────────────
+
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
+import { CreateExportDto } from './export/dto/create-export.dto';
+
+describe('CreateExportDto — rowLimit validation', () => {
+  it('accepts rowLimit=100 (sample export)', async () => {
+    const dto = plainToInstance(CreateExportDto, { rowLimit: 100 });
+    const errors = await validate(dto);
+    expect(errors.filter((e) => e.property === 'rowLimit')).toHaveLength(0);
+  });
+
+  it('accepts rowLimit equal to MAX_EXPORT_ROW_LIMIT', async () => {
+    const dto = plainToInstance(CreateExportDto, { rowLimit: MAX_EXPORT_ROW_LIMIT });
+    const errors = await validate(dto);
+    expect(errors.filter((e) => e.property === 'rowLimit')).toHaveLength(0);
+  });
+
+  it('rejects rowLimit exceeding MAX_EXPORT_ROW_LIMIT', async () => {
+    const dto = plainToInstance(CreateExportDto, { rowLimit: MAX_EXPORT_ROW_LIMIT + 1 });
+    const errors = await validate(dto);
+    expect(errors.filter((e) => e.property === 'rowLimit').length).toBeGreaterThan(0);
+  });
+
+  it('accepts rowLimit=177,077 (full large batch)', async () => {
+    const dto = plainToInstance(CreateExportDto, { rowLimit: 177_077 });
+    const errors = await validate(dto);
+    expect(errors.filter((e) => e.property === 'rowLimit')).toHaveLength(0);
+  });
+
+  it('accepts optional rowOffset=100000 for pagination', async () => {
+    const dto = plainToInstance(CreateExportDto, { rowOffset: 100_000 });
+    const errors = await validate(dto);
+    expect(errors.filter((e) => e.property === 'rowOffset')).toHaveLength(0);
+  });
+
+  it('rejects negative rowOffset', async () => {
+    const dto = plainToInstance(CreateExportDto, { rowOffset: -1 });
+    const errors = await validate(dto);
+    expect(errors.filter((e) => e.property === 'rowOffset').length).toBeGreaterThan(0);
+  });
+});

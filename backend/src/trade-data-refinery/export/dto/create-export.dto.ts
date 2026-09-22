@@ -10,7 +10,7 @@ import {
   Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { DEFAULT_EXPORT_ROW_LIMIT } from '../../quality/constants/quality.limits';
+import { DEFAULT_EXPORT_ROW_LIMIT, MAX_EXPORT_ROW_LIMIT } from '../../quality/constants/quality.limits';
 
 export class CreateExportDto {
   @IsOptional()
@@ -49,7 +49,14 @@ export class CreateExportDto {
   @IsOptional()
   @IsInt()
   @Min(1)
-  @Max(DEFAULT_EXPORT_ROW_LIMIT)
+  @Max(MAX_EXPORT_ROW_LIMIT)
   @Type(() => Number)
   rowLimit?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @Max(MAX_EXPORT_ROW_LIMIT)
+  @Type(() => Number)
+  rowOffset?: number;
 }

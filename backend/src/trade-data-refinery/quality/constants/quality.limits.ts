@@ -10,6 +10,9 @@ export const QUALITY_MAX_CHUNK_ROWS = Math.floor(65000 / QUALITY_UPDATE_PARAMS_P
 /** Default export row limit (configurable). */
 export const DEFAULT_EXPORT_ROW_LIMIT = 100_000;
 
+/** Maximum export row limit — allows full export of large batches (e.g. 177k rows). */
+export const MAX_EXPORT_ROW_LIMIT = 1_000_000;
+
 /** Export CSV write chunk (rows fetched/written at a time). */
 export const EXPORT_CHUNK_SIZE = 1_000;
 

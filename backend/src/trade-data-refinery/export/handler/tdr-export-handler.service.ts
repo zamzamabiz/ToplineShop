@@ -15,7 +15,6 @@ import {
   QUALITY_POLL_INTERVAL_MS,
   QUALITY_RECLAIM_INTERVAL_MS,
 } from '../../quality/constants/quality.limits';
-import { QUALITY_ERROR } from '../../quality/constants/quality-error.codes';
 
 /**
  * CSV formula-injection safe characters that must be prefixed with a single-quote
@@ -99,18 +98,6 @@ export class TdrExportHandlerService implements OnModuleInit, OnModuleDestroy {
     const filter = job.filterConfig as ExportFilter;
     const rowLimit = job.rowLimit ?? DEFAULT_EXPORT_ROW_LIMIT;
 
-    // Pre-count rows to enforce limit
-    const estimatedCount = await this.countExportRows(job.tenantId, filter);
-    if (estimatedCount > rowLimit) {
-      await this.orchestrator.failJob(
-        job.id,
-        this.workerInstanceId,
-        `Export would return ${estimatedCount} rows, exceeding limit of ${rowLimit}`,
-        QUALITY_ERROR.EXPORT_LIMIT_EXCEEDED,
-      );
-      return;
-    }
-
     const heartbeatTimer = setInterval(
       () => void this.orchestrator.heartbeat(job.id, this.workerInstanceId),
       QUALITY_HEARTBEAT_INTERVAL_MS,
@@ -129,10 +116,13 @@ export class TdrExportHandlerService implements OnModuleInit, OnModuleDestroy {
       writeStream.write(headerLine);
       hashStream.update(headerLine);
 
-      // Stream records in keyset-paged chunks
-      let lastId: string | null = null;
+      // Stream records in keyset-paged chunks, capped at rowLimit (sample behavior).
+      // rowLimit is a cap — never a rejection threshold.
+      let lastBatchId: string | null = null;
+      let lastSrcRowNum: number | null = null;
+      let remainingRows = rowLimit;
 
-      while (true) {
+      while (remainingRows > 0) {
         const owned = await this.orchestrator.isLeaseOwned(job.id, this.workerInstanceId);
         if (!owned) {
           writeStream.destroy();
@@ -140,7 +130,8 @@ export class TdrExportHandlerService implements OnModuleInit, OnModuleDestroy {
           throw new Error('Lease lost during export generation');
         }
 
-        const rows = await this.fetchExportChunk(job.tenantId, filter, lastId, EXPORT_CHUNK_SIZE);
+        const take = Math.min(EXPORT_CHUNK_SIZE, remainingRows);
+        const rows = await this.fetchExportChunk(job.tenantId, filter, lastBatchId, lastSrcRowNum, take);
         if (rows.length === 0) break;
 
         for (const row of rows) {
@@ -148,10 +139,12 @@ export class TdrExportHandlerService implements OnModuleInit, OnModuleDestroy {
           writeStream.write(line);
           hashStream.update(line);
           rowCount++;
+          remainingRows--;
         }
 
-        lastId = rows[rows.length - 1].id as string;
-        if (rows.length < EXPORT_CHUNK_SIZE) break;
+        lastBatchId = rows[rows.length - 1].batch_id as string;
+        lastSrcRowNum = rows[rows.length - 1].source_row_number as number;
+        if (rows.length < take) break;
       }
 
       await closeStream(writeStream);
@@ -181,35 +174,11 @@ export class TdrExportHandlerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  private async countExportRows(tenantId: string, filter: ExportFilter): Promise<number> {
-    const conditions: Prisma.Sql[] = [
-      Prisma.sql`tenant_id = ${tenantId}`,
-      Prisma.sql`row_disposition = 'ACCEPTED'`,
-      Prisma.sql`export_eligible = TRUE`,
-    ];
-    if (filter.batchId) conditions.push(Prisma.sql`batch_id = ${filter.batchId}`);
-    if (filter.tradeDirection) conditions.push(Prisma.sql`trade_direction = ${filter.tradeDirection}`);
-    if (filter.dateFrom) conditions.push(Prisma.sql`trade_date >= ${new Date(filter.dateFrom)}`);
-    if (filter.dateTo) conditions.push(Prisma.sql`trade_date <= ${new Date(filter.dateTo)}`);
-    if (filter.hsChapter) conditions.push(Prisma.sql`hs_chapter = ${filter.hsChapter}`);
-    if (filter.hsCode) conditions.push(Prisma.sql`hs_code_normalized = ${filter.hsCode}`);
-    if (filter.foreignPartyCountryCode) {
-      conditions.push(Prisma.sql`(importer_country_code = ${filter.foreignPartyCountryCode} OR foreign_party_country_code = ${filter.foreignPartyCountryCode})`);
-    }
-    if (filter.exporterCountryCode) conditions.push(Prisma.sql`exporter_country_code = ${filter.exporterCountryCode}`);
-    if (filter.importerCountryCode) conditions.push(Prisma.sql`importer_country_code = ${filter.importerCountryCode}`);
-
-    const where = Prisma.join(conditions, ' AND ');
-    const result = await this.prisma.$queryRaw<[{ count: bigint }]>(
-      Prisma.sql`SELECT COUNT(*)::bigint AS count FROM tdr_records WHERE ${where}`,
-    );
-    return Number(result[0].count);
-  }
-
   private async fetchExportChunk(
     tenantId: string,
     filter: ExportFilter,
-    lastId: string | null,
+    lastBatchId: string | null,
+    lastSrcRowNum: number | null,
     take: number,
   ): Promise<Array<Record<string, unknown>>> {
     const conditions: Prisma.Sql[] = [
@@ -218,7 +187,13 @@ export class TdrExportHandlerService implements OnModuleInit, OnModuleDestroy {
       Prisma.sql`r.export_eligible = TRUE`,
     ];
 
-    if (lastId) conditions.push(Prisma.sql`r.id > ${lastId}`);
+    // Composite keyset: ORDER BY (batch_id, source_row_number) — deterministic source-row order.
+    if (lastBatchId !== null && lastSrcRowNum !== null) {
+      conditions.push(
+        Prisma.sql`(r.batch_id > ${lastBatchId} OR (r.batch_id = ${lastBatchId} AND r.source_row_number > ${lastSrcRowNum}))`,
+      );
+    }
+
     if (filter.batchId) conditions.push(Prisma.sql`r.batch_id = ${filter.batchId}`);
     if (filter.tradeDirection) conditions.push(Prisma.sql`r.trade_direction = ${filter.tradeDirection}`);
     if (filter.dateFrom) conditions.push(Prisma.sql`r.trade_date >= ${new Date(filter.dateFrom)}`);
@@ -233,9 +208,16 @@ export class TdrExportHandlerService implements OnModuleInit, OnModuleDestroy {
 
     const where = Prisma.join(conditions, ' AND ');
 
+    // rowOffset skips N rows on the first chunk (no keyset yet) for pagination.
+    const offsetSql = (lastBatchId === null && filter.rowOffset && filter.rowOffset > 0)
+      ? Prisma.sql`OFFSET ${filter.rowOffset}`
+      : Prisma.sql``;
+
     return this.prisma.$queryRaw<Array<Record<string, unknown>>>(Prisma.sql`
       SELECT
         r.id,
+        r.batch_id,
+        r.source_row_number,
         r.trade_date,
         r.hs_chapter,
         r.hs_code_normalized                                                    AS hs_code,
@@ -257,8 +239,9 @@ export class TdrExportHandlerService implements OnModuleInit, OnModuleDestroy {
         r.data_source_raw                                                       AS data_source
       FROM tdr_records r
       WHERE ${where}
-      ORDER BY r.id ASC
+      ORDER BY r.batch_id ASC, r.source_row_number ASC
       LIMIT ${take}
+      ${offsetSql}
     `);
   }
 }
@@ -278,6 +261,8 @@ interface ExportFilter {
   exporterCountryCode?: string;
   /** Canonical importer country filter (importer_country_code column) */
   importerCountryCode?: string;
+  /** Skip first N matching rows — enables page-based pagination for large batches */
+  rowOffset?: number;
 }
 
 
