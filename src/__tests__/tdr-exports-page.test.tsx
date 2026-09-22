@@ -410,7 +410,7 @@ describe('§13 rowCount undefined/null/zero regression', () => {
     });
     await waitFor(() => {
       const tds = Array.from(document.querySelectorAll('td'));
-      expect(tds.some((td) => /^\d+ \/ \d/.test(td.textContent?.trim() ?? ''))).toBe(true);
+      expect(tds.some((td) => td.textContent?.trim() === '16')).toBe(true);
     });
   });
 
@@ -423,18 +423,20 @@ describe('§13 rowCount undefined/null/zero regression', () => {
     });
     await waitFor(() => {
       const tds = Array.from(document.querySelectorAll('td'));
-      expect(tds.some((td) => td.textContent?.trim().startsWith('0 /'))).toBe(true);
+      expect(tds.some((td) => td.textContent?.trim() === '0')).toBe(true);
     });
   });
 
-  it('§13.5 rowLimit renders correctly from createExport response', async () => {
+  it('§13.5 rowLimit is not shown — backend limit not exposed to users', async () => {
     const job = { ...pendingJob(), rowCount: undefined, rowLimit: 50_000 };
     mockCreateExport.mockResolvedValueOnce(job);
     render(<TdrExportsPage />);
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
     });
-    await waitFor(() => expect(screen.getByText(/50,000 limit/i)).toBeDefined());
+    await waitFor(() => expect(screen.getByText('QUEUED')).toBeDefined());
+    // rowLimit must not be visible — backend ceiling is not exposed to users
+    expect(screen.queryByText(/50,000 limit/i)).toBeNull();
   });
 
   it('§13.6 Create Export → immediate render does not throw', async () => {

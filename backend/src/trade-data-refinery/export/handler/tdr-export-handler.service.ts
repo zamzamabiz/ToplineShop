@@ -195,7 +195,7 @@ export class TdrExportHandlerService implements OnModuleInit, OnModuleDestroy {
     }
 
     if (filter.batchId) conditions.push(Prisma.sql`r.batch_id = ${filter.batchId}`);
-    if (filter.tradeDirection) conditions.push(Prisma.sql`r.trade_direction = ${filter.tradeDirection}`);
+    if (filter.tradeDirection) conditions.push(Prisma.sql`r.trade_direction = ${filter.tradeDirection}::"TradeDirection"`);
     if (filter.dateFrom) conditions.push(Prisma.sql`r.trade_date >= ${new Date(filter.dateFrom)}`);
     if (filter.dateTo) conditions.push(Prisma.sql`r.trade_date <= ${new Date(filter.dateTo)}`);
     if (filter.hsChapter) conditions.push(Prisma.sql`r.hs_chapter = ${filter.hsChapter}`);

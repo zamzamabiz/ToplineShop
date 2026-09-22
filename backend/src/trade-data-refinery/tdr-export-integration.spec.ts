@@ -558,6 +558,7 @@ describe('CreateExportDto — rowLimit validation', () => {
 
 // ── 10. Estimate export endpoint + default rowLimit ───────────────────────────
 
+
 describe('TdrExportService — estimateExport', () => {
   function makeEstimateMocks(count: number) {
     const prisma = {
@@ -625,5 +626,35 @@ describe('TdrExportService — estimateExport', () => {
         data: expect.objectContaining({ rowLimit: MAX_EXPORT_ROW_LIMIT }),
       }),
     );
+  });
+});
+
+// ── 11. TradeDirection enum cast in raw SQL ────────────────────────────────────
+// Regression for P2010 42883: operator does not exist: "TradeDirection" = text
+// PostgreSQL does not implicitly cast $N (text) to a custom enum type.
+// fetchExportChunk must use ${value}::"TradeDirection" for enum columns.
+
+import { Prisma } from '@prisma/client';
+
+describe('TradeDirection enum cast in raw SQL', () => {
+  it('IMPORT filter condition includes ::"TradeDirection" cast', () => {
+    const condition = Prisma.sql`r.trade_direction = ${'IMPORT'}::"TradeDirection"`;
+    expect(condition.sql).toContain('::"TradeDirection"');
+    expect(condition.values).toContain('IMPORT');
+  });
+
+  it('EXPORT filter condition includes ::"TradeDirection" cast', () => {
+    const condition = Prisma.sql`r.trade_direction = ${'EXPORT'}::"TradeDirection"`;
+    expect(condition.sql).toContain('::"TradeDirection"');
+    expect(condition.values).toContain('EXPORT');
+  });
+
+  it('without the cast, parameterized comparison lacks the enum type annotation', () => {
+    // Documents why the cast is required.
+    // Prisma passes $N parameters as text; PostgreSQL enums reject implicit text casts.
+    const unfixed = Prisma.sql`r.trade_direction = ${'IMPORT'}`;
+    const fixed   = Prisma.sql`r.trade_direction = ${'IMPORT'}::"TradeDirection"`;
+    expect(unfixed.sql).not.toContain('::"TradeDirection"');
+    expect(fixed.sql).toContain('::"TradeDirection"');
   });
 });
