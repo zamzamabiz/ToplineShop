@@ -3,9 +3,11 @@
 
 **Date:** 2026-09-22  
 **Branch:** codex/trade-data-refinery  
-**Status:** PASS  
+**Status:** PASS — CLOSED  
 **Commit (implementation):** 5c67459  
-**Commit (governance):** 86aee64
+**Commit (governance):** 86aee64  
+**Commit (gap-closure implementation):** 43385b4  
+**Commit (gap-closure governance):** _pending_
 
 ---
 
@@ -66,6 +68,18 @@ Backend (Jest):  818/819 passing, 1 skip (unchanged baseline)
 Frontend (Vitest): 159/159 passing
 ```
 
+### Gap-Closure Test Evidence (commit 43385b4)
+
+```
+Backend (Jest):  818/819 passing, 1 intentional skip (TDR_1M_PROOF-gated)
+Frontend (Vitest): 159/159 passing
+```
+
+**Note on skipped test:** `tdr-mega3-unit.spec.ts` — "streams 1M CSV rows" — is wrapped in
+`(RUN_1M_PROOF ? describe : describe.skip)` where `RUN_1M_PROOF = process.env['TDR_1M_PROOF'] === '1'`.
+This is a deliberate performance gate, not a failing test. CI skips it; run with `TDR_1M_PROOF=1` for
+proof-of-scale verification.
+
 ---
 
 ## §5 — Architecture Notes
@@ -85,13 +99,31 @@ Frontend (Vitest): 159/159 passing
 
 ---
 
+## §5b — Gap-Closure Acceptance Criteria (commit 43385b4)
+
+| # | Gap | Resolution | Result |
+|---|-----|------------|--------|
+| GAP-1 | Header normalization | `normalizeHeaderName` strips trailing `*`, BOM, control chars, NBSP, trims whitespace; applied in all 4 parsers (CSV/TSV/JSON/XLSX) | PASS |
+| GAP-2 | Blank row skipping | `isBlankRow` checks all values empty; blank rows skipped in all 4 parsers; rowNumber correctly managed | PASS |
+| GAP-3 | Required value blank → INCOMPLETE | Separate `data_quality_status` field maps `REQUIRED_FIELD_MISSING` → INCOMPLETE; existing `row_disposition`/`export_eligible` logic unchanged | PASS |
+| GAP-4 | `u/U/unit/units → U` | `unit.map.ts` updated; `PCS/PC/PIECE/NO/NOS` remain → `PCS`; 3 test expectations corrected | PASS |
+| GAP-5 | `Pak_Customs → Pakistan Customs` | `DATA_SOURCE_ALIASES` in normalizer; `dataSourceNormalized` field separate from immutable `data_source_raw` | PASS |
+| GAP-6 | Row quality metadata | Migration `20260922130000_add_record_quality_metadata` adds: `data_source_normalized`, `missing_fields` (JSONB), `missing_fields_count`, `data_quality_status` (default READY), `confidence_score` (default UNKNOWN) to `tdr_records` | PASS |
+| GAP-7 | `countExportRows` raw SQL | Replaced Prisma typed `.count()` with `$queryRaw` using same condition-builder; `exporterCountryCode`/`importerCountryCode` now in both count and fetch WHERE | PASS |
+| GAP-8 | `prisma generate` DLL lock | Resolved by stopping all node processes; `npx prisma generate` ran cleanly | PASS |
+| GAP-9 | 1M row test skipped | Confirmed intentional `TDR_1M_PROOF` gate — not a CI failure | DOCUMENTED |
+| GAP-10 | `schema_version` on batch | Deemed out-of-scope; existing `processingConfig` JSON on `TdrBatch` can carry version metadata if needed in future | DEFERRED — P3 |
+
+---
+
 ## §6 — Known Constraints / Open Items
 
 | ID | Severity | Description |
 |----|----------|-------------|
-| GLOB-001 | P2 | `prisma generate` deferred — run after backend restart to sync Prisma client types |
+| ~~GLOB-001~~ | ~~P2~~ | ~~`prisma generate` deferred~~ — **CLOSED**: `prisma generate` ran after node processes stopped (commit 43385b4) |
 | GLOB-002 | P3 | Parquet format deferred per spec (out of scope for Phase 1) |
-| GLOB-003 | P3 | `countExportRows` uses Prisma typed WHERE — new `exporterCountryCode`/`importerCountryCode` filters apply only to the row fetch, not the pre-count. Count is an over-estimate (safe for limit enforcement). |
+| ~~GLOB-003~~ | ~~P3~~ | ~~`countExportRows` over-estimate~~ — **CLOSED**: replaced with `$queryRaw` matching fetch conditions exactly (commit 43385b4) |
+| GLOB-004 | P3 | `schema_version` on batch deferred; `processingConfig` JSON can carry it when needed |
 
 ---
 
@@ -103,5 +135,5 @@ Frontend (Vitest): 159/159 passing
 - **DECIDE:** Additive migration, raw SQL for new fields, NDJSON readline, JSON.parse for arrays
 - **EXECUTE:** 13 files, 657 insertions, commit 5c67459
 - **VERIFY:** 818/819 + 159/159 tests PASS
-- **CLOSE:** This WDR
-- **NEXT:** PM authorization required for next task; run `prisma generate` on next backend restart
+- **CLOSE:** This WDR — all gaps closed, open items resolved or deferred-P3
+- **NEXT:** PM authorization required for next task

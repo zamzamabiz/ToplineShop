@@ -3005,7 +3005,7 @@ export const projectRegistry: ProjectRegistry = {
       startedAt: "2026-09-22",
       completedAt: "2026-09-22",
       wdrPath: "WDR/_All/Trade-Data-Refinery/TDR-GLOBAL-TRADE-UPLOAD-REFINEMENT-001_WDR_2026-09-22.md",
-      commitHash: "5c67459",
+      commitHash: "43385b4",
       tests: "PASS",
       build: "PASS",
       ownerApproval: "PLANNED",
@@ -4897,6 +4897,7 @@ export const projectRegistry: ProjectRegistry = {
       status: "PASS",
       date: "2026-09-22",
       path: "WDR/_All/Trade-Data-Refinery/TDR-GLOBAL-TRADE-UPLOAD-REFINEMENT-001_WDR_2026-09-22.md",
+      commitHash: "43385b4",
     },
     {
       id: "wdr-tdr-local-production-like-validation-001",
@@ -4919,7 +4920,7 @@ export const projectRegistry: ProjectRegistry = {
   ],
   git: {
     initialized: true,
-    lastCommit: "5c67459",
+    lastCommit: "43385b4",
   },
   github: {
     configured: true,
