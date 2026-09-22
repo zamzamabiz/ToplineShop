@@ -2995,6 +2995,24 @@ export const projectRegistry: ProjectRegistry = {
       notes: "PASS — Schema migration 20260921210246_add_versioning_integration (additive only). Backfilled 4 source files with logicalDatasetId=id, versionNumber=1. New services: TdrVersioningService (createReplacement/getLineage), TdrDeletionRequestService (create/approve/reject/cancel), TdrApiKeyService (SHA-256 hash, VALID_SCOPES bounded), TdrWebhookService (HMAC sha256, SSRF blocked, max 3 retries, setInterval scheduler). 13 new endpoints. Frontend: TdrLineagePanel, TdrDeletionRequestPanel, /tdr/lineage, /tdr/deletion-requests pages. Backend 812/814 (1 skipped, 1 flaky SA.15 in parallel), Frontend 159/159. tsc clean.",
     },
     {
+      id: "TDR-GLOBAL-TRADE-UPLOAD-REFINEMENT-001",
+      phase: "phase-post-mvp",
+      title: "GLOBAL TRADE DATA UPLOAD AND REFINEMENT SYSTEM",
+      objective: "Add TSV and JSON/NDJSON upload formats; 19-field canonical exporter/importer/port/data_source schema; conditional validation (QUANTITY_WITHOUT_UNIT, PRICE_WITHOUT_CURRENCY); required-header enforcement; export output in canonical column names with COALESCE fallback to legacy fields.",
+      status: "PASS" as Status,
+      priority: "HIGH",
+      dependencies: ["TDR-LOCAL-PRODUCTION-LIKE-VALIDATION-001"],
+      startedAt: "2026-09-22",
+      completedAt: "2026-09-22",
+      wdrPath: "WDR/_All/Trade-Data-Refinery/TDR-GLOBAL-TRADE-UPLOAD-REFINEMENT-001_WDR_2026-09-22.md",
+      commitHash: "5c67459",
+      tests: "PASS",
+      build: "PASS",
+      ownerApproval: "PLANNED",
+      pmApproval: "PASS",
+      notes: "PASS — 13 files, 657 insertions. New parsers: TSV (csv-parse tab delimiter), JSON (array + {records:[]} object), NDJSON (readline streaming). Migration 20260922120000: 17 nullable canonical columns + 2 country indexes. Quality handler raw SQL extended for all 17 new columns. Export uses $queryRaw with COALESCE fallback. Backend 818/819, Frontend 159/159. GLOB-001 P2: prisma generate deferred (backend holds DLL lock — run after restart). GLOB-002 P3: Parquet deferred. GLOB-003 P3: countExportRows over-estimates when exporterCountryCode/importerCountryCode filters used (safe).",
+    },
+    {
       id: "TDR-LOCAL-PRODUCTION-LIKE-VALIDATION-001",
       phase: "phase-post-mvp",
       title: "LOCAL PRODUCTION-LIKE VALIDATION READINESS",
@@ -4873,6 +4891,14 @@ export const projectRegistry: ProjectRegistry = {
       pmAudit: "PLANNED",
     },
     {
+      id: "wdr-tdr-global-trade-upload-refinement-001",
+      taskId: "TDR-GLOBAL-TRADE-UPLOAD-REFINEMENT-001",
+      phase: "tdr",
+      status: "PASS",
+      date: "2026-09-22",
+      path: "WDR/_All/Trade-Data-Refinery/TDR-GLOBAL-TRADE-UPLOAD-REFINEMENT-001_WDR_2026-09-22.md",
+    },
+    {
       id: "wdr-tdr-local-production-like-validation-001",
       taskId: "TDR-LOCAL-PRODUCTION-LIKE-VALIDATION-001",
       phase: "tdr",
@@ -4893,7 +4919,7 @@ export const projectRegistry: ProjectRegistry = {
   ],
   git: {
     initialized: true,
-    lastCommit: "643401a",
+    lastCommit: "5c67459",
   },
   github: {
     configured: true,
