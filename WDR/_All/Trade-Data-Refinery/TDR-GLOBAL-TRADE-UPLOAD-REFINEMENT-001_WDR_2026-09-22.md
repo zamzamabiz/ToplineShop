@@ -5,7 +5,7 @@
 **Branch:** codex/trade-data-refinery  
 **Status:** PASS  
 **Commit (implementation):** 5c67459  
-**Commit (governance):** (see governance commit)
+**Commit (governance):** 86aee64
 
 ---
 
