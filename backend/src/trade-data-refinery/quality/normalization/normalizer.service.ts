@@ -19,6 +19,7 @@ export interface NormalizationResult {
   productDescriptionRaw: string | null;
   productDescriptionNormalized: string | null;
 
+  // ── Local/foreign party (legacy — populated by direction-based mapping profiles) ──
   localPartyTaxIdRaw: string | null;
   localPartyTaxIdNormalized: string | null;
   localPartyNameRaw: string | null;
@@ -34,6 +35,28 @@ export interface NormalizationResult {
 
   originPortRaw: string | null;
   originPortNormalized: string | null;
+
+  // ── Canonical exporter/importer fields (spec §2 — populated by canonical-format mappings) ──
+  exporterIdRaw: string | null;
+  exporterNameRaw: string | null;
+  exporterNameNormalized: string | null;
+  exporterAddressRaw: string | null;
+  exporterCountryRaw: string | null;
+  exporterCountryCode: string | null;
+
+  importerIdRaw: string | null;
+  importerNameRaw: string | null;
+  importerNameNormalized: string | null;
+  importerAddressRaw: string | null;
+  importerCountryRaw: string | null;
+  importerCountryCode: string | null;
+
+  portOfLoadingRaw: string | null;
+  portOfLoadingNormalized: string | null;
+  portOfDischargeRaw: string | null;
+  portOfDischargeNormalized: string | null;
+
+  dataSourceRaw: string | null;
 
   quantityRaw: string | null;
   quantityNormalized: Decimal | null;
@@ -117,6 +140,40 @@ export function normalizeRowV1(
   const originPortRaw = fieldValues['originPortRaw'] ?? null;
   const originPortNormalized = normalizeText(originPortRaw);
 
+  // ── Canonical exporter/importer fields ──────────────────────────────────────
+  const exporterIdRaw = fieldValues['exporterIdRaw'] ?? null;
+  const exporterNameRaw = fieldValues['exporterNameRaw'] ?? null;
+  const exporterNameNormalized = normalizeText(exporterNameRaw);
+  const exporterAddressRaw = fieldValues['exporterAddressRaw'] ?? null;
+  const exporterCountryRaw = fieldValues['exporterCountryRaw'] ?? null;
+  const exporterCountryCode = exporterCountryRaw !== null
+    ? (resolveCountryCode(exporterCountryRaw) ?? null)
+    : null;
+  if (exporterCountryRaw !== null && exporterCountryCode === null) {
+    warnings.push({ fieldName: 'exporterCountryCode', ruleCode: 'COUNTRY_UNKNOWN', rawValue: exporterCountryRaw });
+  }
+  if (exporterCountryCode !== null) meta['exporterCountryCode'] = 'NORMALIZED';
+
+  const importerIdRaw = fieldValues['importerIdRaw'] ?? null;
+  const importerNameRaw = fieldValues['importerNameRaw'] ?? null;
+  const importerNameNormalized = normalizeText(importerNameRaw);
+  const importerAddressRaw = fieldValues['importerAddressRaw'] ?? null;
+  const importerCountryRaw = fieldValues['importerCountryRaw'] ?? null;
+  const importerCountryCode = importerCountryRaw !== null
+    ? (resolveCountryCode(importerCountryRaw) ?? null)
+    : null;
+  if (importerCountryRaw !== null && importerCountryCode === null) {
+    warnings.push({ fieldName: 'importerCountryCode', ruleCode: 'COUNTRY_UNKNOWN', rawValue: importerCountryRaw });
+  }
+  if (importerCountryCode !== null) meta['importerCountryCode'] = 'NORMALIZED';
+
+  const portOfLoadingRaw = fieldValues['portOfLoadingRaw'] ?? null;
+  const portOfLoadingNormalized = normalizeText(portOfLoadingRaw);
+  const portOfDischargeRaw = fieldValues['portOfDischargeRaw'] ?? null;
+  const portOfDischargeNormalized = normalizeText(portOfDischargeRaw);
+
+  const dataSourceRaw = fieldValues['dataSourceRaw'] ?? null;
+
   const quantityRaw = fieldValues['quantityRaw'] ?? null;
   const { value: quantityNormalized, warn: quantityWarn } = parseDecimal(quantityRaw);
   if (quantityRaw !== null) meta['quantityNormalized'] = quantityWarn ? 'SOURCE' : 'NORMALIZED';
@@ -168,6 +225,23 @@ export function normalizeRowV1(
     foreignPartyCountryCode,
     originPortRaw,
     originPortNormalized,
+    exporterIdRaw,
+    exporterNameRaw,
+    exporterNameNormalized,
+    exporterAddressRaw,
+    exporterCountryRaw,
+    exporterCountryCode,
+    importerIdRaw,
+    importerNameRaw,
+    importerNameNormalized,
+    importerAddressRaw,
+    importerCountryRaw,
+    importerCountryCode,
+    portOfLoadingRaw,
+    portOfLoadingNormalized,
+    portOfDischargeRaw,
+    portOfDischargeNormalized,
+    dataSourceRaw,
     quantityRaw,
     quantityNormalized,
     quantityUnitRaw,

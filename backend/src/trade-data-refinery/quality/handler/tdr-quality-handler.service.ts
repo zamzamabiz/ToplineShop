@@ -6,6 +6,8 @@ import { AuditService } from '../../../audit/audit.service';
 import { StorageService } from '../../ingestion/storage/storage.service';
 import { streamCsvRows, readCsvHeaders } from '../../ingestion/parsers/csv.parser';
 import { streamXlsxRows, readXlsxHeaders } from '../../ingestion/parsers/xlsx.parser';
+import { streamTsvRows, readTsvHeaders } from '../../ingestion/parsers/tsv.parser';
+import { streamJsonRows, streamNdjsonRows, readJsonHeaders, readNdjsonHeaders } from '../../ingestion/parsers/json.parser';
 import { MappingConfigV1 } from '../types/mapping-config.types';
 import { normalizeRowV1, NormalizationResult } from '../normalization/normalizer.service';
 import { validateRowV1, ValidationIssueInput } from '../validation/validator.service';
@@ -157,12 +159,9 @@ export class TdrQualityHandlerService implements OnModuleInit, OnModuleDestroy {
   ): Promise<void> {
     const filePath = this.storage.getFilePath(batch!.sourceFile.storageKey);
     const ext = path.extname(batch!.sourceFile.originalFilename).toLowerCase();
-    const isXlsx = ext === '.xlsx';
 
     // Load headers from the stored file (must match what was parsed at ingestion)
-    const headers = isXlsx
-      ? await readXlsxHeaders(filePath)
-      : await readCsvHeaders(filePath);
+    const headers = await this.readHeaders(filePath, ext);
 
     // QUALITY-MEMORY-001 fix: sliding window — never load all pending IDs into memory.
     // Query pending IDs per source-row window (QUALITY_CHUNK_SIZE rows at a time).
@@ -175,9 +174,7 @@ export class TdrQualityHandlerService implements OnModuleInit, OnModuleDestroy {
       return;
     }
 
-    const rowGenerator = isXlsx
-      ? streamXlsxRows(filePath, headers)
-      : streamCsvRows(filePath, headers);
+    const rowGenerator = this.getRowGenerator(filePath, ext, headers);
 
     const qualityResults: QualityChunkResult[] = [];
     let srcWindow: Array<{ rowNumber: number; row: Record<string, string> }> = [];
@@ -246,6 +243,26 @@ export class TdrQualityHandlerService implements OnModuleInit, OnModuleDestroy {
     await this.finishQualityJob(job, batch!.id, batch!.tenantId);
   }
 
+  private async readHeaders(filePath: string, ext: string): Promise<string[]> {
+    switch (ext) {
+      case '.xlsx':  return readXlsxHeaders(filePath);
+      case '.tsv':   return readTsvHeaders(filePath);
+      case '.json':  return readJsonHeaders(filePath);
+      case '.jsonl': return readNdjsonHeaders(filePath);
+      default:       return readCsvHeaders(filePath);
+    }
+  }
+
+  private getRowGenerator(filePath: string, ext: string, headers: string[]): AsyncGenerator<import('../../ingestion/parsers/parser.types').ParsedRow> {
+    switch (ext) {
+      case '.xlsx':  return streamXlsxRows(filePath, headers);
+      case '.tsv':   return streamTsvRows(filePath, headers);
+      case '.json':  return streamJsonRows(filePath);
+      case '.jsonl': return streamNdjsonRows(filePath);
+      default:       return streamCsvRows(filePath, headers);
+    }
+  }
+
   private async persistQualityChunk(
     chunk: QualityChunkResult[],
     batchId: string,
@@ -276,6 +293,23 @@ export class TdrQualityHandlerService implements OnModuleInit, OnModuleDestroy {
           ${r.normalized.foreignPartyCountryCode ?? null}::bpchar,
           ${r.normalized.originPortRaw ?? null}::text,
           ${r.normalized.originPortNormalized ?? null}::text,
+          ${r.normalized.exporterIdRaw ?? null}::text,
+          ${r.normalized.exporterNameRaw ?? null}::text,
+          ${r.normalized.exporterNameNormalized ?? null}::text,
+          ${r.normalized.exporterAddressRaw ?? null}::text,
+          ${r.normalized.exporterCountryRaw ?? null}::text,
+          ${r.normalized.exporterCountryCode ?? null}::bpchar,
+          ${r.normalized.importerIdRaw ?? null}::text,
+          ${r.normalized.importerNameRaw ?? null}::text,
+          ${r.normalized.importerNameNormalized ?? null}::text,
+          ${r.normalized.importerAddressRaw ?? null}::text,
+          ${r.normalized.importerCountryRaw ?? null}::text,
+          ${r.normalized.importerCountryCode ?? null}::bpchar,
+          ${r.normalized.portOfLoadingRaw ?? null}::text,
+          ${r.normalized.portOfLoadingNormalized ?? null}::text,
+          ${r.normalized.portOfDischargeRaw ?? null}::text,
+          ${r.normalized.portOfDischargeNormalized ?? null}::text,
+          ${r.normalized.dataSourceRaw ?? null}::text,
           ${r.normalized.quantityRaw ?? null}::text,
           ${r.normalized.quantityNormalized !== null ? r.normalized.quantityNormalized.toString() : null}::numeric,
           ${r.normalized.quantityUnitRaw ?? null}::text,
@@ -312,6 +346,23 @@ export class TdrQualityHandlerService implements OnModuleInit, OnModuleDestroy {
           foreign_party_country_code = v.foreign_party_country_code,
           origin_port_raw = v.origin_port_raw,
           origin_port_normalized = v.origin_port_normalized,
+          exporter_id_raw = v.exporter_id_raw,
+          exporter_name_raw = v.exporter_name_raw,
+          exporter_name_normalized = v.exporter_name_normalized,
+          exporter_address_raw = v.exporter_address_raw,
+          exporter_country_raw = v.exporter_country_raw,
+          exporter_country_code = v.exporter_country_code,
+          importer_id_raw = v.importer_id_raw,
+          importer_name_raw = v.importer_name_raw,
+          importer_name_normalized = v.importer_name_normalized,
+          importer_address_raw = v.importer_address_raw,
+          importer_country_raw = v.importer_country_raw,
+          importer_country_code = v.importer_country_code,
+          port_of_loading_raw = v.port_of_loading_raw,
+          port_of_loading_normalized = v.port_of_loading_normalized,
+          port_of_discharge_raw = v.port_of_discharge_raw,
+          port_of_discharge_normalized = v.port_of_discharge_normalized,
+          data_source_raw = v.data_source_raw,
           quantity_raw = v.quantity_raw,
           quantity_normalized = v.quantity_normalized,
           quantity_unit_raw = v.quantity_unit_raw,
@@ -334,6 +385,13 @@ export class TdrQualityHandlerService implements OnModuleInit, OnModuleDestroy {
           local_party_country_code, foreign_party_name_raw, foreign_party_name_normalized,
           foreign_party_address_raw, foreign_party_country_raw, foreign_party_country_code,
           origin_port_raw, origin_port_normalized,
+          exporter_id_raw, exporter_name_raw, exporter_name_normalized, exporter_address_raw,
+          exporter_country_raw, exporter_country_code,
+          importer_id_raw, importer_name_raw, importer_name_normalized, importer_address_raw,
+          importer_country_raw, importer_country_code,
+          port_of_loading_raw, port_of_loading_normalized,
+          port_of_discharge_raw, port_of_discharge_normalized,
+          data_source_raw,
           quantity_raw, quantity_normalized, quantity_unit_raw, quantity_unit_code,
           unit_price_raw, unit_price_normalized, currency_raw, currency_code,
           row_disposition, export_eligible, quarantine_review_required, value_treatment_meta

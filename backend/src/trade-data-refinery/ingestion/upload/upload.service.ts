@@ -24,6 +24,8 @@ import { UploadBatchDto } from './upload.dto';
 const XLSX_MAGIC = [0x50, 0x4b, 0x03, 0x04] as const;
 const FILE_SIGNATURE_SAMPLE = 1024;
 
+const JSON_TEXT_EXTENSIONS = new Set(['.tsv', '.json', '.jsonl']);
+
 export interface UploadResult {
   sourceFileId: string;
   batchId: string;
@@ -183,11 +185,12 @@ export class UploadService {
             'File does not have a valid XLSX (ZIP/OpenXML) signature',
           );
         }
-      } else if (ext === '.csv') {
+      } else if (ext === '.csv' || JSON_TEXT_EXTENSIONS.has(ext)) {
+        // Text formats must not contain null bytes in the first 1 KB
         for (let i = 0; i < bytesRead; i++) {
           if (buf[i] === 0x00) {
             throw new BadRequestException(
-              'File claims to be CSV but appears to contain binary data',
+              `File claims to be ${ext} but appears to contain binary data`,
             );
           }
         }
@@ -235,9 +238,14 @@ export class UploadService {
 
     return this.prisma.$transaction(async (tx) => {
       const ext = path.extname(file.originalname).toLowerCase();
-      const mimeType = ext === '.xlsx'
-        ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        : 'text/csv';
+      const MIME_MAP: Record<string, string> = {
+        '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        '.csv': 'text/csv',
+        '.tsv': 'text/tab-separated-values',
+        '.json': 'application/json',
+        '.jsonl': 'application/x-ndjson',
+      };
+      const mimeType = MIME_MAP[ext] ?? 'application/octet-stream';
 
       const uploadedAt = new Date();
       const retentionExpiresAt = new Date(uploadedAt);

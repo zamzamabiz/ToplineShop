@@ -8,9 +8,11 @@ import { TdrJobOrchestratorService } from '../../services/tdr-job-orchestrator.s
 import { TdrProcessorService } from '../../services/tdr-processor.service';
 import { TdrQualityOrchestratorService } from '../../quality/orchestrator/tdr-quality-orchestrator.service';
 import { StorageService } from '../storage/storage.service';
-import { streamCsvRows, readCsvHeaders, validateHeaders } from '../parsers/csv.parser';
+import { streamCsvRows, validateHeaders } from '../parsers/csv.parser';
 import { streamXlsxRows, getXlsxSchemaFingerprint } from '../parsers/xlsx.parser';
 import { getCsvSchemaFingerprint } from '../parsers/csv.parser';
+import { streamTsvRows, getTsvSchemaFingerprint } from '../parsers/tsv.parser';
+import { streamJsonRows, streamNdjsonRows, getJsonSchemaFingerprint, getNdjsonSchemaFingerprint } from '../parsers/json.parser';
 import { computeRowHash } from '../utils/row-hash.util';
 import { CHUNK_SIZE, HEARTBEAT_INTERVAL_MS } from '../constants/ingestion.limits';
 import { INGESTION_ERROR } from '../constants/ingestion-error.codes';
@@ -87,13 +89,10 @@ export class TdrIngestionHandlerService implements TdrJobHandler, OnModuleInit {
   ): Promise<void> {
     const filePath = this.storage.getFilePath(batch!.sourceFile.storageKey);
     const ext = path.extname(batch!.sourceFile.originalFilename).toLowerCase();
-    const isXlsx = ext === '.xlsx';
 
     try {
-      // Get headers and schema fingerprint
-      const { headers, fingerprint: schemaFingerprint } = isXlsx
-        ? await getXlsxSchemaFingerprint(filePath)
-        : await getCsvSchemaFingerprint(filePath);
+      // Get headers and schema fingerprint — dispatch by extension
+      const { headers, fingerprint: schemaFingerprint } = await this.getSchemaFingerprint(filePath, ext);
 
       validateHeaders(headers);
 
@@ -101,7 +100,7 @@ export class TdrIngestionHandlerService implements TdrJobHandler, OnModuleInit {
       const mapping = batch!.mappingId
         ? await this.prisma.tdrSchemaMapping.findUnique({
             where: { id: batch!.mappingId },
-            select: { sourceSchemaFingerprint: true },
+            select: { sourceSchemaFingerprint: true, mappingConfig: true },
           })
         : null;
 
@@ -115,9 +114,22 @@ export class TdrIngestionHandlerService implements TdrJobHandler, OnModuleInit {
       // Determine resume point from checkpoint
       const resumeFromRow = job.lastCheckpointRow ?? 0;
 
-      const rowGenerator: AsyncGenerator<ParsedRow> = isXlsx
-        ? streamXlsxRows(filePath, headers)
-        : streamCsvRows(filePath, headers);
+      // Validate required headers from mapping config (source-column presence check)
+      if (mapping) {
+        const config = mapping.mappingConfig as { columnMappings?: Array<{ sourceColumnName: string; requiredPolicy?: string }> };
+        const headerSet = new Set(headers);
+        const missingRequired = (config.columnMappings ?? [])
+          .filter((cm) => cm.requiredPolicy === 'REQUIRED' && !headerSet.has(cm.sourceColumnName))
+          .map((cm) => cm.sourceColumnName);
+        if (missingRequired.length > 0) {
+          throw Object.assign(
+            new Error(`File is missing required header column(s): ${missingRequired.join(', ')}`),
+            { code: INGESTION_ERROR.MISSING_REQUIRED_HEADER },
+          );
+        }
+      }
+
+      const rowGenerator: AsyncGenerator<ParsedRow> = this.getRowGenerator(filePath, ext, headers);
 
       let chunk: ParsedRow[] = [];
       let totalProcessed = 0;
@@ -214,6 +226,29 @@ export class TdrIngestionHandlerService implements TdrJobHandler, OnModuleInit {
       } else {
         await this.orchestrator.failJob(job.id, message, code);
       }
+    }
+  }
+
+  private async getSchemaFingerprint(
+    filePath: string,
+    ext: string,
+  ): Promise<{ headers: string[]; fingerprint: string }> {
+    switch (ext) {
+      case '.xlsx': return getXlsxSchemaFingerprint(filePath);
+      case '.tsv':  return getTsvSchemaFingerprint(filePath);
+      case '.json': return getJsonSchemaFingerprint(filePath);
+      case '.jsonl': return getNdjsonSchemaFingerprint(filePath);
+      default:      return getCsvSchemaFingerprint(filePath);
+    }
+  }
+
+  private getRowGenerator(filePath: string, ext: string, headers: string[]): AsyncGenerator<ParsedRow> {
+    switch (ext) {
+      case '.xlsx':  return streamXlsxRows(filePath, headers);
+      case '.tsv':   return streamTsvRows(filePath, headers);
+      case '.json':  return streamJsonRows(filePath);
+      case '.jsonl': return streamNdjsonRows(filePath);
+      default:       return streamCsvRows(filePath, headers);
     }
   }
 

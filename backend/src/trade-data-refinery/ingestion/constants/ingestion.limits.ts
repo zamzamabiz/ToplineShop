@@ -13,8 +13,11 @@ export const CHUNK_SIZE = 500;
 /** Maximum number of header columns. Protects against pathological inputs. */
 export const MAX_HEADER_COLS = 200;
 
+/** Maximum JSON/NDJSON data rows. JSON is not streaming-parsed so this also caps memory. */
+export const MAX_JSON_ROWS = 1_000_000;
+
 /** Accepted file extensions (lowercase). */
-export const ACCEPTED_EXTENSIONS = ['.csv', '.xlsx'] as const;
+export const ACCEPTED_EXTENSIONS = ['.csv', '.xlsx', '.tsv', '.json', '.jsonl'] as const;
 export type AcceptedExtension = (typeof ACCEPTED_EXTENSIONS)[number];
 
 /** Heartbeat interval in ms — how often the ingestion handler pings the job lease. */

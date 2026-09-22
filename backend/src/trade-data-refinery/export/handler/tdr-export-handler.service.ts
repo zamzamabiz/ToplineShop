@@ -23,24 +23,27 @@ import { QUALITY_ERROR } from '../../quality/constants/quality-error.codes';
  */
 const FORMULA_INJECTION_CHARS = /^[=+\-@\t\r]/;
 
-/** CSV export column headers in a deterministic order. */
+/** CSV export column headers — canonical spec §2 snake_case names. */
 const EXPORT_COLUMNS = [
-  'sourceRowNumber',
-  'tradeDate',
-  'tradeDirection',
-  'hsCodeNormalized',
-  'hsChapter',
-  'productDescriptionNormalized',
-  'localPartyNameNormalized',
-  'localPartyTaxIdNormalized',
-  'localPartyCountryCode',
-  'foreignPartyNameNormalized',
-  'foreignPartyCountryCode',
-  'originPortNormalized',
-  'quantityNormalized',
-  'quantityUnitCode',
-  'unitPriceNormalized',
-  'currencyCode',
+  'trade_date',
+  'hs_chapter',
+  'hs_code',
+  'product_description',
+  'exporter_id',
+  'exporter_name',
+  'exporter_address',
+  'exporter_country',
+  'port_of_loading',
+  'importer_id',
+  'importer_name',
+  'importer_address',
+  'importer_country',
+  'port_of_discharge',
+  'quantity',
+  'quantity_unit',
+  'unit_price',
+  'currency_code',
+  'data_source',
 ] as const;
 
 @Injectable()
@@ -189,34 +192,55 @@ export class TdrExportHandlerService implements OnModuleInit, OnModuleDestroy {
     filter: ExportFilter,
     lastId: string | null,
     take: number,
-  ) {
-    return this.prisma.tdrRecord.findMany({
-      where: {
-        ...buildExportWhere(tenantId, filter),
-        ...(lastId ? { id: { gt: lastId } } : {}),
-      },
-      orderBy: { id: 'asc' },
-      take,
-      select: {
-        id: true,
-        sourceRowNumber: true,
-        tradeDate: true,
-        tradeDirection: true,
-        hsCodeNormalized: true,
-        hsChapter: true,
-        productDescriptionNormalized: true,
-        localPartyNameNormalized: true,
-        localPartyTaxIdNormalized: true,
-        localPartyCountryCode: true,
-        foreignPartyNameNormalized: true,
-        foreignPartyCountryCode: true,
-        originPortNormalized: true,
-        quantityNormalized: true,
-        quantityUnitCode: true,
-        unitPriceNormalized: true,
-        currencyCode: true,
-      },
-    });
+  ): Promise<Array<Record<string, unknown>>> {
+    const conditions: Prisma.Sql[] = [
+      Prisma.sql`r.tenant_id = ${tenantId}`,
+      Prisma.sql`r.row_disposition = 'ACCEPTED'`,
+      Prisma.sql`r.export_eligible = TRUE`,
+    ];
+
+    if (lastId) conditions.push(Prisma.sql`r.id > ${lastId}`);
+    if (filter.batchId) conditions.push(Prisma.sql`r.batch_id = ${filter.batchId}`);
+    if (filter.tradeDirection) conditions.push(Prisma.sql`r.trade_direction = ${filter.tradeDirection}`);
+    if (filter.dateFrom) conditions.push(Prisma.sql`r.trade_date >= ${new Date(filter.dateFrom)}`);
+    if (filter.dateTo) conditions.push(Prisma.sql`r.trade_date <= ${new Date(filter.dateTo)}`);
+    if (filter.hsChapter) conditions.push(Prisma.sql`r.hs_chapter = ${filter.hsChapter}`);
+    if (filter.hsCode) conditions.push(Prisma.sql`r.hs_code_normalized = ${filter.hsCode}`);
+    if (filter.foreignPartyCountryCode) {
+      conditions.push(Prisma.sql`(r.importer_country_code = ${filter.foreignPartyCountryCode} OR r.foreign_party_country_code = ${filter.foreignPartyCountryCode})`);
+    }
+    if (filter.exporterCountryCode) conditions.push(Prisma.sql`r.exporter_country_code = ${filter.exporterCountryCode}`);
+    if (filter.importerCountryCode) conditions.push(Prisma.sql`r.importer_country_code = ${filter.importerCountryCode}`);
+
+    const where = Prisma.join(conditions, ' AND ');
+
+    return this.prisma.$queryRaw<Array<Record<string, unknown>>>(Prisma.sql`
+      SELECT
+        r.id,
+        r.trade_date,
+        r.hs_chapter,
+        r.hs_code_normalized                                                    AS hs_code,
+        COALESCE(r.product_description_normalized, r.product_description_raw)   AS product_description,
+        r.exporter_id_raw                                                       AS exporter_id,
+        COALESCE(r.exporter_name_normalized, r.local_party_name_normalized)     AS exporter_name,
+        r.exporter_address_raw                                                  AS exporter_address,
+        COALESCE(r.exporter_country_code, r.local_party_country_code)           AS exporter_country,
+        COALESCE(r.port_of_loading_normalized, r.origin_port_normalized)        AS port_of_loading,
+        r.importer_id_raw                                                       AS importer_id,
+        COALESCE(r.importer_name_normalized, r.foreign_party_name_normalized)   AS importer_name,
+        r.importer_address_raw                                                  AS importer_address,
+        COALESCE(r.importer_country_code, r.foreign_party_country_code)         AS importer_country,
+        r.port_of_discharge_normalized                                          AS port_of_discharge,
+        r.quantity_normalized                                                   AS quantity,
+        r.quantity_unit_code                                                    AS quantity_unit,
+        r.unit_price_normalized                                                 AS unit_price,
+        r.currency_code,
+        r.data_source_raw                                                       AS data_source
+      FROM tdr_records r
+      WHERE ${where}
+      ORDER BY r.id ASC
+      LIMIT ${take}
+    `);
   }
 }
 
@@ -229,7 +253,12 @@ interface ExportFilter {
   dateTo?: string;
   hsChapter?: string;
   hsCode?: string;
+  /** Legacy filter — matches foreign_party_country_code OR importer_country_code */
   foreignPartyCountryCode?: string;
+  /** Canonical exporter country filter (exporter_country_code column) */
+  exporterCountryCode?: string;
+  /** Canonical importer country filter (importer_country_code column) */
+  importerCountryCode?: string;
 }
 
 function buildExportWhere(tenantId: string, filter: ExportFilter): Prisma.TdrRecordWhereInput {

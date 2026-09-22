@@ -513,6 +513,25 @@ model TdrRecord {
   originPortRaw        String? @map("origin_port_raw")
   originPortNormalized String? @map("origin_port_normalized")
 
+  // ── Canonical exporter/importer fields (spec §2 — populated by new-format mappings) ──
+  exporterIdRaw            String? @map("exporter_id_raw")
+  exporterNameRaw          String? @map("exporter_name_raw")
+  exporterNameNormalized   String? @map("exporter_name_normalized")
+  exporterAddressRaw       String? @map("exporter_address_raw")
+  exporterCountryRaw       String? @map("exporter_country_raw")
+  exporterCountryCode      String? @map("exporter_country_code") @db.Char(2)
+  importerIdRaw            String? @map("importer_id_raw")
+  importerNameRaw          String? @map("importer_name_raw")
+  importerNameNormalized   String? @map("importer_name_normalized")
+  importerAddressRaw       String? @map("importer_address_raw")
+  importerCountryRaw       String? @map("importer_country_raw")
+  importerCountryCode      String? @map("importer_country_code") @db.Char(2)
+  portOfLoadingRaw         String? @map("port_of_loading_raw")
+  portOfLoadingNormalized  String? @map("port_of_loading_normalized")
+  portOfDischargeRaw       String? @map("port_of_discharge_raw")
+  portOfDischargeNormalized String? @map("port_of_discharge_normalized")
+  dataSourceRaw            String? @map("data_source_raw")
+
   quantityRaw        String?  @map("quantity_raw")
   quantityNormalized Decimal? @map("quantity_normalized") @db.Decimal(24, 6)
   quantityUnitRaw    String?  @map("quantity_unit_raw")
@@ -553,6 +572,8 @@ model TdrRecord {
   @@index([tenantId, hsCodeNormalized, tradeDate])
   @@index([tenantId, localPartyTaxIdNormalized])
   @@index([tenantId, exportEligible])
+  @@index([tenantId, exporterCountryCode, tradeDate])
+  @@index([tenantId, importerCountryCode, tradeDate])
   @@map("tdr_records")
 }
 

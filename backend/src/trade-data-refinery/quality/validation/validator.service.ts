@@ -62,6 +62,28 @@ export function validateRowV1(
     }
   }
 
+  // §9 Conditional validation: quantity supplied without unit
+  if (normalized.quantityNormalized !== null && !normalized.quantityUnitRaw) {
+    issues.push({
+      fieldName: 'quantityUnitRaw',
+      ruleCode: RULE_CODE.QUANTITY_WITHOUT_UNIT,
+      severity: 'WARNING',
+      message: 'quantity is supplied but quantity_unit is missing',
+      rawValue: null,
+    });
+  }
+
+  // §9 Conditional validation: unit_price supplied without currency_code
+  if (normalized.unitPriceNormalized !== null && !normalized.currencyRaw) {
+    issues.push({
+      fieldName: 'currencyRaw',
+      ruleCode: RULE_CODE.PRICE_WITHOUT_CURRENCY,
+      severity: 'WARNING',
+      message: 'unit_price is supplied but currency_code is missing',
+      rawValue: null,
+    });
+  }
+
   return issues;
 }
 
@@ -84,6 +106,9 @@ function warningToSeverity(ruleCode: string): IssueSeverity {
     case RULE_CODE.QUANTITY_INVALID:
     case RULE_CODE.UNIT_PRICE_INVALID:
       return 'ERROR';
+    case RULE_CODE.QUANTITY_WITHOUT_UNIT:
+    case RULE_CODE.PRICE_WITHOUT_CURRENCY:
+      return 'WARNING';
     default:
       return 'WARNING';
   }
@@ -110,6 +135,10 @@ function buildWarningMessage(ruleCode: string, fieldName: string, rawValue: stri
       return `Country not recognized${rv}`;
     case RULE_CODE.DECIMAL_OVERFLOW:
       return `Decimal value exceeds NUMERIC(24,6) capacity${rv}`;
+    case RULE_CODE.QUANTITY_WITHOUT_UNIT:
+      return `quantity is supplied but quantity_unit is missing`;
+    case RULE_CODE.PRICE_WITHOUT_CURRENCY:
+      return `unit_price is supplied but currency_code is missing`;
     default:
       return `Validation warning for ${fieldName}${rv}`;
   }
@@ -117,6 +146,7 @@ function buildWarningMessage(ruleCode: string, fieldName: string, rawValue: stri
 
 function getRawValueForCanonical(norm: NormalizationResult, field: string): string | null {
   const map: Record<string, string | null | undefined> = {
+    // Legacy local/foreign party fields
     tradeDate: norm.tradeDateRaw,
     hsCodeRaw: norm.hsCodeRaw,
     productDescriptionRaw: norm.productDescriptionRaw,
@@ -127,6 +157,19 @@ function getRawValueForCanonical(norm: NormalizationResult, field: string): stri
     foreignPartyAddressRaw: norm.foreignPartyAddressRaw,
     foreignPartyCountryRaw: norm.foreignPartyCountryRaw,
     originPortRaw: norm.originPortRaw,
+    // Canonical exporter/importer fields (spec §2)
+    exporterIdRaw: norm.exporterIdRaw,
+    exporterNameRaw: norm.exporterNameRaw,
+    exporterAddressRaw: norm.exporterAddressRaw,
+    exporterCountryRaw: norm.exporterCountryRaw,
+    importerIdRaw: norm.importerIdRaw,
+    importerNameRaw: norm.importerNameRaw,
+    importerAddressRaw: norm.importerAddressRaw,
+    importerCountryRaw: norm.importerCountryRaw,
+    portOfLoadingRaw: norm.portOfLoadingRaw,
+    portOfDischargeRaw: norm.portOfDischargeRaw,
+    dataSourceRaw: norm.dataSourceRaw,
+    // Quantity/price
     quantityRaw: norm.quantityRaw,
     quantityUnitRaw: norm.quantityUnitRaw,
     unitPriceRaw: norm.unitPriceRaw,
