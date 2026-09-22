@@ -373,6 +373,19 @@ export function createExport(token: string, dto: CreateExportRequest) {
   return post<CreateExportRequest, TdrExportJob>('/tdr/exports', token, dto);
 }
 
+export function estimateExport(
+  token: string,
+  filter: { batchId?: string },
+  signal?: AbortSignal,
+) {
+  return get<{ count: number }>(
+    '/tdr/exports/estimate',
+    token,
+    filter.batchId ? { batchId: filter.batchId } : undefined,
+    signal,
+  );
+}
+
 export function getExportStatus(token: string, exportId: string, signal?: AbortSignal) {
   return get<TdrExportJob>(`/tdr/exports/${encodeURIComponent(exportId)}`, token, undefined, signal);
 }

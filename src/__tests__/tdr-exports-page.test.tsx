@@ -1,15 +1,16 @@
 /**
  * TDR-MVP-EXPORT-INTEGRATION-MEGA-CLOSE-001
  * TDR-EXPORT-RUNTIME-ROWCOUNT-CORRECTION-001
- * TdrExportsPage — export workflow tests.
+ * TDR-EXPORT-LIMIT-FIX-001
+ * TdrExportsPage — simplified export workflow tests.
  *
  * Verifies:
- *  §1  Loading form renders (batchId, tradeDirection, rowLimit, submit button)
- *  §2  tradeDirection select has correct options (All/IMPORT/EXPORT)
- *  §3  createExport called with correct args on form submit (no direction)
- *  §4  createExport called with tradeDirection when selected
+ *  §1  Form renders with scope selector; no legacy batchId input / direction select / row-limit spinbutton
+ *  §2  Switching to Specific batch scope shows batch selector
+ *  §3  createExport called with no batchId when scope is All accepted records
+ *  §4  createExport called with batchId + auto-tradeDirection for Specific batch scope
  *  §5  New job appears in table after creation
- *  §6  LEASED status badge renders with correct class (not missing/fallback)
+ *  §6  PROCESSING (LEASED) status badge renders with correct class
  *  §7  COMPLETED status badge renders; Download button shown
  *  §8  FAILED status badge renders; error message shown
  *  §9  LEASED job triggers polling (getExportStatus called after delay)
@@ -17,6 +18,12 @@
  * §11  Error message shown when createExport rejects
  * §12  Download button calls downloadExport
  * §13  rowCount undefined/null/zero regression — no TypeError on Create Export
+ * §14  FAILED with errorCode display
+ * §15  Duplicate-click prevention
+ * §16  Continuous polling (not one-shot)
+ * §17  createExport payload omits rowLimit — backend handles ceiling
+ * §18  Batch selector populated from listBatches API
+ * §19  Estimate count shown for All accepted records scope
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
@@ -29,6 +36,9 @@ vi.mock('@/lib/tdr-api', () => ({
   createExport: vi.fn(),
   getExportStatus: vi.fn(),
   downloadExport: vi.fn(),
+  estimateExport: vi.fn(),
+  listBatches: vi.fn(),
+  getBatch: vi.fn(),
   setAuthCallbacks: vi.fn(),
 }));
 
@@ -44,19 +54,56 @@ import {
   createExport,
   getExportStatus,
   downloadExport,
+  estimateExport,
+  listBatches,
+  getBatch,
 } from '@/lib/tdr-api';
 import TdrExportsPage from '@/app/tdr/exports/page';
 
 const mockCreateExport = createExport as ReturnType<typeof vi.fn>;
 const mockGetExportStatus = getExportStatus as ReturnType<typeof vi.fn>;
 const mockDownloadExport = downloadExport as ReturnType<typeof vi.fn>;
+const mockEstimateExport = estimateExport as ReturnType<typeof vi.fn>;
+const mockListBatches = listBatches as ReturnType<typeof vi.fn>;
+const mockGetBatch = getBatch as ReturnType<typeof vi.fn>;
+
+function mockBatch(override: object = {}) {
+  return {
+    id: 'batch-001',
+    tradeDirection: 'IMPORT',
+    standardizedFilename: 'TDR_V1_IMP_2025_01_TEST.csv',
+    originalFilename: 'imports_jan_2025.csv',
+    status: 'READY',
+    acceptedRows: 177_077,
+    quarantinedRows: 0,
+    rejectedRows: 0,
+    processedRows: 177_077,
+    totalSourceRows: 177_077,
+    sourceFileId: 'sf-001',
+    sourceFileArchivedAt: null,
+    sourceFileRetentionExpiresAt: null,
+    replayOfBatchId: null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    completedAt: new Date().toISOString(),
+    ...override,
+  };
+}
+
+function emptyBatchList() {
+  return { batches: [], total: 0, page: 1, pageSize: 100, totalPages: 0, hasMore: false };
+}
+
+function batchList(batches: object[]) {
+  return { batches, total: batches.length, page: 1, pageSize: 100, totalPages: 1, hasMore: false };
+}
 
 function pendingJob(override: object = {}) {
   return {
     id: 'job-pending-1',
     status: 'PENDING',
     rowCount: null,
-    rowLimit: 100_000,
+    rowLimit: 1_000_000,
     contentHash: null,
     errorMessage: null,
     createdAt: new Date().toISOString(),
@@ -70,7 +117,7 @@ function completedJob(override: object = {}) {
     id: 'job-done-1',
     status: 'COMPLETED',
     rowCount: 16,
-    rowLimit: 100_000,
+    rowLimit: 1_000_000,
     contentHash: 'abc123',
     errorMessage: null,
     createdAt: new Date().toISOString(),
@@ -88,7 +135,7 @@ function failedJob(override: object = {}) {
     id: 'job-failed-1',
     status: 'FAILED',
     rowCount: null,
-    rowLimit: 100_000,
+    rowLimit: 1_000_000,
     contentHash: null,
     errorMessage: 'Export limit exceeded',
     createdAt: new Date().toISOString(),
@@ -102,42 +149,58 @@ beforeEach(() => {
   mockCreateExport.mockResolvedValue(pendingJob());
   mockGetExportStatus.mockResolvedValue(pendingJob());
   mockDownloadExport.mockResolvedValue(undefined);
+  mockEstimateExport.mockResolvedValue({ count: 0 });
+  mockListBatches.mockResolvedValue(emptyBatchList());
+  mockGetBatch.mockRejectedValue(new Error('not found'));
 });
 
-// ── §1 Form renders ───────────────────────────────────────────────────────────
+// ── §1 Form renders with simplified UI ───────────────────────────────────────
 
-describe('§1 Form renders', () => {
-  it('renders batch ID input, direction select, row limit input and submit button', () => {
+describe('§1 Form renders simplified UI', () => {
+  it('renders scope radio buttons and Create Export; no legacy batchId input, direction select, or row-limit spinbutton', () => {
     render(<TdrExportsPage />);
-    expect(screen.getByPlaceholderText(/Leave blank/i)).toBeDefined();
-    expect(screen.getByTestId('trade-direction-select')).toBeDefined();
-    expect(screen.getByRole('spinbutton')).toBeDefined();
+    // Scope radio options present
+    expect(screen.getByRole('radio', { name: /All accepted records/i })).toBeDefined();
+    expect(screen.getByRole('radio', { name: /Specific batch/i })).toBeDefined();
+    // Create Export button present
     expect(screen.getByRole('button', { name: /Create Export/i })).toBeDefined();
+    // Legacy fields absent
+    expect(screen.queryByPlaceholderText(/Leave blank/i)).toBeNull();
+    expect(screen.queryByTestId('trade-direction-select')).toBeNull();
+    expect(screen.queryByRole('spinbutton')).toBeNull();
   });
 });
 
-// ── §2 tradeDirection select options ─────────────────────────────────────────
+// ── §2 Specific batch scope shows batch selector ──────────────────────────────
 
-describe('§2 tradeDirection select options', () => {
-  it('has All directions, IMPORT, and EXPORT options', () => {
+describe('§2 Specific batch scope shows batch selector', () => {
+  it('shows batch selector dropdown when Specific batch radio is selected', async () => {
     render(<TdrExportsPage />);
-    const select = screen.getByTestId('trade-direction-select') as HTMLSelectElement;
-    const options = Array.from(select.options).map((o) => o.value);
-    expect(options).toContain('');
-    expect(options).toContain('IMPORT');
-    expect(options).toContain('EXPORT');
+    fireEvent.click(screen.getByRole('radio', { name: /Specific batch/i }));
+    await waitFor(() => expect(screen.getByTestId('batch-select')).toBeDefined());
+  });
+
+  it('Create Export button is disabled when batch scope selected but no batch chosen', async () => {
+    render(<TdrExportsPage />);
+    fireEvent.click(screen.getByRole('radio', { name: /Specific batch/i }));
+    const btn = screen.getByRole('button', { name: /Create Export/i }) as HTMLButtonElement;
+    expect(btn.disabled).toBe(true);
   });
 });
 
-// ── §3 createExport called without direction ──────────────────────────────────
+// ── §3 createExport — All accepted records (no batchId, no tradeDirection) ───
 
-describe('§3 createExport — no direction', () => {
-  it('calls createExport with batchId and rowLimit only when direction is "All"', async () => {
+describe('§3 createExport — All accepted records scope', () => {
+  it('calls createExport with no batchId or tradeDirection when scope is All', async () => {
     mockCreateExport.mockResolvedValueOnce(pendingJob());
     render(<TdrExportsPage />);
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
     });
+    expect(mockCreateExport).toHaveBeenCalledWith(
+      'test-token',
+      expect.not.objectContaining({ batchId: expect.anything() }),
+    );
     expect(mockCreateExport).toHaveBeenCalledWith(
       'test-token',
       expect.not.objectContaining({ tradeDirection: expect.anything() }),
@@ -145,20 +208,36 @@ describe('§3 createExport — no direction', () => {
   });
 });
 
-// ── §4 createExport called with tradeDirection ────────────────────────────────
+// ── §4 createExport — Specific batch scope auto-includes tradeDirection ───────
 
-describe('§4 createExport — with direction', () => {
-  it('includes tradeDirection=IMPORT in the request when selected', async () => {
+describe('§4 createExport — Specific batch scope with auto-direction', () => {
+  it('sends batchId and tradeDirection from selected batch automatically', async () => {
+    const batch = mockBatch({ id: 'batch-abc', tradeDirection: 'EXPORT', standardizedFilename: 'TDR_V1_EXP_2025_01_TEST.csv' });
+    mockListBatches.mockResolvedValueOnce(batchList([batch]));
     mockCreateExport.mockResolvedValueOnce(pendingJob());
     render(<TdrExportsPage />);
-    fireEvent.change(screen.getByTestId('trade-direction-select'), { target: { value: 'IMPORT' } });
+
+    // Switch to batch scope
+    fireEvent.click(screen.getByRole('radio', { name: /Specific batch/i }));
+
+    // Wait for batch selector to populate
+    await waitFor(() => {
+      const select = screen.getByTestId('batch-select') as HTMLSelectElement;
+      // Should have the placeholder option + 1 batch option
+      expect(select.options.length).toBeGreaterThan(1);
+    });
+
+    // Select the batch
+    fireEvent.change(screen.getByTestId('batch-select'), { target: { value: 'batch-abc' } });
+
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
     });
-    expect(mockCreateExport).toHaveBeenCalledWith(
-      'test-token',
-      expect.objectContaining({ tradeDirection: 'IMPORT' }),
-    );
+
+    expect(mockCreateExport).toHaveBeenCalledWith('test-token', {
+      batchId: 'batch-abc',
+      tradeDirection: 'EXPORT',
+    });
   });
 });
 
@@ -176,10 +255,10 @@ describe('§5 Job appears in table after creation', () => {
   });
 });
 
-// ── §6 LEASED status badge ────────────────────────────────────────────────────
+// ── §6 PROCESSING (LEASED) status badge ──────────────────────────────────────
 
-describe('§6 LEASED status badge', () => {
-  it('renders LEASED badge for a leased job', async () => {
+describe('§6 PROCESSING badge for LEASED job', () => {
+  it('renders PROCESSING badge for a leased job with blue styling', async () => {
     const job = leasedJob();
     mockCreateExport.mockResolvedValueOnce(job);
     render(<TdrExportsPage />);
@@ -187,9 +266,8 @@ describe('§6 LEASED status badge', () => {
       fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
     });
     await waitFor(() => {
-      const badge = screen.getByText('LEASED');
+      const badge = screen.getByText('PROCESSING');
       expect(badge).toBeDefined();
-      // Must have themed class (not the fallback gray)
       expect(badge.className).toContain('blue');
     });
   });
@@ -299,20 +377,16 @@ describe('§12 Download button triggers download', () => {
 
 // ── §13 rowCount undefined/null/zero regression ───────────────────────────────
 // TDR-EXPORT-RUNTIME-ROWCOUNT-CORRECTION-001
-// Owner-observed: Create Export → TypeError: Cannot read properties of undefined
-// Root cause: createExport API response omits rowCount (undefined), !==null guard passes → crash.
 
 describe('§13 rowCount undefined/null/zero regression', () => {
   it('§13.1 freshly-created PENDING job with rowCount=undefined does not crash', async () => {
-    // Simulates exact owner crash: createExport returns rowCount absent (undefined)
     const fresh = { ...pendingJob(), rowCount: undefined };
     mockCreateExport.mockResolvedValueOnce(fresh);
     render(<TdrExportsPage />);
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
     });
-    await waitFor(() => expect(screen.getByText('PENDING')).toBeDefined());
-    // Dash rendered for unavailable rowCount
+    await waitFor(() => expect(screen.getByText('QUEUED')).toBeDefined());
     expect(screen.getAllByText(/—/).length).toBeGreaterThan(0);
   });
 
@@ -323,7 +397,7 @@ describe('§13 rowCount undefined/null/zero regression', () => {
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
     });
-    await waitFor(() => expect(screen.getByText('PENDING')).toBeDefined());
+    await waitFor(() => expect(screen.getByText('QUEUED')).toBeDefined());
     expect(screen.getAllByText(/—/).length).toBeGreaterThan(0);
   });
 
@@ -334,7 +408,6 @@ describe('§13 rowCount undefined/null/zero regression', () => {
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
     });
-    // rowCount=16 appears in "16 / 100,000 limit" cell — no dash for available count
     await waitFor(() => {
       const tds = Array.from(document.querySelectorAll('td'));
       expect(tds.some((td) => /^\d+ \/ \d/.test(td.textContent?.trim() ?? ''))).toBe(true);
@@ -348,7 +421,6 @@ describe('§13 rowCount undefined/null/zero regression', () => {
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
     });
-    // rowCount=0 must render "0 / ..." not "—" (blank≠zero)
     await waitFor(() => {
       const tds = Array.from(document.querySelectorAll('td'));
       expect(tds.some((td) => td.textContent?.trim().startsWith('0 /'))).toBe(true);
@@ -366,8 +438,7 @@ describe('§13 rowCount undefined/null/zero regression', () => {
   });
 
   it('§13.6 Create Export → immediate render does not throw', async () => {
-    // Reproduces the exact owner sequence: click Create Export, job appears immediately
-    const fresh = { id: 'rc-001', status: 'PENDING', rowCount: undefined, rowLimit: 100_000, createdAt: new Date().toISOString() };
+    const fresh = { id: 'rc-001', status: 'PENDING', rowCount: undefined, rowLimit: 1_000_000, createdAt: new Date().toISOString() };
     mockCreateExport.mockResolvedValueOnce(fresh);
     expect(() => {
       render(<TdrExportsPage />);
@@ -375,18 +446,17 @@ describe('§13 rowCount undefined/null/zero regression', () => {
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
     });
-    // No unhandled exception — job row renders
-    await waitFor(() => expect(screen.getByText('PENDING')).toBeDefined());
+    await waitFor(() => expect(screen.getByText('QUEUED')).toBeDefined());
   });
 
-  it('§13.7 LEASED job with undefined rowCount renders safely', async () => {
+  it('§13.7 LEASED job with undefined rowCount renders safely as PROCESSING', async () => {
     const job = { ...leasedJob(), rowCount: undefined };
     mockCreateExport.mockResolvedValueOnce(job);
     render(<TdrExportsPage />);
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
     });
-    await waitFor(() => expect(screen.getByText('LEASED')).toBeDefined());
+    await waitFor(() => expect(screen.getByText('PROCESSING')).toBeDefined());
     expect(screen.getAllByText(/—/).length).toBeGreaterThan(0);
   });
 
@@ -451,10 +521,8 @@ describe('§15 Duplicate-click prevention', () => {
     expect(btn.disabled).toBe(false);
 
     fireEvent.click(btn);
-    // After click, button should be disabled while request is in flight
     await waitFor(() => expect(btn.disabled).toBe(true));
 
-    // Resolve the promise to finish
     await act(async () => { resolveFn(pendingJob()); });
     await waitFor(() => expect(btn.disabled).toBe(false));
   });
@@ -465,7 +533,7 @@ describe('§15 Duplicate-click prevention', () => {
     const btn = screen.getByRole('button', { name: /Create Export/i });
     await act(async () => {
       fireEvent.click(btn);
-      fireEvent.click(btn);  // Second click before state update
+      fireEvent.click(btn);
     });
     expect(mockCreateExport).toHaveBeenCalledTimes(1);
   });
@@ -480,12 +548,11 @@ describe('§16 Continuous polling for active jobs', () => {
     vi.useFakeTimers();
     const job = pendingJob();
     mockCreateExport.mockResolvedValueOnce(job);
-    mockGetExportStatus.mockResolvedValue(job);  // Always returns PENDING
+    mockGetExportStatus.mockResolvedValue(job);
     render(<TdrExportsPage />);
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
     });
-    // Advance 9 seconds → 3 poll cycles (at 3s, 6s, 9s)
     await act(async () => { vi.advanceTimersByTime(9100); });
     expect(mockGetExportStatus.mock.calls.length).toBeGreaterThanOrEqual(3);
   });
@@ -495,7 +562,7 @@ describe('§16 Continuous polling for active jobs', () => {
     const job = leasedJob();
     const done = completedJob({ id: job.id });
     mockCreateExport.mockResolvedValueOnce(job);
-    mockGetExportStatus.mockResolvedValueOnce(done);  // First poll → COMPLETED
+    mockGetExportStatus.mockResolvedValueOnce(done);
     mockGetExportStatus.mockResolvedValue(done);
     render(<TdrExportsPage />);
     await act(async () => {
@@ -504,31 +571,77 @@ describe('§16 Continuous polling for active jobs', () => {
     await act(async () => { vi.advanceTimersByTime(3100); });
     const callsAfterFirst = mockGetExportStatus.mock.calls.length;
     await act(async () => { vi.advanceTimersByTime(6100); });
-    // Should not poll again after reaching COMPLETED
     expect(mockGetExportStatus.mock.calls.length).toBe(callsAfterFirst);
   });
 });
 
-// ── §17 rowLimit=100 sample export ───────────────────────────────────────────
+// ── §17 Export uses backend default row limit (no rowLimit in payload) ────────
 
-describe('§17 Sample export — rowLimit=100', () => {
-  it('creates export with rowLimit=100 when input is set to 100', async () => {
-    mockCreateExport.mockResolvedValueOnce(pendingJob({ rowLimit: 100 }));
+describe('§17 Export payload omits rowLimit — backend handles ceiling', () => {
+  it('createExport payload has no rowLimit field (backend defaults to MAX)', async () => {
+    mockCreateExport.mockResolvedValueOnce(pendingJob());
     render(<TdrExportsPage />);
-    const limitInput = screen.getByRole('spinbutton') as HTMLInputElement;
-    fireEvent.change(limitInput, { target: { value: '100' } });
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /Create Export/i }));
     });
     expect(mockCreateExport).toHaveBeenCalledWith(
       'test-token',
-      expect.objectContaining({ rowLimit: 100 }),
+      expect.not.objectContaining({ rowLimit: expect.anything() }),
     );
   });
 
-  it('row limit input accepts values up to 1,000,000', () => {
+  it('no row-limit spinbutton is rendered (field removed from UI)', () => {
     render(<TdrExportsPage />);
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
-    expect(Number(input.max)).toBe(1_000_000);
+    expect(screen.queryByRole('spinbutton')).toBeNull();
+  });
+});
+
+// ── §18 Batch selector populated from listBatches ────────────────────────────
+
+describe('§18 Batch selector populated from listBatches API', () => {
+  it('shows batch options in the selector after batches load', async () => {
+    const batch = mockBatch({ id: 'batch-load-test', standardizedFilename: 'TDR_V1_EXP_2025_03_TEST.csv' });
+    mockListBatches.mockResolvedValueOnce(batchList([batch]));
+    render(<TdrExportsPage />);
+    fireEvent.click(screen.getByRole('radio', { name: /Specific batch/i }));
+    await waitFor(() => {
+      const select = screen.getByTestId('batch-select') as HTMLSelectElement;
+      const options = Array.from(select.options).map((o) => o.value);
+      expect(options).toContain('batch-load-test');
+    });
+  });
+
+  it('batch label includes standardized filename and trade direction', async () => {
+    const batch = mockBatch({ id: 'batch-label-test', tradeDirection: 'EXPORT', standardizedFilename: 'TDR_V1_EXP_2025_03_TEST.csv' });
+    mockListBatches.mockResolvedValueOnce(batchList([batch]));
+    render(<TdrExportsPage />);
+    fireEvent.click(screen.getByRole('radio', { name: /Specific batch/i }));
+    await waitFor(() => {
+      const select = screen.getByTestId('batch-select') as HTMLSelectElement;
+      const labelText = Array.from(select.options)
+        .map((o) => o.text)
+        .find((t) => t.includes('TDR_V1_EXP'));
+      expect(labelText).toBeDefined();
+      expect(labelText).toContain('EXPORT');
+    });
+  });
+});
+
+// ── §19 Estimate count shown for All accepted records scope ───────────────────
+
+describe('§19 Estimate count displayed for All accepted records scope', () => {
+  it('shows estimated record count when scope is All accepted records', async () => {
+    mockEstimateExport.mockResolvedValueOnce({ count: 177_077 });
+    render(<TdrExportsPage />);
+    // Default scope is 'all' — estimate should load automatically
+    await waitFor(() => {
+      expect(screen.getByText(/177,077 accepted records ready to export/i)).toBeDefined();
+    });
+  });
+
+  it('calls estimateExport with no batchId for All accepted records scope', async () => {
+    render(<TdrExportsPage />);
+    await waitFor(() => expect(mockEstimateExport).toHaveBeenCalled());
+    expect(mockEstimateExport).toHaveBeenCalledWith('test-token', {});
   });
 });

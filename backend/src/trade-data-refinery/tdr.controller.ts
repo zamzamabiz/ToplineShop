@@ -154,6 +154,14 @@ export class TdrController {
     return this.exportService.createExport(dto, req.user);
   }
 
+  @Get('exports/estimate')
+  estimateExport(
+    @Req() req: TdrRequest,
+    @Query('batchId') batchId?: string,
+  ) {
+    return this.exportService.estimateExport({ batchId }, req.user);
+  }
+
   @Get('exports/:id')
   getExportStatus(@Param('id') id: string, @Req() req: TdrRequest) {
     return this.exportService.getExportStatus(id, req.user);

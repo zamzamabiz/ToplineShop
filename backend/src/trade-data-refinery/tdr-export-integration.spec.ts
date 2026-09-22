@@ -555,3 +555,75 @@ describe('CreateExportDto — rowLimit validation', () => {
     expect(errors.filter((e) => e.property === 'rowOffset').length).toBeGreaterThan(0);
   });
 });
+
+// ── 10. Estimate export endpoint + default rowLimit ───────────────────────────
+
+describe('TdrExportService — estimateExport', () => {
+  function makeEstimateMocks(count: number) {
+    const prisma = {
+      tdrRecord: {
+        count: jest.fn().mockResolvedValue(count),
+      },
+      tdrExportJob: {
+        create: jest.fn(),
+        findFirst: jest.fn(),
+      },
+    };
+    const audit = { recordEvent: jest.fn() };
+    const storage = { createReadStream: jest.fn() };
+    return { prisma, audit, storage };
+  }
+
+  it('returns exact count of ACCEPTED+export_eligible records for tenant', async () => {
+    const { prisma, audit, storage } = makeEstimateMocks(177_077);
+    const svc = new TdrExportService(prisma as never, audit as never, storage as never);
+    const result = await svc.estimateExport({}, makeUser([Role.TENANT_ADMIN]));
+    expect((result as any).data.count).toBe(177_077);
+    expect(prisma.tdrRecord.count).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          tenantId: 'tenant-1',
+          rowDisposition: 'ACCEPTED',
+          exportEligible: true,
+        }),
+      }),
+    );
+  });
+
+  it('scopes estimate to specific batchId when provided', async () => {
+    const { prisma, audit, storage } = makeEstimateMocks(1);
+    const svc = new TdrExportService(prisma as never, audit as never, storage as never);
+    await svc.estimateExport({ batchId: 'batch-xyz' }, makeUser([Role.TENANT_ADMIN]));
+    expect(prisma.tdrRecord.count).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ batchId: 'batch-xyz' }),
+      }),
+    );
+  });
+
+  it('omits batchId from query when not provided', async () => {
+    const { prisma, audit, storage } = makeEstimateMocks(0);
+    const svc = new TdrExportService(prisma as never, audit as never, storage as never);
+    await svc.estimateExport({}, makeUser([Role.TENANT_ADMIN]));
+    const callArg = prisma.tdrRecord.count.mock.calls[0][0];
+    expect('batchId' in callArg.where).toBe(false);
+  });
+
+  it('returns zero when no eligible records exist', async () => {
+    const { prisma, audit, storage } = makeEstimateMocks(0);
+    const svc = new TdrExportService(prisma as never, audit as never, storage as never);
+    const result = await svc.estimateExport({}, makeUser([Role.TENANT_ADMIN]));
+    expect((result as any).data.count).toBe(0);
+  });
+
+  it('createExport defaults rowLimit to MAX_EXPORT_ROW_LIMIT when not specified', async () => {
+    const { prisma, audit, storage } = makeExportServiceMocks();
+    const svc = new TdrExportService(prisma as never, audit as never, storage as never);
+    await svc.createExport({}, makeUser([Role.TENANT_ADMIN]));
+    expect(prisma.tdrExportJob.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ rowLimit: MAX_EXPORT_ROW_LIMIT }),
+      }),
+    );
+  });
+});

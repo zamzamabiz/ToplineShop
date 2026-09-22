@@ -13,7 +13,7 @@ import { AuthenticatedUser } from '../../../auth/types/jwt-payload.type';
 import { Role } from '../../../auth/types/role.type';
 import { CreateExportDto } from '../dto/create-export.dto';
 import { QUALITY_ERROR } from '../../quality/constants/quality-error.codes';
-import { DEFAULT_EXPORT_ROW_LIMIT } from '../../quality/constants/quality.limits';
+import { DEFAULT_EXPORT_ROW_LIMIT, MAX_EXPORT_ROW_LIMIT } from '../../quality/constants/quality.limits';
 import { success } from '../../../common/api-response';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class TdrExportService {
   async createExport(dto: CreateExportDto, user: AuthenticatedUser) {
     checkExportAuthorization(user.roles, dto.tradeDirection);
 
-    const rowLimit = dto.rowLimit ?? DEFAULT_EXPORT_ROW_LIMIT;
+    const rowLimit = dto.rowLimit ?? MAX_EXPORT_ROW_LIMIT;
     const filterConfig = buildFilterConfig(dto);
 
     const job = await this.prisma.tdrExportJob.create({
@@ -58,6 +58,18 @@ export class TdrExportService {
     });
 
     return success(job);
+  }
+
+  async estimateExport(filter: { batchId?: string }, user: AuthenticatedUser) {
+    const count = await this.prisma.tdrRecord.count({
+      where: {
+        tenantId: user.tenantId,
+        rowDisposition: 'ACCEPTED',
+        exportEligible: true,
+        ...(filter.batchId ? { batchId: filter.batchId } : {}),
+      },
+    });
+    return success({ count });
   }
 
   async getExportStatus(exportId: string, user: AuthenticatedUser) {
