@@ -103,7 +103,7 @@ export default function TdrBatchDetailPage() {
           ← Batches
         </Link>
         <h1 className="text-lg font-semibold text-text-primary truncate">
-          {batch.originalFilename}
+          {batch.standardizedFilename ?? batch.originalFilename}
         </h1>
         <span
           className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${STATUS_COLORS[batch.status] ?? 'bg-gray-800 text-gray-400'}`}
@@ -111,6 +111,22 @@ export default function TdrBatchDetailPage() {
           {batch.status}
         </span>
       </div>
+
+      {/* Filename details — show both when standardized name is present */}
+      {batch.standardizedFilename && (
+        <div className="bg-surface-secondary border border-white/10 rounded-lg px-4 py-3 space-y-1 text-sm">
+          <div className="flex justify-between gap-4">
+            <span className="text-text-muted text-xs">Standardized name</span>
+            <span className="font-mono text-xs text-accent-primary">{batch.standardizedFilename}</span>
+          </div>
+          {batch.originalFilename && (
+            <div className="flex justify-between gap-4">
+              <span className="text-text-muted text-xs">Original filename</span>
+              <span className="font-mono text-xs text-text-secondary truncate">{batch.originalFilename}</span>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
         <div className="bg-surface-secondary border border-white/10 rounded-lg p-3">

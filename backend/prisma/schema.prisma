@@ -377,6 +377,11 @@ model TdrSourceFile {
   archivedAt         DateTime? @map("archived_at")
   retentionExpiresAt DateTime? @map("retention_expires_at")
 
+  // Standardized filename: TDR_V1_<TYPE>_<YYYY>[_<MM>]_<SEQ>.<ext>
+  standardizedFilename String?  @map("standardized_filename")
+  dataPeriodYear       Int?     @map("data_period_year") @db.SmallInt
+  dataPeriodMonth      Int?     @map("data_period_month") @db.SmallInt
+
   // Versioning fields (added post-MVP Mega 5; NULL for unbackfilled rows)
   logicalDatasetId       String? @map("logical_dataset_id")
   versionNumber          Int     @default(1) @map("version_number")
@@ -396,6 +401,17 @@ model TdrSourceFile {
   @@index([tenantId, archivedAt])
   @@index([tenantId, logicalDatasetId])
   @@map("tdr_source_files")
+}
+
+model TdrFilenameSequence {
+  tenantId    String @map("tenant_id")
+  tradeType   String @map("trade_type") @db.VarChar(3)
+  periodYear  Int    @map("period_year") @db.SmallInt
+  periodMonth Int    @default(0) @map("period_month") @db.SmallInt
+  nextSeq     Int    @default(1) @map("next_seq")
+
+  @@id([tenantId, tradeType, periodYear, periodMonth])
+  @@map("tdr_filename_sequences")
 }
 
 model TdrBatch {

@@ -19,6 +19,7 @@ import { computeSchemaFingerprint } from './ingestion/utils/schema-fingerprint.u
 import { generateStorageKey, isStorageKeySafe } from './ingestion/storage/storage-key.util';
 import { validateHeaders } from './ingestion/parsers/csv.parser';
 import { UploadBatchDto } from './ingestion/upload/upload.dto';
+import { buildStandardizedFilename, tradeTypeCode } from './ingestion/upload/filename.util';
 import { BATCH_STATUS_TRANSITIONS, isValidTransition } from './types/batch-transition';
 import { INGESTION_ERROR } from './ingestion/constants/ingestion-error.codes';
 import { CHUNK_SIZE, MAX_UPLOAD_BYTES, ACCEPTED_EXTENSIONS } from './ingestion/constants/ingestion.limits';
@@ -215,28 +216,28 @@ describe('UploadBatchDto validation', () => {
     return validate(instance);
   }
 
-  it('passes for valid IMPORT batch dto', async () => {
-    const errors = await dto({ tradeDirection: 'IMPORT', mappingProfileId: 'customs-v1' });
+  it('passes for valid IMPORT batch dto with year', async () => {
+    const errors = await dto({ tradeDirection: 'IMPORT', mappingProfileId: 'customs-v1', dataPeriodYear: 2025 });
     expect(errors).toHaveLength(0);
   });
 
-  it('passes for valid EXPORT batch dto', async () => {
-    const errors = await dto({ tradeDirection: 'EXPORT', mappingProfileId: 'export-ng' });
+  it('passes for valid EXPORT batch dto with year and month', async () => {
+    const errors = await dto({ tradeDirection: 'EXPORT', mappingProfileId: 'export-ng', dataPeriodYear: 2025, dataPeriodMonth: 3 });
     expect(errors).toHaveLength(0);
   });
 
   it('fails for invalid tradeDirection', async () => {
-    const errors = await dto({ tradeDirection: 'SIDEWAYS', mappingProfileId: 'p' });
+    const errors = await dto({ tradeDirection: 'SIDEWAYS', mappingProfileId: 'p', dataPeriodYear: 2025 });
     expect(errors.length).toBeGreaterThan(0);
   });
 
   it('fails when mappingProfileId is missing', async () => {
-    const errors = await dto({ tradeDirection: 'IMPORT' });
+    const errors = await dto({ tradeDirection: 'IMPORT', dataPeriodYear: 2025 });
     expect(errors.length).toBeGreaterThan(0);
   });
 
   it('fails when mappingProfileId is empty string', async () => {
-    const errors = await dto({ tradeDirection: 'IMPORT', mappingProfileId: '' });
+    const errors = await dto({ tradeDirection: 'IMPORT', mappingProfileId: '', dataPeriodYear: 2025 });
     expect(errors.length).toBeGreaterThan(0);
   });
 
@@ -245,9 +246,85 @@ describe('UploadBatchDto validation', () => {
       tradeDirection: 'EXPORT',
       mappingProfileId: 'p',
       mappingVersion: '2',
+      dataPeriodYear: 2025,
     });
     expect(errors).toHaveLength(0);
   });
+
+  it('fails when dataPeriodYear is missing', async () => {
+    const errors = await dto({ tradeDirection: 'IMPORT', mappingProfileId: 'p' });
+    expect(errors.length).toBeGreaterThan(0);
+  });
+
+  it('fails when dataPeriodYear is out of range', async () => {
+    const errors = await dto({ tradeDirection: 'IMPORT', mappingProfileId: 'p', dataPeriodYear: 1800 });
+    expect(errors.length).toBeGreaterThan(0);
+  });
+
+  it('fails when dataPeriodMonth is out of range', async () => {
+    const errors = await dto({ tradeDirection: 'IMPORT', mappingProfileId: 'p', dataPeriodYear: 2025, dataPeriodMonth: 13 });
+    expect(errors.length).toBeGreaterThan(0);
+  });
+
+  it('accepts omitted dataPeriodMonth (full-year upload)', async () => {
+    const errors = await dto({ tradeDirection: 'IMPORT', mappingProfileId: 'p', dataPeriodYear: 2025 });
+    expect(errors).toHaveLength(0);
+  });
+
+  it('coerces string dataPeriodYear from multipart form', async () => {
+    const errors = await dto({ tradeDirection: 'IMPORT', mappingProfileId: 'p', dataPeriodYear: '2025' });
+    expect(errors).toHaveLength(0);
+  });
+});
+
+// ── 6b. Standardized Filename Utility ─────────────────────────────────────────
+
+describe('buildStandardizedFilename', () => {
+  it('builds IMPORT filename with month', () => {
+    expect(buildStandardizedFilename('IMPORT', 2025, 1, 1, '.csv'))
+      .toBe('TDR_V1_IMP_2025_01_001.csv');
+  });
+
+  it('builds EXPORT filename with month', () => {
+    expect(buildStandardizedFilename('EXPORT', 2025, 1, 1, '.csv'))
+      .toBe('TDR_V1_EXP_2025_01_001.csv');
+  });
+
+  it('builds filename without month (full-year upload)', () => {
+    expect(buildStandardizedFilename('IMPORT', 2025, null, 1, '.csv'))
+      .toBe('TDR_V1_IMP_2025_001.csv');
+  });
+
+  it('pads month with leading zero', () => {
+    expect(buildStandardizedFilename('IMPORT', 2025, 3, 1, '.xlsx'))
+      .toBe('TDR_V1_IMP_2025_03_001.xlsx');
+  });
+
+  it('pads sequence number to 3 digits', () => {
+    expect(buildStandardizedFilename('EXPORT', 2025, 1, 42, '.csv'))
+      .toBe('TDR_V1_EXP_2025_01_042.csv');
+  });
+
+  it('handles sequence above 999', () => {
+    expect(buildStandardizedFilename('IMPORT', 2025, 1, 1234, '.tsv'))
+      .toBe('TDR_V1_IMP_2025_01_1234.tsv');
+  });
+
+  it('preserves original extension', () => {
+    expect(buildStandardizedFilename('IMPORT', 2025, 1, 1, '.jsonl'))
+      .toBe('TDR_V1_IMP_2025_01_001.jsonl');
+  });
+
+  it('falls back to GLB for unknown direction', () => {
+    expect(buildStandardizedFilename('UNKNOWN', 2025, 1, 1, '.csv'))
+      .toBe('TDR_V1_GLB_2025_01_001.csv');
+  });
+});
+
+describe('tradeTypeCode', () => {
+  it('maps IMPORT → IMP', () => expect(tradeTypeCode('IMPORT')).toBe('IMP'));
+  it('maps EXPORT → EXP', () => expect(tradeTypeCode('EXPORT')).toBe('EXP'));
+  it('falls back to GLB for unknown', () => expect(tradeTypeCode('OTHER')).toBe('GLB'));
 });
 
 // ── 7. Batch Transition — QUALITY_PENDING ──────────────────────────────────────

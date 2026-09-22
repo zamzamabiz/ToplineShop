@@ -22,6 +22,7 @@ export interface TdrBatch {
   status: BatchStatus;
   tradeDirection: TradeDirection;
   originalFilename: string | null;
+  standardizedFilename: string | null;
   sourceFileId: string | null;
   sourceFileArchivedAt: string | null;
   sourceFileRetentionExpiresAt: string | null;

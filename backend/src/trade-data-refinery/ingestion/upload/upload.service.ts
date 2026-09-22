@@ -8,6 +8,7 @@ import {
 import * as fs from 'fs';
 import * as path from 'path';
 import { randomUUID } from 'crypto';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { AuditService } from '../../../audit/audit.service';
 import { AuthenticatedUser } from '../../../auth/types/jwt-payload.type';
@@ -19,6 +20,7 @@ import { MappingResolverService } from '../mapping/mapping-resolver.service';
 import { computeFileHash } from '../utils/file-hash.util';
 import { INGESTION_ERROR } from '../constants/ingestion-error.codes';
 import { UploadBatchDto } from './upload.dto';
+import { buildStandardizedFilename, tradeTypeCode } from './filename.util';
 
 // ZIP/OpenXML magic bytes: PK\x03\x04
 const XLSX_MAGIC = [0x50, 0x4b, 0x03, 0x04] as const;
@@ -30,6 +32,7 @@ export interface UploadResult {
   sourceFileId: string;
   batchId: string;
   jobId: string;
+  standardizedFilename: string;
   status: 'QUEUED';
 }
 
@@ -124,7 +127,7 @@ export class UploadService {
       permanentKey = storageKey;
 
       // Create TdrSourceFile + TdrBatch + TdrProcessingJob in a single transaction
-      const { batchId, jobId } = await this.createBatchPipeline({
+      const { batchId, jobId, standardizedFilename } = await this.createBatchPipeline({
         user,
         dto,
         file,
@@ -149,7 +152,7 @@ export class UploadService {
         `Upload accepted: tenantId=${user.tenantId} sourceFileId=${sourceFileId} batchId=${batchId}`,
       );
 
-      return { sourceFileId, batchId, jobId, status: 'QUEUED' };
+      return { sourceFileId, batchId, jobId, standardizedFilename, status: 'QUEUED' };
     } catch (err) {
       // Compensate: if permanent file was created but DB failed, remove it
       if (permanentKey) {
@@ -232,7 +235,7 @@ export class UploadService {
     mappingId: string;
     mappingVersion: string;
     fingerprintHash: string;
-  }): Promise<{ batchId: string; jobId: string }> {
+  }): Promise<{ batchId: string; jobId: string; standardizedFilename: string }> {
     const { user, dto, file, contentHash, sourceFileId, storageKey, mappingId, mappingVersion, fingerprintHash } =
       params;
 
@@ -251,11 +254,34 @@ export class UploadService {
       const retentionExpiresAt = new Date(uploadedAt);
       retentionExpiresAt.setFullYear(retentionExpiresAt.getFullYear() + 7);
 
+      // Allocate next sequence number atomically — concurrent-safe via PG row lock
+      const tradeType = tradeTypeCode(dto.tradeDirection);
+      const periodMonth = dto.dataPeriodMonth ?? 0;
+      const [seqRow] = await tx.$queryRaw<[{ next_seq: number }]>(
+        Prisma.sql`
+          INSERT INTO tdr_filename_sequences (tenant_id, trade_type, period_year, period_month, next_seq)
+          VALUES (${user.tenantId}, ${tradeType}, ${dto.dataPeriodYear}, ${periodMonth}, 1)
+          ON CONFLICT (tenant_id, trade_type, period_year, period_month)
+          DO UPDATE SET next_seq = tdr_filename_sequences.next_seq + 1
+          RETURNING next_seq
+        `,
+      );
+      const standardizedFilename = buildStandardizedFilename(
+        dto.tradeDirection,
+        dto.dataPeriodYear,
+        dto.dataPeriodMonth,
+        seqRow.next_seq,
+        ext,
+      );
+
       await tx.tdrSourceFile.create({
         data: {
           id: sourceFileId,
           tenantId: user.tenantId,
           originalFilename: path.basename(file.originalname),
+          standardizedFilename,
+          dataPeriodYear: dto.dataPeriodYear,
+          dataPeriodMonth: dto.dataPeriodMonth ?? null,
           mimeType,
           fileSizeBytes: BigInt(file.size),
           storageKey,
@@ -291,7 +317,7 @@ export class UploadService {
         },
       });
 
-      return { batchId: batch.id, jobId: job.id };
+      return { batchId: batch.id, jobId: job.id, standardizedFilename };
     });
   }
 }

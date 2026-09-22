@@ -168,7 +168,7 @@ export default function TdrBatchesPage() {
                   className="border-b border-white/5 hover:bg-white/5 transition-colors"
                 >
                   <td className="px-4 py-2 font-mono text-xs truncate max-w-[180px] text-text-primary">
-                    {b.originalFilename}
+                    {b.standardizedFilename ?? b.originalFilename}
                     {b.sourceFileArchivedAt && (
                       <span className="ml-1 text-amber-400" title="Source file archived">⚑</span>
                     )}

@@ -279,12 +279,16 @@ export async function uploadFile(
   file: File,
   direction: 'IMPORT' | 'EXPORT',
   mappingProfileId: string,
+  dataPeriodYear: number,
+  dataPeriodMonth?: number,
   signal?: AbortSignal,
 ): Promise<TdrBatch> {
   const form = new FormData();
   form.append('file', file);
   form.append('tradeDirection', direction);
   form.append('mappingProfileId', mappingProfileId);
+  form.append('dataPeriodYear', String(dataPeriodYear));
+  if (dataPeriodMonth != null) form.append('dataPeriodMonth', String(dataPeriodMonth));
 
   const makeReq = (tok: string) =>
     fetch(`${API_BASE}/tdr/batches/upload`, {
