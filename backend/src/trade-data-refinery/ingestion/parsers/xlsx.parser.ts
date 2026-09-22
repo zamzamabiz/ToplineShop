@@ -3,7 +3,7 @@ import { EventEmitter } from 'events';
 import { computeSchemaFingerprint } from '../utils/schema-fingerprint.util';
 import { MAX_XLSX_ROWS, MAX_HEADER_COLS } from '../constants/ingestion.limits';
 import { ParsedRow } from './parser.types';
-import { validateHeaders } from './csv.parser';
+import { validateHeaders, normalizeHeaderName, isBlankRow } from './csv.parser';
 import { INGESTION_ERROR } from '../constants/ingestion-error.codes';
 
 // exceljs streaming WorkbookReader/WorksheetReader implement Symbol.asyncIterator
@@ -53,7 +53,7 @@ export async function readXlsxHeaders(filePath: string): Promise<string[]> {
         const values = (exRow.values as unknown[]).slice(1);
         const headers = values
           .map(xlsxCellToString)
-          .map((s) => s.trim())
+          .map(normalizeHeaderName)
           .slice(0, MAX_HEADER_COLS);
         resolved = true;
         resolve(headers);
@@ -112,6 +112,7 @@ export async function* streamXlsxRows(
         record[h] = xlsxCellToString(values[j]);
       });
 
+      if (isBlankRow(record)) { rowNumber--; continue; }
       yield { row: record, rowNumber };
     }
 

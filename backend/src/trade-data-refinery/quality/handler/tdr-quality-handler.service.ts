@@ -30,6 +30,10 @@ interface QualityChunkResult {
   rowDisposition: string;
   exportEligible: boolean;
   quarantineReviewRequired: boolean;
+  missingFields: string[];
+  missingFieldsCount: number;
+  dataQualityStatus: string;
+  confidenceScore: string;
 }
 
 @Injectable()
@@ -199,6 +203,10 @@ export class TdrQualityHandlerService implements OnModuleInit, OnModuleDestroy {
         const normalized = normalizeRowV1(row, config);
         const issues = validateRowV1(normalized, config);
         const decision = determineDisposition(issues);
+        const missingFields = issues
+          .filter((i) => i.ruleCode === 'REQUIRED_FIELD_MISSING')
+          .map((i) => i.fieldName ?? '')
+          .filter(Boolean);
         qualityResults.push({
           recordId,
           normalized,
@@ -206,6 +214,10 @@ export class TdrQualityHandlerService implements OnModuleInit, OnModuleDestroy {
           rowDisposition: decision.rowDisposition,
           exportEligible: decision.exportEligible,
           quarantineReviewRequired: decision.quarantineReviewRequired,
+          missingFields,
+          missingFieldsCount: missingFields.length,
+          dataQualityStatus: computeDataQualityStatus(issues),
+          confidenceScore: computeConfidenceScore(issues),
         });
       }
       srcWindow = [];
@@ -310,6 +322,11 @@ export class TdrQualityHandlerService implements OnModuleInit, OnModuleDestroy {
           ${r.normalized.portOfDischargeRaw ?? null}::text,
           ${r.normalized.portOfDischargeNormalized ?? null}::text,
           ${r.normalized.dataSourceRaw ?? null}::text,
+          ${r.normalized.dataSourceNormalized ?? null}::text,
+          ${JSON.stringify(r.missingFields)}::jsonb,
+          ${r.missingFieldsCount}::integer,
+          ${r.dataQualityStatus}::text,
+          ${r.confidenceScore}::text,
           ${r.normalized.quantityRaw ?? null}::text,
           ${r.normalized.quantityNormalized !== null ? r.normalized.quantityNormalized.toString() : null}::numeric,
           ${r.normalized.quantityUnitRaw ?? null}::text,
@@ -363,6 +380,11 @@ export class TdrQualityHandlerService implements OnModuleInit, OnModuleDestroy {
           port_of_discharge_raw = v.port_of_discharge_raw,
           port_of_discharge_normalized = v.port_of_discharge_normalized,
           data_source_raw = v.data_source_raw,
+          data_source_normalized = v.data_source_normalized,
+          missing_fields = v.missing_fields,
+          missing_fields_count = v.missing_fields_count,
+          data_quality_status = v.data_quality_status,
+          confidence_score = v.confidence_score,
           quantity_raw = v.quantity_raw,
           quantity_normalized = v.quantity_normalized,
           quantity_unit_raw = v.quantity_unit_raw,
@@ -391,7 +413,8 @@ export class TdrQualityHandlerService implements OnModuleInit, OnModuleDestroy {
           importer_country_raw, importer_country_code,
           port_of_loading_raw, port_of_loading_normalized,
           port_of_discharge_raw, port_of_discharge_normalized,
-          data_source_raw,
+          data_source_raw, data_source_normalized,
+          missing_fields, missing_fields_count, data_quality_status, confidence_score,
           quantity_raw, quantity_normalized, quantity_unit_raw, quantity_unit_code,
           unit_price_raw, unit_price_normalized, currency_raw, currency_code,
           row_disposition, export_eligible, quarantine_review_required, value_treatment_meta
@@ -471,4 +494,21 @@ export class TdrQualityHandlerService implements OnModuleInit, OnModuleDestroy {
       `(accepted=${accepted} quarantined=${quarantined} rejected=${rejected})`,
     );
   }
+}
+
+// ── Quality metadata helpers ──────────────────────────────────────────────────
+
+function computeDataQualityStatus(issues: ValidationIssueInput[]): string {
+  if (issues.some((i) => i.severity === 'BLOCKING')) return 'ERROR';
+  if (issues.some((i) => i.ruleCode === 'REQUIRED_FIELD_MISSING')) return 'INCOMPLETE';
+  if (issues.some((i) => i.severity === 'ERROR')) return 'ERROR';
+  if (issues.some((i) => i.severity === 'WARNING')) return 'REVIEW_REQUIRED';
+  return 'READY';
+}
+
+function computeConfidenceScore(issues: ValidationIssueInput[]): string {
+  if (issues.some((i) => i.severity === 'BLOCKING' || i.severity === 'ERROR')) return 'LOW';
+  if (issues.some((i) => i.severity === 'WARNING')) return 'MEDIUM';
+  if (issues.length === 0) return 'HIGH';
+  return 'UNKNOWN';
 }

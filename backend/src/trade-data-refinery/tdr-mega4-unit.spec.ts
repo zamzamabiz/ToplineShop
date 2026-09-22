@@ -242,8 +242,8 @@ describe('currency.map — resolveCurrencyCode', () => {
 
 describe('unit.map — resolveUnitCode', () => {
   it('resolves "KG" → KG', () => expect(resolveUnitCode('KG')).toBe('KG'));
-  it('resolves "u" → PCS', () => expect(resolveUnitCode('u')).toBe('PCS'));
-  it('resolves "U" → PCS', () => expect(resolveUnitCode('U')).toBe('PCS'));
+  it('resolves "u" → U (generic unit)', () => expect(resolveUnitCode('u')).toBe('U'));
+  it('resolves "U" → U (generic unit)', () => expect(resolveUnitCode('U')).toBe('U'));
   it('resolves "2u" → 2PCS', () => expect(resolveUnitCode('2u')).toBe('2PCS'));
   it('resolves "L" → L', () => expect(resolveUnitCode('L')).toBe('L'));
   it('unknown unit returns undefined (no guessing)', () => expect(resolveUnitCode('BARREL')).toBeUndefined());

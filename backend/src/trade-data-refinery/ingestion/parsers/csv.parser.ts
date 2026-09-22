@@ -5,7 +5,24 @@ import { MAX_CSV_ROWS, MAX_HEADER_COLS } from '../constants/ingestion.limits';
 import { INGESTION_ERROR } from '../constants/ingestion-error.codes';
 import { ParsedRow } from './parser.types';
 
-/** Reads the header row from a CSV file and validates it. */
+/**
+ * Normalizes a raw header name:
+ * - Strips leading/trailing whitespace and invisible/control characters
+ * - Removes trailing documentation marker `*` (e.g. `trade_date*` → `trade_date`)
+ */
+export function normalizeHeaderName(raw: string): string {
+  // Remove control chars + non-breaking space + BOM
+  let h = raw.replace(/[\u0000-\u001F\u007F ﻿]/g, '').trim();
+  if (h.endsWith('*')) h = h.slice(0, -1).trimEnd();
+  return h;
+}
+
+/** Returns true when every value in a parsed row is blank/empty — used to skip trailing spacer rows. */
+export function isBlankRow(row: Record<string, string>): boolean {
+  return Object.values(row).every((v) => !v || v.trim() === '');
+}
+
+/** Reads the header row from a CSV file and returns normalized names. */
 export async function readCsvHeaders(filePath: string): Promise<string[]> {
   return new Promise((resolve, reject) => {
     const parser = parse({ bom: true, relax_column_count: true, to: 1 });
@@ -19,7 +36,7 @@ export async function readCsvHeaders(filePath: string): Promise<string[]> {
           resolved = true;
           parser.destroy();
           stream.destroy();
-          resolve(record);
+          resolve(record.map(normalizeHeaderName));
         }
       }
     });
@@ -47,7 +64,7 @@ export function validateHeaders(headers: string[]): void {
   }
   const seen = new Set<string>();
   for (const h of headers) {
-    const key = h.trim().toLowerCase();
+    const key = normalizeHeaderName(h).toLowerCase();
     if (seen.has(key)) {
       throw Object.assign(new Error(`Duplicate header: "${h}"`), { code: INGESTION_ERROR.DUPLICATE_HEADER });
     }
@@ -77,6 +94,8 @@ export async function* streamCsvRows(
 
   let rowNumber = 0;
   for await (const record of parser) {
+    const row = record as Record<string, string>;
+    if (isBlankRow(row)) continue; // skip comma-only / all-empty spacer rows
     rowNumber++;
     if (rowNumber > MAX_CSV_ROWS) {
       stream.destroy();
@@ -85,7 +104,7 @@ export async function* streamCsvRows(
         { code: INGESTION_ERROR.ROW_LIMIT_EXCEEDED },
       );
     }
-    yield { row: record as Record<string, string>, rowNumber };
+    yield { row, rowNumber };
   }
 }
 

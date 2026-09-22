@@ -4,7 +4,7 @@ import { computeSchemaFingerprint } from '../utils/schema-fingerprint.util';
 import { MAX_CSV_ROWS, MAX_HEADER_COLS } from '../constants/ingestion.limits';
 import { INGESTION_ERROR } from '../constants/ingestion-error.codes';
 import { ParsedRow } from './parser.types';
-import { validateHeaders } from './csv.parser';
+import { validateHeaders, normalizeHeaderName, isBlankRow } from './csv.parser';
 
 export async function readTsvHeaders(filePath: string): Promise<string[]> {
   return new Promise((resolve, reject) => {
@@ -19,7 +19,7 @@ export async function readTsvHeaders(filePath: string): Promise<string[]> {
           resolved = true;
           parser.destroy();
           stream.destroy();
-          resolve(record.slice(0, MAX_HEADER_COLS));
+          resolve(record.slice(0, MAX_HEADER_COLS).map(normalizeHeaderName));
         }
       }
     });
@@ -47,6 +47,8 @@ export async function* streamTsvRows(filePath: string, headers: string[]): Async
 
   let rowNumber = 0;
   for await (const record of parser) {
+    const row = record as Record<string, string>;
+    if (isBlankRow(row)) continue;
     rowNumber++;
     if (rowNumber > MAX_CSV_ROWS) {
       stream.destroy();
@@ -55,7 +57,7 @@ export async function* streamTsvRows(filePath: string, headers: string[]): Async
         { code: INGESTION_ERROR.ROW_LIMIT_EXCEEDED },
       );
     }
-    yield { row: record as Record<string, string>, rowNumber };
+    yield { row, rowNumber };
   }
 }
 

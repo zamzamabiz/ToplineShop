@@ -57,6 +57,7 @@ export interface NormalizationResult {
   portOfDischargeNormalized: string | null;
 
   dataSourceRaw: string | null;
+  dataSourceNormalized: string | null;
 
   quantityRaw: string | null;
   quantityNormalized: Decimal | null;
@@ -173,6 +174,7 @@ export function normalizeRowV1(
   const portOfDischargeNormalized = normalizeText(portOfDischargeRaw);
 
   const dataSourceRaw = fieldValues['dataSourceRaw'] ?? null;
+  const dataSourceNormalized = resolveDataSource(dataSourceRaw);
 
   const quantityRaw = fieldValues['quantityRaw'] ?? null;
   const { value: quantityNormalized, warn: quantityWarn } = parseDecimal(quantityRaw);
@@ -242,6 +244,7 @@ export function normalizeRowV1(
     portOfDischargeRaw,
     portOfDischargeNormalized,
     dataSourceRaw,
+    dataSourceNormalized,
     quantityRaw,
     quantityNormalized,
     quantityUnitRaw,
@@ -356,6 +359,20 @@ function normalizeText(raw: string | null): string | null {
   // Trim + collapse internal whitespace
   const v = raw.trim().replace(/\s+/g, ' ');
   return v || null;
+}
+
+/** Known source system identifier aliases → human-readable display names. */
+const DATA_SOURCE_ALIASES: Record<string, string> = {
+  'Pak_Customs': 'Pakistan Customs',
+  'PAK_CUSTOMS': 'Pakistan Customs',
+  'pak_customs': 'Pakistan Customs',
+  'Pakistan_Customs': 'Pakistan Customs',
+};
+
+function resolveDataSource(raw: string | null): string | null {
+  if (!raw) return null;
+  const trimmed = raw.trim();
+  return DATA_SOURCE_ALIASES[trimmed] ?? normalizeText(trimmed);
 }
 
 function normalizeTaxId(raw: string | null): string | null {

@@ -182,9 +182,28 @@ export class TdrExportHandlerService implements OnModuleInit, OnModuleDestroy {
   }
 
   private async countExportRows(tenantId: string, filter: ExportFilter): Promise<number> {
-    return this.prisma.tdrRecord.count({
-      where: buildExportWhere(tenantId, filter),
-    });
+    const conditions: Prisma.Sql[] = [
+      Prisma.sql`tenant_id = ${tenantId}`,
+      Prisma.sql`row_disposition = 'ACCEPTED'`,
+      Prisma.sql`export_eligible = TRUE`,
+    ];
+    if (filter.batchId) conditions.push(Prisma.sql`batch_id = ${filter.batchId}`);
+    if (filter.tradeDirection) conditions.push(Prisma.sql`trade_direction = ${filter.tradeDirection}`);
+    if (filter.dateFrom) conditions.push(Prisma.sql`trade_date >= ${new Date(filter.dateFrom)}`);
+    if (filter.dateTo) conditions.push(Prisma.sql`trade_date <= ${new Date(filter.dateTo)}`);
+    if (filter.hsChapter) conditions.push(Prisma.sql`hs_chapter = ${filter.hsChapter}`);
+    if (filter.hsCode) conditions.push(Prisma.sql`hs_code_normalized = ${filter.hsCode}`);
+    if (filter.foreignPartyCountryCode) {
+      conditions.push(Prisma.sql`(importer_country_code = ${filter.foreignPartyCountryCode} OR foreign_party_country_code = ${filter.foreignPartyCountryCode})`);
+    }
+    if (filter.exporterCountryCode) conditions.push(Prisma.sql`exporter_country_code = ${filter.exporterCountryCode}`);
+    if (filter.importerCountryCode) conditions.push(Prisma.sql`importer_country_code = ${filter.importerCountryCode}`);
+
+    const where = Prisma.join(conditions, ' AND ');
+    const result = await this.prisma.$queryRaw<[{ count: bigint }]>(
+      Prisma.sql`SELECT COUNT(*)::bigint AS count FROM tdr_records WHERE ${where}`,
+    );
+    return Number(result[0].count);
   }
 
   private async fetchExportChunk(
@@ -261,26 +280,6 @@ interface ExportFilter {
   importerCountryCode?: string;
 }
 
-function buildExportWhere(tenantId: string, filter: ExportFilter): Prisma.TdrRecordWhereInput {
-  return {
-    tenantId,
-    rowDisposition: 'ACCEPTED',
-    exportEligible: true,
-    ...(filter.batchId ? { batchId: filter.batchId } : {}),
-    ...(filter.tradeDirection ? { tradeDirection: filter.tradeDirection as never } : {}),
-    ...(filter.dateFrom || filter.dateTo
-      ? {
-          tradeDate: {
-            ...(filter.dateFrom ? { gte: new Date(filter.dateFrom) } : {}),
-            ...(filter.dateTo ? { lte: new Date(filter.dateTo) } : {}),
-          },
-        }
-      : {}),
-    ...(filter.hsChapter ? { hsChapter: filter.hsChapter } : {}),
-    ...(filter.hsCode ? { hsCodeNormalized: filter.hsCode } : {}),
-    ...(filter.foreignPartyCountryCode ? { foreignPartyCountryCode: filter.foreignPartyCountryCode } : {}),
-  };
-}
 
 function csvEscape(value: string): string {
   if (value === null || value === undefined || value === '') return '';

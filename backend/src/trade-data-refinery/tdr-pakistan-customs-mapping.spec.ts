@@ -208,8 +208,8 @@ describe('normalizeRowV1 — EXPORT sample row (Exp_Pak_Jan_2025)', () => {
     expect(result.currencyCode).toBe('USD');
   });
 
-  it('unit "u" resolves to PCS', () => {
-    expect(result.quantityUnitCode).toBe('PCS');
+  it('unit "u" resolves to U (generic unit)', () => {
+    expect(result.quantityUnitCode).toBe('U');
   });
 
   it('localPartyCountryCode set to PK from config (no column needed)', () => {
@@ -353,8 +353,8 @@ describe('Currency normalization', () => {
 // ---------------------------------------------------------------------------
 
 describe('Unit normalization', () => {
-  it('EXPORT "u" resolves to PCS', () => {
-    expect(resolveUnitCode('u')).toBe('PCS');
+  it('EXPORT "u" resolves to U (generic unit)', () => {
+    expect(resolveUnitCode('u')).toBe('U');
   });
 
   it('IMPORT "KG" resolves to KG', () => {

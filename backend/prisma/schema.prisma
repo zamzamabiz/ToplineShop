@@ -531,6 +531,13 @@ model TdrRecord {
   portOfDischargeRaw       String? @map("port_of_discharge_raw")
   portOfDischargeNormalized String? @map("port_of_discharge_normalized")
   dataSourceRaw            String? @map("data_source_raw")
+  dataSourceNormalized     String? @map("data_source_normalized")
+
+  // ── Per-record quality metadata ──────────────────────────────────────────────
+  missingFields      Json?    @map("missing_fields")
+  missingFieldsCount Int      @default(0) @map("missing_fields_count")
+  dataQualityStatus  String   @default("READY") @map("data_quality_status") @db.VarChar(20)
+  confidenceScore    String   @default("UNKNOWN") @map("confidence_score") @db.VarChar(10)
 
   quantityRaw        String?  @map("quantity_raw")
   quantityNormalized Decimal? @map("quantity_normalized") @db.Decimal(24, 6)

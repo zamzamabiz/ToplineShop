@@ -4,7 +4,7 @@ import { computeSchemaFingerprint } from '../utils/schema-fingerprint.util';
 import { MAX_JSON_ROWS } from '../constants/ingestion.limits';
 import { INGESTION_ERROR } from '../constants/ingestion-error.codes';
 import { ParsedRow } from './parser.types';
-import { validateHeaders } from './csv.parser';
+import { validateHeaders, normalizeHeaderName, isBlankRow } from './csv.parser';
 
 /**
  * Converts a JSON field value to string for TDR row storage.
@@ -79,7 +79,7 @@ export async function readJsonHeaders(filePath: string): Promise<string[]> {
       { code: INGESTION_ERROR.JSON_UNSUPPORTED_STRUCTURE },
     );
   }
-  return Object.keys(first as Record<string, unknown>);
+  return Object.keys(first as Record<string, unknown>).map(normalizeHeaderName);
 }
 
 /** Streams data rows from a JSON file as a generator. rowNumber = 1-based array index. */
@@ -104,9 +104,10 @@ export async function* streamJsonRows(filePath: string): AsyncGenerator<ParsedRo
 
     const row: Record<string, string> = {};
     for (const [key, val] of Object.entries(record as Record<string, unknown>)) {
-      row[key] = jsonValueToString(val, key);
+      row[normalizeHeaderName(key)] = jsonValueToString(val, key);
     }
 
+    if (isBlankRow(row)) continue;
     yield { row, rowNumber: i + 1 };
   }
 }
@@ -137,7 +138,7 @@ export async function readNdjsonHeaders(filePath: string): Promise<string[]> {
         resolved = true;
         rl.close();
         stream.destroy();
-        resolve(Object.keys(obj as Record<string, unknown>));
+        resolve(Object.keys(obj as Record<string, unknown>).map(normalizeHeaderName));
       } catch (err) {
         rl.close();
         stream.destroy();
@@ -195,9 +196,10 @@ export async function* streamNdjsonRows(filePath: string): AsyncGenerator<Parsed
 
     const row: Record<string, string> = {};
     for (const [key, val] of Object.entries(obj as Record<string, unknown>)) {
-      row[key] = jsonValueToString(val, key);
+      row[normalizeHeaderName(key)] = jsonValueToString(val, key);
     }
 
+    if (isBlankRow(row)) { rowNumber--; continue; }
     yield { row, rowNumber };
   }
 }
