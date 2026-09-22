@@ -355,7 +355,7 @@ model TdrSchemaMapping {
   tenant  Tenant?    @relation(fields: [tenantId], references: [id])
   batches TdrBatch[]
 
-  @@unique([scopeKey, profileId, version])
+  @@unique([scopeKey, profileId, version, tradeDirection])
   @@index([sourceSchemaFingerprint])
   @@index([tenantId, tradeDirection, active])
   @@map("tdr_schema_mappings")

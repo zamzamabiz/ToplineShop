@@ -252,10 +252,11 @@ async function main() {
 
   const exportProfile = await prisma.tdrSchemaMapping.upsert({
     where: {
-      scopeKey_profileId_version: {
+      scopeKey_profileId_version_tradeDirection: {
         scopeKey: 'PLATFORM',
         profileId: 'Exp_Pak_Jan_2025',
         version: 1,
+        tradeDirection: 'EXPORT',
       },
     },
     update: {
@@ -276,10 +277,11 @@ async function main() {
 
   const importProfile = await prisma.tdrSchemaMapping.upsert({
     where: {
-      scopeKey_profileId_version: {
+      scopeKey_profileId_version_tradeDirection: {
         scopeKey: 'PLATFORM',
         profileId: 'Imp_Pak_Jan_2025',
         version: 1,
+        tradeDirection: 'IMPORT',
       },
     },
     update: {

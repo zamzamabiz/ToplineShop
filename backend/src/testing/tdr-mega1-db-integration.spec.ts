@@ -205,7 +205,7 @@ describe('TDR-MVP-DATA-FOUNDATION-001 — DB Integration (Mega 1)', () => {
       expect(tenantMapping.tenantId).toBe(tenantId);
     });
 
-    it('6. enforces unique(scopeKey, profileId, version) — duplicate platform mapping blocked (P2002)', async () => {
+    it('6. enforces unique(scopeKey, profileId, version, tradeDirection) — duplicate platform mapping blocked (P2002)', async () => {
       let err: unknown;
       try {
         await prisma.tdrSchemaMapping.create({
@@ -213,7 +213,7 @@ describe('TDR-MVP-DATA-FOUNDATION-001 — DB Integration (Mega 1)', () => {
             scopeKey: 'PLATFORM',
             profileId: `PAK_IMPORT_${TAG}`,
             version: 1,
-            tradeDirection: 'EXPORT',
+            tradeDirection: 'IMPORT', // same direction as test 4 — must conflict
             mappingConfig: {},
             active: false,
           },
