@@ -1,0 +1,11 @@
+trade_date,hs_code,product_description,exporter_id,exporter_name,exporter_address,exporter_country,port_of_loading,importer_id,importer_name,importer_address,importer_country,port_of_discharge,quantity,quantity_unit,unit_price,currency_code,data_source
+2025-01-03,8542.31,Semiconductor ICs,CEXP-001,Samsung Electronics,Seoul,KR,Busan,IMP-PK-001,Ravi Electronics,Lahore,PK,Karachi,10000,PCS,2.80,USD,Pakistan Customs
+2025-01-07,2709.00,Crude Oil,,ADNOC,Abu Dhabi,AE,Jebel Ali,,Pakistan Refinery Ltd,Karachi,PK,Karachi,100000,L,0.62,USD,Pakistan Customs
+2025-01-10,1001.19,Wheat Grain,CEXP-003,Archer Daniels,Chicago,US,New Orleans,IMP-PK-003,Punjab Food Corp,Lahore,PK,Port Qasim,50000,KG,0.28,USD,Pakistan Customs
+2025-01-14,8703.23,Passenger Cars,CEXP-004,Toyota Motor Corp,Tokyo,JP,Nagoya,IMP-PK-004,Indus Motor Company,Karachi,PK,Karachi,100,PCS,12500.00,JPY,Pakistan Customs
+2025-01-17,3006.30,Pharmaceutical Contrast Agents,CEXP-005,Bayer AG,Berlin,DE,Hamburg,,Shaukat Khanum Hospital,Lahore,PK,Port Qasim,500,KG,185.00,EUR,Pakistan Customs
+2025-01-19,5407.61,Polyester Fabrics,,Reliance Industries,Mumbai,IN,Mumbai,IMP-PK-006,Sapphire Fibres Ltd,Faisalabad,PK,Port Qasim,20000,M,,USD,Pakistan Customs
+2025-01-21,8471.41,Laptops and Notebooks,CEXP-007,Dell Technologies,Austin,US,Houston,IMP-PK-007,Techno Valley Ltd,Islamabad,PK,Karachi,200,PCS,850.00,USD,Pakistan Customs
+2025-01-24,2716.00,Electrical Energy,CEXP-008,NTPC India,Delhi,IN,Wagah,,LESCO Lahore,Lahore,PK,Wagah,,kWh,0.08,USD,Pakistan Customs
+2025-01-27,4101.20,Raw Hides,CEXP-009,Ethiopian Leather,Addis Ababa,ET,Djibouti,IMP-PK-009,Service Industries,Sialkot,PK,Port Qasim,3000,KG,2.15,USD,Pakistan Customs
+2025-01-31,0303.89,Frozen Fish,,Ocean Catch Inc,Auckland,NZ,Auckland,IMP-PK-010,Oceanic Fish Farm,Karachi,PK,Karachi,8000,KG,3.50,,Pakistan Customs

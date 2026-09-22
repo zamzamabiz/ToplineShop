@@ -1,0 +1,11 @@
+trade_date,hs_code,product_description,exporter_id,exporter_name,exporter_address,exporter_country,port_of_loading,importer_id,importer_name,importer_address,importer_country,port_of_discharge,quantity,quantity_unit,unit_price,currency_code,data_source
+2025-01-05,3004.90,Pharmaceutical Tablets,EXP-001,Pakistan Pharma Ltd,Karachi Industrial Area,PK,Karachi,IMP-001,Al-Shifa Medical LLC,Dubai Healthcare City,AE,Dubai,500,KG,12.50,USD,Pakistan Customs
+2025-01-08,6109.10,Cotton T-Shirts,EXP-002,Textile Masters Pvt,Lahore Export Zone,PK,Port Qasim,,Global Fashion GmbH,Frankfurt,DE,Hamburg,1200,PCS,3.75,USD,Pakistan Customs
+2025-01-12,8471.30,Laptop Computers,,Tech Exports Pakistan,Islamabad,PK,Karachi,IMP-003,Digital Solutions Ltd,London,GB,Felixstowe,50,PCS,450.00,840,Pakistan Customs
+2025-01-15,0901.21,Green Tea Leaves,EXP-004,Himalayan Tea Co,Peshawar,PK,Karachi,IMP-004,Tea World Inc,New York,US,New York,800,KG,8.00,USD,Pakistan Customs
+2025-01-18,5201.00,Raw Cotton,EXP-005,Punjab Cotton Corp,Multan,PK,Port Qasim,,Asian Trading FZCO,Dubai,AE,Dubai,10000,KG,,USD,Pakistan Customs
+2025-01-20,6403.99,Leather Shoes,,Bata Pakistan Ltd,Lahore,PK,Port Qasim,IMP-006,Shoe Palace LLC,Chicago,US,New York,300,PCS,22.00,USD,Pakistan Customs
+2025-01-22,2710.12,Petroleum Products,EXP-007,PSO Pakistan,Karachi,PK,Karachi,,Gulf Petroleum LLC,Riyadh,SA,Jeddah,50000,L,0.85,SAR,Pakistan Customs
+2025-01-25,7403.11,Copper Cathodes,EXP-008,Copper Works Ltd,Karachi,PK,Karachi,IMP-008,Metal Trading GmbH,Hamburg,DE,Hamburg,5000,KG,6.20,EUR,Pakistan Customs
+2025-01-28,4011.10,Automobile Tyres,EXP-009,Ghandhara Industries,Lahore,PK,Port Qasim,IMP-009,AutoParts Dubai,Dubai,AE,Dubai,2000,PCS,18.50,USD,Pakistan Customs
+2025-01-30,6302.21,Bed Linen,EXP-010,Home Textile Pakistan,Faisalabad,PK,Port Qasim,IMP-010,IKEA Supply AG,Leiden,NL,Rotterdam,5000,PCS,4.25,EUR,Pakistan Customs

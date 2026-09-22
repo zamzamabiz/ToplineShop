@@ -42,7 +42,7 @@ export function validateRowV1(
       issues.push({
         fieldName: cm.canonicalField,
         ruleCode: RULE_CODE.REQUIRED_FIELD_MISSING,
-        severity: 'ERROR',
+        severity: 'WARNING',
         message: `Required field "${cm.canonicalField}" is missing or blank`,
         rawValue: null,
       });

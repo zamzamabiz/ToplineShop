@@ -425,7 +425,7 @@ describe('Required field enforcement', () => {
     const issues = validateRowV1(normalized, EXPORT_CONFIG);
     const missing = issues.filter(i => i.ruleCode === 'REQUIRED_FIELD_MISSING' && i.fieldName === 'hsCodeRaw');
     expect(missing).toHaveLength(1);
-    expect(missing[0].severity).toBe('ERROR');
+    expect(missing[0].severity).toBe('WARNING');
   });
 
   it('missing Importer on IMPORT row produces REQUIRED_FIELD_MISSING issue', () => {

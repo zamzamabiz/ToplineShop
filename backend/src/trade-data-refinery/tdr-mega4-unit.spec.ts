@@ -222,6 +222,25 @@ describe('quality-decision.service — determineDisposition', () => {
     const d = determineDisposition(issues);
     expect(d.rowDisposition).toBe('QUARANTINED');
   });
+
+  it('REQUIRED_FIELD_MISSING (WARNING) alone → ACCEPTED (blank required field is not quarantined)', () => {
+    const issues: ValidationIssueInput[] = [
+      { fieldName: 'exporterNameRaw', ruleCode: 'REQUIRED_FIELD_MISSING', severity: 'WARNING', message: '', rawValue: null },
+    ];
+    const d = determineDisposition(issues);
+    expect(d.rowDisposition).toBe('ACCEPTED');
+    expect(d.exportEligible).toBe(true);
+    expect(d.quarantineReviewRequired).toBe(false);
+  });
+
+  it('REQUIRED_FIELD_MISSING (WARNING) + another ERROR → QUARANTINED (other error escalates)', () => {
+    const issues: ValidationIssueInput[] = [
+      { fieldName: 'exporterNameRaw', ruleCode: 'REQUIRED_FIELD_MISSING', severity: 'WARNING', message: '', rawValue: null },
+      { fieldName: 'tradeDate', ruleCode: 'TRADE_DATE_INVALID', severity: 'ERROR', message: '', rawValue: null },
+    ];
+    const d = determineDisposition(issues);
+    expect(d.rowDisposition).toBe('QUARANTINED');
+  });
 });
 
 // ── 3. Currency / Unit / Country maps ─────────────────────────────────────────
