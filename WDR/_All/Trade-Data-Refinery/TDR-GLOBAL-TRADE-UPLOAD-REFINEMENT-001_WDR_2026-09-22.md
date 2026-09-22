@@ -7,7 +7,7 @@
 **Commit (implementation):** 5c67459  
 **Commit (governance):** 86aee64  
 **Commit (gap-closure implementation):** 43385b4  
-**Commit (gap-closure governance):** _pending_
+**Commit (gap-closure governance):** 268b95d
 
 ---
 
