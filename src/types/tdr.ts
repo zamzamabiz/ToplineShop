@@ -59,6 +59,16 @@ export interface BatchListResponse {
   hasMore: boolean;
 }
 
+// ── Upload ────────────────────────────────────────────────────────────────────
+
+export interface UploadResponse {
+  sourceFileId: string;
+  batchId: string;
+  jobId: string;
+  standardizedFilename: string;
+  status: 'QUEUED';
+}
+
 // ── Quarantine ────────────────────────────────────────────────────────────────
 
 export interface ValidationIssue {

@@ -33,6 +33,47 @@ function previewFilename(
   return `TDR_V1_${type}_${year}${monthPart}_###${ext || '.csv'}`;
 }
 
+interface ParsedTdrFilename {
+  direction: 'IMPORT' | 'EXPORT';
+  year: number;
+  month: number | null;
+}
+
+function parseTdrFilename(filename: string): ParsedTdrFilename | null {
+  // Matches: TDR_V1_(IMP|EXP)_YYYY[_MM]_...
+  const match = /^TDR_V1_(IMP|EXP)_(\d{4})(?:_(\d{2}))?_/i.exec(filename);
+  if (!match) return null;
+  return {
+    direction: match[1].toUpperCase() === 'EXP' ? 'EXPORT' : 'IMPORT',
+    year: parseInt(match[2], 10),
+    month: match[3] != null ? parseInt(match[3], 10) : null,
+  };
+}
+
+function getFilenamePeriodConflict(
+  filename: string,
+  direction: 'IMPORT' | 'EXPORT',
+  year: number,
+  month: number | null,
+): string | null {
+  const parsed = parseTdrFilename(filename);
+  if (!parsed) return null;
+
+  const conflicts: string[] = [];
+  if (parsed.direction !== direction) {
+    conflicts.push(
+      `filename says ${parsed.direction === 'IMPORT' ? 'IMP' : 'EXP'} but direction is set to ${direction}`,
+    );
+  }
+  if (parsed.year !== year) {
+    conflicts.push(`filename year ${parsed.year} ≠ selected year ${year}`);
+  }
+  if (parsed.month != null && month != null && parsed.month !== month) {
+    conflicts.push(`filename month ${String(parsed.month).padStart(2, '0')} ≠ selected month ${String(month).padStart(2, '0')}`);
+  }
+  return conflicts.length > 0 ? `Filename conflict: ${conflicts.join('; ')}` : null;
+}
+
 export default function TdrUploadPage() {
   const { accessToken } = useAuth();
   const router = useRouter();
@@ -47,16 +88,20 @@ export default function TdrUploadPage() {
 
   const ext = file ? file.name.slice(file.name.lastIndexOf('.')) : '.csv';
   const filenamePreview = previewFilename(direction, dataPeriodYear, dataPeriodMonth, ext);
+  const periodConflict = file
+    ? getFilenamePeriodConflict(file.name, direction, dataPeriodYear, dataPeriodMonth)
+    : null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file || !accessToken) return;
+    if (periodConflict) return;
 
     setUploading(true);
     setError(null);
 
     try {
-      const batch = await uploadFile(
+      const result = await uploadFile(
         accessToken,
         file,
         direction,
@@ -64,7 +109,10 @@ export default function TdrUploadPage() {
         dataPeriodYear,
         dataPeriodMonth ?? undefined,
       );
-      router.push(`/tdr/batches/${batch.id}`);
+      if (!result.batchId) {
+        throw new Error('Upload succeeded but server did not return a batch ID');
+      }
+      router.push(`/tdr/batches/${result.batchId}`);
     } catch (err: any) {
       setError(err?.message ?? 'Upload failed');
     } finally {
@@ -79,6 +127,9 @@ export default function TdrUploadPage() {
       <form onSubmit={handleSubmit} className="space-y-5">
         {error && (
           <p className="text-sm text-red-300 bg-red-900/20 rounded px-3 py-2">{error}</p>
+        )}
+        {periodConflict && (
+          <p className="text-sm text-amber-300 bg-amber-900/20 rounded px-3 py-2">{periodConflict}</p>
         )}
 
         {/* File picker */}
@@ -167,7 +218,7 @@ export default function TdrUploadPage() {
 
         <button
           type="submit"
-          disabled={uploading || !file}
+          disabled={uploading || !file || !!periodConflict}
           className="w-full py-2 text-sm font-medium bg-accent-primary text-white rounded hover:opacity-90 disabled:opacity-50"
         >
           {uploading ? 'Uploading…' : 'Upload & Process'}

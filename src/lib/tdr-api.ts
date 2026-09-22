@@ -27,6 +27,7 @@ import type {
   TdrRecord,
   TdrStatus,
   TrendResponse,
+  UploadResponse,
 } from '@/types/tdr';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
@@ -282,7 +283,7 @@ export async function uploadFile(
   dataPeriodYear: number,
   dataPeriodMonth?: number,
   signal?: AbortSignal,
-): Promise<TdrBatch> {
+): Promise<UploadResponse> {
   const form = new FormData();
   form.append('file', file);
   form.append('tradeDirection', direction);
@@ -306,7 +307,7 @@ export async function uploadFile(
   }
   if (!res.ok) throwApiError(await res.json().catch(() => ({})), res.status);
   const body = await res.json();
-  return body.data as TdrBatch;
+  return body.data as UploadResponse;
 }
 
 // ── Quarantine ────────────────────────────────────────────────────────────────
