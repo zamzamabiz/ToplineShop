@@ -236,7 +236,7 @@ export class TdrExportHandlerService implements OnModuleInit, OnModuleDestroy {
         r.quantity_unit_code                                                    AS quantity_unit,
         r.unit_price_normalized                                                 AS unit_price,
         r.currency_code,
-        r.data_source_raw                                                       AS data_source
+        COALESCE(r.data_source_normalized, r.data_source_raw)                   AS data_source
       FROM tdr_records r
       WHERE ${where}
       ORDER BY r.batch_id ASC, r.source_row_number ASC

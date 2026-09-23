@@ -135,6 +135,14 @@ const EXPORT_CONFIG = {
       requiredPolicy: 'REQUIRED',
       validationRules: [],
     },
+    {
+      sourceColumnName: 'data_source',
+      canonicalField: 'dataSourceRaw',
+      sourceDatatype: 'TEXT',
+      requiredPolicy: 'OPTIONAL',
+      defaultValue: 'Pak_Customs',
+      validationRules: [],
+    },
   ],
 };
 
@@ -242,6 +250,14 @@ const IMPORT_CONFIG = {
       canonicalField: 'currencyRaw',
       sourceDatatype: 'TEXT',
       requiredPolicy: 'REQUIRED',
+      validationRules: [],
+    },
+    {
+      sourceColumnName: 'data_source',
+      canonicalField: 'dataSourceRaw',
+      sourceDatatype: 'TEXT',
+      requiredPolicy: 'OPTIONAL',
+      defaultValue: 'Pak_Customs',
       validationRules: [],
     },
   ],

@@ -77,6 +77,7 @@ const TEXT_TO_ISO: Record<string, string> = {
   'ZAR': 'ZAR',
   'BRL': 'BRL',
   'MXN': 'MXN',
+  'XXX': 'XXX', // ISO 4217 special code: No currency / Not applicable
 };
 
 const NUMERIC_TO_ISO: Record<string, string> = {

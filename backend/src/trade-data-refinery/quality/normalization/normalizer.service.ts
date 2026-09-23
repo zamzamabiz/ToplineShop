@@ -176,6 +176,32 @@ export function normalizeRowV1(
   const dataSourceRaw = fieldValues['dataSourceRaw'] ?? null;
   const dataSourceNormalized = resolveDataSource(dataSourceRaw);
 
+  // ── Post-normalization rescue: numeric-only party names ──────────────────────
+  // When the exporter name contains only digits and no ID exists, the value is
+  // an ID that was placed in the wrong column. Move it to exporter_id_raw,
+  // blank the name, and emit REQUIRED_FIELD_MISSING so the row is marked INCOMPLETE.
+  let rescuedExporterIdRaw = exporterIdRaw;
+  let rescuedExporterNameNormalized = exporterNameNormalized;
+  let rescuedLocalPartyNameNormalized = localPartyNameNormalized;
+
+  if (rescuedExporterNameNormalized !== null && isNumericOnly(rescuedExporterNameNormalized) && !rescuedExporterIdRaw) {
+    rescuedExporterIdRaw = rescuedExporterNameNormalized;
+    rescuedExporterNameNormalized = null;
+    warnings.push({ fieldName: 'exporterNameRaw', ruleCode: 'REQUIRED_FIELD_MISSING', rawValue: exporterNameRaw });
+  }
+
+  // Legacy path: localPartyNameNormalized is the exporter name for Pakistan Customs EXPORT profile
+  if (
+    rescuedLocalPartyNameNormalized !== null &&
+    isNumericOnly(rescuedLocalPartyNameNormalized) &&
+    !localPartyTaxIdRaw &&
+    !rescuedExporterIdRaw
+  ) {
+    rescuedExporterIdRaw = rescuedLocalPartyNameNormalized;
+    rescuedLocalPartyNameNormalized = null;
+    warnings.push({ fieldName: 'localPartyNameRaw', ruleCode: 'REQUIRED_FIELD_MISSING', rawValue: localPartyNameRaw });
+  }
+
   const quantityRaw = fieldValues['quantityRaw'] ?? null;
   const { value: quantityNormalized, warn: quantityWarn } = parseDecimal(quantityRaw);
   if (quantityRaw !== null) meta['quantityNormalized'] = quantityWarn ? 'SOURCE' : 'NORMALIZED';
@@ -217,7 +243,7 @@ export function normalizeRowV1(
     localPartyTaxIdRaw,
     localPartyTaxIdNormalized,
     localPartyNameRaw,
-    localPartyNameNormalized,
+    localPartyNameNormalized: rescuedLocalPartyNameNormalized,
     localPartyAddressRaw,
     localPartyCountryCode,
     foreignPartyNameRaw,
@@ -227,9 +253,9 @@ export function normalizeRowV1(
     foreignPartyCountryCode,
     originPortRaw,
     originPortNormalized,
-    exporterIdRaw,
+    exporterIdRaw: rescuedExporterIdRaw,
     exporterNameRaw,
-    exporterNameNormalized,
+    exporterNameNormalized: rescuedExporterNameNormalized,
     exporterAddressRaw,
     exporterCountryRaw,
     exporterCountryCode,
@@ -267,8 +293,15 @@ function buildFieldValues(
   const result: Record<string, string | null> = {};
   for (const cm of config.columnMappings) {
     const raw = sourceRow[cm.sourceColumnName];
-    // Blank string treated as absent for optional fields; preserved as empty for required
-    result[cm.canonicalField] = raw !== undefined ? raw : null;
+    if (raw !== undefined) {
+      // Source column present — use its value (even if blank)
+      result[cm.canonicalField] = raw;
+    } else if (cm.defaultValue !== undefined) {
+      // Source column absent — fall back to mapping-level default
+      result[cm.canonicalField] = cm.defaultValue;
+    } else {
+      result[cm.canonicalField] = null;
+    }
   }
   return result;
 }
@@ -354,6 +387,11 @@ function deriveHsChapter(normalized: string | null): string | null {
   return digits.length >= 2 ? digits.slice(0, 2) : null;
 }
 
+/** Returns true when the string contains only digit characters (no spaces, dots, dashes). */
+function isNumericOnly(s: string): boolean {
+  return /^\d+$/.test(s);
+}
+
 function normalizeText(raw: string | null): string | null {
   if (raw === null) return null;
   // Trim + collapse internal whitespace
@@ -363,6 +401,7 @@ function normalizeText(raw: string | null): string | null {
 
 /** Known source system identifier aliases → human-readable display names. */
 const DATA_SOURCE_ALIASES: Record<string, string> = {
+  'Pak_Custom': 'Pakistan Customs',
   'Pak_Customs': 'Pakistan Customs',
   'PAK_CUSTOMS': 'Pakistan Customs',
   'pak_customs': 'Pakistan Customs',
