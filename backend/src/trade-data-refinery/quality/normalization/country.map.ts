@@ -65,6 +65,8 @@ const COUNTRY_ALIASES: Record<string, string> = {
   'INDIA': 'IN',
   'INDONESIA': 'ID',
   'IRAN': 'IR',
+  'IRAN (ISLAMIC REPUBLIC OF)': 'IR',
+  'IRAN, ISLAMIC REPUBLIC OF': 'IR',
   'IRAQ': 'IQ',
   'IRELAND': 'IE',
   'ISRAEL': 'IL',

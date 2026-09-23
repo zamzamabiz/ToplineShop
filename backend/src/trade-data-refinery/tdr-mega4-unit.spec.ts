@@ -275,6 +275,20 @@ describe('country.map — resolveCountryCode', () => {
   it('resolves "USA" → US', () => expect(resolveCountryCode('USA')).toBe('US'));
   it('passthrough ISO-2 "PK" → PK', () => expect(resolveCountryCode('PK')).toBe('PK'));
   it('unknown country returns undefined (no fuzzy guessing)', () => expect(resolveCountryCode('XYZLAND')).toBeUndefined());
+
+  // OBJ-4 regression: Pakistan Customs real-data country strings (TDR-STAGE1-REAL-DATA-CORRECTNESS-AND-ANALYTICS-001)
+  it('resolves "Indonesia" → ID (case-insensitive)', () => expect(resolveCountryCode('Indonesia')).toBe('ID'));
+  it('resolves "AFGHANISTAN" → AF', () => expect(resolveCountryCode('AFGHANISTAN')).toBe('AF'));
+  it('resolves "Kenya" → KE', () => expect(resolveCountryCode('Kenya')).toBe('KE'));
+  it('resolves "Pakistan" → PK', () => expect(resolveCountryCode('Pakistan')).toBe('PK'));
+  // OBJ-2 regression: Iran ISO formal name — root cause of blank country loss defect
+  it('resolves "Iran (Islamic Republic of)" → IR', () => expect(resolveCountryCode('Iran (Islamic Republic of)')).toBe('IR'));
+  it('resolves "IRAN (ISLAMIC REPUBLIC OF)" → IR (uppercase form)', () => expect(resolveCountryCode('IRAN (ISLAMIC REPUBLIC OF)')).toBe('IR'));
+  it('resolves "Iran, Islamic Republic of" → IR (comma form)', () => expect(resolveCountryCode('Iran, Islamic Republic of')).toBe('IR'));
+  it('resolves "IRAN" → IR (short form still maps)', () => expect(resolveCountryCode('IRAN')).toBe('IR'));
+  // OBJ-3: blank/null input
+  it('empty string returns undefined (no blank-to-code promotion)', () => expect(resolveCountryCode('')).toBeUndefined());
+  it('whitespace-only returns undefined', () => expect(resolveCountryCode('   ')).toBeUndefined());
 });
 
 // ── 4. Correction DTO allowlist ───────────────────────────────────────────────
