@@ -291,6 +291,135 @@ describe('country.map — resolveCountryCode', () => {
   it('whitespace-only returns undefined', () => expect(resolveCountryCode('   ')).toBeUndefined());
 });
 
+// P2 remediation regression: TDR-P2-COUNTRY-ALIAS-REMEDIATION-001 (2026-09-24)
+describe('country.map — P2 alias remediation', () => {
+  // Representative samples per geographic group
+  it.each([
+    // European
+    ['Slovenia', 'SI'], ['Croatia', 'HR'], ['Slovakia', 'SK'],
+    ['Lithuania', 'LT'], ['Latvia', 'LV'], ['Estonia', 'EE'],
+    ['Malta', 'MT'], ['Luxembourg', 'LU'],
+    ['Montenegro', 'ME'], ['Serbia', 'RS'], ['Macedonia', 'MK'],
+    ['North Macedonia', 'MK'],
+    ['Belarus', 'BY'], ['Iceland', 'IS'],
+    ['Bosnia And Herzegovina', 'BA'], ['Jersey', 'JE'],
+    ['Greenland', 'GL'], ['Monaco', 'MC'], ['Kosovo', 'XK'],
+    // Middle East / Central Asia
+    ['Syrian Arab Republic', 'SY'],
+    ['Turkmenistan', 'TM'],
+    // Asia / Pacific
+    ['Korea (South)', 'KR'],
+    ['Brunei Darussalam', 'BN'],
+    ['Laos', 'LA'], ['LAO PDR', 'LA'],
+    ['Maldives', 'MV'], ['Vanuatu', 'VU'], ['Papua New Guinea', 'PG'],
+    ['Fiji', 'FJ'], ['Solomon Islands', 'SB'],
+    ['New Caledonia', 'NC'], ['French Polynesia', 'PF'],
+    ['East Timor', 'TL'], ['Timor-Leste', 'TL'],
+    ['Guam', 'GU'], ['Sint Maarten', 'SX'],
+    // Africa
+    ['Benin', 'BJ'], ['Cameroon', 'CM'], ['Gambia', 'GM'], ['The Gambia', 'GM'],
+    ['Djibouti', 'DJ'], ['Madagascar', 'MG'], ['Guinea', 'GN'],
+    ['Guinea-Bissau', 'GW'], ['Guinea Bissau', 'GW'],
+    ['Liberia', 'LR'], ['Sierra Leone', 'SL'], ['Togo', 'TG'],
+    ['Seychelles', 'SC'], ['Mauritius', 'MU'], ['Mauritania', 'MR'],
+    ['Comoros', 'KM'], ['Gabon', 'GA'], ['Equatorial Guinea', 'GQ'],
+    ['Botswana', 'BW'], ['Namibia', 'NA'], ['Malawi', 'MW'],
+    ['Rwanda', 'RW'], ['Burundi', 'BI'], ['Niger', 'NE'],
+    ['Mali', 'ML'], ['Chad', 'TD'], ['Eritrea', 'ER'],
+    ['Lesotho', 'LS'], ['Central African Republic', 'CF'],
+    ['Uganda', 'UG'], ['Burkina Faso', 'BF'], ['Upper Volta', 'BF'],
+    ['Ivory Coast', 'CI'], ['Mayotte', 'YT'], ['Reunion', 'RE'],
+    ['Sao Tome And Principe', 'ST'],
+    // Americas
+    ['Chile', 'CL'], ['Colombia', 'CO'], ['Panama', 'PA'],
+    ['Uruguay', 'UY'], ['Ecuador', 'EC'], ['Dominican Republic', 'DO'],
+    ['Barbados', 'BB'], ['Guyana', 'GY'], ['Haiti', 'HT'],
+    ['El Salvador', 'SV'], ['Saint Lucia', 'LC'], ['St. Lucia', 'LC'],
+    ['Paraguay', 'PY'], ['Jamaica', 'JM'], ['Honduras', 'HN'],
+    ['Nicaragua', 'NI'], ['Trinidad And Tobago', 'TT'],
+    ['Costa Rica', 'CR'], ['Belize', 'BZ'], ['Cuba', 'CU'],
+    ['Bahamas', 'BS'], ['The Bahamas', 'BS'],
+    ['Antigua And Barbuda', 'AG'], ['Guadeloupe', 'GP'], ['Guatemala', 'GT'],
+    ['Saint Vincent And The Grenadines', 'VC'],
+    ['Grenada', 'GD'], ['Bermuda', 'BM'], ['Cayman Islands', 'KY'],
+    ['Dominica', 'DM'], ['French Guiana', 'GF'], ['Bolivia', 'BO'],
+    ['Venezuela', 'VE'],
+    ['Suriname', 'SR'], ['Puerto Rico', 'PR'],
+    ['British Virgin Islands', 'VG'], ['Curacao', 'CW'], ['Martinique', 'MQ'],
+    // Customs/WTO designations
+    ['Hong Kong, china', 'HK'],
+    ['Bahrain/kingdom Of Bahrain', 'BH'],
+    ['Taiwan/sep Customs Territory O', 'TW'],
+    // Moldova formal
+    ['Moldova, Republic Of', 'MD'], ['Republic Of Moldova', 'MD'],
+    // Lao truncated/full
+    ["Lao People's Democratic Republic", 'LA'],
+    // Burkina Faso historical composite
+    ['Upper Volta/burkina Faso', 'BF'],
+    // DRC / Republic of Congo
+    ['Congo, democratic Republic Of', 'CD'],
+    ['Democratic Republic Of Congo', 'CD'],
+    ['Congo Republic Of', 'CG'],
+    ['Republic Of Congo', 'CG'],
+    // Venezuela no-comma form
+    ['Venezuela bolivarian Republic', 'VE'],
+    // Tanzania UN formal
+    ['Tanzania, united Republic Of', 'TZ'],
+    // Cambodia composite
+    ['Cambodia/kampuchea Democratic', 'KH'],
+    // Ivory Coast composite
+    ["Ivory Coast / Cote D'ivoire", 'CI'],
+    // Saint Vincent truncated (30-char source field)
+    ['Saint Vincent And The Grenadin', 'VC'],
+  ])('resolves "%s" → %s', (raw, expected) => {
+    expect(resolveCountryCode(raw)).toBe(expected);
+  });
+
+  // Misspellings / alternate forms present in source data
+  it('resolves "Kazakistan" → KZ (misspelling of Kazakhstan)', () =>
+    expect(resolveCountryCode('Kazakistan')).toBe('KZ'));
+  it('resolves "Russian Fedration" → RU (misspelling of Russian Federation)', () =>
+    expect(resolveCountryCode('Russian Fedration')).toBe('RU'));
+  it('resolves "Ukrainian" → UA (adjective form)', () =>
+    expect(resolveCountryCode('Ukrainian')).toBe('UA'));
+  it('resolves "Kyrzyghistan" → KG (misspelling of Kyrgyzstan)', () =>
+    expect(resolveCountryCode('Kyrzyghistan')).toBe('KG'));
+  it('resolves "Turkemanistan" → TM (misspelling of Turkmenistan)', () =>
+    expect(resolveCountryCode('Turkemanistan')).toBe('TM'));
+  it('resolves "Libyan Arab Jamhirya" → LY (misspelling of Arab Jamahiriya)', () =>
+    expect(resolveCountryCode('Libyan Arab Jamhirya')).toBe('LY'));
+
+  // Lao People's Democratic Republic — 30-char truncated form in source
+  it('resolves "Lao People\'s Democratic Republ" → LA (30-char truncation)', () =>
+    expect(resolveCountryCode("Lao People's Democratic Republ")).toBe('LA'));
+
+  // Saint Kitts double-space form in source data
+  it('resolves "Saint Kitts  and Nevis" → KN (double-space form)', () =>
+    expect(resolveCountryCode('Saint Kitts  and Nevis')).toBe('KN'));
+
+  // Sao Tome ampersand form
+  it('resolves "Sao Tome & Principe" → ST', () =>
+    expect(resolveCountryCode('Sao Tome & Principe')).toBe('ST'));
+
+  // SINT MAARTEN all-caps (as stored in source)
+  it('resolves "SINT MAARTEN" → SX (exact source form)', () =>
+    expect(resolveCountryCode('SINT MAARTEN')).toBe('SX'));
+
+  // MOLDOVA all-caps (as stored in source)
+  it('resolves "MOLDOVA, REPUBLIC OF" → MD (exact source form)', () =>
+    expect(resolveCountryCode('MOLDOVA, REPUBLIC OF')).toBe('MD'));
+
+  // NOT mappable — COUNTRY_UNKNOWN preserved for these values
+  it('returns undefined for "Tajikistan/tasmania" (data entry error — ambiguous)', () =>
+    expect(resolveCountryCode('Tajikistan/tasmania')).toBeUndefined());
+  it('returns undefined for "West Africa" (regional designation — not a country)', () =>
+    expect(resolveCountryCode('West Africa')).toBeUndefined());
+  it('returns undefined for "Canary Is" (Spain subdivision — ambiguous country code)', () =>
+    expect(resolveCountryCode('Canary Is')).toBeUndefined());
+  it('returns undefined for "Samda/samoa" (ambiguous — WS vs AS)', () =>
+    expect(resolveCountryCode('Samda/samoa')).toBeUndefined());
+});
+
 // ── 4. Correction DTO allowlist ───────────────────────────────────────────────
 
 import { CORRECTABLE_FIELDS } from './quality/correction/correction.dto';
