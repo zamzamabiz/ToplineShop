@@ -250,18 +250,54 @@ describe('AnalyticsService.getBreakdown — tenant isolation and topN', () => {
     const result = await svc.getBreakdown('t', {}, BreakdownDimension.CURRENCY_CODE, 10);
     expect(result.data.dimension).toBe(BreakdownDimension.CURRENCY_CODE);
   });
+
+  it('FOREIGN_COUNTRY breakdown uses $queryRaw (direction-aware CASE, not simple column)', async () => {
+    const prisma = makeAnalyticsPrisma({
+      queryRawRows: [
+        { dim_value: 'US', record_count: 77383n },
+        { dim_value: 'GB', record_count: 37852n },
+        { dim_value: null, record_count: 14458n },
+      ],
+    });
+    const svc = new AnalyticsService(prisma as never);
+    const result = await svc.getBreakdown('t', {}, BreakdownDimension.FOREIGN_COUNTRY, 10);
+    expect(result.data.dimension).toBe(BreakdownDimension.FOREIGN_COUNTRY);
+    expect(result.data.items[0]).toEqual({ value: 'US', count: 77383 });
+    expect(result.data.items[1]).toEqual({ value: 'GB', count: 37852 });
+    // null partition (unresolvable strings) still passes through
+    expect(result.data.items[2]).toEqual({ value: null, count: 14458 });
+    expect(prisma.$queryRaw).toHaveBeenCalledTimes(1);
+  });
 });
 
 // ── 8. Filter options — tenant-scoped facets ──────────────────────────────────
 
 describe('AnalyticsService.getFilterOptions — tenant isolation', () => {
-  it('all 5 groupBy calls include tenantId in where clause', async () => {
+  it('all 4 groupBy calls include tenantId in where clause', async () => {
     const prisma = makeAnalyticsPrisma({ groupByRows: [] });
     const svc = new AnalyticsService(prisma as never);
     await svc.getFilterOptions('facet-tenant');
+    expect(prisma.tdrRecord.groupBy.mock.calls).toHaveLength(4);
     for (const call of prisma.tdrRecord.groupBy.mock.calls) {
       expect(call[0].where.tenantId).toBe('facet-tenant');
     }
+  });
+
+  it('countries facet uses $queryRaw (direction-aware CASE, not groupBy)', async () => {
+    const prisma = makeAnalyticsPrisma({ queryRawRows: [{ country_code: 'US' }, { country_code: 'GB' }] });
+    const svc = new AnalyticsService(prisma as never);
+    const result = await svc.getFilterOptions('ct');
+    expect(result.data.foreignCountryCodes).toContain('US');
+    expect(result.data.foreignCountryCodes).toContain('GB');
+  });
+
+  it('null country_code values are filtered from foreignCountryCodes array', async () => {
+    const prisma = makeAnalyticsPrisma({
+      queryRawRows: [{ country_code: null }, { country_code: 'DE' }],
+    });
+    const svc = new AnalyticsService(prisma as never);
+    const result = await svc.getFilterOptions('t');
+    expect(result.data.foreignCountryCodes).toEqual(['DE']); // null filtered out
   });
 
   it('null values are filtered from hsChapters array', async () => {
@@ -269,9 +305,8 @@ describe('AnalyticsService.getFilterOptions — tenant isolation', () => {
     prisma.tdrRecord.groupBy
       .mockResolvedValueOnce([{ tradeDirection: 'IMPORT', _count: { id: 5 } }]) // directions
       .mockResolvedValueOnce([{ hsChapter: null, _count: { id: 3 } }, { hsChapter: '84', _count: { id: 7 } }]) // chapters
-      .mockResolvedValueOnce([]) // countries
       .mockResolvedValueOnce([]) // currencies
-      .mockResolvedValueOnce([]); // units
+      .mockResolvedValueOnce([]); // units (countries now uses $queryRaw)
     const svc = new AnalyticsService(prisma as never);
     const result = await svc.getFilterOptions('t');
     expect(result.data.hsChapters).toEqual(['84']); // null filtered out

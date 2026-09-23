@@ -273,10 +273,10 @@ describe('AnalyticsService (unit, mock Prisma)', () => {
   });
 
   describe('getFilterOptions', () => {
-    it('calls groupBy for each facet', async () => {
+    it('calls groupBy for 4 facets (countries facet uses $queryRaw)', async () => {
       prisma.tdrRecord.groupBy.mockResolvedValue([]);
       await service.getFilterOptions('t');
-      expect(prisma.tdrRecord.groupBy).toHaveBeenCalledTimes(5);
+      expect(prisma.tdrRecord.groupBy).toHaveBeenCalledTimes(4);
     });
 
     it('returns empty arrays when no records', async () => {

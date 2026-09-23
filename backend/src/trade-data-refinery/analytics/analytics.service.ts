@@ -21,7 +21,11 @@ const BREAKDOWN_FIELD_MAP: Record<BreakdownDimension, string> = {
 const BREAKDOWN_COLUMN_MAP: Record<BreakdownDimension, string> = {
   [BreakdownDimension.TRADE_DIRECTION]: 'trade_direction',
   [BreakdownDimension.HS_CHAPTER]: 'hs_chapter',
-  [BreakdownDimension.FOREIGN_COUNTRY]: 'foreign_party_country_code',
+  // §74 — counterparty country: direction-aware CASE resolves to the foreign
+  // trading partner's country. For EXPORT records, the importer is the foreign
+  // party; for IMPORT records, the exporter is the foreign party. Falls back to
+  // foreign_party_country_code for legacy-mapped records.
+  [BreakdownDimension.FOREIGN_COUNTRY]: `CASE WHEN trade_direction = 'EXPORT' THEN COALESCE(importer_country_code, foreign_party_country_code) WHEN trade_direction = 'IMPORT' THEN COALESCE(exporter_country_code, foreign_party_country_code) ELSE foreign_party_country_code END`,
   [BreakdownDimension.CURRENCY_CODE]: 'currency_code',
   [BreakdownDimension.QUANTITY_UNIT]: 'quantity_unit_code',
 };
@@ -183,13 +187,21 @@ export class AnalyticsService {
           orderBy: { _count: { id: 'desc' } },
           take: FACET_LIMIT,
         }),
-        this.prisma.tdrRecord.groupBy({
-          by: ['foreignPartyCountryCode'],
-          where: { tenantId, foreignPartyCountryCode: { not: null } },
-          _count: { id: true },
-          orderBy: { _count: { id: 'desc' } },
-          take: FACET_LIMIT,
-        }),
+        // §74 — direction-aware counterparty country: same CASE logic as BREAKDOWN_COLUMN_MAP.
+        // Cannot use Prisma groupBy for a computed column; $queryRaw used instead.
+        this.prisma.$queryRaw<Array<{ country_code: string | null }>>`
+          SELECT DISTINCT
+            CASE WHEN trade_direction = 'EXPORT' THEN COALESCE(importer_country_code, foreign_party_country_code)
+                 WHEN trade_direction = 'IMPORT' THEN COALESCE(exporter_country_code, foreign_party_country_code)
+                 ELSE foreign_party_country_code END AS country_code
+          FROM tdr_records
+          WHERE tenant_id = ${tenantId}
+            AND (importer_country_code IS NOT NULL
+                 OR exporter_country_code IS NOT NULL
+                 OR foreign_party_country_code IS NOT NULL)
+          ORDER BY 1
+          LIMIT ${FACET_LIMIT}
+        `,
         this.prisma.tdrRecord.groupBy({
           by: ['currencyCode'],
           where: { tenantId, currencyCode: { not: null } },
@@ -210,8 +222,8 @@ export class AnalyticsService {
       tradeDirections: directions.map((r) => r.tradeDirection),
       hsChapters: chapters.map((r) => r.hsChapter).filter(Boolean),
       foreignCountryCodes: countries
-        .map((r) => r.foreignPartyCountryCode)
-        .filter(Boolean),
+        .map((r) => r.country_code)
+        .filter(Boolean) as string[],
       currencyCodes: currencies.map((r) => r.currencyCode).filter(Boolean),
       quantityUnitCodes: units.map((r) => r.quantityUnitCode).filter(Boolean),
     });
