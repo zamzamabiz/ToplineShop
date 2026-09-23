@@ -324,7 +324,82 @@ describe('AnalyticsService.getFilterOptions — tenant isolation', () => {
   });
 });
 
-// ── 9. Filter consistency — batchId filter applied to all summary counts ──────
+// ── 9. foreignCountryCode filter — direction-aware OR decomposition ───────────
+
+describe('foreignCountryCode filter — direction-aware OR semantics', () => {
+  it('EXPORT + US: where.OR includes EXPORT/importerCountryCode = US clause', async () => {
+    const prisma = makeAnalyticsPrisma({ countValues: [0, 0, 0, 0, 0] });
+    const svc = new AnalyticsService(prisma as never);
+    await svc.getSummary('t', { foreignCountryCode: 'US' });
+    const where = prisma.tdrRecord.count.mock.calls[0][0].where;
+    expect(where.OR).toBeDefined();
+    const exportClause = where.OR.find(
+      (c: any) => c.tradeDirection === 'EXPORT' && c.importerCountryCode === 'US',
+    );
+    expect(exportClause).toBeDefined();
+  });
+
+  it('IMPORT + IR: where.OR includes IMPORT/exporterCountryCode = IR clause', async () => {
+    const prisma = makeAnalyticsPrisma({ countValues: [0, 0, 0, 0, 0] });
+    const svc = new AnalyticsService(prisma as never);
+    await svc.getSummary('t', { foreignCountryCode: 'IR' });
+    const where = prisma.tdrRecord.count.mock.calls[0][0].where;
+    const importClause = where.OR.find(
+      (c: any) => c.tradeDirection === 'IMPORT' && c.exporterCountryCode === 'IR',
+    );
+    expect(importClause).toBeDefined();
+  });
+
+  it('legacy fallback: where.OR includes EXPORT/importerCountryCode=null/foreignPartyCountryCode clause', async () => {
+    const prisma = makeAnalyticsPrisma({ countValues: [0, 0, 0, 0, 0] });
+    const svc = new AnalyticsService(prisma as never);
+    await svc.getSummary('t', { foreignCountryCode: 'GB' });
+    const where = prisma.tdrRecord.count.mock.calls[0][0].where;
+    const legacyExport = where.OR.find(
+      (c: any) =>
+        c.tradeDirection === 'EXPORT' &&
+        c.importerCountryCode === null &&
+        c.foreignPartyCountryCode === 'GB',
+    );
+    expect(legacyExport).toBeDefined();
+  });
+
+  it('tenant isolation preserved with foreignCountryCode filter', async () => {
+    const prisma = makeAnalyticsPrisma({ countValues: [0, 0, 0, 0, 0] });
+    const svc = new AnalyticsService(prisma as never);
+    await svc.getSummary('tenant-xyz', { foreignCountryCode: 'US' });
+    const where = prisma.tdrRecord.count.mock.calls[0][0].where;
+    expect(where.tenantId).toBe('tenant-xyz');
+    expect(where.OR).toBeDefined();
+  });
+
+  it('date + country combined: tradeDate and OR both present in where', async () => {
+    const prisma = makeAnalyticsPrisma({ countValues: [0, 0, 0, 0, 0] });
+    const svc = new AnalyticsService(prisma as never);
+    await svc.getSummary('t', { foreignCountryCode: 'DE', dateFrom: '2025-01-01' });
+    const where = prisma.tdrRecord.count.mock.calls[0][0].where;
+    expect(where.tradeDate).toBeDefined();
+    expect(where.OR).toBeDefined();
+  });
+
+  it('direction + country combined: tradeDirection and OR both present in where', async () => {
+    const prisma = makeAnalyticsPrisma({ countValues: [0, 0, 0, 0, 0] });
+    const svc = new AnalyticsService(prisma as never);
+    await svc.getSummary('t', { foreignCountryCode: 'US', tradeDirection: 'EXPORT' });
+    const where = prisma.tdrRecord.count.mock.calls[0][0].where;
+    expect(where.tradeDirection).toBe('EXPORT');
+    expect(where.OR).toBeDefined();
+  });
+
+  it('getBreakdown with foreignCountryCode filter still calls $queryRaw', async () => {
+    const prisma = makeAnalyticsPrisma({ queryRawRows: [{ dim_value: 'EXPORT', record_count: 1n }] });
+    const svc = new AnalyticsService(prisma as never);
+    await svc.getBreakdown('t', { foreignCountryCode: 'US' }, BreakdownDimension.TRADE_DIRECTION, 5);
+    expect(prisma.$queryRaw).toHaveBeenCalledTimes(1);
+  });
+});
+
+// ── 10. Filter consistency — batchId filter applied to all summary counts ──────
 
 describe('Filter consistency — batchId applied consistently', () => {
   it('batchId filter appears in all 5 summary count calls', async () => {

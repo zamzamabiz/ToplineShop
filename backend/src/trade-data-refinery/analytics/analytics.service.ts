@@ -17,15 +17,23 @@ const BREAKDOWN_FIELD_MAP: Record<BreakdownDimension, string> = {
   [BreakdownDimension.QUANTITY_UNIT]: 'quantityUnitCode',
 };
 
+// §74 — canonical direction-aware counterparty country SQL expression.
+// EXPORT records: the importer is the foreign party → importer_country_code.
+// IMPORT records: the exporter is the foreign party → exporter_country_code.
+// Falls back to foreign_party_country_code for legacy-mapped records (62 rows).
+// Used in: BREAKDOWN_COLUMN_MAP, buildRawConditions, getFilterOptions.
+const DIRECTION_AWARE_COUNTRY_SQL =
+  `CASE WHEN trade_direction = 'EXPORT'` +
+  ` THEN COALESCE(importer_country_code, foreign_party_country_code)` +
+  ` WHEN trade_direction = 'IMPORT'` +
+  ` THEN COALESCE(exporter_country_code, foreign_party_country_code)` +
+  ` ELSE foreign_party_country_code END`;
+
 // Maps to database column names for $queryRaw — never from client input.
 const BREAKDOWN_COLUMN_MAP: Record<BreakdownDimension, string> = {
   [BreakdownDimension.TRADE_DIRECTION]: 'trade_direction',
   [BreakdownDimension.HS_CHAPTER]: 'hs_chapter',
-  // §74 — counterparty country: direction-aware CASE resolves to the foreign
-  // trading partner's country. For EXPORT records, the importer is the foreign
-  // party; for IMPORT records, the exporter is the foreign party. Falls back to
-  // foreign_party_country_code for legacy-mapped records.
-  [BreakdownDimension.FOREIGN_COUNTRY]: `CASE WHEN trade_direction = 'EXPORT' THEN COALESCE(importer_country_code, foreign_party_country_code) WHEN trade_direction = 'IMPORT' THEN COALESCE(exporter_country_code, foreign_party_country_code) ELSE foreign_party_country_code END`,
+  [BreakdownDimension.FOREIGN_COUNTRY]: DIRECTION_AWARE_COUNTRY_SQL,
   [BreakdownDimension.CURRENCY_CODE]: 'currency_code',
   [BreakdownDimension.QUANTITY_UNIT]: 'quantity_unit_code',
 };
@@ -187,13 +195,11 @@ export class AnalyticsService {
           orderBy: { _count: { id: 'desc' } },
           take: FACET_LIMIT,
         }),
-        // §74 — direction-aware counterparty country: same CASE logic as BREAKDOWN_COLUMN_MAP.
+        // §74 — direction-aware counterparty country: uses DIRECTION_AWARE_COUNTRY_SQL constant.
         // Cannot use Prisma groupBy for a computed column; $queryRaw used instead.
         this.prisma.$queryRaw<Array<{ country_code: string | null }>>`
           SELECT DISTINCT
-            CASE WHEN trade_direction = 'EXPORT' THEN COALESCE(importer_country_code, foreign_party_country_code)
-                 WHEN trade_direction = 'IMPORT' THEN COALESCE(exporter_country_code, foreign_party_country_code)
-                 ELSE foreign_party_country_code END AS country_code
+            ${Prisma.raw(DIRECTION_AWARE_COUNTRY_SQL)} AS country_code
           FROM tdr_records
           WHERE tenant_id = ${tenantId}
             AND (importer_country_code IS NOT NULL
@@ -255,7 +261,16 @@ function buildWhere(
 
   if (filter.hsChapter) where.hsChapter = filter.hsChapter;
   if (filter.foreignCountryCode) {
-    where.foreignPartyCountryCode = filter.foreignCountryCode;
+    const v = filter.foreignCountryCode;
+    // §74 — direction-aware OR: mirrors DIRECTION_AWARE_COUNTRY_SQL for Prisma ORM.
+    // EXPORT: COALESCE(importer_country_code, foreign_party_country_code)
+    // IMPORT: COALESCE(exporter_country_code, foreign_party_country_code)
+    where.OR = [
+      { tradeDirection: TradeDirection.EXPORT, importerCountryCode: v },
+      { tradeDirection: TradeDirection.EXPORT, importerCountryCode: null, foreignPartyCountryCode: v },
+      { tradeDirection: TradeDirection.IMPORT, exporterCountryCode: v },
+      { tradeDirection: TradeDirection.IMPORT, exporterCountryCode: null, foreignPartyCountryCode: v },
+    ];
   }
   if (filter.localPartyTaxId) {
     where.localPartyTaxIdNormalized = filter.localPartyTaxId;
@@ -303,8 +318,9 @@ function buildRawConditions(
     conditions.push(Prisma.sql`hs_chapter = ${filter.hsChapter}`);
   }
   if (filter.foreignCountryCode) {
+    // §74 — direction-aware filter using DIRECTION_AWARE_COUNTRY_SQL (server-side whitelist).
     conditions.push(
-      Prisma.sql`foreign_party_country_code = ${filter.foreignCountryCode}`,
+      Prisma.sql`(${Prisma.raw(DIRECTION_AWARE_COUNTRY_SQL)}) = ${filter.foreignCountryCode}`,
     );
   }
   if (filter.localPartyTaxId) {
