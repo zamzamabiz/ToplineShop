@@ -273,6 +273,14 @@ export function cancelBatch(token: string, id: string) {
   );
 }
 
+export function replayBatch(token: string, id: string, reason: string) {
+  return post<{ reason: string }, { replayBatchId: string }>(
+    `/tdr/batches/${encodeURIComponent(id)}/replay`,
+    token,
+    { reason },
+  );
+}
+
 // ── Upload ────────────────────────────────────────────────────────────────────
 
 export async function uploadFile(

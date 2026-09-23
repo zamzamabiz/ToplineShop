@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
-import { getBatch, getBatchProgress, cancelBatch } from '@/lib/tdr-api';
+import { getBatch, getBatchProgress, cancelBatch, replayBatch } from '@/lib/tdr-api';
 import type { TdrBatch, TdrBatchProgress } from '@/types/tdr';
+
+const REPLAYABLE_STATUSES = new Set(['READY', 'PARTIAL', 'FAILED', 'EXPORTED']);
 
 const STATUS_COLORS: Record<string, string> = {
   PENDING: 'bg-yellow-900/40 text-yellow-300',
@@ -41,6 +43,9 @@ export default function TdrBatchDetailPage() {
   const [progress, setProgress] = useState<TdrBatchProgress | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [cancelling, setCancelling] = useState(false);
+  const [showReplayConfirm, setShowReplayConfirm] = useState(false);
+  const [replaying, setReplaying] = useState(false);
+  const [replayResult, setReplayResult] = useState<{ ok: true; replayBatchId: string } | { ok: false; msg: string } | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const pollRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -82,6 +87,24 @@ export default function TdrBatchDetailPage() {
       setError(e?.message ?? 'Cancel failed');
     } finally {
       setCancelling(false);
+    }
+  };
+
+  const handleReplay = async () => {
+    if (!accessToken || !batchId) return;
+    setReplaying(true);
+    setShowReplayConfirm(false);
+    setReplayResult(null);
+    try {
+      const result = await replayBatch(
+        accessToken,
+        batchId,
+        'Replay via batch detail page — applying latest mapping and refinement rules',
+      );
+      setReplayResult({ ok: true, replayBatchId: result.replayBatchId });
+    } catch (e: any) {
+      setReplayResult({ ok: false, msg: e?.message ?? 'Replay failed' });
+      setReplaying(false);
     }
   };
 
@@ -194,6 +217,15 @@ export default function TdrBatchDetailPage() {
             Export Records
           </Link>
         )}
+        {REPLAYABLE_STATUSES.has(batch.status) && !replayResult?.ok && (
+          <button
+            onClick={() => setShowReplayConfirm(true)}
+            disabled={replaying || showReplayConfirm}
+            className="px-4 py-2 text-sm border border-white/20 text-text-secondary rounded hover:bg-white/5 disabled:opacity-50"
+          >
+            {replaying ? 'Replaying…' : 'Replay Batch'}
+          </button>
+        )}
         {ACTIVE_STATUSES.has(batch.status) && (
           <button
             onClick={handleCancel}
@@ -204,6 +236,50 @@ export default function TdrBatchDetailPage() {
           </button>
         )}
       </div>
+
+      {showReplayConfirm && (
+        <div className="bg-surface-secondary border border-white/10 rounded-lg p-4 space-y-3 text-sm">
+          <p className="text-text-primary font-medium">Replay this source using the latest mapping and refinement rules?</p>
+          <p className="text-text-muted text-xs">
+            A new batch will be created from the original source file. The existing batch and its raw data are preserved unchanged.
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={handleReplay}
+              className="px-3 py-1.5 text-sm bg-accent-primary text-white rounded hover:opacity-90"
+            >
+              Confirm Replay
+            </button>
+            <button
+              onClick={() => setShowReplayConfirm(false)}
+              className="px-3 py-1.5 text-sm border border-white/20 text-text-secondary rounded hover:bg-white/5"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {replayResult && !replayResult.ok && (
+        <div className="text-sm text-red-300 bg-red-900/20 rounded px-4 py-3">
+          Replay failed: {replayResult.msg}
+        </div>
+      )}
+
+      {replayResult?.ok && (
+        <div className="bg-green-900/20 border border-green-700/40 rounded-lg px-4 py-3 space-y-1 text-sm">
+          <p className="text-green-300 font-medium">Replay started successfully.</p>
+          <p className="text-text-muted text-xs">
+            New batch ID: <span className="font-mono text-xs">{replayResult.replayBatchId}</span>
+          </p>
+          <Link
+            href={`/tdr/batches/${replayResult.replayBatchId}`}
+            className="inline-block mt-1 text-xs text-accent-primary hover:underline"
+          >
+            Open new batch →
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
