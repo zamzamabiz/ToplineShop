@@ -210,10 +210,11 @@ No force. No --force-with-lease. No tags. No other branch.
 
 | Field | Value |
 |---|---|
-| Local HEAD | `<filled after push>` |
-| Remote HEAD | `<filled after push>` |
+| Local HEAD | `2ece402a4d7f644dfeeacfc4fe02a8c234ec82f8` |
+| Remote HEAD | `2ece402a4d7f644dfeeacfc4fe02a8c234ec82f8` |
 | Ahead | 0 |
 | Behind | 0 |
+| LOCAL HEAD = REMOTE HEAD | **YES** |
 
 ---
 

@@ -3154,7 +3154,7 @@ export const projectRegistry: ProjectRegistry = {
       startedAt: "2026-09-24T00:00:00.000Z",
       completedAt: "2026-09-24T00:00:00.000Z",
       wdrPath: "WDR/_All/Trade-Data-Refinery/TDR-STAGE2-PRE-GOVERNANCE-SYNC-001_WDR_2026-09-24.md",
-      commitHash: null,
+      commitHash: "2ece402",
       tests: "NOT_STARTED",
       build: "NOT_STARTED",
       ownerApproval: "PASS",
