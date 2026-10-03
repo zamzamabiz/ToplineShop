@@ -1,4 +1,4 @@
-﻿export default function ChohanIndustriesPage() {
+export default function ChohanIndustriesPage() {
   return (
     <main className="min-h-screen bg-white text-slate-900 flex flex-col">
       <header className="border-b border-slate-200 px-6 py-4">
@@ -74,6 +74,15 @@
         </p>
       </section>
 
+      <section id="sustainability" className="px-6 py-12 max-w-3xl mx-auto w-full">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          Sustainability
+        </h2>
+        <p className="text-base md:text-lg text-slate-700 leading-relaxed">
+          At Chohan Industries, sustainability is a core responsibility. We design our processes, sourcing, and operations to minimize environmental impact, support worker safety, and contribute positively to the communities we serve.
+        </p>
+      </section>
+
       <section id="contact" className="px-6 py-12 max-w-3xl mx-auto w-full">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">
           Contact
@@ -84,7 +93,7 @@
       </section>
 
       <footer className="border-t border-slate-200 px-6 py-4 text-sm text-slate-500 text-center">
-        Â© {new Date().getFullYear()} Chohan Industries. All rights reserved.
+        © {new Date().getFullYear()} Chohan Industries. All rights reserved.
       </footer>
     </main>
   );
