@@ -30,6 +30,15 @@ export default function ChohanIndustriesPage() {
         </nav>
       </section>
 
+      <section id="services" className="px-6 py-12 max-w-3xl mx-auto w-full">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          Services
+        </h2>
+        <p className="text-base md:text-lg text-slate-700 leading-relaxed">
+          Chohan Industries provides integrated corporate services across our operating companies, including strategic management, capital allocation, operational governance, and long-horizon advisory for the businesses, communities, and partners we serve.
+        </p>
+      </section>
+
       <footer className="border-t border-slate-200 px-6 py-4 text-sm text-slate-500 text-center">
         © {new Date().getFullYear()} Chohan Industries. All rights reserved.
       </footer>
