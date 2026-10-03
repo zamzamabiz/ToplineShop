@@ -40,6 +40,12 @@ export function Topbar({ dashboard }: TopbarProps) {
         </div>
       </div>
       <div className="flex items-center gap-2">
+        <span
+          className="text-sm px-3 py-1.5 rounded-md"
+          style={{ color: "var(--text-muted)" }}
+        >
+          Sandbox Build
+        </span>
         <Link
           href="/project-management"
           className="text-sm px-3 py-1.5 rounded-md transition-colors"
