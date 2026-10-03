@@ -48,6 +48,15 @@ export default function ChohanIndustriesPage() {
         </p>
       </section>
 
+      <section id="contact" className="px-6 py-12 max-w-3xl mx-auto w-full">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          Contact
+        </h2>
+        <p className="text-base md:text-lg text-slate-700 leading-relaxed">
+          Chohan Industries welcomes enquiries from partners, investors, and the communities we serve. Our corporate office responds to all correspondence in support of long-term collaboration.
+        </p>
+      </section>
+
       <footer className="border-t border-slate-200 px-6 py-4 text-sm text-slate-500 text-center">
         © {new Date().getFullYear()} Chohan Industries. All rights reserved.
       </footer>
