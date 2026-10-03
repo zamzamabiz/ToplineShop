@@ -39,6 +39,23 @@ export default function ChohanIndustriesPage() {
         </p>
       </section>
 
+      <section id="industries" className="px-6 py-12 max-w-3xl mx-auto w-full">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          Products and Industries
+        </h2>
+        <ul className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <li className="rounded-lg border border-slate-300 px-4 py-3 text-center hover:bg-slate-50">
+            Agribusiness and Food Systems
+          </li>
+          <li className="rounded-lg border border-slate-300 px-4 py-3 text-center hover:bg-slate-50">
+            Industrial Logistics
+          </li>
+          <li className="rounded-lg border border-slate-300 px-4 py-3 text-center hover:bg-slate-50">
+            Renewable Energy Infrastructure
+          </li>
+        </ul>
+      </section>
+
       <section id="services" className="px-6 py-12 max-w-3xl mx-auto w-full">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">
           Services
