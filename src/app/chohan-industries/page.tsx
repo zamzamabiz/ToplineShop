@@ -74,6 +74,15 @@ export default function ChohanIndustriesPage() {
         </p>
       </section>
 
+      <section id="sustainability" className="px-6 py-12 max-w-3xl mx-auto w-full">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          Sustainability
+        </h2>
+        <p className="text-base md:text-lg text-slate-700 leading-relaxed">
+          At Chohan Industries, sustainability is a core responsibility. We design our processes, sourcing, and operations to minimize environmental impact, support worker safety, and contribute positively to the communities we serve.
+        </p>
+      </section>
+
       <section id="contact" className="px-6 py-12 max-w-3xl mx-auto w-full">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">
           Contact
