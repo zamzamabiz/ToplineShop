@@ -56,6 +56,6 @@ import { TdrWebhookService } from './services/tdr-webhook.service';
     TdrApiKeyService,
     TdrWebhookService,
   ],
-  exports: [TdrJobOrchestratorService, TdrProcessorService],
+  exports: [TdrJobOrchestratorService, TdrProcessorService, StorageService],
 })
 export class TradeDataRefineryModule {}

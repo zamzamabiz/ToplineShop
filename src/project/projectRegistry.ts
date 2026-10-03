@@ -99,6 +99,7 @@ export interface WdrEntry {
   phase: string;
   status: Status;
   date: string;
+  path?: string | null;
   commitHash: string | null;
   pmAudit: Status;
 }
@@ -3046,7 +3047,7 @@ export const projectRegistry: ProjectRegistry = {
       commitHash: "0e2c592",
       tests: "PASS",
       build: "PASS",
-      ownerApproval: "PENDING",
+      ownerApproval: "PENDING PM",
       pmApproval: "PASS",
       notes: "PENDING OWNER VERIFICATION — 8 mapping policy corrections + REQUIRED_FIELD_MISSING severity fix (WARNING). 836/837 backend + 159/159 frontend. Browser upload of EXP+IMP test files required to close.",
     },
@@ -5016,6 +5017,7 @@ export const projectRegistry: ProjectRegistry = {
       date: "2026-09-22",
       path: "WDR/_All/Trade-Data-Refinery/TDR-GLOBAL-TRADE-UPLOAD-REFINEMENT-001_WDR_2026-09-22.md",
       commitHash: "43385b4",
+      pmAudit: "PLANNED",
     },
     {
       id: "wdr-tdr-standardized-filename-001",
@@ -5025,6 +5027,7 @@ export const projectRegistry: ProjectRegistry = {
       date: "2026-09-23",
       path: "WDR/_All/Trade-Data-Refinery/TDR-STANDARDIZED-FILENAME-001_WDR_2026-09-23.md",
       commitHash: "f844bbe",
+      pmAudit: "PLANNED",
     },
     {
       id: "wdr-tdr-local-production-like-validation-001",
