@@ -1,0 +1,9 @@
+const galleryItems = [
+  ["Trade in motion", "A closer look at the routes, partners and people behind dependable delivery."],
+  ["People and practice", "Stories from the teams building stronger systems across Karachi and Dubai."],
+  ["From source to destination", "Visual notes from the markets and communities we connect."],
+];
+
+export default function ChohanGalleryPage() {
+  return <main className="min-h-screen bg-[var(--app-canvas)] text-[var(--text-primary)]"><header className="border-b border-[var(--border-default)] bg-[var(--surface-primary)] px-6 py-5"><div className="mx-auto flex max-w-6xl items-center justify-between"><a className="font-semibold" href="/chohan-industries">Chohan Industries</a><a className="text-sm font-semibold text-[var(--brand-primary)]" href="/chohan-industries/admin">Admin control</a></div></header><section className="mx-auto max-w-6xl px-6 py-16"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Photo gallery</p><h1 className="mt-3 max-w-3xl text-5xl font-semibold tracking-tight">The people, places and movement behind the work.</h1><p className="mt-5 max-w-2xl text-lg text-[var(--text-secondary)]">A governed visual library for company stories, events, operations and community impact.</p><div className="mt-12 grid gap-5 md:grid-cols-3">{galleryItems.map(([title, copy], index) => <article className="overflow-hidden rounded-xl border border-[var(--border-default)] bg-[var(--surface-primary)]" key={title}><div className="flex aspect-[4/3] items-end bg-[var(--surface-secondary)] p-5"><span className="text-sm font-bold text-[var(--brand-primary)]">0{index + 1}</span></div><div className="p-5"><h2 className="text-xl font-semibold">{title}</h2><p className="mt-2 text-sm text-[var(--text-secondary)]">{copy}</p></div></article>)}</div></section></main>;
+}
