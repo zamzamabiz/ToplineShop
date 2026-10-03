@@ -13,6 +13,7 @@ import { TradeDataRefineryModule } from './trade-data-refinery/trade-data-refine
 import { MetricsModule } from './common/metrics/metrics.module';
 import { CorrelationIdMiddleware } from './common/middleware/correlation-id.middleware';
 import { RequestLoggerMiddleware } from './common/middleware/request-logger.middleware';
+import { ChohanContentModule } from './chohan-content/chohan-content.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { RequestLoggerMiddleware } from './common/middleware/request-logger.midd
     AuditModule,
     AuthModule,
     TradeDataRefineryModule,
+    ChohanContentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

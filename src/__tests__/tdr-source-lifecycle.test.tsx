@@ -60,6 +60,7 @@ const BASE_BATCH: TdrBatch = {
   status: 'READY',
   tradeDirection: 'IMPORT',
   originalFilename: 'import.csv',
+  standardizedFilename: null,
   sourceFileId: 'sf-1',
   sourceFileArchivedAt: null,
   sourceFileRetentionExpiresAt: null,
