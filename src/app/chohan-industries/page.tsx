@@ -39,6 +39,15 @@ export default function ChohanIndustriesPage() {
         </p>
       </section>
 
+      <section id="responsibility" className="px-6 py-12 max-w-3xl mx-auto w-full">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          Responsibility
+        </h2>
+        <p className="text-base md:text-lg text-slate-700 leading-relaxed">
+          Chohan Industries is committed to responsible corporate citizenship across our operating companies, embedding environmental stewardship, ethical governance, and community partnership into every decision we make and every business we steward.
+        </p>
+      </section>
+
       <footer className="border-t border-slate-200 px-6 py-4 text-sm text-slate-500 text-center">
         © {new Date().getFullYear()} Chohan Industries. All rights reserved.
       </footer>
