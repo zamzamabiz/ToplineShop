@@ -30,6 +30,15 @@ export default function ChohanIndustriesPage() {
         </nav>
       </section>
 
+      <section id="about" className="px-6 py-12 max-w-3xl mx-auto w-full">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          About Chohan Industries
+        </h2>
+        <p className="text-base md:text-lg text-slate-700 leading-relaxed">
+          Chohan Industries partners with founders, operators, and communities to build enduring businesses that balance commercial discipline with long-term stewardship, applying patient capital and hands-on governance across every venture in our portfolio.
+        </p>
+      </section>
+
       <section id="services" className="px-6 py-12 max-w-3xl mx-auto w-full">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">
           Services
