@@ -52,6 +52,9 @@ export default function ChohanIndustriesPage() {
           <a href="/chohan-industries/gallery" className="rounded-lg border border-slate-300 px-4 py-3 text-center hover:bg-slate-50">
             Photo gallery
           </a>
+          <a href="/chohan-industries/products" className="rounded-lg border border-slate-300 px-4 py-3 text-center hover:bg-slate-50">
+            Products and services
+          </a>
           <a href="/chohan-industries/events" className="rounded-lg border border-slate-300 px-4 py-3 text-center hover:bg-slate-50">
             Company events
           </a>
@@ -77,9 +80,7 @@ export default function ChohanIndustriesPage() {
       </section>
 
       <section id="industries" className="px-6 py-12 max-w-3xl mx-auto w-full">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">
-          Products and Industries
-        </h2>
+        <div className="flex items-end justify-between gap-4"><h2 className="text-3xl md:text-4xl font-bold mb-4">Products and Industries</h2><a href="/chohan-industries/products" className="mb-4 text-sm font-bold text-[var(--brand-primary)]">Explore all →</a></div>
         <ul className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <li className="rounded-lg border border-slate-300 px-4 py-3 text-center hover:bg-slate-50">
             Agribusiness and Food Systems
