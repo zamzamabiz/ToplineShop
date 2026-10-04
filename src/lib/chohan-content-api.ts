@@ -18,6 +18,11 @@ export type ChohanContentDraft = {
   responsibilityCopy?: string;
   contactHeading?: string;
   contactCopy?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string;
+  ogImageUrl?: string;
+  noIndex?: boolean;
 };
 
 export type ChohanPublicContent = {
