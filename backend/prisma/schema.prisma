@@ -85,6 +85,11 @@ model Tenant {
   apiKeys           TdrApiKey[]
   webhookSubscriptions    TdrWebhookSubscription[]
   webhookDeliveryAttempts TdrWebhookDeliveryAttempt[]
+  chohanSiteConfig         ChohanSiteConfig?
+  chohanRevisions          ChohanContentRevision[]
+  chohanGallery            ChohanGalleryItem[]
+  chohanEvents             ChohanCompanyEvent[]
+  chohanMediaAssets        ChohanMediaAsset[]
 
   @@map("tenants")
 }
@@ -114,6 +119,10 @@ model User {
   deletionRequestsCreated  TdrSourceDeletionRequest[] @relation("TdrDeletionRequestedBy")
   deletionRequestsReviewed TdrSourceDeletionRequest[] @relation("TdrDeletionReviewedBy")
   apiKeysCreated           TdrApiKey[]                @relation("TdrApiKeyCreatedBy")
+  chohanConfigsUpdated     ChohanSiteConfig[]         @relation("ChohanConfigUpdatedBy")
+  chohanRevisionsCreated   ChohanContentRevision[]    @relation("ChohanRevisionCreatedBy")
+  chohanRevisionsReviewed  ChohanContentRevision[]    @relation("ChohanRevisionReviewedBy")
+  chohanMediaCreated       ChohanMediaAsset[]         @relation("ChohanMediaCreatedBy")
 
   @@map("users")
 }
@@ -222,6 +231,110 @@ model AuditLog {
   @@index([entityType, entityId])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+// Chohan corporate content is deliberately separate from trade-data records.
+model ChohanSiteConfig {
+  id            String   @id @default(uuid())
+  tenantId      String   @unique @map("tenant_id")
+  status        String   @default("DRAFT") @db.VarChar(20)
+  themeKey      String   @default("mint-executive") @map("theme_key") @db.VarChar(50)
+  primaryColor  String   @default("#0f5b55") @map("primary_color") @db.VarChar(20)
+  accentColor   String   @default("#ee765d") @map("accent_color") @db.VarChar(20)
+  canvasColor   String   @default("#f5f1e7") @map("canvas_color") @db.VarChar(20)
+  draftJson     Json?    @map("draft_json")
+  publishedJson Json?    @map("published_json")
+  revision      Int      @default(1)
+  updatedById   String?  @map("updated_by_id")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  tenant    Tenant @relation(fields: [tenantId], references: [id])
+  updatedBy User?  @relation("ChohanConfigUpdatedBy", fields: [updatedById], references: [id])
+  revisions ChohanContentRevision[]
+
+  @@index([status])
+  @@map("chohan_site_configs")
+}
+
+model ChohanContentRevision {
+  id            String   @id @default(uuid())
+  tenantId      String   @map("tenant_id")
+  configId      String   @map("config_id")
+  revision      Int
+  status        String   @db.VarChar(20)
+  payload       Json
+  createdById   String   @map("created_by_id")
+  reviewedById  String?  @map("reviewed_by_id")
+  reviewedAt    DateTime? @map("reviewed_at")
+  createdAt     DateTime @default(now())
+
+  tenant    Tenant          @relation(fields: [tenantId], references: [id])
+  config    ChohanSiteConfig @relation(fields: [configId], references: [id])
+  createdBy User             @relation("ChohanRevisionCreatedBy", fields: [createdById], references: [id])
+  reviewedBy User?          @relation("ChohanRevisionReviewedBy", fields: [reviewedById], references: [id])
+
+  @@unique([configId, revision])
+  @@index([tenantId, status, createdAt])
+  @@map("chohan_content_revisions")
+}
+
+model ChohanGalleryItem {
+  id        String   @id @default(uuid())
+  tenantId  String   @map("tenant_id")
+  title     String   @db.VarChar(255)
+  imageUrl  String   @map("image_url")
+  altText   String   @map("alt_text")
+  caption   String?
+  status    String   @default("DRAFT") @db.VarChar(20)
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId, status, sortOrder])
+  @@map("chohan_gallery_items")
+}
+
+model ChohanMediaAsset {
+  id          String   @id @default(uuid())
+  tenantId    String   @map("tenant_id")
+  url         String
+  storageKey  String?  @map("storage_key")
+  mimeType    String   @map("mime_type") @db.VarChar(100)
+  altText     String   @map("alt_text")
+  caption     String?
+  rightsNote  String?  @map("rights_note")
+  expiresAt   DateTime? @map("expires_at")
+  status      String   @default("ACTIVE") @db.VarChar(20)
+  createdById String   @map("created_by_id")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant    Tenant @relation(fields: [tenantId], references: [id])
+  createdBy User   @relation("ChohanMediaCreatedBy", fields: [createdById], references: [id])
+
+  @@index([tenantId, status, createdAt])
+  @@map("chohan_media_assets")
+}
+
+model ChohanCompanyEvent {
+  id        String   @id @default(uuid())
+  tenantId  String   @map("tenant_id")
+  title     String   @db.VarChar(255)
+  summary   String
+  location  String   @db.VarChar(255)
+  startsAt  DateTime @map("starts_at")
+  imageUrl  String?  @map("image_url")
+  status    String   @default("DRAFT") @db.VarChar(20)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId, status, startsAt])
+  @@map("chohan_company_events")
 }
 
 model Session {

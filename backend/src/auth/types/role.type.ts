@@ -9,6 +9,11 @@ export const Role = {
   FINANCE_MANAGER: 'FINANCE_MANAGER',
   ANALYST: 'ANALYST',
   VIEWER: 'VIEWER',
+  SITE_EDITOR: 'SITE_EDITOR',
+  MEDIA_MANAGER: 'MEDIA_MANAGER',
+  EVENT_MANAGER: 'EVENT_MANAGER',
+  REVIEWER: 'REVIEWER',
+  SITE_ADMIN: 'SITE_ADMIN',
 } as const;
 
 export type Role = (typeof Role)[keyof typeof Role];
