@@ -1,25 +1,33 @@
-export default function ChohanIndustriesProgressPage() {
-  const phases: [string, string, string[]][] = [
-    ["1. Discovery and governance", "100%", ["Stakeholder charter: cadence set.", "Risk register: owners assigned.", "Decision log: key choices recorded."]],
-    ["2. Architecture and foundation", "90%", ["Repo scaffolding: sandbox branch ready.", "Routing and layouts: core routes created.", "Content governance: tenant-scoped draft and revision model implemented."]],
-    ["3. Corporate content", "70%", ["Brand copy: company voice drafted.", "Service, gallery and event structures: implemented.", "Business facts, case studies and approved media: still pending confirmation."]],
-    ["4. Responsive experience", "60%", ["Mobile layouts: responsive classes added.", "Tablet layouts: responsive grid implemented.", "Cross-browser and accessibility checks: pending final pass."]],
-    ["5. Quality verification", "70%", ["Frontend typecheck: passing.", "Backend governance tests: 3/3 passing.", "Production-like browser and accessibility audit: not yet complete."]],
-    ["6. Release readiness", "25%", ["Static release artifact: prepared.", "Database migration and object storage: prepared, not applied.", "Production cutover: awaiting explicit authorization."]],
-  ];
+"use client";
 
-  return (
-    <main className="min-h-screen bg-white text-slate-900">
-      <header className="border-b border-slate-200 px-6 py-4"><span className="text-sm font-semibold uppercase tracking-wide text-slate-600">Chohan Industries</span></header>
-      <section className="mx-auto w-full max-w-6xl px-6 py-12">
-        <h1 className="mb-4 text-4xl font-bold md:text-5xl">Chohan Industries Project Progress</h1>
-        <p className="mb-10 text-base leading-relaxed text-slate-700 md:text-lg">A clear view of the current delivery position across discovery, build, verification, and release.</p>
-        <div className="mb-10 rounded-lg border border-slate-200 p-6"><p className="text-sm font-semibold uppercase tracking-wide text-slate-600">Overall completion</p><p className="text-5xl font-bold">69%</p><div className="mt-4 h-3 overflow-hidden rounded-full bg-slate-200"><div className="h-full bg-slate-900" style={{ width: "69%" }} /></div></div>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {phases.map(([title, percent, topics]) => <article key={title} className="rounded-lg border border-slate-200 p-6"><div className="mb-3 flex items-baseline justify-between gap-4"><h2 className="text-lg font-semibold">{title}</h2><span className="text-sm font-semibold">{percent}</span></div><div className="mb-4 h-2 overflow-hidden rounded-full bg-slate-200"><div className="h-full bg-slate-900" style={{ width: percent }} /></div><ul className="list-disc space-y-2 pl-5 text-sm text-slate-700">{topics.map((topic) => <li key={topic}>{topic}</li>)}</ul></article>)}
-        </div>
-        <p className="mt-10 text-sm text-slate-500">Note: Percentages are current sandbox estimates. Production deployment is not complete.</p>
-      </section>
-    </main>
-  );
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { ArrowUpRight, Check, CircleDot, Clock3 } from "lucide-react";
+import { CHOHAN_TENANT_SLUG, ChohanProgressPhase, getPublicChohanContent } from "@/lib/chohan-content-api";
+
+const fallbackPhases: ChohanProgressPhase[] = [
+  { id: "discovery", title: "Discovery and governance", percent: 100, status: "complete", topics: ["Stakeholder charter: cadence set.", "Risk register: owners assigned.", "Decision log: key choices recorded."] },
+  { id: "foundation", title: "Architecture and foundation", percent: 90, status: "active", topics: ["Repo scaffolding: integration branch ready.", "Routing and layouts: core routes created.", "Content governance: tenant-scoped draft and revision model implemented."] },
+  { id: "content", title: "Corporate content", percent: 70, status: "active", topics: ["Brand copy: company voice drafted.", "Products, gallery and event structures: implemented.", "Business facts and approved media: confirmation pending."] },
+  { id: "experience", title: "Responsive experience", percent: 60, status: "active", topics: ["Mobile layouts: responsive classes added.", "Tablet layouts: responsive grid implemented.", "Cross-browser and accessibility checks: final pass pending."] },
+  { id: "quality", title: "Quality verification", percent: 70, status: "active", topics: ["Frontend typecheck: passing.", "Backend governance tests: passing.", "Production-like browser audit: final pass pending."] },
+  { id: "release", title: "Release readiness", percent: 25, status: "planned", topics: ["Local release artifact: prepared.", "Database migration and object storage: prepared.", "Production cutover: gated behind explicit authorization."] },
+];
+
+function statusLabel(status: ChohanProgressPhase["status"]) {
+  return status === "complete" ? "Complete" : status === "active" ? "In progress" : "Planned";
+}
+
+export default function ChohanIndustriesProgressPage() {
+  const [phases, setPhases] = useState(fallbackPhases);
+  useEffect(() => { getPublicChohanContent(CHOHAN_TENANT_SLUG).then((content) => { if (content.config?.content?.progress?.length) setPhases(content.config.content.progress); }).catch(() => undefined); }, []);
+  const overall = useMemo(() => Math.round(phases.reduce((sum, phase) => sum + phase.percent, 0) / Math.max(phases.length, 1)), [phases]);
+
+  return <main className="min-h-screen bg-[#F5F0E6] text-[#143A36]">
+    <header className="border-b border-[#D9D1C1] bg-[#FBF9F3]"><div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5"><Link href="/chohan-industries" className="flex items-center gap-3 font-semibold tracking-tight"><span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0D625D] text-sm font-bold text-white">CI</span><span><span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#6B817A]">Trade with purpose</span><span>Chohan Industries</span></span></Link><nav aria-label="Chohan Industries navigation" className="hidden items-center gap-6 text-sm font-semibold text-[#52706A] md:flex"><Link href="/chohan-industries">Home</Link><Link href="/chohan-industries/products">Products</Link><Link href="/chohan-industries/gallery">Stories</Link><Link className="text-[#0D625D]" href="/chohan-industries/progress">Project progress</Link><Link href="/chohan-industries#contact">Talk to us</Link></nav></div></header>
+    <section className="border-b border-[#D9D1C1] bg-[#F5F0E6] px-6 py-20 md:py-28"><div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-[1fr_0.8fr] md:items-end"><div><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#0D625D]">Delivery dashboard</p><h1 className="mt-5 max-w-3xl font-serif text-6xl leading-[0.9] tracking-tight md:text-8xl">Progress, made visible.</h1><p className="mt-7 max-w-2xl text-lg leading-8 text-[#526F64]">A live view of the Chohan Industries corporate programme, from governance and architecture through responsive experience and release readiness.</p></div><div className="border-t-4 border-[#E37B61] bg-[#FBF9F3] p-7 shadow-[0_18px_45px_rgba(33,54,47,0.12)]"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#6B817A]">Overall completion</p><p className="mt-3 font-serif text-6xl">{overall}%</p><div className="mt-5 h-2 bg-[#DDE3DC]"><div className="h-full bg-[#0D625D] transition-all" style={{ width: `${overall}%` }} /></div><p className="mt-3 text-xs text-[#6B817A]">Current sandbox estimate · governed content</p></div></div></section>
+    <section className="mx-auto max-w-7xl px-6 py-16"><div className="mb-10 flex items-end justify-between gap-6"><div><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#0D625D]">Programme map</p><h2 className="mt-3 font-serif text-4xl tracking-tight md:text-5xl">Phases and next steps.</h2></div><p className="hidden max-w-xs text-sm leading-6 text-[#6B817A] md:block">Each phase is broken into practical workstreams so progress stays easy to review and act on.</p></div><div className="border-t border-[#CFC6B5]">{phases.map((phase, index) => <article key={phase.id} className="border-b border-[#CFC6B5] py-7"><div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-10"><div className="flex min-w-0 items-center gap-4 md:w-[32%]"><span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${phase.status === "complete" ? "bg-[#0D625D] text-white" : phase.status === "active" ? "border-2 border-[#E37B61] text-[#E37B61]" : "border border-[#B8C6BC] text-[#82968D]"}`}>{phase.status === "complete" ? <Check size={17} /> : phase.status === "active" ? <CircleDot size={17} /> : <Clock3 size={16} />}</span><div><p className="text-xs font-bold uppercase tracking-[0.12em] text-[#6B817A]">0{index + 1} · {statusLabel(phase.status)}</p><h3 className="mt-1 font-serif text-2xl">{phase.title}</h3></div></div><div className="flex-1"><div className="mb-3 flex items-center justify-between text-xs font-bold text-[#0D625D]"><span>{phase.percent}% complete</span><span>{phase.status === "complete" ? "Ready" : phase.status === "active" ? "Underway" : "Queued"}</span></div><div className="h-2 bg-[#DDE3DC]"><div className="h-full bg-[#0D625D] transition-all" style={{ width: `${phase.percent}%` }} /></div></div><ul className="grid gap-2 text-sm leading-6 text-[#526F64] md:w-[30%]">{phase.topics.map((topic) => <li key={topic} className="flex gap-2"><span className="text-[#E37B61]">•</span>{topic}</li>)}</ul></div></article>)}</div></section>
+    <section className="border-t border-[#D9D1C1] bg-[#FBF9F3] px-6 py-14"><div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between"><div><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#0D625D]">Next checkpoint</p><h2 className="mt-3 font-serif text-3xl">Complete the local acceptance pass.</h2><p className="mt-3 max-w-2xl text-[#526F64]">The next release gate covers user rights, email workflows, media governance, SEO, backup checks and route-level browser verification.</p></div><Link href="/chohan-industries/admin" className="inline-flex items-center gap-2 rounded-full bg-[#0D625D] px-6 py-3 text-sm font-bold text-white">Open content studio <ArrowUpRight size={17} /></Link></div></section>
+    <footer className="bg-[#143A36] px-6 py-7 text-sm text-[#D8E7DE]"><div className="mx-auto flex max-w-7xl justify-between"><span>Chohan Industries</span><span>© {new Date().getFullYear()} Chohan Industries</span></div></footer>
+  </main>;
 }

@@ -2,6 +2,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 export const CHOHAN_TENANT_SLUG = process.env.NEXT_PUBLIC_CHOHAN_TENANT_SLUG || "chohan-industries";
 
 export type ChohanContentDraft = {
+  progress?: ChohanProgressPhase[];
   themeKey?: "midnight-shell" | "emerald-night" | "mint-executive";
   primaryColor?: string;
   accentColor?: string;
@@ -23,6 +24,14 @@ export type ChohanContentDraft = {
   seoKeywords?: string;
   ogImageUrl?: string;
   noIndex?: boolean;
+};
+
+export type ChohanProgressPhase = {
+  id: string;
+  title: string;
+  percent: number;
+  status: "complete" | "active" | "planned";
+  topics: string[];
 };
 
 export type ChohanPublicContent = {
