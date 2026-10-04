@@ -36,10 +36,10 @@ export default function ChohanIndustriesPage() {
       <section className="flex-1 px-6 py-16 max-w-6xl mx-auto w-full">
         <div className="grid items-end gap-8 rounded-xl bg-slate-900 p-8 text-white md:grid-cols-[1.1fr_0.9fr] md:p-12">
           <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-300">{hero.eyebrow}</p><h1 className="mt-4 text-5xl font-semibold tracking-tight md:text-7xl">{hero.heading}</h1><p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-200">{hero.copy}</p></div>
-          {hero.image ? <img className="aspect-[4/3] w-full rounded-lg object-cover" src={hero.image} alt="Chohan Industries hero" /> : <div className="aspect-[4/3] rounded-lg bg-emerald-800/60" aria-hidden="true" />}
+          {hero.image ? <img className="aspect-[4/3] w-full rounded-lg object-cover" src={hero.image} alt="Chohan Industries hero" loading="eager" decoding="sync" fetchPriority="high" /> : <div className="aspect-[4/3] rounded-lg bg-emerald-800/60" aria-hidden="true" />}
         </div>
 
-        <nav className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <nav aria-label="Chohan Industries sections" className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <a href="#services" className="rounded-lg border border-slate-300 px-4 py-3 text-center hover:bg-slate-50">
             Services
           </a>
